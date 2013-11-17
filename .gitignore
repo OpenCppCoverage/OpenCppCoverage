@@ -1,0 +1,10 @@
+*/Debug
+*/Release
+*/x64
+Debug/
+Release/
+ipch/*
+*.sdf
+*.opensdf
+*.suo
+*.filters
