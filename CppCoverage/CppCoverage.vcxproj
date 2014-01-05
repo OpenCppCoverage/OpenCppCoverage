@@ -155,10 +155,14 @@
     <ClInclude Include="Debugger.hpp" />
     <ClInclude Include="DebugInformation.hpp" />
     <ClInclude Include="DebugInformationEventHandler.hpp" />
+    <ClInclude Include="ExecutedAddressManager.hpp" />
     <ClInclude Include="Export.hpp" />
+    <ClInclude Include="FileCoverage.hpp" />
     <ClInclude Include="HandleInformation.hpp" />
     <ClInclude Include="IDebugEvents.hpp" />
     <ClInclude Include="IDebugInformationEventHandler.hpp" />
+    <ClInclude Include="LineCoverage.hpp" />
+    <ClInclude Include="ModuleCoverage.hpp" />
     <ClInclude Include="Process.hpp" />
     <ClInclude Include="StartInfo.hpp" />
     <ClInclude Include="stdafx.h" />
@@ -187,9 +191,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ExecutedAddressManager.cpp" />
+    <ClCompile Include="FileCoverage.cpp" />
     <ClCompile Include="HandleInformation.cpp" />
     <ClCompile Include="IDebugEvents.cpp" />
     <ClCompile Include="IDebugInformationEventHandler.cpp" />
+    <ClCompile Include="LineCoverage.cpp" />
+    <ClCompile Include="ModuleCoverage.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="StartInfo.cpp" />
     <ClCompile Include="stdafx.cpp">
