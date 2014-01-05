@@ -2,7 +2,6 @@
 
 #include "CppCoverage/StartInfo.hpp"
 #include "CppCoverage/Debugger.hpp"
-#include "CppCoverage/IDebugEvents.hpp"
 
 #include "DebugEventsMock.hpp"
 
@@ -14,13 +13,13 @@ namespace CppCoverageTest
 	{		
 		cov::StartInfo startInfo{ Tools::GetConsoleForCppCoverageTest() };
 		cov::Debugger debugger;
-		DebugEventsMock debugEventsMock;
+		DebugEventsHandlerMock debugEventsHandlerMock;
 
-		EXPECT_CALL(debugEventsMock, OnCreateProcess(testing::_));
-		EXPECT_CALL(debugEventsMock, OnExitProcess(testing::_));
-		EXPECT_CALL(debugEventsMock, OnLoadDll(testing::_)).Times(testing::AnyNumber());;
-		EXPECT_CALL(debugEventsMock, OnException(testing::_));
+		EXPECT_CALL(debugEventsHandlerMock, OnCreateProcess(testing::_));
+		EXPECT_CALL(debugEventsHandlerMock, OnExitProcess(testing::_));
+		EXPECT_CALL(debugEventsHandlerMock, OnLoadDll(testing::_)).Times(testing::AnyNumber());;
+		EXPECT_CALL(debugEventsHandlerMock, OnException(testing::_));
 
-		debugger.Debug(startInfo, debugEventsMock);
+		debugger.Debug(startInfo, debugEventsHandlerMock);
 	}
 }

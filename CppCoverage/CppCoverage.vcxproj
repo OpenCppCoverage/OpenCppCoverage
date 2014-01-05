@@ -148,18 +148,19 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BreakPoint.hpp" />
     <ClInclude Include="CodeCoverageRunner.hpp" />
     <ClInclude Include="CoverageData.hpp" />
+    <ClInclude Include="CoverageFilter.hpp" />
     <ClInclude Include="CoverageSettings.hpp" />
     <ClInclude Include="CppCoverageException.hpp" />
     <ClInclude Include="Debugger.hpp" />
     <ClInclude Include="DebugInformation.hpp" />
-    <ClInclude Include="DebugInformationEventHandler.hpp" />
     <ClInclude Include="ExecutedAddressManager.hpp" />
     <ClInclude Include="Export.hpp" />
     <ClInclude Include="FileCoverage.hpp" />
     <ClInclude Include="HandleInformation.hpp" />
-    <ClInclude Include="IDebugEvents.hpp" />
+    <ClInclude Include="IDebugEventsHandler.hpp" />
     <ClInclude Include="IDebugInformationEventHandler.hpp" />
     <ClInclude Include="LineCoverage.hpp" />
     <ClInclude Include="ModuleCoverage.hpp" />
@@ -167,16 +168,18 @@
     <ClInclude Include="StartInfo.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Tools.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BreakPoint.cpp" />
     <ClCompile Include="CodeCoverageRunner.cpp" />
     <ClCompile Include="CoverageData.cpp" />
+    <ClCompile Include="CoverageFilter.cpp" />
     <ClCompile Include="CoverageSettings.cpp" />
     <ClCompile Include="CppCoverage.cpp" />
     <ClCompile Include="CppCoverageException.cpp" />
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="DebugInformation.cpp" />
-    <ClCompile Include="DebugInformationEventHandler.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
@@ -194,7 +197,7 @@
     <ClCompile Include="ExecutedAddressManager.cpp" />
     <ClCompile Include="FileCoverage.cpp" />
     <ClCompile Include="HandleInformation.cpp" />
-    <ClCompile Include="IDebugEvents.cpp" />
+    <ClCompile Include="IDebugEventsHandler.cpp" />
     <ClCompile Include="IDebugInformationEventHandler.cpp" />
     <ClCompile Include="LineCoverage.cpp" />
     <ClCompile Include="ModuleCoverage.cpp" />
@@ -206,6 +209,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Tools.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

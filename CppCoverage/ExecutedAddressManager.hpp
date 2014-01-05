@@ -21,8 +21,8 @@ namespace CppCoverage
 		~ExecutedAddressManager();
 
 		void SetCurrentModule(const std::wstring& moduleName);
-		void AddAddress(void* address, const std::wstring& filename, unsigned int line, char instruction);
-		char MarkAddressAsExecuted(void* address);
+		void RegisterAddress(void* address, const std::wstring& filename, unsigned int line, unsigned char instruction);
+		unsigned  char MarkAddressAsExecuted(void* address);
 
 		CoverageData CreateCoverageData() const;
 

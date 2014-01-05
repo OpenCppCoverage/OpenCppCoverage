@@ -1,14 +1,14 @@
 #ifndef CPPCOVERAGETEST_DEBUGEVENTSMOCK_HEADER_GARD
 #define CPPCOVERAGETEST_DEBUGEVENTSMOCK_HEADER_GARD
 
-#include "CppCoverage/IDebugEvents.hpp"
+#include "CppCoverage/IDebugEventsHandler.hpp"
 
 namespace CppCoverageTest
 {
-	class DebugEventsMock : public CppCoverage::IDebugEvents
+	class DebugEventsHandlerMock : public CppCoverage::IDebugEventsHandler
 	{
 	public:
-		DebugEventsMock() = default;
+		DebugEventsHandlerMock() = default;
 
 		MOCK_METHOD1(OnCreateProcess, void(const CREATE_PROCESS_DEBUG_INFO&));
 		MOCK_METHOD1(OnExitProcess, void(const EXIT_PROCESS_DEBUG_INFO&));
@@ -16,8 +16,8 @@ namespace CppCoverageTest
 		MOCK_METHOD1(OnException, void(const EXCEPTION_DEBUG_INFO&));
 
 	private:
-		DebugEventsMock(const DebugEventsMock&) = delete;
-		DebugEventsMock& operator=(const DebugEventsMock&) = delete;
+		DebugEventsHandlerMock(const DebugEventsHandlerMock&) = delete;
+		DebugEventsHandlerMock& operator=(const DebugEventsHandlerMock&) = delete;
 	};
 }
 

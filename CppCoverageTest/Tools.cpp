@@ -5,7 +5,7 @@
 
 #include "CppCoverage/StartInfo.hpp"
 #include "CppCoverage/Debugger.hpp"
-#include "CppCoverage/IDebugEvents.hpp"
+#include "CppCoverage/IDebugEventsHandler.hpp"
 
 namespace bfs = boost::filesystem;
 namespace cov = CppCoverage;
@@ -14,9 +14,9 @@ namespace CppCoverageTest
 {
 	namespace
 	{
-		struct DebugEvents : public cov::IDebugEvents
+		struct DebugEventsHandler : public cov::IDebugEventsHandler
 		{
-			explicit DebugEvents(Tools::T_HandlesFct action)
+			explicit DebugEventsHandler(Tools::T_HandlesFct action)
 			: action_(action)
 			{
 			}
@@ -43,9 +43,9 @@ namespace CppCoverageTest
 	{		
 		cov::StartInfo startInfo{ filename };
 		cov::Debugger debugger;
-		DebugEvents debugEvents{action};
+		DebugEventsHandler debugEventsHandler{ action };
 
-		debugger.Debug(startInfo, debugEvents);
+		debugger.Debug(startInfo, debugEventsHandler);
 	}				
 }
 

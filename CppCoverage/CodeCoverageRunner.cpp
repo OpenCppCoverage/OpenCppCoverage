@@ -5,36 +5,91 @@
 
 #include "CoverageData.hpp"
 #include "Debugger.hpp"
+#include "DebugInformation.hpp"
+#include "ExecutedAddressManager.hpp"
+#include "HandleInformation.hpp"
+#include "BreakPoint.hpp"
+#include "CoverageFilter.hpp"
 
 namespace CppCoverage
 {
+	//-------------------------------------------------------------------------
+	CodeCoverageRunner::CodeCoverageRunner()
+	{ 
+		executedAddressManager_.reset(new ExecutedAddressManager());
+	}
 
-	CoverageData CodeCoverageRunner::RunCoverage(const StartInfo& startInfo, const CoverageSettings&) const
+	//-------------------------------------------------------------------------
+	CoverageData CodeCoverageRunner::RunCoverage(const StartInfo& startInfo, const CoverageSettings&)
 	{
-		CoverageData test;
-		
-		// Create processMemory object
+		CoverageData test;		
+		Debugger debugger;
 
-		// Create DebugInformation filter on module outsite, use predicate for source. build coverage data inside inner loop.
-
-		// DebugInformation use class with 2 methodes Filteer ( set module as used un Coverage data, et use reg ex) and a callback with all the data
-		// Reflechir a Coverage Data before
-		// CoverageData global stats
-		//		Modules global stats no source selected
-		//			File  stats
-		// Create a class for instruction and info
-		// main class
-		//$$	 internal struct module, source, then line easy to build coverageData ...
-
-		// $$ The class that manage the handle of exception must be in the ExceptionCallback class and so cannot be inside this class.
-		//  Set current module and OnnewLine to fill the possible linge
-		// find to set visited line
-		// Func
-	//	Debugger debugger;
-
-//		debugger.Debug(startInfo, IDebugEvents&);
-	//	StartInfo startInfo2(L"");
-
+		coverageFilter_.reset(new CoverageFilter());
+		debugger.Debug(startInfo, *this);
+	
 		return test;
+	}
+
+	//-------------------------------------------------------------------------
+	void CodeCoverageRunner::OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO& processDebugInfo)
+	{
+		auto hProcess = processDebugInfo.hProcess;
+
+		debugInformation_.reset(new DebugInformation(hProcess));
+		breakpoint_.reset(new BreakPoint(hProcess));
+		LoadModule(processDebugInfo.hFile);
+	}
+	
+	//-------------------------------------------------------------------------
+	void CodeCoverageRunner::OnLoadDll(const LOAD_DLL_DEBUG_INFO& dllDebugInfo)
+	{
+		LoadModule(dllDebugInfo.hFile);
+	}
+
+	//-------------------------------------------------------------------------
+	void CodeCoverageRunner::OnException(const EXCEPTION_DEBUG_INFO& exceptionDebugInfo)
+	{
+		if (exceptionDebugInfo.dwFirstChance)
+		{
+			const auto& exceptionRecord = exceptionDebugInfo.ExceptionRecord;
+			auto address = exceptionRecord.ExceptionAddress;
+
+			auto oldInstruction = executedAddressManager_->MarkAddressAsExecuted(address);
+
+			breakpoint_->RemoveBreakPoint(address, oldInstruction);
+		}		
+	}
+
+	//-------------------------------------------------------------------------
+	void CodeCoverageRunner::LoadModule(HANDLE hFile)
+	{
+		HandleInformation handleInformation;
+
+		std::wstring filename = handleInformation.ComputeFilename(hFile);
+
+		if (coverageFilter_->IsModuleSelected(filename))
+		{
+			executedAddressManager_->SetCurrentModule(filename);
+			debugInformation_->LoadModule(hFile, *this);
+		}
+	}
+
+	//-------------------------------------------------------------------------
+	bool CodeCoverageRunner::IsSourceFileSelected(const std::wstring& filename) const
+	{
+		return coverageFilter_->IsSourceFileSelected(filename);
+	}
+	
+	//-------------------------------------------------------------------------
+	void CodeCoverageRunner::OnNewLine(
+		const std::wstring& filename, 
+		int lineNumber, 
+		DWORD64 address)
+	{
+		auto addressPtr = reinterpret_cast<void*>(address);
+		auto oldInstruction = breakpoint_->SetBreakPointAt(addressPtr);
+
+		executedAddressManager_->RegisterAddress(addressPtr, filename, lineNumber, oldInstruction);
 	}
 }

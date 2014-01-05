@@ -10,8 +10,8 @@ namespace CppCoverageTest
 	public:
 		DebugInformationEventHandlerMock() = default;
 		
-		MOCK_CONST_METHOD1(IsSourceFileSelected, bool(const std::string&));
-		MOCK_METHOD3(OnNewLine, void(const std::string& fileName, int lineNumber, DWORD64 address));
+		MOCK_CONST_METHOD1(IsSourceFileSelected, bool(const std::wstring&));
+		MOCK_METHOD3(OnNewLine, void(const std::wstring& fileName, int lineNumber, DWORD64 address));
 
 	private:
 		DebugInformationEventHandlerMock(const DebugInformationEventHandlerMock&) = delete;

@@ -9,8 +9,8 @@ namespace CppCoverage
 		IDebugInformationEventHandler() = default;
 		virtual ~IDebugInformationEventHandler() = default;
 								
-		virtual bool IsSourceFileSelected(const std::string& filename) const = 0;
-		virtual void OnNewLine(const std::string& fileName, int lineNumber, DWORD64 address) = 0;
+		virtual bool IsSourceFileSelected(const std::wstring& filename) const = 0;
+		virtual void OnNewLine(const std::wstring& fileName, int lineNumber, DWORD64 address) = 0;
 		
 	private:
 		IDebugInformationEventHandler(const IDebugInformationEventHandler&) = delete;

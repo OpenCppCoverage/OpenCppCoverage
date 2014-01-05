@@ -6,14 +6,14 @@
 namespace CppCoverage
 {
 	class StartInfo;
-	class IDebugEvents;
+	class IDebugEventsHandler;
 
 	class DLL Debugger
 	{
 	public:
 		Debugger() = default;
 
-		void Debug(const StartInfo&, IDebugEvents&);
+		void Debug(const StartInfo&, IDebugEventsHandler&);
 
 	private:
 		Debugger(const Debugger&) = delete;

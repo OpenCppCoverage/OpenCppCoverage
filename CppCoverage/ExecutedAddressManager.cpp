@@ -19,7 +19,7 @@ namespace CppCoverage
 		{
 		}
 
-		char instruction_;
+		unsigned char instruction_;
 		bool hasBeenExecuted_;
 	};
 
@@ -59,11 +59,11 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
-	void ExecutedAddressManager::AddAddress(
+	void ExecutedAddressManager::RegisterAddress(
 		void* address, 
 		const std::wstring& filename, 
 		unsigned int lineNumber, 
-		char instruction)
+		unsigned char instruction)
 	{
 		auto& module = GetCurrentModule();
 		auto& file = module.files_[filename];
@@ -87,7 +87,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	char ExecutedAddressManager::MarkAddressAsExecuted(void* address)
+	unsigned char ExecutedAddressManager::MarkAddressAsExecuted(void* address)
 	{
 		auto it = addressLineMap_.find(address);
 

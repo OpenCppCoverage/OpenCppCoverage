@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "DebugInformationEventHandler.hpp"
+#include "IDebugEventsHandler.hpp"
 
 namespace CppCoverage
 {

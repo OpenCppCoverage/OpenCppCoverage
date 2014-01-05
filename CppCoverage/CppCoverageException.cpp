@@ -3,20 +3,17 @@
 
 #include <sstream>
 
+#include "Tools.hpp"
+
 namespace CppCoverage
 {
 	namespace
 	{
-		std::string ToStdString(const std::wstring& str)
-		{
-			return std::string(str.begin(), str.end());
-		}
-
 		//-------------------------------------------------------------------------
 		std::string WriteLastErrorMessage(const std::wstring& message, int lastErrorCode)
 		{			
 			char sysMsg[64 * 1024];
-			std::ostringstream ostr{ ToStdString(message) };
+			std::ostringstream ostr{Tools::ToString(message) };
 			
 			if (FormatMessageA(
 					FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
@@ -38,7 +35,7 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	CppCoverageException::CppCoverageException(const std::wstring& message)
-		: std::exception(ToStdString(message).c_str())
+		: std::exception(Tools::ToString(message).c_str())
 	{
 	}
 	

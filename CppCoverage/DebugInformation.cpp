@@ -5,6 +5,7 @@
 
 #include "CppCoverageException.hpp"
 #include "IDebugInformationEventHandler.hpp"
+#include "Tools.hpp"
 
 namespace CppCoverage
 {
@@ -35,7 +36,8 @@ namespace CppCoverage
 				THROW("Invalid user context.");
 
 			DWORD64 address = lineInfo->Address - lineInfo->ModBase + lineInfo->ModBase; // $$ (DWORD64)coverage->lpBaseOfImage;
-			context->debugInformationEventHandler_.OnNewLine(lineInfo->FileName, lineInfo->LineNumber, address);
+			std::wstring filename = Tools::ToWString(lineInfo->FileName);
+			context->debugInformationEventHandler_.OnNewLine(filename, lineInfo->LineNumber, address);
 
 			return TRUE;
 		}		
@@ -48,8 +50,10 @@ namespace CppCoverage
 				THROW("Invalid user context.");
 			if (!pSourceFile)
 				THROW("Source File is null");
-		
-			if (context->debugInformationEventHandler_.IsSourceFileSelected(pSourceFile->FileName))
+			
+			std::wstring filename = Tools::ToWString(pSourceFile->FileName);
+
+			if (context->debugInformationEventHandler_.IsSourceFileSelected(filename))
 			{
 				if (!SymEnumSourceLines(
 					context->hProcess_,
