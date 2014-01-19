@@ -11,6 +11,8 @@ namespace CppCoverage
 		unsigned char SetBreakPointAt(void* address) const;
 		void RemoveBreakPoint(void* address, unsigned char oldInstruction) const;
 
+		void AdjustEipAfterBreakPointRemoval(HANDLE hThread) const;
+
 	private:
 		BreakPoint(const BreakPoint&) = delete;
 		BreakPoint& operator=(const BreakPoint&) = delete;

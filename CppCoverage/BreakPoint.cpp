@@ -25,7 +25,17 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	void BreakPoint::RemoveBreakPoint(void* address, unsigned char oldInstruction) const
 	{
-		WriteProcessMemory(address, oldInstruction);
+		WriteProcessMemory(address, oldInstruction);		
+	}
+
+	//-------------------------------------------------------------------------
+	void BreakPoint::AdjustEipAfterBreakPointRemoval(HANDLE hThread) const
+	{
+		CONTEXT lcContext;
+		lcContext.ContextFlags = CONTEXT_ALL;
+		GetThreadContext(hThread, &lcContext);
+		lcContext.Eip--; // Move back one byte
+		SetThreadContext(hThread, &lcContext);
 	}
 
 	//-------------------------------------------------------------------------

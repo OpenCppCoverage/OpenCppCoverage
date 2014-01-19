@@ -1,12 +1,12 @@
 // ConsoleForCppCoverageTest.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
+#include <windows.h>
 
-#include <Windows.h>
-
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, wchar_t* argv[])
 {
+	if (argc > 1)
+		return 0;
 	return 0;
 }
 

@@ -16,8 +16,9 @@ namespace CppCoverageTest
 	public:
 		Tools() = delete;
 
-		static std::wstring GetConsoleForCppCoverageTest();
-	
+		static std::wstring GetConsoleForCppCoverageTestPath();
+		static std::wstring GetConsoleForCppCoverageTestFilename();
+
 		static void GetHandles(const std::wstring& filename, T_HandlesFct);
 	};
 }

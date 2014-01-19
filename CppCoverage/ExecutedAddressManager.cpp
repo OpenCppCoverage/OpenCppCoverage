@@ -72,10 +72,10 @@ namespace CppCoverage
 		if (lines.find(lineNumber) != lines.end())
 			THROW(L"Line: " << lineNumber << L" in " << filename << L" already exists.");
 
-		const auto& pair = lines.emplace(lineNumber, Line(instruction)); //$$ replace std::insert by emplace					
+		const auto& pair = lines.emplace(lineNumber, Line(instruction));
 		
 		Line& insertedLine = pair.first->second;
-		addressLineMap_.insert(std::make_pair(address, &insertedLine));
+		addressLineMap_.emplace(address, &insertedLine);
 	}
 
 	//-------------------------------------------------------------------------

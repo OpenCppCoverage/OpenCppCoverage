@@ -10,7 +10,7 @@ namespace CppCoverage
 	class DLL DebugInformation
 	{
 	public:
-		explicit DebugInformation(HANDLE hProcess);
+		explicit DebugInformation(HANDLE hProcess, void* processBaseOfImage);
 		~DebugInformation();
 
 		void LoadModule(HANDLE hFile, IDebugInformationEventHandler& debugInformationEventHandler) const;
@@ -23,6 +23,7 @@ namespace CppCoverage
 
 	private:
 		HANDLE hProcess_;
+		void* processBaseOfImage_;
 	};
 }
 

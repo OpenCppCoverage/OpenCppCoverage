@@ -1,9 +1,13 @@
 #ifndef CPPCOVERAGE_IDEBUGINFORMATIONEVENTHANDLER_HEADER_GARD
 #define CPPCOVERAGE_IDEBUGINFORMATIONEVENTHANDLER_HEADER_GARD
 
+#include <string>
+
+#include "Export.hpp"
+
 namespace CppCoverage
 {
-	class IDebugInformationEventHandler
+	class DLL IDebugInformationEventHandler
 	{
 	public:
 		IDebugInformationEventHandler() = default;

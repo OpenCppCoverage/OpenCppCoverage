@@ -9,7 +9,7 @@ namespace CppCoverageTest
 {
 	TEST(Process, Start)
 	{
-		cov::StartInfo startInfo{ Tools::GetConsoleForCppCoverageTest() };
+		cov::StartInfo startInfo{ Tools::GetConsoleForCppCoverageTestPath() };
 		cov::Process process{ startInfo };
 				
 		ASSERT_NO_THROW(process.Start(0));

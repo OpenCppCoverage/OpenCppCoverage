@@ -11,7 +11,7 @@ namespace CppCoverageTest
 {	
 	TEST(HandleInformationTest, ComputeFilename)
 	{
-		std::wstring consoleForCppCoverageTest = Tools::GetConsoleForCppCoverageTest();
+		std::wstring consoleForCppCoverageTest = Tools::GetConsoleForCppCoverageTestPath();
 		bfs::path path;
 
 		Tools::GetHandles(consoleForCppCoverageTest, [&](HANDLE hProcess, HANDLE hFile) 

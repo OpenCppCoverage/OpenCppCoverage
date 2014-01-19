@@ -11,14 +11,14 @@ namespace CppCoverageTest
 {
 	TEST(DebugerTest, Debug)
 	{		
-		cov::StartInfo startInfo{ Tools::GetConsoleForCppCoverageTest() };
+		cov::StartInfo startInfo{ Tools::GetConsoleForCppCoverageTestPath() };
 		cov::Debugger debugger;
 		DebugEventsHandlerMock debugEventsHandlerMock;
 
 		EXPECT_CALL(debugEventsHandlerMock, OnCreateProcess(testing::_));
-		EXPECT_CALL(debugEventsHandlerMock, OnExitProcess(testing::_));
-		EXPECT_CALL(debugEventsHandlerMock, OnLoadDll(testing::_)).Times(testing::AnyNumber());;
-		EXPECT_CALL(debugEventsHandlerMock, OnException(testing::_));
+		EXPECT_CALL(debugEventsHandlerMock, OnExitProcess(testing::_, testing::_, testing::_));
+		EXPECT_CALL(debugEventsHandlerMock, OnLoadDll(testing::_, testing::_, testing::_)).Times(testing::AnyNumber());;
+		EXPECT_CALL(debugEventsHandlerMock, OnException(testing::_, testing::_, testing::_));
 
 		debugger.Debug(startInfo, debugEventsHandlerMock);
 	}

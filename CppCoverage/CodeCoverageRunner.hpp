@@ -6,6 +6,7 @@
 #include "CoverageData.hpp"
 #include "IDebugEventsHandler.hpp"
 #include "IDebugInformationEventHandler.hpp"
+#include "Export.hpp"
 
 namespace CppCoverage
 {
@@ -17,17 +18,18 @@ namespace CppCoverage
 	class BreakPoint;
 	class CoverageFilter;
 
-	class CodeCoverageRunner : private IDebugEventsHandler, private IDebugInformationEventHandler
+	class DLL CodeCoverageRunner : private IDebugEventsHandler, private IDebugInformationEventHandler
 	{
 	public:
 		CodeCoverageRunner();
+		~CodeCoverageRunner();
 
 		CoverageData RunCoverage(const StartInfo&, const CoverageSettings&);
 
 	private:
-		virtual void OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO&);
-		virtual void OnLoadDll(const LOAD_DLL_DEBUG_INFO&);
-		virtual void OnException(const EXCEPTION_DEBUG_INFO&);		
+		virtual void OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO&) override;
+		virtual void OnLoadDll(HANDLE hProcess, HANDLE hThread, const LOAD_DLL_DEBUG_INFO&) override;
+		virtual void OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&) override;
 
 	private:
 		virtual bool IsSourceFileSelected(const std::wstring& filename) const;
@@ -44,6 +46,7 @@ namespace CppCoverage
 		std::unique_ptr<BreakPoint> breakpoint_;
 		std::unique_ptr<ExecutedAddressManager> executedAddressManager_;
 		std::unique_ptr<CoverageFilter> coverageFilter_;
+		bool isFirstException_;
 	};
 }
 

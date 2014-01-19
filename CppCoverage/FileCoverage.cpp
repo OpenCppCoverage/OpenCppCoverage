@@ -16,7 +16,7 @@ namespace CppCoverage
 	{
 		LineCoverage line{lineNumber, hasBeenExecuted};
 
-		if (!lines_.insert(std::make_pair(lineNumber, line)).second)
+		if (!lines_.emplace(lineNumber, line).second)
 			THROW("Line " << lineNumber << " already exists in " << filename_);
 	}
 

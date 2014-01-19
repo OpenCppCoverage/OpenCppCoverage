@@ -159,6 +159,7 @@
     <ClInclude Include="ExecutedAddressManager.hpp" />
     <ClInclude Include="Export.hpp" />
     <ClInclude Include="FileCoverage.hpp" />
+    <ClInclude Include="Handle.hpp" />
     <ClInclude Include="HandleInformation.hpp" />
     <ClInclude Include="IDebugEventsHandler.hpp" />
     <ClInclude Include="IDebugInformationEventHandler.hpp" />
@@ -176,7 +177,6 @@
     <ClCompile Include="CoverageData.cpp" />
     <ClCompile Include="CoverageFilter.cpp" />
     <ClCompile Include="CoverageSettings.cpp" />
-    <ClCompile Include="CppCoverage.cpp" />
     <ClCompile Include="CppCoverageException.cpp" />
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="DebugInformation.cpp" />
@@ -210,6 +210,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Tools.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Handle.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

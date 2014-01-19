@@ -15,20 +15,20 @@ namespace CppCoverage
 	};
 }
 
-#define THROW(message)							\
-do												\
-{												\
-	std::wostringstream ostr;				    \
-	ostr << message;							\
-	throw CppCoverageException(ostr.str());		\
-} while (false)									\
+#define THROW(message)										\
+do															\
+{															\
+	std::wostringstream ostr;								\
+	ostr << __FILE__ << ':' << __LINE__ << ' ' << message;	\
+	throw CppCoverageException(ostr.str());					\
+} while (false)												\
 
 
 #define THROW_LAST_ERROR(message, lastErrorCode)			\
 do															\
 {															\
 	std::wostringstream ostr;								\
-	ostr << message;										\
+	ostr << __FILE__ << ':' << __LINE__ << ' ' << message;	\
 	throw CppCoverageException(ostr.str(), lastErrorCode);	\
 } while (false)												\
 

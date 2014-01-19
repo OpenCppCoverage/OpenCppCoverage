@@ -11,9 +11,9 @@ namespace CppCoverageTest
 		DebugEventsHandlerMock() = default;
 
 		MOCK_METHOD1(OnCreateProcess, void(const CREATE_PROCESS_DEBUG_INFO&));
-		MOCK_METHOD1(OnExitProcess, void(const EXIT_PROCESS_DEBUG_INFO&));
-		MOCK_METHOD1(OnLoadDll, void(const LOAD_DLL_DEBUG_INFO&));
-		MOCK_METHOD1(OnException, void(const EXCEPTION_DEBUG_INFO&));
+		MOCK_METHOD3(OnExitProcess, void(HANDLE, HANDLE, const EXIT_PROCESS_DEBUG_INFO&));
+		MOCK_METHOD3(OnLoadDll, void(HANDLE, HANDLE, const LOAD_DLL_DEBUG_INFO&));
+		MOCK_METHOD3(OnException, void(HANDLE, HANDLE, const EXCEPTION_DEBUG_INFO&));
 
 	private:
 		DebugEventsHandlerMock(const DebugEventsHandlerMock&) = delete;

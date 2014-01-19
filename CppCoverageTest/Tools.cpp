@@ -21,7 +21,7 @@ namespace CppCoverageTest
 			{
 			}
 
-			virtual void OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO& processInfo)
+			virtual void OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO& processInfo) override
 			{
 				action_(processInfo.hProcess, processInfo.hFile);
 			}
@@ -31,10 +31,17 @@ namespace CppCoverageTest
 		};
 
 	}
+
 	//-------------------------------------------------------------------------
-	std::wstring Tools::GetConsoleForCppCoverageTest()
+	std::wstring Tools::GetConsoleForCppCoverageTestFilename()
+	{
+		return L"ConsoleForCppCoverageTest.exe";		
+	}
+
+	//-------------------------------------------------------------------------
+	std::wstring Tools::GetConsoleForCppCoverageTestPath()
 	{		
-		bfs::path path = { L"../Debug/ConsoleForCppCoverageTest.exe" };
+		bfs::path path = { L"../Debug/" + Tools::GetConsoleForCppCoverageTestFilename()};
 		return bfs::canonical(path).wstring();
 	}	
 

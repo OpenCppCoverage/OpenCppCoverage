@@ -12,7 +12,7 @@ namespace CppCoverageTest
 	{
 		void LoadModule(DebugInformationEventHandlerMock& mock, HANDLE hProcess, HANDLE hFile)
 		{
-			cov::DebugInformation debugInformation{hProcess};
+			cov::DebugInformation debugInformation{ hProcess, nullptr};
 			
 			debugInformation.LoadModule(hFile, mock);			
 		}
@@ -20,7 +20,7 @@ namespace CppCoverageTest
 
 	TEST(DebugInformationTest, LoadModule)
 	{				
-		auto executableWString = Tools::GetConsoleForCppCoverageTest();
+		auto executableWString = Tools::GetConsoleForCppCoverageTestPath();
 		std::string executable{executableWString.begin(), executableWString.end()};
 
 		DebugInformationEventHandlerMock mock;
@@ -33,7 +33,7 @@ namespace CppCoverageTest
 		EXPECT_CALL(mock, OnNewLine(testing::_, testing::_, testing::_))
 			.Times(testing::AtLeast(1));
 
-		Tools::GetHandles(Tools::GetConsoleForCppCoverageTest(), [&](HANDLE hProcess, HANDLE hFile)
+		Tools::GetHandles(Tools::GetConsoleForCppCoverageTestPath(), [&](HANDLE hProcess, HANDLE hFile)
 		{ 
 			LoadModule(mock, hProcess, hFile);
 		});				

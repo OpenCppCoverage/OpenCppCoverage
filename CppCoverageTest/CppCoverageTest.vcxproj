@@ -90,10 +90,11 @@
     <ClInclude Include="Tools.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CodeCoverageRunnerTest.cpp" />
     <ClCompile Include="CoverageDataTest.cpp" />
+    <ClCompile Include="CoverageFilterTest.cpp" />
     <ClCompile Include="CppCoverageTest.cpp" />
     <ClCompile Include="DebuggerTest.cpp" />
-    <ClCompile Include="DebugInformationEventHandlerMock.cpp" />
     <ClCompile Include="DebugInformationTest.cpp" />
     <ClCompile Include="ExecutedAddressManagerTest.cpp" />
     <ClCompile Include="HandleInformationTest.cpp" />

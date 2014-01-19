@@ -16,15 +16,18 @@ namespace CppCoverage
 			Context(
 				HANDLE hProcess, 
 				DWORD64 baseAddress, 
+				void* processBaseOfImage,
 				IDebugInformationEventHandler& debugInformationEventHandler)
 				: hProcess_(hProcess)
 				, baseAddress_(baseAddress)
+				, processBaseOfImage_(processBaseOfImage)
 				, debugInformationEventHandler_(debugInformationEventHandler)
 			{
 			}
 
 			HANDLE hProcess_;
 			DWORD64 baseAddress_;
+			void* processBaseOfImage_;
 			IDebugInformationEventHandler& debugInformationEventHandler_;
 		};
 
@@ -35,7 +38,7 @@ namespace CppCoverage
 			if (!userContext)
 				THROW("Invalid user context.");
 
-			DWORD64 address = lineInfo->Address - lineInfo->ModBase + lineInfo->ModBase; // $$ (DWORD64)coverage->lpBaseOfImage;
+			DWORD64 address = lineInfo->Address - lineInfo->ModBase + reinterpret_cast<DWORD64>(context->processBaseOfImage_);
 			std::wstring filename = Tools::ToWString(lineInfo->FileName);
 			context->debugInformationEventHandler_.OnNewLine(filename, lineInfo->LineNumber, address);
 
@@ -74,12 +77,10 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	DebugInformation::DebugInformation(HANDLE hProcess)
+	DebugInformation::DebugInformation(HANDLE hProcess, void* processBaseOfImage)
 		: hProcess_(hProcess)
-	{
-		// $$ SYMOPT_INCLUDE_32BIT_MODULES
-		// SymSetOptions(SYMOPT_DEBUG | SYMOPT_UNDNAME | SYMOPT_LOAD_LINES);
-
+		, processBaseOfImage_(processBaseOfImage)
+	{		
 		SymSetOptions(SYMOPT_DEFERRED_LOADS | SYMOPT_LOAD_LINES 
 			        | SYMOPT_NO_UNQUALIFIED_LOADS | SYMOPT_UNDNAME);
 
@@ -110,7 +111,7 @@ namespace CppCoverage
 		
 		try
 		{
-			Context context{hProcess_, baseAddress, debugInformationEventHandler};
+			Context context{hProcess_, baseAddress, processBaseOfImage_, debugInformationEventHandler };
 			
 			if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
 				THROW("Cannot enumerate source files");			
