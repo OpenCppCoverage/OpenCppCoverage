@@ -8,3 +8,4 @@ ipch/*
 *.opensdf
 *.suo
 *.filters
+*.user

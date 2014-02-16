@@ -9,7 +9,7 @@
 
 namespace CppCoverage
 {
-	class DLL Process
+	class CPPCOVERAGE_DLL Process
 	{
 	public:
 		Process(const StartInfo& startInfo);

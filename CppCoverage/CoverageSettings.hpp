@@ -8,7 +8,7 @@
 
 namespace CppCoverage
 {
-	class DLL CoverageSettings
+	class CPPCOVERAGE_DLL CoverageSettings
 	{
 	public:
 		typedef std::vector<std::wstring> T_Patterns;

@@ -2,6 +2,7 @@
 #include "CodeCoverageRunner.hpp"
 
 #include <boost/optional.hpp>
+#include <boost/filesystem.hpp>
 
 #include "CoverageData.hpp"
 #include "Debugger.hpp"
@@ -10,9 +11,15 @@
 #include "HandleInformation.hpp"
 #include "BreakPoint.hpp"
 #include "CoverageFilter.hpp"
+#include "StartInfo.hpp"
 
 namespace CppCoverage
 {
+	// $$$ 
+	// http://stackoverflow.com/questions/11652519/generate-xml-using-xerces-c
+	// http://code.google.com/p/google-code-prettify/
+	// http://shjs.sourceforge.net/
+	// http://www.gnu.org/software/src-highlite/
 	//-------------------------------------------------------------------------
 	CodeCoverageRunner::CodeCoverageRunner()
 	{ 
@@ -31,8 +38,10 @@ namespace CppCoverage
 
 		coverageFilter_.reset(new CoverageFilter(coverageSettings));
 		debugger.Debug(startInfo, *this);
-	
-		return executedAddressManager_->CreateCoverageData();
+
+		boost::filesystem::path path{startInfo.GetFilename()};
+
+		return executedAddressManager_->CreateCoverageData(path.filename().wstring());
 	}
 
 	//-------------------------------------------------------------------------

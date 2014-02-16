@@ -7,7 +7,7 @@
 
 namespace CppCoverage
 {
-	class DLL HandleInformation
+	class CPPCOVERAGE_DLL HandleInformation
 	{
 	public:
 		HandleInformation() = default;

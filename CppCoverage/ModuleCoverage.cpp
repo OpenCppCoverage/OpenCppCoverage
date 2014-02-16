@@ -6,8 +6,8 @@
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	ModuleCoverage::ModuleCoverage(const std::wstring& name)
-		: name_(name)
+	ModuleCoverage::ModuleCoverage(const boost::filesystem::path& path)
+		: path_(path)
 	{
 	}
 
@@ -17,17 +17,17 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	FileCoverage& ModuleCoverage::AddFile(const std::wstring& filename)
+	FileCoverage& ModuleCoverage::AddFile(const boost::filesystem::path& filePath)
 	{
-		files_.push_back(std::unique_ptr<FileCoverage>(new FileCoverage(filename)));
+		files_.push_back(std::unique_ptr<FileCoverage>(new FileCoverage(filePath)));
 
 		return *files_.back();
 	}
 
 	//-------------------------------------------------------------------------
-	const std::wstring& ModuleCoverage::GetName() const
+	const boost::filesystem::path& ModuleCoverage::GetPath() const
 	{
-		return name_;
+		return path_;
 	}
 
 	//-------------------------------------------------------------------------

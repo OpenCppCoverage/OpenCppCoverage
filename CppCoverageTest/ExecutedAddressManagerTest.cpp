@@ -51,19 +51,19 @@ namespace CppCoverageTest
 		manager.RegisterAddress(address2, filename, 43, instructionLine43);
 		manager.MarkAddressAsExecuted(address2);
 
-		const cov::CoverageData coverageData = manager.CreateCoverageData();
+		const cov::CoverageData coverageData = manager.CreateCoverageData(L"");
 		
 		const auto& modules = coverageData.GetModules();
 		ASSERT_EQ(1, modules.size());
 
 		const auto& module = *modules.front();
-		ASSERT_EQ(moduleName, module.GetName());
+		ASSERT_EQ(moduleName, module.GetPath());
 
 		const auto& files = module.GetFiles();
 		ASSERT_EQ(1, files.size());
 
 		const auto& file = *files.front();
-		ASSERT_EQ(filename, file.GetFilename());
+		ASSERT_EQ(filename, file.GetPath());
 
 		const auto* line42 = file[42];
 		const auto* line43 = file[43];

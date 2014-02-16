@@ -106,9 +106,9 @@ namespace CppCoverage
 
 	// $$ mettre un flag pour savoir si le module a bien ete charger mais qu il n a pas de fichier source	
 	//-------------------------------------------------------------------------
-	CoverageData ExecutedAddressManager::CreateCoverageData() const
+	CoverageData ExecutedAddressManager::CreateCoverageData(const std::wstring& name) const
 	{
-		CoverageData coverageData;
+		CoverageData coverageData{name};
 
 		for (const auto& module : modules_)
 		{

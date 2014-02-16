@@ -6,8 +6,8 @@
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	FileCoverage::FileCoverage(const std::wstring& filename)
-		: filename_(filename)
+	FileCoverage::FileCoverage(const const boost::filesystem::path& path)
+		: path_(path)
 	{
 	}
 
@@ -17,13 +17,13 @@ namespace CppCoverage
 		LineCoverage line{lineNumber, hasBeenExecuted};
 
 		if (!lines_.emplace(lineNumber, line).second)
-			THROW("Line " << lineNumber << " already exists in " << filename_);
+			THROW(L"Line " << lineNumber << L" already exists for " << path_.wstring());
 	}
 
 	//-------------------------------------------------------------------------
-	const std::wstring& FileCoverage::GetFilename() const
+	const boost::filesystem::path& FileCoverage::GetPath() const
 	{
-		return filename_;
+		return path_;
 	}
 
 	//-------------------------------------------------------------------------

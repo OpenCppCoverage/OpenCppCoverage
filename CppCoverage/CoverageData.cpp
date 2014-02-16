@@ -6,7 +6,8 @@
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	CoverageData::CoverageData()
+	CoverageData::CoverageData(const std::wstring& name)
+		: name_(name)
 	{
 	}
 
@@ -33,6 +34,12 @@ namespace CppCoverage
 	const CoverageData::T_ModuleCoverageCollection& CoverageData::GetModules() const
 	{
 		return modules_;
+	}
+	
+	//-------------------------------------------------------------------------	
+	const std::wstring& CoverageData::GetName() const
+	{
+		return name_;
 	}
 }
 

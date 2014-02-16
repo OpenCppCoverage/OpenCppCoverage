@@ -10,7 +10,7 @@
 
 namespace CppCoverage
 {
-	class DLL StartInfo
+	class CPPCOVERAGE_DLL StartInfo
 	{
 	public:
 		explicit StartInfo(const std::wstring& filename);
@@ -21,7 +21,7 @@ namespace CppCoverage
 		void SetWorkingDirectory(const std::wstring*);
 		void AddArguments(const std::wstring&);
 
-		const std::wstring& GetFilename() const;
+		const std::wstring& GetFilename() const; // $$ rename to path !!!
 		const std::vector<std::wstring>& GetArguments() const;
 		const std::wstring* GetWorkingDirectory() const;				
 

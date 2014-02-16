@@ -7,7 +7,7 @@
 
 namespace CppCoverage
 {
-	class DLL IDebugEventsHandler
+	class CPPCOVERAGE_DLL IDebugEventsHandler
 	{
 	public:
 		IDebugEventsHandler() = default;

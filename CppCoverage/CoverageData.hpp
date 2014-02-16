@@ -11,13 +11,13 @@ namespace CppCoverage
 {
 	class ModuleCoverage;
 
-	class DLL CoverageData
+	class CPPCOVERAGE_DLL CoverageData
 	{
 	public:
 		typedef std::vector<std::unique_ptr<ModuleCoverage>> T_ModuleCoverageCollection;
 
 	public:
-		CoverageData();
+		explicit CoverageData(const std::wstring& name);
 		~CoverageData();
 
 		CoverageData(CoverageData&&);
@@ -25,6 +25,7 @@ namespace CppCoverage
 		ModuleCoverage& AddModule(const std::wstring& name);
 
 		const T_ModuleCoverageCollection& GetModules() const;
+		const std::wstring& GetName() const;
 
 	private:
 		CoverageData(const CoverageData&) = delete;
@@ -32,6 +33,7 @@ namespace CppCoverage
 
 	private:
 		T_ModuleCoverageCollection modules_;
+		std::wstring name_;
 	};
 }
 

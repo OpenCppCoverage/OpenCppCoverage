@@ -28,13 +28,13 @@ namespace CppCoverageTest
 			ASSERT_EQ(1, modules.size());
 
 			const auto& module = *modules.front();
-			ASSERT_EQ(moduleName, module.GetName());
+			ASSERT_EQ(moduleName, module.GetPath());
 
 			const auto& files = module.GetFiles();
 			ASSERT_EQ(1, files.size());
 
 			const auto& file = *files.front();
-			ASSERT_EQ(filename, file.GetFilename());
+			ASSERT_EQ(filename, file.GetPath());
 			ASSERT_EQ(nullptr, file[0]);
 
 			const auto* line1 = file[1];
@@ -49,7 +49,7 @@ namespace CppCoverageTest
 
 	TEST(CoverageDataTest, CoverageData)
 	{
-		cov::CoverageData data;
+		cov::CoverageData data{L""};
 		
 		FillCoverageData(data);
 		CheckCoverageData(data);
@@ -57,7 +57,7 @@ namespace CppCoverageTest
 
 	TEST(CoverageDataTest, MoveConstructor)
 	{
-		cov::CoverageData data;
+		cov::CoverageData data{L""};
 
 		FillCoverageData(data);
 

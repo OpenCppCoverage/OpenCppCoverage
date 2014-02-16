@@ -11,7 +11,7 @@ namespace CppCoverage
 {
 	class CoverageSettings;
 
-	class DLL CoverageFilter
+	class CPPCOVERAGE_DLL CoverageFilter
 	{
 	public:
 		explicit CoverageFilter(const CoverageSettings&);

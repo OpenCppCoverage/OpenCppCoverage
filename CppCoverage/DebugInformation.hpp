@@ -7,7 +7,7 @@ namespace CppCoverage
 {
 	class IDebugInformationEventHandler;
 
-	class DLL DebugInformation
+	class CPPCOVERAGE_DLL DebugInformation
 	{
 	public:
 		explicit DebugInformation(HANDLE hProcess, void* processBaseOfImage);

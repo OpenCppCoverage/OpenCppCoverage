@@ -18,7 +18,7 @@ namespace CppCoverage
 	class BreakPoint;
 	class CoverageFilter;
 
-	class DLL CodeCoverageRunner : private IDebugEventsHandler, private IDebugInformationEventHandler
+	class CPPCOVERAGE_DLL CodeCoverageRunner : private IDebugEventsHandler, private IDebugInformationEventHandler
 	{
 	public:
 		CodeCoverageRunner();

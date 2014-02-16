@@ -3,9 +3,11 @@
 
 #include <string>
 
+#include "Export.hpp"
+
 namespace CppCoverage
 {
-	class Tools
+	class CPPCOVERAGE_DLL Tools
 	{
 	public:
 		Tools() = delete;

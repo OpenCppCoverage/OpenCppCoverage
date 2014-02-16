@@ -11,7 +11,7 @@ namespace CppCoverage
 	class StartInfo;
 	class IDebugEventsHandler;
 
-	class DLL Debugger
+	class CPPCOVERAGE_DLL Debugger
 	{
 	public:
 		Debugger() = default;

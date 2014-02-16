@@ -14,7 +14,7 @@ namespace CppCoverage
 {
 	class FileCoverage;
 
-	class DLL ExecutedAddressManager
+	class CPPCOVERAGE_DLL ExecutedAddressManager
 	{
 	public:
 		ExecutedAddressManager();
@@ -24,7 +24,7 @@ namespace CppCoverage
 		void RegisterAddress(void* address, const std::wstring& filename, unsigned int line, unsigned char instruction);
 		unsigned  char MarkAddressAsExecuted(void* address);
 
-		CoverageData CreateCoverageData() const;
+		CoverageData CreateCoverageData(const std::wstring& name) const;
 
 	private:
 		struct Module;

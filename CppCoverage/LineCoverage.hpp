@@ -5,7 +5,7 @@
 
 namespace CppCoverage
 {
-	class DLL LineCoverage
+	class CPPCOVERAGE_DLL LineCoverage
 	{
 	public:
 		LineCoverage(unsigned int lineNumber, bool hasBeenExecuted);

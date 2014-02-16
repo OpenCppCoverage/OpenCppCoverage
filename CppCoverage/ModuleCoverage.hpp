@@ -1,9 +1,10 @@
 #ifndef CPPCOVERAGE_MODULECOVERAGE_HEADER_GARD
 #define CPPCOVERAGE_MODULECOVERAGE_HEADER_GARD
 
-#include <string>
 #include <vector>
 #include <memory>
+
+#include <boost/filesystem.hpp>
 
 #include "Export.hpp"
 
@@ -11,18 +12,18 @@ namespace CppCoverage
 {
 	class FileCoverage;
 
-	class DLL ModuleCoverage
+	class CPPCOVERAGE_DLL ModuleCoverage
 	{
 	public:
 		typedef std::vector<std::unique_ptr<FileCoverage>> T_FileCoverageCollection;
 
 	public:
-		explicit ModuleCoverage(const std::wstring& name);
+		explicit ModuleCoverage(const boost::filesystem::path& path);
 		~ModuleCoverage();
 
-		FileCoverage& AddFile(const std::wstring& filename);
+		FileCoverage& AddFile(const boost::filesystem::path& filename);
 
-		const std::wstring& GetName() const;
+		const boost::filesystem::path& GetPath() const;
 		const T_FileCoverageCollection& GetFiles() const;
 
 	private:
@@ -31,7 +32,7 @@ namespace CppCoverage
 
 	private:
 		T_FileCoverageCollection files_;
-		std::wstring name_;
+		boost::filesystem::path path_;
 	};
 }
 

@@ -2,9 +2,9 @@
 #define CPPCOVERAGE_EXPORT_HEADER_GARD
 
 #ifdef CPPCOVERAGE_EXPORTS
-	#define DLL __declspec(dllexport)
+	#define CPPCOVERAGE_DLL __declspec(dllexport)
 #else
-	#define DLL _declspec(dllimport)
+	#define CPPCOVERAGE_DLL _declspec(dllimport)
 #endif
 
 #pragma warning (disable: 4251)

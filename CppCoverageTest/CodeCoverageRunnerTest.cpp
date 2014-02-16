@@ -42,7 +42,7 @@ namespace CppCoverageTest
 		ASSERT_EQ(1, modules.size());
 
 		const auto& module = *modules[0];
-		ASSERT_EQ(path, module.GetName());
+		ASSERT_EQ(path, module.GetPath());
 
 		const auto& files = module.GetFiles();
 		ASSERT_EQ(1, files.size());
