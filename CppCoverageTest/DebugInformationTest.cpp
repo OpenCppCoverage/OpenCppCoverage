@@ -12,9 +12,9 @@ namespace CppCoverageTest
 	{
 		void LoadModule(DebugInformationEventHandlerMock& mock, HANDLE hProcess, HANDLE hFile)
 		{
-			cov::DebugInformation debugInformation{ hProcess, nullptr};
+			cov::DebugInformation debugInformation{ hProcess};
 			
-			debugInformation.LoadModule(hFile, mock);			
+			debugInformation.LoadModule(hFile, nullptr, mock);			
 		}
 	}
 

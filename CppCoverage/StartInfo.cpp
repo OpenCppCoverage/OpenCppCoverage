@@ -22,6 +22,7 @@ namespace CppCoverage
 		: filename_(filename)
 	{
 		CheckFileExists(filename);
+		AddArguments(filename);
 	}
 
 	//-------------------------------------------------------------------------

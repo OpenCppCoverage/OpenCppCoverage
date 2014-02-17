@@ -50,9 +50,9 @@ namespace CppCoverage
 		auto hProcess = processDebugInfo.hProcess;
 		auto lpBaseOfImage = processDebugInfo.lpBaseOfImage;
 
-		debugInformation_.reset(new DebugInformation(hProcess, lpBaseOfImage));
+		debugInformation_.reset(new DebugInformation(hProcess));
 		breakpoint_.reset(new BreakPoint(hProcess));
-		LoadModule(processDebugInfo.hFile);
+		LoadModule(processDebugInfo.hFile, lpBaseOfImage);
 		isFirstException_ = true;
 	}
 	
@@ -62,7 +62,7 @@ namespace CppCoverage
 		HANDLE hThread, 
 		const LOAD_DLL_DEBUG_INFO& dllDebugInfo)
 	{
-		LoadModule(dllDebugInfo.hFile);
+		LoadModule(dllDebugInfo.hFile, dllDebugInfo.lpBaseOfDll);
 	}
 
 	//-------------------------------------------------------------------------
@@ -90,7 +90,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::LoadModule(HANDLE hFile)
+	void CodeCoverageRunner::LoadModule(HANDLE hFile, void* baseOfImage)
 	{
 		HandleInformation handleInformation;
 
@@ -99,7 +99,7 @@ namespace CppCoverage
 		if (coverageFilter_->IsModuleSelected(filename))
 		{
 			executedAddressManager_->SetCurrentModule(filename);
-			debugInformation_->LoadModule(hFile, *this);
+			debugInformation_->LoadModule(hFile, baseOfImage, *this);
 		}
 	}
 

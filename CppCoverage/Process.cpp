@@ -17,11 +17,18 @@ namespace CppCoverage
 			boost::optional<std::vector<wchar_t>> commandLine;
 
 			if (!arguments.empty())
-			{
-				commandLine = std::vector<wchar_t>();
-				std::vector<wchar_t>& buffer = commandLine.get();
+			{				
+				std::vector<wchar_t> buffer;
 				for (const auto& argument : arguments)
+				{
+					buffer.push_back(L'\"');
 					buffer.insert(buffer.end(), argument.begin(), argument.end());
+					buffer.push_back(L'\"');
+					buffer.push_back(L' ');
+				}
+					
+				buffer.push_back(L'\0');
+				return buffer;
 			}
 
 			return commandLine;
@@ -55,11 +62,12 @@ namespace CppCoverage
 		ZeroMemory(&lpStartupInfo, sizeof(lpStartupInfo));
 		const auto* workindDirectory = startInfo_.GetWorkingDirectory();
 		auto optionalCommandLine = CreateCommandLine(startInfo_.GetArguments());
+		auto commandLine = (optionalCommandLine) ? &(*optionalCommandLine)[0] : nullptr;
 
 		processInformation_ = PROCESS_INFORMATION();
 		if (!CreateProcess(
 			startInfo_.GetFilename().c_str(),
-			(optionalCommandLine) ? &(*optionalCommandLine)[0] : nullptr,
+			commandLine,
 			nullptr,
 			nullptr,
 			FALSE,

@@ -7,6 +7,7 @@
 #include "IDebugInformationEventHandler.hpp"
 #include "Tools.hpp"
 
+#include <iostream> // $$
 namespace CppCoverage
 {
 	namespace
@@ -55,7 +56,7 @@ namespace CppCoverage
 				THROW("Source File is null");
 			
 			std::wstring filename = Tools::ToWString(pSourceFile->FileName);
-
+			
 			if (context->debugInformationEventHandler_.IsSourceFileSelected(filename))
 			{
 				if (!SymEnumSourceLines(
@@ -77,9 +78,8 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	DebugInformation::DebugInformation(HANDLE hProcess, void* processBaseOfImage)
+	DebugInformation::DebugInformation(HANDLE hProcess)
 		: hProcess_(hProcess)
-		, processBaseOfImage_(processBaseOfImage)
 	{		
 		SymSetOptions(SYMOPT_DEFERRED_LOADS | SYMOPT_LOAD_LINES 
 			        | SYMOPT_NO_UNQUALIFIED_LOADS | SYMOPT_UNDNAME);
@@ -102,6 +102,7 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	void DebugInformation::LoadModule(
 		HANDLE hFile,
+		void* baseOfImage,
 		IDebugInformationEventHandler& debugInformationEventHandler) const
 	{		
 		auto baseAddress = SymLoadModuleEx(hProcess_, hFile, nullptr, nullptr, 0, 0, nullptr, 0);
@@ -111,7 +112,7 @@ namespace CppCoverage
 		
 		try
 		{
-			Context context{hProcess_, baseAddress, processBaseOfImage_, debugInformationEventHandler };
+			Context context{ hProcess_, baseAddress, baseOfImage/*processBaseOfImage_*/, debugInformationEventHandler }; // $$ clean
 			
 			if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
 				THROW("Cannot enumerate source files");			

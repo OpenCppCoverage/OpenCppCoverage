@@ -10,10 +10,10 @@ namespace CppCoverage
 	class CPPCOVERAGE_DLL DebugInformation
 	{
 	public:
-		explicit DebugInformation(HANDLE hProcess, void* processBaseOfImage);
+		explicit DebugInformation(HANDLE hProcess);
 		~DebugInformation();
 
-		void LoadModule(HANDLE hFile, IDebugInformationEventHandler& debugInformationEventHandler) const;
+		void LoadModule(HANDLE hFile, void* baseOfImage, IDebugInformationEventHandler& debugInformationEventHandler) const;
 
 	private:
 		DebugInformation(const DebugInformation&) = delete;
@@ -23,7 +23,6 @@ namespace CppCoverage
 
 	private:
 		HANDLE hProcess_;
-		void* processBaseOfImage_;
 	};
 }
 

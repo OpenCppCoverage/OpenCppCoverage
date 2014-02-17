@@ -39,7 +39,7 @@ namespace CppCoverage
 		CodeCoverageRunner(const CodeCoverageRunner&) = delete;
 		CodeCoverageRunner& operator=(const CodeCoverageRunner&) = delete;
 
-		void LoadModule(HANDLE hFile);
+		void LoadModule(HANDLE hFile, void* baseOfImage);
 
 	private:
 		std::unique_ptr<DebugInformation> debugInformation_;		

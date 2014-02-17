@@ -14,4 +14,14 @@ namespace CppCoverageTest
 				
 		ASSERT_NO_THROW(process.Start(0));
 	}
+
+
+	TEST(Process, StartWithArgument)
+	{
+		cov::StartInfo startInfo{ Tools::GetConsoleForCppCoverageTestPath() };
+		startInfo.AddArguments(L"42");
+		
+		cov::Process process{ startInfo };
+		ASSERT_NO_THROW(process.Start(0));
+	}
 }

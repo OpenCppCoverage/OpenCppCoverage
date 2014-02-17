@@ -3,10 +3,15 @@
 
 #include <windows.h>
 
-int main(int argc, wchar_t* argv[])
+#include <string>
+#include <iostream>
+#include "DllForCppCoverageTest/DllForCppCoverageTest.h"
+
+int main(int argc, char* argv[])
 {
-	if (argc > 1)
-		return 0;
-	return 0;
+	if (argc <= 1)	
+		return 1;
+	
+	return Foo(std::stoul(argv[1]));
 }
 
