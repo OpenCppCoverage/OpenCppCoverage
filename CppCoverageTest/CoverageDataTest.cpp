@@ -71,12 +71,12 @@ namespace CppCoverageTest
 		void CheckCoverageRate(
 			const T& value,
 			int executedExpectedCount,
-			int unexecutedExpectedCount)
+			int totalLineCount)
 		{
 			const auto& coverageRate = value.GetCoverageRate();
 
 			ASSERT_EQ(executedExpectedCount, coverageRate.GetExecutedLinesCount());
-			ASSERT_EQ(unexecutedExpectedCount, coverageRate.GetUnexecutedLinesCount());
+			ASSERT_EQ(totalLineCount, coverageRate.GetTotalLinesCount());
 		}
 	}
 
@@ -108,15 +108,15 @@ namespace CppCoverageTest
 		auto& module1 = data.AddModule(L"module1");
 		CreateNewFileCoverage(module1, L"filename1", 1, 2);			
 		module1.ComputeCoverageRate();
-		CheckCoverageRate(module1, 1, 2);
+		CheckCoverageRate(module1, 1, 3);
 
 		auto& module2 = data.AddModule(L"module1");
 		CreateNewFileCoverage(module2, L"filename2", 3, 0);
 		CreateNewFileCoverage(module2, L"filename3", 1, 1);		
 		module2.ComputeCoverageRate();
-		CheckCoverageRate(module2, 4, 1);
+		CheckCoverageRate(module2, 4, 5);
 
 		data.ComputeCoverageRate();
-		CheckCoverageRate(data, 5, 3);
+		CheckCoverageRate(data, 5, 8);
 	}
 }

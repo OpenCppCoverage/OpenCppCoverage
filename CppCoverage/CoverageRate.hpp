@@ -16,8 +16,9 @@ namespace CppCoverage
 		void SetUnexecutedLinesCount(int);
 
 		int GetExecutedLinesCount() const;
-		int GetUnexecutedLinesCount() const;
-	
+		int GetTotalLinesCount() const;
+		int GetPercentRate() const;
+
 		CoverageRate& operator=(const CoverageRate&) = default;
 		CoverageRate(const CoverageRate&) = default;
 		
@@ -34,8 +35,8 @@ namespace CppCoverage
 		{
 			const auto& coverageRate = value->GetCoverageRate();
 
-			executedLinesCount_ += coverageRate.GetExecutedLinesCount();
-			unexecutedLinesCount_ += coverageRate.GetUnexecutedLinesCount();
+			executedLinesCount_ += coverageRate.executedLinesCount_;
+			unexecutedLinesCount_ += coverageRate.unexecutedLinesCount_;
 		}
 	}
 }

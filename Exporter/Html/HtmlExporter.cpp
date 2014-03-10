@@ -40,18 +40,17 @@ namespace Exporter
 			return moduleFolderPath / output;
 		}	
 
-		void RecursiveDirectoryContent(
+		void CopyRecursiveDirectoryContent(
 			const fs::path& from,
 			const fs::path& to)
 		{
 			fs::create_directory(to);
-			for (fs::recursive_directory_iterator it(from); it != fs::recursive_directory_iterator(); ++it)
+			for (fs::recursive_directory_iterator it(from); 
+				it != fs::recursive_directory_iterator(); ++it)
 			{
 				const auto& path = it->path();
 
-				fs::copy_file(path, to / path.filename());
-					
-				// $$std::cout << to / path.filename() << std::endl;
+				fs::copy_file(path, to / path.filename(), fs::copy_option::overwrite_if_exists);				
 			}
 		}
 	}
@@ -72,7 +71,7 @@ namespace Exporter
 		auto projectDictionary = exporter_.CreateTemplateDictionary(coverageData.GetName());
 
 		fs::create_directory(outputFolder); // $$ manage conflit
-		RecursiveDirectoryContent(templateFolder_ / codePrettify, outputFolder / codePrettify);
+		CopyRecursiveDirectoryContent(templateFolder_ / codePrettify, outputFolder / codePrettify);
 		for (const auto& module : coverageData.GetModules())
 		{			
 			auto moduleFilename = module->GetPath().filename();

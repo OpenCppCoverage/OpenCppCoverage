@@ -29,8 +29,18 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	int CoverageRate::GetUnexecutedLinesCount() const
+	int CoverageRate::GetTotalLinesCount() const
 	{
-		return unexecutedLinesCount_;
+		return executedLinesCount_ + unexecutedLinesCount_;
+	}
+
+	//-------------------------------------------------------------------------
+	int CoverageRate::GetPercentRate() const
+	{
+		auto totalLines = executedLinesCount_ + unexecutedLinesCount_;
+
+		if (totalLines == 0)
+			return 100;
+		return (executedLinesCount_ * 100) / (executedLinesCount_ + unexecutedLinesCount_);
 	}
 }

@@ -24,7 +24,7 @@ namespace Exporter
 		const std::string titleTemplate = "TITLE";
 		const std::string linkTemplate = "LINK";
 		const std::string executedLineTemplate = "EXECUTED_LINE";
-		const std::string unexecutedLineTemplate = "UNEXECUTED_LINE";
+		const std::string totalLineTemplate = "TOTAL_LINE";
 		const std::string rateTemplate = "RATE";
 		const std::string nameTemplate = "NAME";
 		const std::string codeTemplate = "CODE";
@@ -45,8 +45,9 @@ namespace Exporter
 		{
 			if (link)
 				sectionDictionary.SetValue(linkTemplate, link->string());
+			sectionDictionary.SetIntValue(rateTemplate, coverageRate.GetPercentRate());
 			sectionDictionary.SetIntValue(executedLineTemplate, coverageRate.GetExecutedLinesCount());
-			sectionDictionary.SetIntValue(unexecutedLineTemplate, coverageRate.GetUnexecutedLinesCount());
+			sectionDictionary.SetIntValue(totalLineTemplate, coverageRate.GetTotalLinesCount());
 			sectionDictionary.SetValue(nameTemplate, name);
 		}
 

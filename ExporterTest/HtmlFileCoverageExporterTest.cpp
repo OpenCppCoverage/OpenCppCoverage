@@ -29,18 +29,18 @@ namespace ExporterTest
 				fileCoverage.AddLine(13, false);
 
 				std::wstring exportedString = GetExportedString(exporter, fileCoverage);				
-				boost::split(fields_, exportedString, boost::is_any_of("\n"));
+				boost::split(lines_, exportedString, boost::is_any_of("\n"));
 			}
 		
 			bool HasBeenExecuted(int lineNumber)
-			{
-				return boost::starts_with(fields_[lineNumber - 1 ], 
+			{				
+				return boost::starts_with(lines_[lineNumber - 1],
 					Exporter::HtmlFileCoverageExporter::StyleBackgroundColorExecuted);
 			}
 
 			bool HasBeenUnexecuted(int lineNumber)
 			{
-				return boost::starts_with(fields_[lineNumber - 1],
+				return boost::starts_with(lines_[lineNumber - 1],
 					Exporter::HtmlFileCoverageExporter::StyleBackgroundColorUnexecuted);
 			}
 
@@ -56,7 +56,7 @@ namespace ExporterTest
 			}
 
 		private:
-			std::vector<std::wstring> fields_;
+			std::vector<std::wstring> lines_;
 		};
 	}
 
