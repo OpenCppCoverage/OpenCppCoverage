@@ -1,5 +1,4 @@
-#ifndef CPPCOVERAGETEST_DEBUGINFORMATIONEVENTHANDLERMOCK_HEADER_GARD
-#define CPPCOVERAGETEST_DEBUGINFORMATIONEVENTHANDLERMOCK_HEADER_GARD
+#pragma once
 
 #include "CppCoverage/IDebugInformationEventHandler.hpp"
 
@@ -19,4 +18,4 @@ namespace CppCoverageTest
 	};
 }
 
-#endif
+

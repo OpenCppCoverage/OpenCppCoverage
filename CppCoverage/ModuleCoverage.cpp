@@ -35,4 +35,16 @@ namespace CppCoverage
 	{
 		return files_;
 	}
+
+	//-------------------------------------------------------------------------
+	void ModuleCoverage::ComputeCoverageRate()
+	{
+		coverageRate_.ComputeFrom(files_);
+	}
+
+	//-------------------------------------------------------------------------
+	const CoverageRate& ModuleCoverage::GetCoverageRate() const
+	{
+		return coverageRate_;
+	}
 }

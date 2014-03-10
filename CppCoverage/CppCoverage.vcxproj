@@ -152,12 +152,14 @@
     <ClInclude Include="CodeCoverageRunner.hpp" />
     <ClInclude Include="CoverageData.hpp" />
     <ClInclude Include="CoverageFilter.hpp" />
+    <ClInclude Include="CoverageRate.hpp" />
     <ClInclude Include="CoverageSettings.hpp" />
     <ClInclude Include="CppCoverageException.hpp" />
+    <ClInclude Include="CppCoverageLog.hpp" />
     <ClInclude Include="Debugger.hpp" />
     <ClInclude Include="DebugInformation.hpp" />
     <ClInclude Include="ExecutedAddressManager.hpp" />
-    <ClInclude Include="Export.hpp" />
+    <ClInclude Include="CppCoverageExport.hpp" />
     <ClInclude Include="FileCoverage.hpp" />
     <ClInclude Include="Handle.hpp" />
     <ClInclude Include="HandleInformation.hpp" />
@@ -165,19 +167,21 @@
     <ClInclude Include="IDebugInformationEventHandler.hpp" />
     <ClInclude Include="LineCoverage.hpp" />
     <ClInclude Include="ModuleCoverage.hpp" />
+    <ClInclude Include="Patterns.hpp" />
     <ClInclude Include="Process.hpp" />
     <ClInclude Include="StartInfo.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Tools.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BreakPoint.cpp" />
     <ClCompile Include="CodeCoverageRunner.cpp" />
     <ClCompile Include="CoverageData.cpp" />
     <ClCompile Include="CoverageFilter.cpp" />
+    <ClCompile Include="CoverageRate.cpp" />
     <ClCompile Include="CoverageSettings.cpp" />
     <ClCompile Include="CppCoverageException.cpp" />
+    <ClCompile Include="CppCoverageLog.cpp" />
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="DebugInformation.cpp" />
     <ClCompile Include="dllmain.cpp">
@@ -201,6 +205,7 @@
     <ClCompile Include="IDebugInformationEventHandler.cpp" />
     <ClCompile Include="LineCoverage.cpp" />
     <ClCompile Include="ModuleCoverage.cpp" />
+    <ClCompile Include="Patterns.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="StartInfo.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -209,10 +214,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Handle.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tools\Tools.vcxproj">
+      <Project>{7f6d05ef-deb0-4c64-bd13-a85f46314b91}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

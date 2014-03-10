@@ -1,5 +1,4 @@
-#ifndef CPPCOVERAGE_EXECUTEDADDRESSMANAGER_HEADER_GARD
-#define CPPCOVERAGE_EXECUTEDADDRESSMANAGER_HEADER_GARD
+#pragma once
 
 #include <string>
 #include <vector>
@@ -8,7 +7,7 @@
 #include <unordered_map>
 
 #include "CoverageData.hpp"
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
 
 namespace CppCoverage
 {
@@ -21,7 +20,7 @@ namespace CppCoverage
 		~ExecutedAddressManager();
 
 		void SetCurrentModule(const std::wstring& moduleName);
-		void RegisterAddress(void* address, const std::wstring& filename, unsigned int line, unsigned char instruction);
+		bool RegisterAddress(void* address, const std::wstring& filename, unsigned int line, unsigned char instruction);
 		unsigned  char MarkAddressAsExecuted(void* address);
 
 		CoverageData CreateCoverageData(const std::wstring& name) const;
@@ -44,4 +43,4 @@ namespace CppCoverage
 	};
 }
 
-#endif
+

@@ -20,6 +20,7 @@ namespace CppCoverage
 	CoverageData::CoverageData(CoverageData&& coverageData)
 	{
 		std::swap(modules_, coverageData.modules_);
+		coverageRate_ = coverageData.coverageRate_;
 	}
 
 	//-------------------------------------------------------------------------
@@ -40,6 +41,18 @@ namespace CppCoverage
 	const std::wstring& CoverageData::GetName() const
 	{
 		return name_;
+	}
+
+	//-------------------------------------------------------------------------	
+	const CoverageRate& CoverageData::GetCoverageRate() const
+	{
+		return coverageRate_;
+	}
+
+	//-------------------------------------------------------------------------	
+	void CoverageData::ComputeCoverageRate()
+	{
+		coverageRate_.ComputeFrom(modules_);
 	}
 }
 

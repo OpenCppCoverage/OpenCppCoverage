@@ -1,16 +1,16 @@
 #include "stdafx.h"
-#include "Tools.hpp"
+#include "Tool.hpp"
 
-namespace CppCoverage
+namespace Tools
 {
 	//-------------------------------------------------------------------------
-	std::string Tools::ToString(const std::wstring& str)
+	std::string Tool::ToString(const std::wstring& str)
 	{
 		return std::string(str.begin(), str.end());
 	}
 
 	//-------------------------------------------------------------------------
-	std::wstring Tools::ToWString(const std::string& str)
+	std::wstring Tool::ToWString(const std::string& str)
 	{
 		return std::wstring(str.begin(), str.end());
 	}

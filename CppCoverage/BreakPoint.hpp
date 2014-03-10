@@ -1,5 +1,4 @@
-#ifndef CPPCOVERAGE_BREAKPOINT_HEADER_GARD
-#define CPPCOVERAGE_BREAKPOINT_HEADER_GARD
+#pragma once
 
 namespace CppCoverage
 {
@@ -25,4 +24,4 @@ namespace CppCoverage
 	};
 }
 
-#endif
+

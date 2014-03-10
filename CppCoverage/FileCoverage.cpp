@@ -6,7 +6,7 @@
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	FileCoverage::FileCoverage(const const boost::filesystem::path& path)
+	FileCoverage::FileCoverage(const boost::filesystem::path& path)
 		: path_(path)
 	{
 	}
@@ -36,4 +36,29 @@ namespace CppCoverage
 
 		return &it->second;
 	}
+
+	//-------------------------------------------------------------------------
+	void FileCoverage::ComputeCoverageRate()
+	{		
+		int executedLines = 0;
+		int unexecutedLines = 0;
+
+		for (const auto& pair : lines_)
+		{
+			if (pair.second.HasBeenExecuted())
+				++executedLines;
+			else
+				++unexecutedLines;
+		}
+
+		coverageRate_.SetExecutedLinesCount(executedLines);		
+		coverageRate_.SetUnexecutedLinesCount(unexecutedLines);
+	}
+
+	//-------------------------------------------------------------------------
+	const CoverageRate& FileCoverage::GetCoverageRate() const
+	{
+		return coverageRate_;
+	}
+
 }

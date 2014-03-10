@@ -1,10 +1,9 @@
-#ifndef CPPCOVERAGE_PROCESS_HEADER_GARD
-#define CPPCOVERAGE_PROCESS_HEADER_GARD
+#pragma once
 
 #include <Windows.h>
 #include <boost/optional.hpp>
 
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
 #include "StartInfo.hpp"
 
 namespace CppCoverage
@@ -27,4 +26,3 @@ namespace CppCoverage
 	};
 }
 
-#endif

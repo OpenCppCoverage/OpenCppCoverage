@@ -55,6 +55,10 @@
       <AdditionalDependencies>libctemplate-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(CTEMPLATE_ROOT)\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>if not exist $(OutDir)Template mkdir $(OutDir)Template
+xcopy /s /y $(ProjectDir)Html\Template $(OutDir)Template</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -73,10 +77,14 @@
       <AdditionalLibraryDirectories>$(CTEMPLATE_ROOT)\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libctemplate.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>if not exist $(OutDir)Template mkdir $(OutDir)Template
+xcopy /s /y $(ProjectDir)\Html\Template $(OutDir)Template</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Export.hpp" />
     <ClInclude Include="ExporterException.hpp" />
+    <ClInclude Include="Export.hpp" />
     <ClInclude Include="Html\HtmlExporter.hpp" />
     <ClInclude Include="Html\HtmlFileCoverageExporter.hpp" />
     <ClInclude Include="Html\TemplateHtmlExporter.hpp" />
@@ -94,10 +102,16 @@
     <ProjectReference Include="..\CppCoverage\CppCoverage.vcxproj">
       <Project>{a50dd5a6-e85a-4e0b-9cc6-90d32503ce62}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Tools\Tools.vcxproj">
+      <Project>{7f6d05ef-deb0-4c64-bd13-a85f46314b91}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Html\Template\IndexTemplate.html" />
+    <None Include="Html\Template\IndexTemplate.html">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Html\Template\ModuleTemplate.html" />
+    <None Include="Html\Template\SourceTemplate.html" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

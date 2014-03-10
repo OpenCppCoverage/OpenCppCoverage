@@ -1,12 +1,12 @@
-#ifndef CPPCOVERAGE_FILECOVERAGE_HEADER_GARD
-#define CPPCOVERAGE_FILECOVERAGE_HEADER_GARD
+#pragma once
 
 #include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
 #include <map>
 
 #include "LineCoverage.hpp"
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
+#include "CoverageRate.hpp"
 
 namespace CppCoverage
 {
@@ -16,6 +16,8 @@ namespace CppCoverage
 		explicit FileCoverage(const boost::filesystem::path& path);
 
 		void AddLine(unsigned int lineNumber, bool hasBeenExecuted);
+		void ComputeCoverageRate();
+		const CoverageRate& GetCoverageRate() const;
 
 		const boost::filesystem::path& GetPath() const;
 		const LineCoverage* operator[](unsigned int line) const;
@@ -27,7 +29,8 @@ namespace CppCoverage
 	private:
 		boost::filesystem::path path_;
 		std::map<unsigned int, LineCoverage> lines_;
+		CoverageRate coverageRate_;
 	};
 }
 
-#endif
+

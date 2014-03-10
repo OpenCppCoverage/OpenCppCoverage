@@ -1,12 +1,12 @@
-#ifndef CPPCOVERAGE_MODULECOVERAGE_HEADER_GARD
-#define CPPCOVERAGE_MODULECOVERAGE_HEADER_GARD
+#pragma once
 
 #include <vector>
 #include <memory>
 
 #include <boost/filesystem.hpp>
 
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
+#include "CoverageRate.hpp"
 
 namespace CppCoverage
 {
@@ -22,6 +22,8 @@ namespace CppCoverage
 		~ModuleCoverage();
 
 		FileCoverage& AddFile(const boost::filesystem::path& filename);
+		void ComputeCoverageRate();
+		const CoverageRate& GetCoverageRate() const;
 
 		const boost::filesystem::path& GetPath() const;
 		const T_FileCoverageCollection& GetFiles() const;
@@ -33,7 +35,8 @@ namespace CppCoverage
 	private:
 		T_FileCoverageCollection files_;
 		boost::filesystem::path path_;
+		CoverageRate coverageRate_;
 	};
 }
 
-#endif
+

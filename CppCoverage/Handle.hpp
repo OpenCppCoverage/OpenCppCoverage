@@ -1,5 +1,4 @@
-#ifndef CPPCOVERAGE_HANDLE_HEADER_GARD
-#define CPPCOVERAGE_HANDLE_HEADER_GARD
+#pragma once
 
 namespace CppCoverage
 {
@@ -29,4 +28,4 @@ namespace CppCoverage
 
 #include "Handle.inl"
 
-#endif
+

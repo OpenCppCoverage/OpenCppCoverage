@@ -3,46 +3,29 @@
 
 #include <sstream>
 
-#include "Tools.hpp"
+#include "Tools/Tool.hpp"
 
 namespace CppCoverage
-{
-	namespace
-	{
-		//-------------------------------------------------------------------------
-		std::string WriteLastErrorMessage(const std::wstring& message, int lastErrorCode)
-		{			
-			char sysMsg[64 * 1024];
-			std::ostringstream ostr{Tools::ToString(message) };
+{	
+	//-------------------------------------------------------------------------
+	std::wstring GetErrorMessage(int lastErrorCode)
+	{			
+		wchar_t sysMsg[64 * 1024];
+		std::wostringstream ostr;
 			
-			if (FormatMessageA(
-					FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-					NULL, lastErrorCode,
-					MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-					sysMsg, sizeof(sysMsg), NULL))
-			{
-				ostr << sysMsg;
-			}
-			else
-			{
-				ostr << "Last error code:" << lastErrorCode;
-			}
-
-			return ostr.str();
+		if (FormatMessage(
+				FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+				NULL, lastErrorCode,
+				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+				sysMsg, sizeof(sysMsg), NULL))
+		{
+			ostr << sysMsg;
+		}
+		else
+		{
+			ostr << "Last error code:" << lastErrorCode;
 		}
 
-	}
-
-	//-------------------------------------------------------------------------
-	CppCoverageException::CppCoverageException(const std::wstring& message)
-		: std::exception(Tools::ToString(message).c_str())
-	{
-	}
-	
-	//-------------------------------------------------------------------------
-	CppCoverageException::CppCoverageException(const std::wstring& message, int lastErrorCode)
-		: std::exception(WriteLastErrorMessage(message, lastErrorCode).c_str())
-	{
-
+		return ostr.str();
 	}
 }

@@ -1,12 +1,25 @@
 #include "stdafx.h"
 #include "Debugger.hpp"
 
+#include "tools/Log.hpp"
+
 #include "Process.hpp"
 #include "CppCoverageException.hpp"
 #include "IDebugEventsHandler.hpp"
 
 namespace CppCoverage
 {
+	//-------------------------------------------------------------------------
+	namespace
+	{
+		void OnRip(const RIP_INFO& ripInfo)
+		{
+			LOG_ERROR << "Debugee process terminate unexpectedly:"
+				<< "(type:" << ripInfo.dwType << ")"
+				<< GetErrorMessage(ripInfo.dwError);
+		}
+	}
+
 	//-------------------------------------------------------------------------
 	void Debugger::Debug(const StartInfo& startInfo, IDebugEventsHandler& debugEventsHandler)
 	{
@@ -15,15 +28,16 @@ namespace CppCoverage
 		
 		DEBUG_EVENT debugEvent;
 		bool processHasExited = false;
-				
+						
 		while (!processHasExited)
 		{
 			if (!WaitForDebugEvent(&debugEvent, INFINITE))
 				THROW_LAST_ERROR(L"Error WaitForDebugEvent:", GetLastError());
 			
 			auto dwProcessId = debugEvent.dwProcessId;
-			auto dwThreadId = debugEvent.dwThreadId;
+			auto dwThreadId = debugEvent.dwThreadId;						
 
+			auto continueStatus = DBG_CONTINUE;
 			if (debugEvent.dwDebugEventCode == CREATE_PROCESS_DEBUG_EVENT)
 				OnCreateProcess(debugEvent, debugEventsHandler);
 			else if (debugEvent.dwDebugEventCode == CREATE_THREAD_DEBUG_EVENT)
@@ -51,12 +65,20 @@ namespace CppCoverage
 					}
 					case EXCEPTION_DEBUG_EVENT:
 					{
-						debugEventsHandler.OnException(hProcess, hThread, debugEvent.u.Exception);
+						continueStatus = debugEventsHandler.OnException(hProcess, hThread, debugEvent.u.Exception);
 						break;
 					}
+					case RIP_EVENT: 
+					{
+						OnRip(debugEvent.u.RipInfo);
+						processHasExited = true;
+						break;
+					}
+					default:
+						LOG_DEBUG << "Debug event:" << debugEvent.dwDebugEventCode;
 				}
 			}
-			if (!ContinueDebugEvent(debugEvent.dwProcessId, debugEvent.dwThreadId, DBG_CONTINUE))
+			if (!ContinueDebugEvent(debugEvent.dwProcessId, debugEvent.dwThreadId, continueStatus))
 				THROW_LAST_ERROR("Error in ContinueDebugEvent:", GetLastError());
 		}
 	}
@@ -68,14 +90,16 @@ namespace CppCoverage
 	{		
 		const auto& processInfo = debugEvent.u.CreateProcessInfo;
 
+		LOG_DEBUG << "Create new Process:" << debugEvent.dwProcessId;
+
 		if (!processHandles_.emplace(debugEvent.dwProcessId, processInfo.hProcess).second)
 			THROW("Process id already exist");
-		
+				
 		debugEventsHandler.OnCreateProcess(processInfo);
 
 		OnCreateThread(processInfo.hThread, debugEvent.dwThreadId);
 
-		CloseHandle(processInfo.hFile);
+		CloseHandle(processInfo.hFile);		
 	}
 
 	//-------------------------------------------------------------------------
@@ -85,10 +109,12 @@ namespace CppCoverage
 		HANDLE hThread,
 		IDebugEventsHandler& debugEventsHandler)
 	{
+		LOG_DEBUG << "Exit Process:" << hProcess;
+
 		debugEventsHandler.OnExitProcess(hProcess, hThread, debugEvent.u.ExitProcess);
 
 		if (processHandles_.erase(debugEvent.dwProcessId) != 1)
-			THROW("Cannot find exited process.");
+			THROW("Cannot find exited process.");		
 	}
 
 	//-------------------------------------------------------------------------
@@ -96,14 +122,18 @@ namespace CppCoverage
 		HANDLE hThread,
 		DWORD dwThreadId)
 	{
+		LOG_DEBUG << "Create Process:" << dwThreadId;
+
 		if (!threadHandles_.emplace(dwThreadId, hThread).second)
 			THROW("Thread id already exist");
 	}
 	
 	//-------------------------------------------------------------------------
-	void Debugger::OnExitThread(DWORD dwProcessId)
-	{				
-		if (threadHandles_.erase(dwProcessId) != 1)
+	void Debugger::OnExitThread(DWORD dwThreadId)
+	{	
+		LOG_DEBUG << "Exit thread:" << dwThreadId;
+
+		if (threadHandles_.erase(dwThreadId) != 1)
 			THROW("Cannot find exited thread.");
 	}
 

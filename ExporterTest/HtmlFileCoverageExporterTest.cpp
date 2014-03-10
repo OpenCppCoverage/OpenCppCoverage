@@ -1,5 +1,8 @@
 #include "stdafx.h"
 
+#include <iterator>
+#include <fstream>
+
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include "CppCoverage/FileCoverage.hpp"
@@ -9,29 +12,71 @@ namespace fs = boost::filesystem;
 
 namespace ExporterTest
 {
-	TEST(HtmlFileCoverageExporterTest, Export)
+	namespace
 	{
-		fs::path path = "../ConsoleForCppCoverageTest/ConsoleForCppCoverageTest.cpp";
-		
-		CppCoverage::FileCoverage fileCoverage{path};
-		Exporter::HtmlFileCoverageExporter exporter;
-		std::wostringstream ostr;
-		
-		ASSERT_TRUE(fs::exists(path));
+		class HtmlFileCoverageExporterTest: public ::testing::Test
+		{
+		public:
+			HtmlFileCoverageExporterTest()
+			{
+				fs::path path = "../ConsoleForCppCoverageTest/ConsoleForCppCoverageTest.cpp";
 
-		fileCoverage.AddLine(8, true);
-		fileCoverage.AddLine(9, true);
-		fileCoverage.AddLine(10, false);
+				CppCoverage::FileCoverage fileCoverage{ path };
+				Exporter::HtmlFileCoverageExporter exporter;
 
-		exporter.Export(fileCoverage, ostr);
+				fileCoverage.AddLine(11, true);
+				fileCoverage.AddLine(12, true);
+				fileCoverage.AddLine(13, false);
+
+				std::wstring exportedString = GetExportedString(exporter, fileCoverage);				
+				boost::split(fields_, exportedString, boost::is_any_of("\n"));
+			}
 		
-		std::vector<std::wstring> fields;
-		boost::split(fields, ostr.str(), boost::is_any_of("\n"));
-		
-		ASSERT_LE(10u, fields.size());
-		ASSERT_TRUE(boost::starts_with(fields[8], "OK"));
-		ASSERT_TRUE(boost::starts_with(fields[9], "OK"));
-		ASSERT_TRUE(boost::starts_with(fields[10], "KO"));
+			bool HasBeenExecuted(int lineNumber)
+			{
+				return boost::starts_with(fields_[lineNumber - 1 ], 
+					Exporter::HtmlFileCoverageExporter::StyleBackgroundColorExecuted);
+			}
+
+			bool HasBeenUnexecuted(int lineNumber)
+			{
+				return boost::starts_with(fields_[lineNumber - 1],
+					Exporter::HtmlFileCoverageExporter::StyleBackgroundColorUnexecuted);
+			}
+
+		private:
+			std::wstring GetExportedString(
+				Exporter::HtmlFileCoverageExporter& exporter,
+				const CppCoverage::FileCoverage& fileCoverage)
+			{
+				std::wostringstream ostr;
+				exporter.Export(fileCoverage, ostr);
+
+				return ostr.str();
+			}
+
+		private:
+			std::vector<std::wstring> fields_;
+		};
 	}
 
+	//---------------------------------------------------------------------
+	TEST_F(HtmlFileCoverageExporterTest, ExecutedLine)
+	{		
+		ASSERT_TRUE(HasBeenExecuted(11));
+		ASSERT_TRUE(HasBeenExecuted(12));
+	}
+
+	//---------------------------------------------------------------------
+	TEST_F(HtmlFileCoverageExporterTest, UnexecutedLine)
+	{
+		ASSERT_TRUE(HasBeenUnexecuted(13));
+	}
+
+	//---------------------------------------------------------------------
+	TEST_F(HtmlFileCoverageExporterTest, NotRunnableLine)
+	{
+		ASSERT_FALSE(HasBeenExecuted(14));
+		ASSERT_FALSE(HasBeenUnexecuted(14));
+	}
 }

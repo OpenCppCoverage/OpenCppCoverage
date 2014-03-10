@@ -2,10 +2,12 @@
 #include "DebugInformation.hpp"
 
 #include <dbghelp.h>
+#include "Tools/Tool.hpp"
+#include "Tools/Log.hpp"
 
 #include "CppCoverageException.hpp"
 #include "IDebugInformationEventHandler.hpp"
-#include "Tools.hpp"
+
 
 #include <iostream> // $$
 namespace CppCoverage
@@ -39,8 +41,10 @@ namespace CppCoverage
 			if (!userContext)
 				THROW("Invalid user context.");
 
+			LOG_TRACE << lineInfo->Key << "  " << lineInfo->ModBase << "  " << lineInfo->Obj; // $$$
+
 			DWORD64 address = lineInfo->Address - lineInfo->ModBase + reinterpret_cast<DWORD64>(context->processBaseOfImage_);
-			std::wstring filename = Tools::ToWString(lineInfo->FileName);
+			std::wstring filename = Tools::Tool::ToWString(lineInfo->FileName);
 			context->debugInformationEventHandler_.OnNewLine(filename, lineInfo->LineNumber, address);
 
 			return TRUE;
@@ -55,10 +59,10 @@ namespace CppCoverage
 			if (!pSourceFile)
 				THROW("Source File is null");
 			
-			std::wstring filename = Tools::ToWString(pSourceFile->FileName);
+			std::wstring filename = Tools::Tool::ToWString(pSourceFile->FileName);
 			
 			if (context->debugInformationEventHandler_.IsSourceFileSelected(filename))
-			{
+			{				
 				if (!SymEnumSourceLines(
 					context->hProcess_,
 					context->baseAddress_,
@@ -101,6 +105,7 @@ namespace CppCoverage
 	
 	//-------------------------------------------------------------------------
 	void DebugInformation::LoadModule(
+		const std::wstring& filename,
 		HANDLE hFile,
 		void* baseOfImage,
 		IDebugInformationEventHandler& debugInformationEventHandler) const
@@ -115,7 +120,7 @@ namespace CppCoverage
 			Context context{ hProcess_, baseAddress, baseOfImage/*processBaseOfImage_*/, debugInformationEventHandler }; // $$ clean
 			
 			if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
-				THROW("Cannot enumerate source files");			
+				LOG_WARNING << "Cannot find pdb for " << filename;
 
 			UnloadModule64(baseAddress);			
 		}

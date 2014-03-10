@@ -14,7 +14,7 @@ namespace CppCoverageTest
 		{
 			cov::DebugInformation debugInformation{ hProcess};
 			
-			debugInformation.LoadModule(hFile, nullptr, mock);			
+			debugInformation.LoadModule(L"", hFile, nullptr, mock);			
 		}
 	}
 

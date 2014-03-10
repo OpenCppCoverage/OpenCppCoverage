@@ -1,7 +1,6 @@
-#ifndef CPPCOVERAGE_DEBUGINFORMATION_HEADER_GARD
-#define CPPCOVERAGE_DEBUGINFORMATION_HEADER_GARD
+#pragma once
 
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
 
 namespace CppCoverage
 {
@@ -13,7 +12,11 @@ namespace CppCoverage
 		explicit DebugInformation(HANDLE hProcess);
 		~DebugInformation();
 
-		void LoadModule(HANDLE hFile, void* baseOfImage, IDebugInformationEventHandler& debugInformationEventHandler) const;
+		void LoadModule(
+			const std::wstring& filename, 
+			HANDLE hFile, 
+			void* baseOfImage, 
+			IDebugInformationEventHandler& debugInformationEventHandler) const;
 
 	private:
 		DebugInformation(const DebugInformation&) = delete;
@@ -26,4 +29,4 @@ namespace CppCoverage
 	};
 }
 
-#endif
+

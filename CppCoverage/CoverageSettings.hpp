@@ -1,40 +1,30 @@
-#ifndef CPPCOVERAGE_COVERAGESETTINGS_HEADER_GARD
-#define CPPCOVERAGE_COVERAGESETTINGS_HEADER_GARD
+#pragma once
 
 #include <string>
 #include <vector>
 
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
 
 namespace CppCoverage
 {
+	class Patterns;
+
 	class CPPCOVERAGE_DLL CoverageSettings
-	{
+	{	
 	public:
-		typedef std::vector<std::wstring> T_Patterns;
+		CoverageSettings(const Patterns& modulePatterns, const Patterns& sourcePatterns);
 
-	public:
-		CoverageSettings();
-
-		void AddModulePositivePatterns(const std::wstring&);
-		const T_Patterns& GetModulesPositivePatterns() const;
-
-		void AddSourcePositivePatterns(const std::wstring&);
-		const T_Patterns& GetSourcesPositivePatterns() const;
-
-		void SetIsRegexCaseSensitiv(bool);
-		bool IsRegexCaseSensitiv() const;
-
+		const Patterns& GetModulePatterns() const;
+		const Patterns& GetSourcePatterns() const;
+		
 	private:
 		CoverageSettings(const CoverageSettings&) = delete;
 		CoverageSettings& operator=(const CoverageSettings&) = delete;
 
 	private:
-		T_Patterns modulesPositivePatterns_;
-		T_Patterns sourcesPositivePatterns_;
-		bool isRegexCaseSensitiv_;
-
+		const Patterns& modulePatterns_;
+		const Patterns& sourcePatterns_;
 	};
 }
 
-#endif
+

@@ -18,7 +18,7 @@ namespace ExporterTest
 		fs::path templateFolder = fs::canonical("../Exporter/Html/Template");
 		fs::path testFolder = fs::canonical("../ExporterTest/Data");
 
-		Exporter::HtmlExporter htmlExporter(templateFolder / "IndexTemplate.html", templateFolder / "ModuleTemplate.html");
+		Exporter::HtmlExporter htmlExporter(templateFolder);
 		cov::CoverageData data{ L"Test" };
 
 		auto& module1 = data.AddModule(L"Module1.exe");

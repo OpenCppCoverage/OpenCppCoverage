@@ -1,48 +1,30 @@
 #include "stdafx.h"
 #include "CoverageSettings.hpp"
 
+#include "Tools/Log.hpp"
+
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	CoverageSettings::CoverageSettings()
-		: isRegexCaseSensitiv_(false)
+	CoverageSettings::CoverageSettings(
+		const Patterns& modulePatterns,
+		const Patterns& sourcePatterns)
+		: modulePatterns_(modulePatterns)
+		, sourcePatterns_(sourcePatterns)
 	{
-	}	
-
-	//-------------------------------------------------------------------------
-	void CoverageSettings::AddModulePositivePatterns(const std::wstring& pattern)
-	{
-		modulesPositivePatterns_.push_back(pattern);
 	}
 
 	//-------------------------------------------------------------------------
-	const CoverageSettings::T_Patterns& CoverageSettings::GetModulesPositivePatterns() const
+	const Patterns& CoverageSettings::GetModulePatterns() const
 	{
-		return modulesPositivePatterns_;
+		return modulePatterns_;
+	}
+	
+	//-------------------------------------------------------------------------
+	const Patterns& CoverageSettings::GetSourcePatterns() const
+	{
+		return sourcePatterns_;
 	}
 
-	//-------------------------------------------------------------------------
-	void CoverageSettings::AddSourcePositivePatterns(const std::wstring& pattern)
-	{
-		sourcesPositivePatterns_.push_back(pattern);
-	}
-
-	//-------------------------------------------------------------------------
-	const CoverageSettings::T_Patterns& CoverageSettings::GetSourcesPositivePatterns() const
-	{
-		return sourcesPositivePatterns_;
-	}
-
-	//-------------------------------------------------------------------------
-	void CoverageSettings::SetIsRegexCaseSensitiv(bool isRegexCaseSensitiv)
-	{
-		isRegexCaseSensitiv_ = isRegexCaseSensitiv;
-	}
-
-	//-------------------------------------------------------------------------
-	bool CoverageSettings::IsRegexCaseSensitiv() const
-	{
-		return isRegexCaseSensitiv_;
-	}
 }
 

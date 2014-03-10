@@ -1,35 +1,16 @@
-#ifndef CPPCOVERAGE_CPPCOVERAGEEXCEPTION_HEADER_GARD
-#define CPPCOVERAGE_CPPCOVERAGEEXCEPTION_HEADER_GARD
+#pragma once
 
-#include <exception>
+#include "tools/ExceptionBase.hpp"
+
 #include <string>
-#include <sstream>
 
 namespace CppCoverage
 {
-	class CppCoverageException: public std::exception
-	{
-	public:
-		CppCoverageException(const std::wstring& message);
-		CppCoverageException(const std::wstring& message, int lastErrorCode);	
-	};
+	std::wstring GetErrorMessage(int errorCode);
 }
 
-#define THROW(message)										\
-do															\
-{															\
-	std::wostringstream ostr;								\
-	ostr << __FILE__ << ':' << __LINE__ << ' ' << message;	\
-	throw CppCoverageException(ostr.str());					\
-} while (false)												\
 
+GENERATE_EXCEPTION_CLASS(CppCoverage, CppCoverageException);
 
-#define THROW_LAST_ERROR(message, lastErrorCode)			\
-do															\
-{															\
-	std::wostringstream ostr;								\
-	ostr << __FILE__ << ':' << __LINE__ << ' ' << message;	\
-	throw CppCoverageException(ostr.str(), lastErrorCode);	\
-} while (false)												\
-
-#endif
+#define THROW(message) THROW_BASE(CppCoverage, CppCoverageException, message)
+#define THROW_LAST_ERROR(message, lastErrorCode) THROW_BASE(CppCoverage, CppCoverageException, message << CppCoverage::GetErrorMessage(lastErrorCode))

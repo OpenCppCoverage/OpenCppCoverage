@@ -2,34 +2,69 @@
 
 #include "CppCoverage/CoverageFilter.hpp"
 #include "CppCoverage/CoverageSettings.hpp"
+#include "CppCoverage/Patterns.hpp"
 
 namespace cov = CppCoverage;
 
 namespace CppCoverageTest
 {
-	TEST(CoverageFilterTest, IsModuleSelected)
+	namespace
 	{
-		cov::CoverageSettings settings;
+		struct CoverageFilterTest : public ::testing::Test
+		{
+			//---------------------------------------------------------------------
+			CoverageFilterTest()
+			: emptyPatterns_{ false }
+			, defaultPatterns_{BuildDefaultPatterns()}
+			{
 
-		settings.AddModulePositivePatterns(L"123.*");
-		settings.AddModulePositivePatterns(L".*456.*");
+			}
 
-		cov::CoverageFilter filter{ settings };
+			//---------------------------------------------------------------------
+			cov::Patterns BuildDefaultPatterns()
+			{
+				cov::Patterns patterns{false};
 
-		ASSERT_TRUE(filter.IsModuleSelected(L"1234"));
-		ASSERT_TRUE(filter.IsModuleSelected(L"3456"));
-		ASSERT_FALSE(filter.IsModuleSelected(L"34756"));
+				patterns.AddPositivePatterns(L".*12.*");
+				patterns.AddNegativePatterns(L".*3.*");
+
+				return patterns;
+			}
+
+			//---------------------------------------------------------------------
+			void CheckSelection(
+				cov::CoverageSettings& settings, 
+				std::function<bool(const cov::CoverageFilter&, const std::wstring&)> isSelected)
+			{
+				cov::CoverageFilter filter{settings};
+
+				ASSERT_FALSE(isSelected(filter, L"aa"));
+				ASSERT_FALSE(isSelected(filter, L"1234756"));
+				ASSERT_TRUE(isSelected(filter, L"12456"));			
+			}	
+
+			cov::Patterns emptyPatterns_;
+			cov::Patterns defaultPatterns_;
+		};
 	}
 
-	TEST(CoverageFilterTest, IsSourceSelected)
+	//-------------------------------------------------------------------------
+	TEST_F(CoverageFilterTest, IsModuleSelected)
 	{
-		cov::CoverageSettings settings;
+		cov::CoverageSettings settings{ defaultPatterns_, emptyPatterns_ };
+		CheckSelection(settings, [](const cov::CoverageFilter& filter, const std::wstring& str)
+		{
+			return filter.IsModuleSelected(str);
+		});
+	}
 
-		settings.AddSourcePositivePatterns(L"123.*");
-
-		cov::CoverageFilter filter{ settings };
-
-		ASSERT_TRUE(filter.IsSourceFileSelected(L"1234"));
-		ASSERT_FALSE(filter.IsSourceFileSelected(L"34756"));
+	//-------------------------------------------------------------------------
+	TEST_F(CoverageFilterTest, IsSourceSelected)
+	{
+		cov::CoverageSettings settings{ emptyPatterns_, defaultPatterns_ };
+		CheckSelection(settings, [](const cov::CoverageFilter& filter, const std::wstring& str)
+		{
+			return filter.IsSourceFileSelected(str);
+		});		
 	}
 }

@@ -1,12 +1,12 @@
-#ifndef CPPCOVERAGE_CODECOVERAGERUNNER_HEADER_GARD
-#define CPPCOVERAGE_CODECOVERAGERUNNER_HEADER_GARD
+#pragma once
 
 #include <memory>
+#include <unordered_map>
 
 #include "CoverageData.hpp"
 #include "IDebugEventsHandler.hpp"
 #include "IDebugInformationEventHandler.hpp"
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
 
 namespace CppCoverage
 {
@@ -21,6 +21,9 @@ namespace CppCoverage
 	class CPPCOVERAGE_DLL CodeCoverageRunner : private IDebugEventsHandler, private IDebugInformationEventHandler
 	{
 	public:
+		static const std::string unhandledExceptionErrorMessage;
+
+	public:
 		CodeCoverageRunner();
 		~CodeCoverageRunner();
 
@@ -29,7 +32,7 @@ namespace CppCoverage
 	private:
 		virtual void OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO&) override;
 		virtual void OnLoadDll(HANDLE hProcess, HANDLE hThread, const LOAD_DLL_DEBUG_INFO&) override;
-		virtual void OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&) override;
+		virtual DWORD OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&) override;
 
 	private:
 		virtual bool IsSourceFileSelected(const std::wstring& filename) const;
@@ -40,14 +43,17 @@ namespace CppCoverage
 		CodeCoverageRunner& operator=(const CodeCoverageRunner&) = delete;
 
 		void LoadModule(HANDLE hFile, void* baseOfImage);
+		void InitExceptionCode();
+		std::wstring GetExceptionStrFromCode(DWORD) const;
 
 	private:
 		std::unique_ptr<DebugInformation> debugInformation_;		
 		std::unique_ptr<BreakPoint> breakpoint_;
 		std::unique_ptr<ExecutedAddressManager> executedAddressManager_;
 		std::unique_ptr<CoverageFilter> coverageFilter_;
+		std::unordered_map<DWORD, std::wstring> exceptionCode_;
 		bool isFirstException_;
 	};
 }
 
-#endif
+

@@ -6,7 +6,7 @@
 #include "CppCoverage/CoverageData.hpp"
 #include "CppCoverage/FileCoverage.hpp"
 #include "CppCoverage/ModuleCoverage.hpp"
-#include "CppCoverage/Tools.hpp"
+#include "Tools/Tool.hpp"
 
 namespace cov = CppCoverage;
 
@@ -16,16 +16,15 @@ namespace ExporterTest
 	{
 	public:
 		TemplateHtmlExporterTest()
-			: templateHtmlExporter_("", "")
+			: templateHtmlExporter_("")
 			, title_(L"title")
 			, fileOutput_{ "FilePath" }
-			, percentCoverage_{ 42 }
 			, filePath_{ "path" }
 		{			
 			templateDictionary_ = templateHtmlExporter_.CreateTemplateDictionary(title_);
 			peer_.reset(new ctemplate::TemplateDictionaryPeer(templateDictionary_.get()));
 		}
-
+			// $$ tester le code avec des exceptions pour voir si cela fonctionne 
 		void CheckSection(const std::string& sectionName)
 		{
 			std::vector<const ctemplate::TemplateDictionary*> fileTemplates;
@@ -34,7 +33,9 @@ namespace ExporterTest
 			ctemplate::TemplateDictionaryPeer fileTemplatePeer{ fileTemplates[0] };
 
 			EXPECT_EQ(fileOutput_.string(), fileTemplatePeer.GetSectionValue("LINK"));
-			EXPECT_EQ(std::to_string(percentCoverage_), fileTemplatePeer.GetSectionValue("RATE"));
+			EXPECT_EQ(std::string("0"), fileTemplatePeer.GetSectionValue("EXECUTED_LINE")); // $$ use constantes here
+			EXPECT_EQ(std::string("0"), fileTemplatePeer.GetSectionValue("UNEXECUTED_LINE")); // $$ use constantes here
+						
 			EXPECT_EQ(filePath_.string(), fileTemplatePeer.GetSectionValue("NAME"));
 		}
 
@@ -43,26 +44,25 @@ namespace ExporterTest
 		std::unique_ptr<ctemplate::TemplateDictionary> templateDictionary_;	
 		Exporter::TemplateHtmlExporter templateHtmlExporter_;	
 		fs::path fileOutput_;
-		int percentCoverage_;
 		fs::path filePath_;
 	};
 
 	TEST_F(TemplateHtmlExporterTest, CreateTemplateDictionary)
 	{		
-		ASSERT_EQ(cov::Tools::ToString(title_), peer_->GetSectionValue("TITLE"));
+		ASSERT_EQ(Tools::Tool::ToString(title_), peer_->GetSectionValue("TITLE"));
 	}
 
 	TEST_F(TemplateHtmlExporterTest, AddFileSectionToDictionary)
 	{			
 		CppCoverage::FileCoverage fileCoverage{filePath_};
-		templateHtmlExporter_.AddFileSectionToDictionary(fileCoverage, fileOutput_, percentCoverage_, *templateDictionary_);
+		templateHtmlExporter_.AddFileSectionToDictionary(fileCoverage, &fileOutput_, *templateDictionary_);
 		CheckSection("FILE");
 	}
 
 	TEST_F(TemplateHtmlExporterTest, AddModuleSectionToDictionary)
 	{
 		CppCoverage::ModuleCoverage moduleCoverage{ filePath_ };
-		templateHtmlExporter_.AddModuleSectionToDictionary(moduleCoverage, fileOutput_, percentCoverage_, *templateDictionary_);
+		templateHtmlExporter_.AddModuleSectionToDictionary(moduleCoverage, fileOutput_, *templateDictionary_);
 		CheckSection("MODULE");		
 	}
 

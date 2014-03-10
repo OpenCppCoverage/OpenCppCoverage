@@ -1,9 +1,8 @@
-#ifndef CPPCOVERAGE_IDEBUGINFORMATIONEVENTHANDLER_HEADER_GARD
-#define CPPCOVERAGE_IDEBUGINFORMATIONEVENTHANDLER_HEADER_GARD
+#pragma once
 
 #include <string>
 
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
 
 namespace CppCoverage
 {
@@ -22,4 +21,4 @@ namespace CppCoverage
 	};
 }
 
-#endif
+

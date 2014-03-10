@@ -1,5 +1,4 @@
-#ifndef CPPCOVERAGETEST_TOOLS_HEADER_GARD
-#define CPPCOVERAGETEST_TOOLS_HEADER_GARD
+#pragma once
 
 #include <Windows.h>
 
@@ -23,4 +22,3 @@ namespace CppCoverageTest
 	};
 }
 
-#endif

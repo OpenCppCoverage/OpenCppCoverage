@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <set>
 
+#include "tools/Log.hpp"
+
 #include "CppCoverageException.hpp"
 #include "ModuleCoverage.hpp"
 #include "FileCoverage.hpp"
@@ -59,7 +61,7 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
-	void ExecutedAddressManager::RegisterAddress(
+	bool ExecutedAddressManager::RegisterAddress(
 		void* address, 
 		const std::wstring& filename, 
 		unsigned int lineNumber, 
@@ -69,13 +71,19 @@ namespace CppCoverage
 		auto& file = module.files_[filename];
 		auto& lines = file.lines;
 
-		if (lines.find(lineNumber) != lines.end())
-			THROW(L"Line: " << lineNumber << L" in " << filename << L" already exists.");
+		LOG_TRACE << "RegisterAddress: " << address << " for " << filename << ":" << lineNumber;
 
+		if (lines.find(lineNumber) != lines.end())
+		{
+			LOG_WARNING << L"Line: " << lineNumber << L" in " << filename << L" already exists."; // $$ it is normal ??
+			return false; // $$ add void ??
+		}
+				
 		const auto& pair = lines.emplace(lineNumber, Line(instruction));
-		
+
 		Line& insertedLine = pair.first->second;
 		addressLineMap_.emplace(address, &insertedLine);
+		return true;
 	}
 
 	//-------------------------------------------------------------------------
@@ -127,9 +135,12 @@ namespace CppCoverage
 					const auto& line = pair.second;
 					fileCoverage.AddLine(lineNumber, line.hasBeenExecuted_);
 				}
+				fileCoverage.ComputeCoverageRate();
 			}
+			moduleCoverage.ComputeCoverageRate();
 		}
 
+		coverageData.ComputeCoverageRate();
 		return coverageData;
 	}
 }

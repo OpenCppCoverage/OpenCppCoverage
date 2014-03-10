@@ -6,35 +6,62 @@
 
 #include "CppCoverage/FileCoverage.hpp"
 
+#include "../ExporterException.hpp" // $$$
+
 namespace fs = boost::filesystem;
 
 namespace Exporter
 {
+	namespace
+	{
+		//---------------------------------------------------------------------
+		std::wstring UpdateLineColor(const std::wstring& line, bool codeHasBeenExecuted)
+		{
+			std::wstring output;
+
+			if (codeHasBeenExecuted)
+				output += HtmlFileCoverageExporter::StyleBackgroundColorExecuted;
+			else
+				output += HtmlFileCoverageExporter::StyleBackgroundColorUnexecuted;
+
+			output += line;
+			output += L"</span>";
+
+			return output;
+		}
+
+		const std::wstring StyleBackgroundColor = L"<span style = \"background-color:#";
+	}
+
+	const std::wstring HtmlFileCoverageExporter::StyleBackgroundColorExecuted = StyleBackgroundColor + L"dfd" + L"\">";
+	const std::wstring HtmlFileCoverageExporter::StyleBackgroundColorUnexecuted = StyleBackgroundColor + L"fdd" + L"\">";
+	
 	//-------------------------------------------------------------------------
-	void HtmlFileCoverageExporter::Export(
+	bool HtmlFileCoverageExporter::Export(
 		const CppCoverage::FileCoverage& fileCoverage,
 		std::wostream& output) const
 	{
 		auto filePath = fileCoverage.GetPath();
-		std::wifstream ifs{filePath.string()};
 
+		if (!fs::exists(filePath))
+			return false;
+
+		std::wifstream ifs{filePath.string()};
 		if (!ifs)
-			throw L"Cannot open file : " + filePath.wstring(); //$$ todod
-		if (!output)
-			throw L"Output is not valid"; //$$ todod
-				
+			THROW(L"Cannot open file : " + filePath.wstring());
+
 		std::wstring line;
-		for (size_t i = 0; std::getline(ifs, line); ++i)
+		for (size_t i = 1; std::getline(ifs, line); ++i)
 		{			
 			auto lineCoverage = fileCoverage[i];
-			std::wstring coverageResults;
 
 			if (lineCoverage)
-				coverageResults = (lineCoverage->HasBeenExecuted()) ? L"OK: ": L"KO: ";
-			else
-				coverageResults = L"    ";
-			output << coverageResults << line << std::endl;
+				line = UpdateLineColor(line, lineCoverage->HasBeenExecuted());
+				
+			output << line << std::endl;
 		}
 		output.flush();
+
+		return true;
 	}
 }

@@ -1,9 +1,8 @@
-#ifndef CPPCOVERAGE_HANDLEINFORMATION_HEADER_GARD
-#define CPPCOVERAGE_HANDLEINFORMATION_HEADER_GARD
+#pragma once
 
 #include <Windows.h>
 
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
 
 namespace CppCoverage
 {
@@ -19,4 +18,4 @@ namespace CppCoverage
 	};
 }
 
-#endif
+

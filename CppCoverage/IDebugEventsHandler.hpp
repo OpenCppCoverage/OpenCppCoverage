@@ -1,9 +1,8 @@
-#ifndef CPPCOVERAGE_IDEBUGEVENTSHANDLER_HEADER_GARD
-#define CPPCOVERAGE_IDEBUGEVENTSHANDLER_HEADER_GARD
+#pragma once
 
 #include <Windows.h>
 
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
 
 namespace CppCoverage
 {
@@ -16,7 +15,7 @@ namespace CppCoverage
 		virtual void OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO&) {};
 		virtual void OnExitProcess(HANDLE hProcess, HANDLE hThread, const EXIT_PROCESS_DEBUG_INFO&) {};
 		virtual void OnLoadDll(HANDLE hProcess, HANDLE hThread, const LOAD_DLL_DEBUG_INFO&) {};
-		virtual void OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&) {};
+		virtual DWORD OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&) { return DBG_EXCEPTION_NOT_HANDLED; }; // $$ uniforme ?
 		
 	private:
 		IDebugEventsHandler(const IDebugEventsHandler&) = delete;
@@ -24,4 +23,4 @@ namespace CppCoverage
 	};	
 }
 
-#endif
+

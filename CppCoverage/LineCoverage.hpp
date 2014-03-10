@@ -1,7 +1,6 @@
-#ifndef CPPCOVERAGE_LINECOVERAGE_HEADER_GARD
-#define CPPCOVERAGE_LINECOVERAGE_HEADER_GARD
+#pragma once
 
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
 
 namespace CppCoverage
 {
@@ -21,4 +20,4 @@ namespace CppCoverage
 	};
 }
 
-#endif
+

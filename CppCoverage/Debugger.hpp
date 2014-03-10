@@ -1,9 +1,8 @@
-#ifndef CPPCOVERAGE_DEBUGGER_HEADER_GARD
-#define CPPCOVERAGE_DEBUGGER_HEADER_GARD
+#pragma once
 
 #include <unordered_map>
 
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
 
 
 namespace CppCoverage
@@ -47,4 +46,4 @@ namespace CppCoverage
 	};
 }
 
-#endif
+

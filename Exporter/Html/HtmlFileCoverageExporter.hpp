@@ -1,5 +1,4 @@
-#ifndef EXPORTER_HTMLFILECOVERAGEEXPORTER_HEADER_GARD
-#define EXPORTER_HTMLFILECOVERAGEEXPORTER_HEADER_GARD
+#pragma once
 
 #include <iosfwd> 
 
@@ -10,21 +9,33 @@ namespace CppCoverage
 	class FileCoverage;
 }
 
+namespace boost
+{
+	namespace filesystem
+	{
+		class path;
+	}
+}
+
 namespace Exporter
 {
 	class EXPORTER_DLL HtmlFileCoverageExporter
 	{
 	public:
+		static const std::wstring StyleBackgroundColorExecuted;
+		static const std::wstring StyleBackgroundColorUnexecuted;
+
+	public:
 		HtmlFileCoverageExporter() = default;
 
-		void Export(
-			const CppCoverage::FileCoverage&, 
+		bool Export(
+			const CppCoverage::FileCoverage&,
 			std::wostream& output) const;
-
+		
 	private:
 		HtmlFileCoverageExporter(const HtmlFileCoverageExporter&) = delete;
 		HtmlFileCoverageExporter& operator=(const HtmlFileCoverageExporter&) = delete;
 	};
 }
 
-#endif
+

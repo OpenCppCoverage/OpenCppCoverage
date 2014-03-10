@@ -1,12 +1,11 @@
-#ifndef CPPCOVERAGE_STARTINFO_HEADER_GARD
-#define CPPCOVERAGE_STARTINFO_HEADER_GARD
+#pragma once
 
 #include <string>
 #include <vector>
 #include <iosfwd>
 #include <boost/optional.hpp>
 
-#include "Export.hpp"
+#include "CppCoverageExport.hpp"
 
 namespace CppCoverage
 {
@@ -34,4 +33,4 @@ namespace CppCoverage
 	};
 }
 
-#endif
+

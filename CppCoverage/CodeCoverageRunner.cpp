@@ -4,6 +4,8 @@
 #include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
 
+#include "tools/Log.hpp"
+
 #include "CoverageData.hpp"
 #include "Debugger.hpp"
 #include "DebugInformation.hpp"
@@ -14,16 +16,41 @@
 #include "StartInfo.hpp"
 
 namespace CppCoverage
-{
-	// $$$ 
-	// http://stackoverflow.com/questions/11652519/generate-xml-using-xerces-c
-	// http://code.google.com/p/google-code-prettify/
-	// http://shjs.sourceforge.net/
-	// http://www.gnu.org/software/src-highlite/
+{		
+
+	const std::string CodeCoverageRunner::unhandledExceptionErrorMessage = "Unhandled exception: ";
+
+	// $$$ Manage file collision  (same file in different folder or module)
 	//-------------------------------------------------------------------------
 	CodeCoverageRunner::CodeCoverageRunner()
 	{ 
+		InitExceptionCode();
 		executedAddressManager_.reset(new ExecutedAddressManager());
+	}
+
+	//-------------------------------------------------------------------------
+	void CodeCoverageRunner::InitExceptionCode()
+	{
+		exceptionCode_.emplace(EXCEPTION_ACCESS_VIOLATION, L"EXCEPTION_ACCESS_VIOLATION");
+		exceptionCode_.emplace(EXCEPTION_ARRAY_BOUNDS_EXCEEDED, L"EXCEPTION_ARRAY_BOUNDS_EXCEEDED");
+		exceptionCode_.emplace(EXCEPTION_BREAKPOINT, L"EXCEPTION_BREAKPOINT");
+		exceptionCode_.emplace(EXCEPTION_DATATYPE_MISALIGNMENT, L"EXCEPTION_DATATYPE_MISALIGNMENT");
+		exceptionCode_.emplace(EXCEPTION_FLT_DENORMAL_OPERAND, L"EXCEPTION_FLT_DENORMAL_OPERAND");
+		exceptionCode_.emplace(EXCEPTION_FLT_DIVIDE_BY_ZERO, L"EXCEPTION_FLT_DIVIDE_BY_ZERO");
+		exceptionCode_.emplace(EXCEPTION_FLT_INEXACT_RESULT, L"EXCEPTION_FLT_INEXACT_RESULT");
+		exceptionCode_.emplace(EXCEPTION_FLT_INVALID_OPERATION, L"EXCEPTION_FLT_INVALID_OPERATION");
+		exceptionCode_.emplace(EXCEPTION_FLT_OVERFLOW, L"EXCEPTION_FLT_OVERFLOW");
+		exceptionCode_.emplace(EXCEPTION_FLT_STACK_CHECK, L"EXCEPTION_FLT_STACK_CHECK");
+		exceptionCode_.emplace(EXCEPTION_FLT_UNDERFLOW, L"EXCEPTION_FLT_UNDERFLOW");
+		exceptionCode_.emplace(EXCEPTION_ILLEGAL_INSTRUCTION, L"EXCEPTION_ILLEGAL_INSTRUCTION");
+		exceptionCode_.emplace(EXCEPTION_IN_PAGE_ERROR, L"EXCEPTION_IN_PAGE_ERROR");
+		exceptionCode_.emplace(EXCEPTION_INT_DIVIDE_BY_ZERO, L"EXCEPTION_INT_DIVIDE_BY_ZERO");
+		exceptionCode_.emplace(EXCEPTION_INT_OVERFLOW, L"EXCEPTION_INT_OVERFLOW");
+		exceptionCode_.emplace(EXCEPTION_INVALID_DISPOSITION, L"EXCEPTION_INVALID_DISPOSITION");
+		exceptionCode_.emplace(EXCEPTION_NONCONTINUABLE_EXCEPTION, L"EXCEPTION_NONCONTINUABLE_EXCEPTION");
+		exceptionCode_.emplace(EXCEPTION_PRIV_INSTRUCTION, L"EXCEPTION_PRIV_INSTRUCTION");
+		exceptionCode_.emplace(EXCEPTION_SINGLE_STEP, L"EXCEPTION_SINGLE_STEP");
+		exceptionCode_.emplace(EXCEPTION_STACK_OVERFLOW, L"EXCEPTION_STACK_OVERFLOW");
 	}
 
 	//-------------------------------------------------------------------------
@@ -66,27 +93,40 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::OnException(
+	DWORD CodeCoverageRunner::OnException(
 		HANDLE hProcess, 
 		HANDLE hThread, 
 		const EXCEPTION_DEBUG_INFO& exceptionDebugInfo)
 	{
-		const auto& exceptionRecord = exceptionDebugInfo.ExceptionRecord;						
-		
-		if (
-			   exceptionDebugInfo.dwFirstChance
-			&& exceptionRecord.ExceptionCode == EXCEPTION_BREAKPOINT
-			&& !isFirstException_) // Skip the first exception set by default.
+		const auto& exceptionRecord = exceptionDebugInfo.ExceptionRecord;								
+		auto address = exceptionRecord.ExceptionAddress;
+
+		if (exceptionDebugInfo.dwFirstChance)
 		{
-			const auto& exceptionRecord = exceptionDebugInfo.ExceptionRecord;
-			auto address = exceptionRecord.ExceptionAddress;
+			if (!isFirstException_ && exceptionRecord.ExceptionCode == EXCEPTION_BREAKPOINT) // Skip the first exception set by default.
+			{
+				auto oldInstruction = executedAddressManager_->MarkAddressAsExecuted(address);
 
-			auto oldInstruction = executedAddressManager_->MarkAddressAsExecuted(address);
-
-			breakpoint_->RemoveBreakPoint(address, oldInstruction);			
-			breakpoint_->AdjustEipAfterBreakPointRemoval(hThread);
-		}			
+				breakpoint_->RemoveBreakPoint(address, oldInstruction);
+				breakpoint_->AdjustEipAfterBreakPointRemoval(hThread);
+				return DBG_CONTINUE;
+			}
+		}
+		else
+			LOG_ERROR << unhandledExceptionErrorMessage << GetExceptionStrFromCode(exceptionRecord.ExceptionCode);
+	
 		isFirstException_ = false;
+		return DBG_EXCEPTION_NOT_HANDLED;
+	}
+
+	//-------------------------------------------------------------------------
+	std::wstring CodeCoverageRunner::GetExceptionStrFromCode(DWORD exceptionCode) const
+	{
+		auto it = exceptionCode_.find(exceptionCode);
+
+		if (it != exceptionCode_.end())
+			return it->second;
+		return L"Unknown";
 	}
 
 	//-------------------------------------------------------------------------
@@ -95,11 +135,11 @@ namespace CppCoverage
 		HandleInformation handleInformation;
 
 		std::wstring filename = handleInformation.ComputeFilename(hFile);
-
+		
 		if (coverageFilter_->IsModuleSelected(filename))
 		{
 			executedAddressManager_->SetCurrentModule(filename);
-			debugInformation_->LoadModule(hFile, baseOfImage, *this);
+			debugInformation_->LoadModule(filename, hFile, baseOfImage, *this);
 		}
 	}
 
@@ -118,6 +158,7 @@ namespace CppCoverage
 		auto addressPtr = reinterpret_cast<void*>(address);
 		auto oldInstruction = breakpoint_->SetBreakPointAt(addressPtr);
 
-		executedAddressManager_->RegisterAddress(addressPtr, filename, lineNumber, oldInstruction);
+		if (!executedAddressManager_->RegisterAddress(addressPtr, filename, lineNumber, oldInstruction))
+			breakpoint_->RemoveBreakPoint(addressPtr, oldInstruction);
 	}
 }
