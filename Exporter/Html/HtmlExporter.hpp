@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Export.hpp" // $$ fix
+#include "../ExporterExport.hpp"
 
 #include "TemplateHtmlExporter.hpp"
 #include "HtmlFileCoverageExporter.hpp"

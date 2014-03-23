@@ -8,8 +8,6 @@
 #include "CppCoverageException.hpp"
 #include "IDebugInformationEventHandler.hpp"
 
-
-#include <iostream> // $$
 namespace CppCoverage
 {
 	namespace
@@ -40,9 +38,7 @@ namespace CppCoverage
 
 			if (!userContext)
 				THROW("Invalid user context.");
-
-			LOG_TRACE << lineInfo->Key << "  " << lineInfo->ModBase << "  " << lineInfo->Obj; // $$$
-
+			
 			DWORD64 address = lineInfo->Address - lineInfo->ModBase + reinterpret_cast<DWORD64>(context->processBaseOfImage_);
 			std::wstring filename = Tools::Tool::ToWString(lineInfo->FileName);
 			context->debugInformationEventHandler_.OnNewLine(filename, lineInfo->LineNumber, address);
@@ -88,8 +84,7 @@ namespace CppCoverage
 		SymSetOptions(SYMOPT_DEFERRED_LOADS | SYMOPT_LOAD_LINES 
 			        | SYMOPT_NO_UNQUALIFIED_LOADS | SYMOPT_UNDNAME);
 
-		// $$ test if not found pdb
-		// $$ support useer path ?
+		// $$ test if not found pdb		
 		if (!SymInitialize(hProcess_, nullptr, FALSE))
 			THROW("Error when calling SymInitialize. You cannot call this function twice.");
 	}
@@ -99,7 +94,7 @@ namespace CppCoverage
 	{
 		if (!SymCleanup(hProcess_))
 		{
-			// $$ LOG
+			LOG_ERROR << "Error in SymCleanup";
 		}
 	}
 	
@@ -113,11 +108,11 @@ namespace CppCoverage
 		auto baseAddress = SymLoadModuleEx(hProcess_, hFile, nullptr, nullptr, 0, 0, nullptr, 0);
 
 		if (!baseAddress)
-			THROW("Cannot load module."); // $$ use path instead of hFile to have better error ?
+			THROW("Cannot load module for: " << filename);
 		
 		try
 		{
-			Context context{ hProcess_, baseAddress, baseOfImage/*processBaseOfImage_*/, debugInformationEventHandler }; // $$ clean
+			Context context{ hProcess_, baseAddress, baseOfImage, debugInformationEventHandler };
 			
 			if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
 				LOG_WARNING << "Cannot find pdb for " << filename;

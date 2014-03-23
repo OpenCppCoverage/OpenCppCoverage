@@ -167,6 +167,8 @@
     <ClInclude Include="IDebugInformationEventHandler.hpp" />
     <ClInclude Include="LineCoverage.hpp" />
     <ClInclude Include="ModuleCoverage.hpp" />
+    <ClInclude Include="Options.hpp" />
+    <ClInclude Include="OptionsParser.hpp" />
     <ClInclude Include="Patterns.hpp" />
     <ClInclude Include="Process.hpp" />
     <ClInclude Include="StartInfo.hpp" />
@@ -184,20 +186,6 @@
     <ClCompile Include="CppCoverageLog.cpp" />
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="DebugInformation.cpp" />
-    <ClCompile Include="dllmain.cpp">
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </PrecompiledHeader>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="ExecutedAddressManager.cpp" />
     <ClCompile Include="FileCoverage.cpp" />
     <ClCompile Include="HandleInformation.cpp" />
@@ -205,6 +193,8 @@
     <ClCompile Include="IDebugInformationEventHandler.cpp" />
     <ClCompile Include="LineCoverage.cpp" />
     <ClCompile Include="ModuleCoverage.cpp" />
+    <ClCompile Include="Options.cpp" />
+    <ClCompile Include="OptionsParser.cpp" />
     <ClCompile Include="Patterns.cpp" />
     <ClCompile Include="Process.cpp" />
     <ClCompile Include="StartInfo.cpp" />

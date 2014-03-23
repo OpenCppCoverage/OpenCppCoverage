@@ -1,6 +1,10 @@
 #include "stdafx.h"
+
+#include "tools/Log.hpp"
+
 #include "Handle.hpp"
 #include "CppCoverageException.hpp"
+
 
 namespace CppCoverage
 {
@@ -32,16 +36,16 @@ namespace CppCoverage
 		{
 			if (handle_ && !releaser_(handle_))
 			{
-				// $$ Log ERROR
+				LOG_ERROR << "Cannot release handler";
 			}
 		}
-		catch (const std::exception&) // $$ factorize this code
+		catch (const std::exception& e)
 		{
-			// log $$$
+			LOG_ERROR << "Exception when releasing handler:" << e.what();
 		}
 		catch (...)
 		{
-			// log $$$
+			LOG_ERROR << "Unknown exception when releasing handler";
 		}
 	}
 

@@ -22,11 +22,7 @@ namespace Exporter
 		const std::string moduleSection = "MODULE";		
 		const std::string fileSection = "FILE";
 		const std::string titleTemplate = "TITLE";
-		const std::string linkTemplate = "LINK";
-		const std::string executedLineTemplate = "EXECUTED_LINE";
-		const std::string totalLineTemplate = "TOTAL_LINE";
 		const std::string rateTemplate = "RATE";
-		const std::string nameTemplate = "NAME";
 		const std::string codeTemplate = "CODE";
 
 
@@ -44,11 +40,11 @@ namespace Exporter
 			const std::string& name)
 		{
 			if (link)
-				sectionDictionary.SetValue(linkTemplate, link->string());
+				sectionDictionary.SetValue(TemplateHtmlExporter::LinkTemplate, link->string());
 			sectionDictionary.SetIntValue(rateTemplate, coverageRate.GetPercentRate());
-			sectionDictionary.SetIntValue(executedLineTemplate, coverageRate.GetExecutedLinesCount());
-			sectionDictionary.SetIntValue(totalLineTemplate, coverageRate.GetTotalLinesCount());
-			sectionDictionary.SetValue(nameTemplate, name);
+			sectionDictionary.SetIntValue(TemplateHtmlExporter::ExecutedLineTemplate, coverageRate.GetExecutedLinesCount());
+			sectionDictionary.SetIntValue(TemplateHtmlExporter::TotalLineTemplate, coverageRate.GetTotalLinesCount());
+			sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);
 		}
 
 		void CheckFileExists(const fs::path& path)
@@ -58,6 +54,12 @@ namespace Exporter
 		}
 	}
 	
+	//-------------------------------------------------------------------------
+	const std::string TemplateHtmlExporter::ExecutedLineTemplate = "EXECUTED_LINE";
+	const std::string TemplateHtmlExporter::LinkTemplate = "LINK";
+	const std::string TemplateHtmlExporter::TotalLineTemplate = "TOTAL_LINE";	
+	const std::string TemplateHtmlExporter::NameTemplate = "NAME";
+
 	//-------------------------------------------------------------------------
 	TemplateHtmlExporter::TemplateHtmlExporter(const fs::path& templateFolder)
 		: projectTemplatePath_(templateFolder / "IndexTemplate.html")
@@ -139,7 +141,7 @@ namespace Exporter
 		std::string output;
 		
 		if (!ctemplate::ExpandTemplate(templatePath.string(), ctemplate::DO_NOT_STRIP, &templateDictionary, &output))
-			throw (L"Cannot generate output for " + templatePath.wstring()); //$$ use Exception
+			THROW(L"Cannot generate output for " + templatePath.wstring()); 
 		return output;
 	}	
 }

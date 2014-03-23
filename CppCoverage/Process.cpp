@@ -3,6 +3,9 @@
 
 #include <Windows.h>
 #include <boost/optional.hpp>
+
+#include "tools/Log.hpp"
+
 #include "StartInfo.hpp"
 #include "CppCoverageException.hpp"
 
@@ -46,8 +49,11 @@ namespace CppCoverage
 	{
 		if (processInformation_)
 		{			
-			CloseHandle(processInformation_->hProcess); // $$ log if error
-			CloseHandle(processInformation_->hThread);
+			if (!CloseHandle(processInformation_->hProcess))
+				LOG_ERROR << "Cannot close process handle";
+
+			if (!CloseHandle(processInformation_->hThread))
+				LOG_ERROR << "Cannot close thread handle";
 		}
 	}
 
@@ -66,7 +72,7 @@ namespace CppCoverage
 
 		processInformation_ = PROCESS_INFORMATION();
 		if (!CreateProcess(
-			startInfo_.GetFilename().c_str(),
+			startInfo_.GetPath().c_str(),
 			commandLine,
 			nullptr,
 			nullptr,

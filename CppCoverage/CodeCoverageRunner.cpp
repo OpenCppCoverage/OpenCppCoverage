@@ -66,7 +66,7 @@ namespace CppCoverage
 		coverageFilter_.reset(new CoverageFilter(coverageSettings));
 		debugger.Debug(startInfo, *this);
 
-		boost::filesystem::path path{startInfo.GetFilename()};
+		const auto& path = startInfo.GetPath();
 
 		return executedAddressManager_->CreateCoverageData(path.filename().wstring());
 	}

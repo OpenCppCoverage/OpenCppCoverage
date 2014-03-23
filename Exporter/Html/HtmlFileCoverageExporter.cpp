@@ -6,7 +6,7 @@
 
 #include "CppCoverage/FileCoverage.hpp"
 
-#include "../ExporterException.hpp" // $$$
+#include "../ExporterException.hpp"
 
 namespace fs = boost::filesystem;
 

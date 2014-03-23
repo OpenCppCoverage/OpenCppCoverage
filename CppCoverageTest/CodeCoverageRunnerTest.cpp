@@ -107,7 +107,8 @@ namespace CppCoverageTest
 
 	TEST_F(CodeCoverageRunnerTest, RunCoverage)
 	{		
-		cov::CoverageData coverageData = ComputeCoverageData(L".*" + Tools::GetConsoleForCppCoverageTestFilename(), L".*CppCoverage.*.cpp"); // $$ if we have cpp we have memory pb skip some dll $$ test with ConsoleForCppCoverageTest.cpp
+		cov::CoverageData coverageData = ComputeCoverageData(
+			L".*" + Tools::GetConsoleForCppCoverageTestFilename(), L".*CppCoverage.*.cpp");
 		cov::FileCoverage* file;
 		GetFileCoverage(coverageData, file);
 
@@ -120,7 +121,8 @@ namespace CppCoverageTest
 	TEST_F(CodeCoverageRunnerTest, RunCoverageDll)
 	{	
 		GetStartInfo().AddArguments(L"42"); 
-		cov::CoverageData coverageData = ComputeCoverageData(L".*ForCppCoverageTest.*", L".*CppCoverage.*.cpp");
+		cov::CoverageData coverageData = ComputeCoverageData(
+			L".*ForCppCoverageTest.*", L".*CppCoverage.*.cpp");
 
 		const auto& modules = coverageData.GetModules();
 		ASSERT_EQ(2, modules.size());		

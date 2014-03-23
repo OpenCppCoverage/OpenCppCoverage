@@ -67,7 +67,7 @@ xcopy /s /y $(ProjectDir)Html\Template $(OutDir)Template</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(CTEMPLATE_ROOT)/src/windows;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(CTEMPLATE_ROOT)/src/windows;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>EXPORTER_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -84,7 +84,7 @@ xcopy /s /y $(ProjectDir)\Html\Template $(OutDir)Template</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ExporterException.hpp" />
-    <ClInclude Include="Export.hpp" />
+    <ClInclude Include="ExporterExport.hpp" />
     <ClInclude Include="Html\HtmlExporter.hpp" />
     <ClInclude Include="Html\HtmlFileCoverageExporter.hpp" />
     <ClInclude Include="Html\TemplateHtmlExporter.hpp" />

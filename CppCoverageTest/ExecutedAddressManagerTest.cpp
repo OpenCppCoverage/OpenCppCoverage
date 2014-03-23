@@ -13,29 +13,29 @@ namespace CppCoverageTest
 {
 	TEST(ExecutedAddressManagerTest, RegisterAddress)
 	{		
-	/*	cov::ExecutedAddressManager manager;
+		cov::ExecutedAddressManager manager;
 		
 		ASSERT_THROW(manager.RegisterAddress(0, L"", 0, 0), cov::CppCoverageException);
 
 		manager.SetCurrentModule(L"");
-		manager.RegisterAddress(0, L"", 0, 0);		*/ // $$ uncomment
+		manager.RegisterAddress(0, L"", 0, 0);
 	}
 
 	TEST(ExecutedAddressManagerTest, MarkAddressAsExecuted)
 	{
-		/*cov::ExecutedAddressManager manager;
+		cov::ExecutedAddressManager manager;
 
 		manager.SetCurrentModule(L"");
 
 		ASSERT_THROW(manager.MarkAddressAsExecuted(0), cov::CppCoverageException);
 
 		manager.RegisterAddress(0, L"", 0, 0);
-		ASSERT_NO_THROW(manager.MarkAddressAsExecuted(0))*/; // $$ uncomment
+		ASSERT_NO_THROW(manager.MarkAddressAsExecuted(0));
 	}	
 
 	TEST(ExecutedAddressManagerTest, CreateCoverageData)
 	{
-	/*	cov::ExecutedAddressManager manager;
+		cov::ExecutedAddressManager manager;
 		
 		const std::wstring moduleName = L"module";
 		const std::wstring filename = L"filename";
@@ -70,7 +70,7 @@ namespace CppCoverageTest
 		ASSERT_FALSE(line42->HasBeenExecuted());
 
 		ASSERT_NE(nullptr, line43);		
-		ASSERT_TRUE(line43->HasBeenExecuted());*/ // $$$
+		ASSERT_TRUE(line43->HasBeenExecuted());
 	}
 	
 }

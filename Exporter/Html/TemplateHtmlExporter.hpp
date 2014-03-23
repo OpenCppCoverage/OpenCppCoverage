@@ -3,7 +3,7 @@
 #include <memory>
 
 #include <boost/filesystem.hpp>
-#include "../Export.hpp"
+#include "../ExporterExport.hpp"
 
 namespace CppCoverage
 {
@@ -25,6 +25,12 @@ namespace Exporter
 
 	class EXPORTER_DLL TemplateHtmlExporter
 	{
+	public:
+		static const std::string ExecutedLineTemplate;
+		static const std::string LinkTemplate;
+		static const std::string TotalLineTemplate;		
+		static const std::string NameTemplate;
+		
 	public:
 		explicit TemplateHtmlExporter(const fs::path& templateFolder);
 

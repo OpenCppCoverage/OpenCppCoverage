@@ -100,6 +100,7 @@
     <ClCompile Include="DebugInformationTest.cpp" />
     <ClCompile Include="ExecutedAddressManagerTest.cpp" />
     <ClCompile Include="HandleInformationTest.cpp" />
+    <ClCompile Include="OptionsParserTests.cpp" />
     <ClCompile Include="ProcessTest.cpp" />
     <ClCompile Include="StartInfoTest.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -111,6 +112,9 @@
   <ItemGroup>
     <ProjectReference Include="..\CppCoverage\CppCoverage.vcxproj">
       <Project>{a50dd5a6-e85a-4e0b-9cc6-90d32503ce62}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\Tools.vcxproj">
+      <Project>{7f6d05ef-deb0-4c64-bd13-a85f46314b91}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

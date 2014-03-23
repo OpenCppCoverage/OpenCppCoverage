@@ -2,7 +2,7 @@
 
 #include <iosfwd> 
 
-#include "../Export.hpp"
+#include "../ExporterExport.hpp"
 
 namespace CppCoverage
 {

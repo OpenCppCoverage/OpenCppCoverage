@@ -5,36 +5,39 @@
 
 #include "CppCoverageException.hpp"
 
-namespace FS = boost::filesystem;
+namespace fs = boost::filesystem;
 
 namespace CppCoverage
 {
 	namespace
 	{
-		void CheckFileExists(const std::wstring& filename)
+		void CheckPathExists(const fs::path& path)
 		{			
-			if (!FS::exists(filename))
-				THROW(L"File " << filename << L" does not exists.");
+			if (!fs::exists(path))
+				THROW(L"File " << path << L" does not exists.");
 		}
 	}
 	//-------------------------------------------------------------------------
-	StartInfo::StartInfo(const std::wstring& filename)
-		: filename_(filename)
+	StartInfo::StartInfo(const fs::path& path)
+		: path_(path)
 	{
-		CheckFileExists(filename);
-		AddArguments(filename);
+		CheckPathExists(path);
+		AddArguments(path.wstring());
 	}
 
 	//-------------------------------------------------------------------------
-	void StartInfo::SetWorkingDirectory(const std::wstring* workingDirectory)
+	StartInfo::StartInfo(const StartInfo&& startInfo)
+		: path_{ std::move(startInfo.path_) }
+		, arguments_{ std::move(startInfo.arguments_) }
+		, workingDirectory_{ std::move(startInfo.workingDirectory_) }
 	{
-		if (workingDirectory)
-		{
-			CheckFileExists(*workingDirectory);
-			workingDirectory_ = *workingDirectory;			
-		}
-		else
-			workingDirectory_.reset();
+	}
+
+	//-------------------------------------------------------------------------
+	void StartInfo::SetWorkingDirectory(const fs::path& workingDirectory)
+	{
+		CheckPathExists(workingDirectory);
+		workingDirectory_ = workingDirectory;					
 	}
 
 	//-------------------------------------------------------------------------
@@ -44,9 +47,9 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	const std::wstring& StartInfo::GetFilename() const
+	const boost::filesystem::path& StartInfo::GetPath() const
 	{
-		return filename_;
+		return path_;
 	}
 
 	//-------------------------------------------------------------------------
@@ -56,7 +59,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	const std::wstring* StartInfo::GetWorkingDirectory() const
+	const fs::path* StartInfo::GetWorkingDirectory() const
 	{
 		if (workingDirectory_)
 			return &workingDirectory_.get();
@@ -66,7 +69,7 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	std::wostream& operator<<(std::wostream& ostr, const StartInfo& startInfo)
 	{
-		ostr << L"Filename:" << startInfo.filename_ << std::endl;
+		ostr << L"Path:" << startInfo.path_ << std::endl;
 		ostr << L"Arguments:";
 		
 		for (const auto& arg : startInfo.arguments_)

@@ -12,9 +12,11 @@ namespace cov = CppCoverage;
 
 namespace ExporterTest
 {
+	//-------------------------------------------------------------------------
 	struct TemplateHtmlExporterTest : public ::testing::Test
 	{
 	public:
+		//---------------------------------------------------------------------
 		TemplateHtmlExporterTest()
 			: templateHtmlExporter_("")
 			, title_(L"title")
@@ -24,7 +26,8 @@ namespace ExporterTest
 			templateDictionary_ = templateHtmlExporter_.CreateTemplateDictionary(title_);
 			peer_.reset(new ctemplate::TemplateDictionaryPeer(templateDictionary_.get()));
 		}
-			// $$ tester le code avec des exceptions pour voir si cela fonctionne 
+		
+		//---------------------------------------------------------------------
 		void CheckSection(const std::string& sectionName)
 		{
 			std::vector<const ctemplate::TemplateDictionary*> fileTemplates;
@@ -32,11 +35,14 @@ namespace ExporterTest
 			EXPECT_EQ(1, fileTemplates.size());
 			ctemplate::TemplateDictionaryPeer fileTemplatePeer{ fileTemplates[0] };
 
-			EXPECT_EQ(fileOutput_.string(), fileTemplatePeer.GetSectionValue("LINK"));
-			EXPECT_EQ(std::string("0"), fileTemplatePeer.GetSectionValue("EXECUTED_LINE")); // $$ use constantes here
-			EXPECT_EQ(std::string("0"), fileTemplatePeer.GetSectionValue("UNEXECUTED_LINE")); // $$ use constantes here
-						
-			EXPECT_EQ(filePath_.string(), fileTemplatePeer.GetSectionValue("NAME"));
+			EXPECT_EQ(fileOutput_.string(), fileTemplatePeer.GetSectionValue(
+				Exporter::TemplateHtmlExporter::LinkTemplate));
+			EXPECT_EQ(std::string("0"), fileTemplatePeer.GetSectionValue(
+				Exporter::TemplateHtmlExporter::ExecutedLineTemplate));
+			EXPECT_EQ(std::string("0"), fileTemplatePeer.GetSectionValue(
+				Exporter::TemplateHtmlExporter::TotalLineTemplate));						
+			EXPECT_EQ(filePath_.string(), fileTemplatePeer.GetSectionValue(
+				Exporter::TemplateHtmlExporter::NameTemplate));
 		}
 
 		const std::wstring title_;
@@ -47,11 +53,13 @@ namespace ExporterTest
 		fs::path filePath_;
 	};
 
+	//-------------------------------------------------------------------------
 	TEST_F(TemplateHtmlExporterTest, CreateTemplateDictionary)
 	{		
 		ASSERT_EQ(Tools::Tool::ToString(title_), peer_->GetSectionValue("TITLE"));
 	}
 
+	//-------------------------------------------------------------------------
 	TEST_F(TemplateHtmlExporterTest, AddFileSectionToDictionary)
 	{			
 		CppCoverage::FileCoverage fileCoverage{filePath_};
@@ -59,11 +67,11 @@ namespace ExporterTest
 		CheckSection("FILE");
 	}
 
+	//-------------------------------------------------------------------------
 	TEST_F(TemplateHtmlExporterTest, AddModuleSectionToDictionary)
 	{
 		CppCoverage::ModuleCoverage moduleCoverage{ filePath_ };
 		templateHtmlExporter_.AddModuleSectionToDictionary(moduleCoverage, fileOutput_, *templateDictionary_);
 		CheckSection("MODULE");		
 	}
-
 }

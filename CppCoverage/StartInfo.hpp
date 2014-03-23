@@ -4,6 +4,7 @@
 #include <vector>
 #include <iosfwd>
 #include <boost/optional.hpp>
+#include <boost/filesystem.hpp>
 
 #include "CppCoverageExport.hpp"
 
@@ -12,24 +13,26 @@ namespace CppCoverage
 	class CPPCOVERAGE_DLL StartInfo
 	{
 	public:
-		explicit StartInfo(const std::wstring& filename);
+		explicit StartInfo(const boost::filesystem::path&);
 		
-		StartInfo(const StartInfo&) = default;
+		StartInfo(const StartInfo&&);
+
+		StartInfo(const StartInfo&) = default;		
 		StartInfo& operator=(const StartInfo&) = default;
 
-		void SetWorkingDirectory(const std::wstring*);
+		void SetWorkingDirectory(const boost::filesystem::path&);
 		void AddArguments(const std::wstring&);
 
-		const std::wstring& GetFilename() const; // $$ rename to path !!!
+		const boost::filesystem::path& GetPath() const;
 		const std::vector<std::wstring>& GetArguments() const;
-		const std::wstring* GetWorkingDirectory() const;				
+		const boost::filesystem::path* GetWorkingDirectory() const;
 
 		friend std::wostream& operator<<(std::wostream& ostr, const StartInfo&);
 
 	private:
-		std::wstring filename_;
+		boost::filesystem::path path_;
 		std::vector<std::wstring> arguments_;
-		boost::optional<std::wstring> workingDirectory_;
+		boost::optional<boost::filesystem::path> workingDirectory_;
 	};
 }
 

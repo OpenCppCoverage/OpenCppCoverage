@@ -14,6 +14,7 @@ namespace CppCoverage
 
 	public:
 		explicit Patterns(bool isRegexCaseSensitiv);
+		Patterns(const Patterns&) = default;
 		Patterns(Patterns&&);
 
 		void AddPositivePatterns(const std::wstring&);
@@ -24,10 +25,8 @@ namespace CppCoverage
 
 		bool IsRegexCaseSensitiv() const;
 
-	private:
-		Patterns(const Patterns&) = delete;
-		Patterns& operator=(const Patterns&) = delete;
-
+		Patterns& operator=(const Patterns&) = default;
+		
 	private:
 		T_Patterns positivePatterns_;
 		T_Patterns negativePatterns_;
