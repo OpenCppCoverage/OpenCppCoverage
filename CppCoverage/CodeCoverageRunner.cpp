@@ -18,9 +18,9 @@
 namespace CppCoverage
 {		
 
+	//-------------------------------------------------------------------------
 	const std::string CodeCoverageRunner::unhandledExceptionErrorMessage = "Unhandled exception: ";
-
-	// $$$ Manage file collision  (same file in different folder or module)
+	
 	//-------------------------------------------------------------------------
 	CodeCoverageRunner::CodeCoverageRunner()
 	{ 

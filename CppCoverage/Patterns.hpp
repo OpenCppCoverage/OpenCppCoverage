@@ -17,19 +17,21 @@ namespace CppCoverage
 		Patterns(const Patterns&) = default;
 		Patterns(Patterns&&);
 
-		void AddPositivePatterns(const std::wstring&);
-		const T_Patterns& GetPositivePatterns() const;
+		void AddSelectedPatterns(const std::wstring&);
+		const T_Patterns& GetSelectedPatterns() const;
 
-		void AddNegativePatterns(const std::wstring&);
-		const T_Patterns& GetNegativePatterns() const;
+		void AddExcludedPatterns(const std::wstring&);
+		const T_Patterns& GetExcludedPatterns() const;
 
 		bool IsRegexCaseSensitiv() const;
 
 		Patterns& operator=(const Patterns&) = default;
 		
+		friend std::wostream& operator<<(std::wostream&, const Patterns&);
+	
 	private:
-		T_Patterns positivePatterns_;
-		T_Patterns negativePatterns_;
+		T_Patterns selectedPatterns_;
+		T_Patterns excludedPatterns_;
 		bool isRegexCaseSensitiv_;
 	};
 }

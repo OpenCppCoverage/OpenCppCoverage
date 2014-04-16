@@ -4,6 +4,7 @@
 #include <dbghelp.h>
 #include "Tools/Tool.hpp"
 #include "Tools/Log.hpp"
+#include "Tools/ScopedAction.hpp"
 
 #include "CppCoverageException.hpp"
 #include "IDebugInformationEventHandler.hpp"
@@ -110,20 +111,12 @@ namespace CppCoverage
 		if (!baseAddress)
 			THROW("Cannot load module for: " << filename);
 		
-		try
-		{
-			Context context{ hProcess_, baseAddress, baseOfImage, debugInformationEventHandler };
-			
-			if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
-				LOG_WARNING << "Cannot find pdb for " << filename;
+		Tools::ScopedAction scopedAction{ [=]{ UnloadModule64(baseAddress);  } };
 
-			UnloadModule64(baseAddress);			
-		}
-		catch (...)
-		{
-			UnloadModule64(baseAddress);
-			throw;
-		}		
+		Context context{ hProcess_, baseAddress, baseOfImage, debugInformationEventHandler };
+			
+		if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
+			LOG_WARNING << "Cannot find pdb for " << filename;
 	}
 
 	//-------------------------------------------------------------------------

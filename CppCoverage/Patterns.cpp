@@ -3,6 +3,17 @@
 
 namespace CppCoverage
 {
+	namespace
+	{
+		//-------------------------------------------------------------------------
+		std::wostream& operator<<(std::wostream& ostr, const Patterns::T_Patterns& patterns)
+		{
+			for (const auto& pattern : patterns)
+				ostr << pattern << ' ';
+			return ostr;
+		}
+	}
+
 	//-------------------------------------------------------------------------
 	Patterns::Patterns(bool isRegexCaseSensitiv)
 		: isRegexCaseSensitiv_(isRegexCaseSensitiv)
@@ -13,37 +24,46 @@ namespace CppCoverage
 	Patterns::Patterns(Patterns&& pattern)
 		: isRegexCaseSensitiv_(pattern.isRegexCaseSensitiv_)
 	{
-		std::swap(positivePatterns_, pattern.positivePatterns_);
-		std::swap(negativePatterns_, pattern.negativePatterns_);
+		std::swap(selectedPatterns_, pattern.selectedPatterns_);
+		std::swap(excludedPatterns_, pattern.excludedPatterns_);
 	}
 
 	//-------------------------------------------------------------------------
-	void Patterns::AddPositivePatterns(const std::wstring& pattern)
+	void Patterns::AddSelectedPatterns(const std::wstring& pattern)
 	{
-		positivePatterns_.push_back(pattern);
+		selectedPatterns_.push_back(pattern);
 	}
 
 	//-------------------------------------------------------------------------
-	const Patterns::T_Patterns& Patterns::GetPositivePatterns() const
+	const Patterns::T_Patterns& Patterns::GetSelectedPatterns() const
 	{
-		return positivePatterns_;
+		return selectedPatterns_;
 	}
 
 	//-------------------------------------------------------------------------
-	void Patterns::AddNegativePatterns(const std::wstring& pattern)
+	void Patterns::AddExcludedPatterns(const std::wstring& pattern)
 	{
-		negativePatterns_.push_back(pattern);
+		excludedPatterns_.push_back(pattern);
 	}
 	
 	//-------------------------------------------------------------------------
-	const Patterns::T_Patterns& Patterns::GetNegativePatterns() const
+	const Patterns::T_Patterns& Patterns::GetExcludedPatterns() const
 	{
-		return negativePatterns_;
+		return excludedPatterns_;
 	}
 
 	//-------------------------------------------------------------------------
 	bool Patterns::IsRegexCaseSensitiv() const
 	{
 		return isRegexCaseSensitiv_;
+	}
+	
+	//-------------------------------------------------------------------------
+	std::wostream& operator<<(std::wostream& ostr, const Patterns& patterns)
+	{
+		ostr << "Selected: " << patterns.selectedPatterns_;
+		ostr << "Excluded: " << patterns.excludedPatterns_;
+
+		return ostr;
 	}
 }

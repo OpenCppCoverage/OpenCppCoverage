@@ -2,6 +2,7 @@
 #include "CoverageFilter.hpp"
 
 #include <sstream>
+#include <regex>
 
 #include "Tools/Log.hpp"
 
@@ -12,21 +13,21 @@ namespace CppCoverage
 {	
 	//-------------------------------------------------------------------------
 	struct CoverageFilter::Filter
-	{
-		std::vector<boost::wregex> positiveRegexes;
-		std::vector<boost::wregex> negativeRegexes;
+	{		
+		std::vector<std::wregex> selectedRegexes;
+		std::vector<std::wregex> excludedRegexes;
 	};
 
 	namespace
 	{
 		//---------------------------------------------------------------------
-		const boost::wregex* MatchAny(
+		const std::wregex* MatchAny(
 			const std::wstring& str, 
-			const std::vector<boost::wregex>& regexes)
+			const std::vector<std::wregex>& regexes)
 		{
 			for (const auto& regEx : regexes)
 			{
-				if (boost::regex_match(str, regEx))
+				if (std::regex_match(str, regEx))
 					return &regEx;				
 			}
 
@@ -34,12 +35,12 @@ namespace CppCoverage
 		}		
 		
 		//---------------------------------------------------------------------
-		std::vector<boost::wregex> BuildRegexes(
+		std::vector<std::wregex> BuildRegexes(
 			const std::vector<std::wstring>& regexesStr,
 			bool isRegexCaseSensitiv)
 		{
-			auto flags = (isRegexCaseSensitiv) ? boost::regex::basic : boost::regex::icase;
-			std::vector<boost::wregex> regexes;
+			auto flags = (isRegexCaseSensitiv) ? std::regex::basic : std::regex::icase;
+			std::vector<std::wregex> regexes;
 
 			for (const auto& regexStr : regexesStr)
 				regexes.emplace_back(regexStr, flags);
@@ -86,11 +87,11 @@ namespace CppCoverage
 	{
 		std::unique_ptr<Filter> filter{ new Filter()};
 
-		filter->positiveRegexes = BuildRegexes(
-			patterns.GetPositivePatterns(), 
+		filter->selectedRegexes = BuildRegexes(
+			patterns.GetSelectedPatterns(), 
 			patterns.IsRegexCaseSensitiv());
-		filter->negativeRegexes = BuildRegexes(
-			patterns.GetNegativePatterns(), 
+		filter->excludedRegexes = BuildRegexes(
+			patterns.GetExcludedPatterns(), 
 			patterns.IsRegexCaseSensitiv());
 
 		return filter;
@@ -102,25 +103,23 @@ namespace CppCoverage
 		const Filter& filter,
 		std::wostream& ostr) const
 	{
-		const auto* positivRegEx = MatchAny(str, filter.positiveRegexes);
+		const auto* selectedRegEx = MatchAny(str, filter.selectedRegexes);
 
-		if (!positivRegEx)
+		if (!selectedRegEx)
 		{
-			ostr << L": " << str << L" is skipped. Match no positiv patterns";
+			ostr << L": " << str << L" is skipped. Match no selected patterns";
+			return false;
+		}
+		// $$ no wargningfor normal message (same line for same file) for example
+		const auto* excludedRegEx = MatchAny(str, filter.excludedRegexes);
+
+		if (excludedRegEx)
+		{
+			ostr << L": " << str << L" is not selected because it matchs excluded pattern: ";
 			return false;
 		}
 
-		const auto* negativeRegEx = MatchAny(str, filter.negativeRegexes);
-
-		if (negativeRegEx)
-		{
-			ostr << L": " << str << L" is not selected because it matchs negativ pattern: " 
-				<< negativeRegEx->str();
-			return false;
-		}
-
-		ostr << L": " << str << L" is selected because it matchs positiv pattern: " 
-			<< positivRegEx->str();
+		ostr << L": " << str << L" is selected because it matchs selected pattern: ";
 		return true;			
 	}
 }

@@ -75,8 +75,14 @@ namespace CppCoverage
 		for (const auto& arg : startInfo.arguments_)
 			ostr << arg << " ";
 		ostr << std::endl;
-		ostr << L"Working directory:" << startInfo.workingDirectory_ << std::endl;
+		ostr << L"Working directory:";
+		
+		if (startInfo.workingDirectory_)
+			ostr << startInfo.workingDirectory_;
+		else
+			ostr << " not set.";
 
+		ostr << std::endl;
 		return ostr;
 	}
 }

@@ -14,7 +14,7 @@ namespace sinks = boost::log::sinks;
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	void SetLoggerMinSeverity(const boost::log::trivial::severity_level minSeverity)
+	void SetLoggerMinSeverity(const boost::log::trivial::severity_level minSeverity) // $$ to try to see if we can have only one logger (perhaps it is because of static lib? )
 	{
 		auto filter = logging::trivial::severity >= minSeverity;
 		logging::core::get()->set_filter(filter);

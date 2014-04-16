@@ -146,6 +146,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CppCoverageConsoleException.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -164,6 +165,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Exporter\Exporter.vcxproj">
       <Project>{865b72e7-da46-4392-a1b3-e5bd752c7041}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\Tools.vcxproj">
+      <Project>{7f6d05ef-deb0-4c64-bd13-a85f46314b91}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

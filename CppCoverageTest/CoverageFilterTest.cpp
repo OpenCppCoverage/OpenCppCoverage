@@ -25,8 +25,8 @@ namespace CppCoverageTest
 			{
 				cov::Patterns patterns{false};
 
-				patterns.AddPositivePatterns(L".*12.*");
-				patterns.AddNegativePatterns(L".*3.*");
+				patterns.AddSelectedPatterns(L".*12.*");
+				patterns.AddExcludedPatterns(L".*3.*");
 
 				return patterns;
 			}

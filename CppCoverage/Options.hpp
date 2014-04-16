@@ -24,8 +24,11 @@ namespace CppCoverage
 
 		void SetVerboseModeSelected();
 		bool IsVerboseModeSelected() const;
-				
+			
+		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream&, const Options&);
+
 	private:
+		Options(const Options&&) = delete;
 		Options& operator=(Options&&) = delete;
 
 	private:

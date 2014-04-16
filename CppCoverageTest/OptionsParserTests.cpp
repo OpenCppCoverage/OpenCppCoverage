@@ -97,7 +97,7 @@ namespace CppCoverageConsoleTest // $$ add namespace for test and separator ----
 	TEST(OptionsParserTest, SelectedModulePatterns)
 	{
 		CheckPatternOption(cov::OptionsParser::SelectedModulesOption, "module", 
-			[](const cov::Options& options) { return options.GetModulePatterns().GetPositivePatterns().front(); }
+			[](const cov::Options& options) { return options.GetModulePatterns().GetSelectedPatterns().front(); }
 		);
 	}
 	
@@ -105,7 +105,7 @@ namespace CppCoverageConsoleTest // $$ add namespace for test and separator ----
 	TEST(OptionsParserTest, ExcludedModulePatterns)
 	{
 		CheckPatternOption(cov::OptionsParser::ExcludedModulesOption, "module",
-			[](const cov::Options& options) { return options.GetModulePatterns().GetNegativePatterns().front(); }
+			[](const cov::Options& options) { return options.GetModulePatterns().GetExcludedPatterns().front(); }
 		);
 	}
 
@@ -113,7 +113,7 @@ namespace CppCoverageConsoleTest // $$ add namespace for test and separator ----
 	TEST(OptionsParserTest, SelectedSourcePatterns)
 	{
 		CheckPatternOption(cov::OptionsParser::SelectedSourcesOption, "source",
-			[](const cov::Options& options) { return options.GetSourcePatterns().GetPositivePatterns().front(); }
+			[](const cov::Options& options) { return options.GetSourcePatterns().GetSelectedPatterns().front(); }
 		);
 	}
 
@@ -121,7 +121,7 @@ namespace CppCoverageConsoleTest // $$ add namespace for test and separator ----
 	TEST(OptionsParserTest, ExcludedSourcePatterns)
 	{
 		CheckPatternOption(cov::OptionsParser::ExcludedSourcesOption, "source",
-			[](const cov::Options& options) { return options.GetSourcePatterns().GetNegativePatterns().front(); }
+			[](const cov::Options& options) { return options.GetSourcePatterns().GetExcludedPatterns().front(); }
 		);
 	}
 

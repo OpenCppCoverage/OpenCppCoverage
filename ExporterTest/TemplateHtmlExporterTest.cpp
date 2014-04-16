@@ -20,7 +20,7 @@ namespace ExporterTest
 		TemplateHtmlExporterTest()
 			: templateHtmlExporter_("")
 			, title_(L"title")
-			, fileOutput_{ "FilePath" }
+			, fileOutput_{ __FILE__ }
 			, filePath_{ "path" }
 		{			
 			templateDictionary_ = templateHtmlExporter_.CreateTemplateDictionary(title_);

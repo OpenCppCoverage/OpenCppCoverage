@@ -40,6 +40,14 @@ namespace CppCoverage
 		HANDLE GetProcessHandle(DWORD dwProcessId) const;
 		HANDLE GetThreadHandle(DWORD dwThreadId) const;
 
+		struct ProcessStatus;
+		ProcessStatus ProcessNoCreationalEvent(
+			const DEBUG_EVENT& debugEvent,
+			IDebugEventsHandler& debugEventsHandler,
+			HANDLE hProcess,
+			HANDLE hThread,
+			DWORD dwThreadId);
+
 	private:
 		std::unordered_map<DWORD, HANDLE> processHandles_;
 		std::unordered_map<DWORD, HANDLE> threadHandles_;

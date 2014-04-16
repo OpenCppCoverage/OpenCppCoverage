@@ -38,8 +38,9 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	void ModuleCoverage::ComputeCoverageRate()
-	{
-		coverageRate_.ComputeFrom(files_);
+	{		
+		coverageRate_.RecursiveComputeFrom(files_);
+		coverageRate_.SortByLowestRate(files_);
 	}
 
 	//-------------------------------------------------------------------------

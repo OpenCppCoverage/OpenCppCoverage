@@ -49,7 +49,11 @@ namespace Exporter
 
 		std::string GenerateModuleTemplate(const ctemplate::TemplateDictionary& templateDictionary) const;
 		std::string GenerateProjectTemplate(const ctemplate::TemplateDictionary& templateDictionary) const;
-		std::string GenerateSourceTemplate(const std::wstring& title, const std::wstring& codeContent) const;
+		std::string GenerateSourceTemplate(
+			const std::wstring& title, 
+			const std::wstring& codeContent,
+			const fs::path& sourceCss,
+			const fs::path& prettify) const;
 
 	private:
 

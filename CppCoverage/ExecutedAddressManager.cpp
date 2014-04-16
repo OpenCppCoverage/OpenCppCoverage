@@ -75,7 +75,7 @@ namespace CppCoverage
 
 		if (lines.find(lineNumber) != lines.end())
 		{
-			LOG_WARNING << L"Line: " << lineNumber << L" in " << filename << L" already exists."; // $$ it is normal ??
+			LOG_DEBUG << L"Line: " << lineNumber << L" in " << filename << L" already exists."; // $$ it is normal ??
 			return false; // $$ add void ??
 		}
 				
@@ -111,14 +111,13 @@ namespace CppCoverage
 			 
 		return line->instruction_;
 	}
-
-	// $$ mettre un flag pour savoir si le module a bien ete charger mais qu il n a pas de fichier source	
+	
 	//-------------------------------------------------------------------------
 	CoverageData ExecutedAddressManager::CreateCoverageData(const std::wstring& name) const
 	{
 		CoverageData coverageData{name};
-
-		for (const auto& module : modules_)
+		
+		for (const auto& module : modules_) // $$ add log
 		{
 			auto& moduleCoverage = coverageData.AddModule(module->name_);
 
@@ -135,9 +134,7 @@ namespace CppCoverage
 					const auto& line = pair.second;
 					fileCoverage.AddLine(lineNumber, line.hasBeenExecuted_);
 				}
-				fileCoverage.ComputeCoverageRate();
-			}
-			moduleCoverage.ComputeCoverageRate();
+			}			
 		}
 
 		coverageData.ComputeCoverageRate();

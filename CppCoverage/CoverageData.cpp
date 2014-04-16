@@ -52,7 +52,8 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------	
 	void CoverageData::ComputeCoverageRate()
 	{
-		coverageRate_.ComputeFrom(modules_);
+		coverageRate_.RecursiveComputeFrom(modules_);
+		coverageRate_.SortByLowestRate(modules_);
 	}
 }
 

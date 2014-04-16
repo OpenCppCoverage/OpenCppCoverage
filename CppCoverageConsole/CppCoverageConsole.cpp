@@ -3,68 +3,93 @@
 
 #include "stdafx.h"
 
-#include <boost/filesystem.hpp>
-
-// $$ clean
-#include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
 
-#include "Tools/Log.hpp"
-
+#include "CppCoverage/OptionsParser.hpp"
+#include "CppCoverage/Options.hpp"
+#include "CppCoverage/CppCoverageLog.hpp"
 #include "CppCoverage/CodeCoverageRunner.hpp"
 #include "CppCoverage/CoverageSettings.hpp"
+#include "CppCoverage/CoverageData.hpp"
 #include "CppCoverage/StartInfo.hpp"
-#include "CppCoverage/Patterns.hpp"
 
 #include "Exporter/Html/HtmlExporter.hpp"
 
+#include "Tools/Tool.hpp"
+#include "Tools/Log.hpp"
 
-#include "CppCoverage/CppCoverageLog.hpp"
+#include "CppCoverageConsoleException.hpp"
+
 namespace cov = CppCoverage;
 namespace logging = boost::log;
 
-int _tmain(int argc, _TCHAR* argv[])
-{	
-	auto filter = logging::trivial::severity >= logging::trivial::info;
-	logging::core::get()->set_filter(filter); // $$ remove this code
-		
-	cov::SetLoggerMinSeverity(logging::trivial::info);
-
-	if (argc != 3)
+namespace
+{
+	//-----------------------------------------------------------------------------
+	fs::path GetExecutablePath()
 	{
-		LOG_ERROR << L"Invalid number of argument" << std::endl; // $$ to clean
-		return 1;
+		std::vector<wchar_t> filename(4096);
+
+		if (!GetModuleFileName(nullptr, &filename[0], filename.size()))
+			THROW("Cannot get current executable path.");
+
+		return fs::path{&filename[0]};
 	}
 
-	LOG_INFO << L"Start: " << std::wstring(argv[0]) << L" with arguments";
+	//-----------------------------------------------------------------------------
+	fs::path GetExecutableFolder()
+	{
+		fs::path executablePath = GetExecutablePath();
 
-	for (int i = 0; i < argc; ++i)
-		LOG_INFO << L'\t' << std::wstring(argv[i]);
+		return executablePath.parent_path();
+	}
 
-	
+	// $$ remove warning compilations
+	//-----------------------------------------------------------------------------
+	void Run(const cov::Options& options)
+	{
+		auto logLevel = (options.IsVerboseModeSelected()) ? logging::trivial::debug : logging::trivial::info;
+		cov::SetLoggerMinSeverity(logLevel); // $$ Set logger for exporter
+		
+		const auto& startInfo = options.GetStartInfo();
+
+		cov::CodeCoverageRunner codeCoverageRunner;
+		cov::CoverageSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
+
+		std::wostringstream ostr;
+		ostr << std::endl << options;
+		LOG_INFO << ostr.str();
+
+		cov::CoverageData coverage = codeCoverageRunner.RunCoverage(startInfo, settings);
+		fs::path templateFolder = GetExecutableFolder() / "Template";
+		Exporter::HtmlExporter htmlExporter{ templateFolder };
+		
+		boost::filesystem::path output = "Coverage"; // $$ add the name of the module
+		htmlExporter.Export(coverage, output);
+	}
+}
+
+//-----------------------------------------------------------------------------
+int main(int argc, const char* argv[])
+{	
+	cov::OptionsParser optionsParser;
 
 	try
 	{		
-		cov::CodeCoverageRunner codeCoverageRunner;
-		cov::StartInfo startInfo{ argv[1] };
-		cov::Patterns modulePatterns{ false };
-		cov::Patterns sourcePatterns{ false };
+		auto options = optionsParser.Parse(argc, argv);
 
-	//	startInfo.AddArguments(L"--gtest_filter=CoverageDataTest.*");
-		cov::CoverageSettings settings{ modulePatterns, sourcePatterns };
-
-		modulePatterns.AddPositivePatterns(L".*");
-		sourcePatterns.AddPositivePatterns(L".*CppCoverage.*cpp"); // ConsoleForCppCoverageTest.cpp");
-
-		//settings.AddSourcePositivePatterns(L"c:\\users\\olivier_2\\desktop\\dev\\cppcoverage");
-	
-		cov::CoverageData coverage = codeCoverageRunner.RunCoverage(startInfo, settings);
-		fs::path templateFolder = fs::absolute("C:\\Users\\Olivier_2\\Desktop\\Dev\\CppCoverage\\Debug\\Template");
-		Exporter::HtmlExporter htmlExporter{ templateFolder};
-
-		boost::filesystem::path output = argv[2];
-		htmlExporter.Export(coverage, output);
+		if (options)
+		{
+			Run(*options);
+			return 0;
+		}
+		
+		std::wcerr << optionsParser << std::endl;
+	}
+	catch (const boost::program_options::unknown_option& unknownOption)
+	{
+		std::wcerr << unknownOption.what() << std::endl;
+		std::wcerr << optionsParser << std::endl;
 	}
 	catch (const std::exception& e)
 	{
@@ -72,7 +97,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	catch (...)
 	{
-		std::cerr << "Unknown Error" << std::endl;
+		std::cerr << "Unknown Error:" << std::endl;
 	}
-	return 0;
+
+	return 1;
 }

@@ -10,16 +10,14 @@
 
 #include "TemplateHtmlExporter.hpp"
 #include "HtmlFileCoverageExporter.hpp"
-
+#include "HtmlFolderStructure.hpp"
 namespace cov = CppCoverage;
 
 namespace Exporter
 {		
 
 	namespace
-	{
-		const std::wstring codePrettify = L"google-code-prettify";
-
+	{		
 		//-------------------------------------------------------------------------
 		void WriteContentTo(const std::string& content, const fs::path& path)
 		{
@@ -27,31 +25,6 @@ namespace Exporter
 
 			ofs << content;
 			ofs.flush();
-		}
-
-		//---------------------------------------------------------------------
-		fs::path GetFileCoverageOutput(
-			const fs::path& moduleFolderPath, 
-			const CppCoverage::FileCoverage& file)
-		{
-			auto filename = file.GetPath().filename();
-			auto output = filename.replace_extension("html");
-			
-			return moduleFolderPath / output;
-		}	
-
-		void CopyRecursiveDirectoryContent(
-			const fs::path& from,
-			const fs::path& to)
-		{
-			fs::create_directory(to);
-			for (fs::recursive_directory_iterator it(from); 
-				it != fs::recursive_directory_iterator(); ++it)
-			{
-				const auto& path = it->path();
-
-				fs::copy_file(path, to / path.filename(), fs::copy_option::overwrite_if_exists);				
-			}
 		}
 	}
 	
@@ -66,50 +39,62 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	void HtmlExporter::Export(
 		const CppCoverage::CoverageData& coverageData, 
-		const boost::filesystem::path& outputFolder) const
-	{				
-		auto projectDictionary = exporter_.CreateTemplateDictionary(coverageData.GetName());
+		const boost::filesystem::path& outputFolderPrefix) const
+	{	
+		HtmlFolderStructure htmlFolderStructure{templateFolder_};
 
-		fs::create_directory(outputFolder); // $$ manage conflit
-		CopyRecursiveDirectoryContent(templateFolder_ / codePrettify, outputFolder / codePrettify);
+		auto projectDictionary = exporter_.CreateTemplateDictionary(coverageData.GetName());				
+		auto outputFolder = htmlFolderStructure.CreateCurrentRoot(outputFolderPrefix);
+
 		for (const auto& module : coverageData.GetModules())
 		{			
-			auto moduleFilename = module->GetPath().filename();
-			auto moduleFolderPath = outputFolder / moduleFilename.replace_extension("");
+			const auto& modulePath = module->GetPath();
+			auto moduleFilename = module->GetPath().filename();			
 			auto moduleTemplateDictionary = exporter_.CreateTemplateDictionary(moduleFilename.wstring());
 			
-			fs::create_directory(moduleFolderPath);
-			for (const auto& file : module->GetFiles())
-			{
-				boost::optional<fs::path> generatedOutput = ExportFile(moduleFolderPath, *file);
-				exporter_.AddFileSectionToDictionary(*file, generatedOutput.get_ptr(), *moduleTemplateDictionary);
-			}
-
-			auto modulePath = moduleFolderPath.replace_extension(L".html"); // $$ manage collision
+			auto htmlModulePath = htmlFolderStructure.CreateCurrentModule(modulePath);
+			ExportFiles(*module, htmlFolderStructure, *moduleTemplateDictionary);
+			
 			auto content = exporter_.GenerateModuleTemplate(*moduleTemplateDictionary);			
-			WriteContentTo(content, modulePath);
-			exporter_.AddModuleSectionToDictionary(*module, modulePath, *projectDictionary);
+			WriteContentTo(content, htmlModulePath);
+			exporter_.AddModuleSectionToDictionary(*module, htmlModulePath, *projectDictionary);
 		}
-		
+
 		auto content = exporter_.GenerateProjectTemplate(*projectDictionary);
 		WriteContentTo(content, outputFolder / L"index.html");
 	}	
 
 	//---------------------------------------------------------------------
+	void HtmlExporter::ExportFiles(
+		const cov::ModuleCoverage& module,
+		const HtmlFolderStructure& htmlFolderStructure, 
+		ctemplate::TemplateDictionary& moduleTemplateDictionary) const
+	{
+		for (const auto& file : module.GetFiles())
+		{
+			boost::optional<fs::path> generatedOutput = ExportFile(htmlFolderStructure, *file);
+			exporter_.AddFileSectionToDictionary(*file, generatedOutput.get_ptr(), moduleTemplateDictionary);
+		}
+	}
+
+	//---------------------------------------------------------------------
 	boost::optional<fs::path> HtmlExporter::ExportFile(
-		const fs::path& moduleFolderPath, 
+		const HtmlFolderStructure& htmlFolderStructure,
 		const cov::FileCoverage& fileCoverage) const
 	{
-		auto fileOutput = GetFileCoverageOutput(moduleFolderPath, fileCoverage);
+		auto htmlFilePath = htmlFolderStructure.GetHtmlFilePath(fileCoverage.GetPath());
 		std::wostringstream ostr;
 
 		if (!fileCoverageExporter_.Export(fileCoverage, ostr))
 			return boost::optional<fs::path>();
 		
 		auto title = fileCoverage.GetPath().filename().wstring();
-		auto content = exporter_.GenerateSourceTemplate(title, ostr.str());
-		WriteContentTo(content, fileOutput);
-		return fileOutput;
-	}
+		auto content = exporter_.GenerateSourceTemplate(
+			title, ostr.str(), htmlFolderStructure.GetCodeCssPath(), htmlFolderStructure.GetCodePrettifyPath());
+
+		WriteContentTo(content, htmlFilePath);
+
+		return htmlFilePath;
+	}	
 }
 

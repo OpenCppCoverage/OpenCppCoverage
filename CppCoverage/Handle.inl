@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "tools/Log.hpp"
+#include "tools/Tool.hpp"
 
 #include "Handle.hpp"
 #include "CppCoverageException.hpp"
@@ -32,21 +33,13 @@ namespace CppCoverage
 	template<typename T_Handle, typename T_Releaser>
 	Handle<T_Handle, T_Releaser>::~Handle()
 	{
-		try
+		Tools::Tool::Try([&]
 		{
 			if (handle_ && !releaser_(handle_))
 			{
 				LOG_ERROR << "Cannot release handler";
 			}
-		}
-		catch (const std::exception& e)
-		{
-			LOG_ERROR << "Exception when releasing handler:" << e.what();
-		}
-		catch (...)
-		{
-			LOG_ERROR << "Unknown exception when releasing handler";
-		}
+		});		
 	}
 
 	//----------------------------------------------------------------------------

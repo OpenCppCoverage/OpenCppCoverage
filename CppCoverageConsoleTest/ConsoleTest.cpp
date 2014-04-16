@@ -6,30 +6,20 @@
 #include <Poco/PipeStream.h>
 #include <Poco/StreamCopier.h>
 
+#include "tools/ScopedAction.hpp"
+
 namespace fs = boost::filesystem;
 
 TEST(ConsoleTest, HtmlExport)
 {
 	fs::path console = fs::canonical("../Debug/CppCoverageConsole.exe"); // $$$ improve
 	fs::path testExe = fs::canonical("../Debug/ConsoleForCppCoverageTest.exe"); // $$$ improve
+	
+	std::vector<std::string> arguments{ testExe.string()};
+	Poco::Pipe output;
+	auto handle = Poco::Process::launch(console.string(), arguments, "../Debug", nullptr, &output, &output);
+	handle.wait();
 
-	auto tempPath = fs::absolute(fs::unique_path());
-
-	try
-	{
-		std::vector<std::string> arguments{ testExe.string(), tempPath.string() };
-		Poco::Pipe output;
-		auto handle = Poco::Process::launch(console.string(), arguments, "../Debug", nullptr, &output, &output);
-		handle.wait();
-
-		Poco::PipeInputStream inputStream(output);
-		Poco::StreamCopier::copyStream(inputStream, std::cout);
-	}
-	catch (...)
-	{
-		fs::remove_all(tempPath);
-		throw;
-	}
-
-	fs::remove_all(tempPath);
+	Poco::PipeInputStream inputStream(output);
+	Poco::StreamCopier::copyStream(inputStream, std::cout);
 }

@@ -19,5 +19,3 @@ namespace CppCoverageTest
 		DebugEventsHandlerMock& operator=(const DebugEventsHandlerMock&) = delete;
 	};
 }
-
-

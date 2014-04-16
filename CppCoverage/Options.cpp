@@ -16,14 +16,6 @@ namespace CppCoverage
 	}	
 
 	//-------------------------------------------------------------------------
-/*	Options::Options(const Options& options)
-		: modules_(options.modules_)
-		, sources_(options.sources_) // $$ todo
-		, verboseModeSelected_(options.verboseModeSelected_)
-	{
-	}*/
-
-	//-------------------------------------------------------------------------
 	const Patterns& Options::GetModulePatterns() const
 	{
 		return modules_;
@@ -51,5 +43,16 @@ namespace CppCoverage
 	bool Options::IsVerboseModeSelected() const
 	{
 		return verboseModeSelected_;
+	}
+
+	//-------------------------------------------------------------------------
+	std::wostream& operator<<(std::wostream& ostr, const Options& options)
+	{
+		ostr << options.startInfo_ << std::endl;
+		ostr << L"Modules: " << options.modules_ << std::endl;
+		ostr << L"Sources: " << options.sources_ << std::endl;
+		ostr << L"Verbose mode: " << options.verboseModeSelected_ << std::endl;
+
+		return ostr;
 	}
 }

@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include <boost/regex.hpp>
+#include <memory>
 
 #include "CppCoverageExport.hpp"
 

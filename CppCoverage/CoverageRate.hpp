@@ -10,7 +10,10 @@ namespace CppCoverage
 		CoverageRate();
 
 		template <typename T>
-		void ComputeFrom(const std::vector<T>& values);
+		void RecursiveComputeFrom(std::vector<T>& values);
+
+		template<typename T>
+		void SortByLowestRate(std::vector<T>& values) const;
 
 		void SetExecutedLinesCount(int);
 		void SetUnexecutedLinesCount(int);
@@ -21,23 +24,51 @@ namespace CppCoverage
 
 		CoverageRate& operator=(const CoverageRate&) = default;
 		CoverageRate(const CoverageRate&) = default;
-		
+
+	private:
+		template <typename T>
+		static int GetPercentRate(const T& value);
+
 	private:
 		int executedLinesCount_;
 		int unexecutedLinesCount_;
 	}; 
 
 	//-------------------------------------------------------------------------
+	template <typename T>
+	int CoverageRate::GetPercentRate(const T& value)
+	{
+		const auto& coverageRate = value->GetCoverageRate();
+
+		return coverageRate.GetPercentRate();
+	}
+
+	//-------------------------------------------------------------------------
 	template<typename T>
-	void CoverageRate::ComputeFrom(const std::vector<T>& values)
+	void CoverageRate::RecursiveComputeFrom(std::vector<T>& values)
 	{		
-		for (const auto& value : values)
+		executedLinesCount_ = 0;
+		unexecutedLinesCount_ = 0;
+
+		for (auto& value : values)
 		{
+			value->ComputeCoverageRate();
+
 			const auto& coverageRate = value->GetCoverageRate();
 
 			executedLinesCount_ += coverageRate.executedLinesCount_;
 			unexecutedLinesCount_ += coverageRate.unexecutedLinesCount_;
-		}
+		}		
+	}
+
+	//-------------------------------------------------------------------------
+	template<typename T>
+	void CoverageRate::SortByLowestRate(std::vector<T>& values) const
+	{
+		std::sort(begin(values), end(values), [](const T& value1, const T& value2)
+		{
+			return GetPercentRate(value1) < GetPercentRate(value2);
+		});
 	}
 }
 

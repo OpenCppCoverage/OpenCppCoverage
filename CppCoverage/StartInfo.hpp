@@ -27,7 +27,7 @@ namespace CppCoverage
 		const std::vector<std::wstring>& GetArguments() const;
 		const boost::filesystem::path* GetWorkingDirectory() const;
 
-		friend std::wostream& operator<<(std::wostream& ostr, const StartInfo&);
+		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream& ostr, const StartInfo&);
 
 	private:
 		boost::filesystem::path path_;

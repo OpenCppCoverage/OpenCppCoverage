@@ -67,8 +67,8 @@ namespace CppCoverageTest
 			cov::Patterns sourcePatterns{ false };
 			cov::CoverageSettings coverageSettings{modulePatterns, sourcePatterns};
 
-			modulePatterns.AddPositivePatterns(modulePattern);
-			sourcePatterns.AddPositivePatterns(sourcePattern);		
+			modulePatterns.AddSelectedPatterns(modulePattern);
+			sourcePatterns.AddSelectedPatterns(sourcePattern);		
 
 			return codeCoverageRunner.RunCoverage(*startInfo_, coverageSettings);
 		}

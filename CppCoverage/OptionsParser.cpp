@@ -55,17 +55,17 @@ namespace CppCoverage
 		Patterns GetPatterns(
 			const po::variables_map& variables, 
 			const std::string& selected, 
-			const std::string& excluded) // $$ rename positive pattern to selected pattern and negative to exclueded pattern
+			const std::string& excluded)
 		{
 			Patterns patterns{false};
 
 			auto selectedPatterns = GetValue<std::vector<std::string>>(variables, selected);
 			for (const auto& pattern : selectedPatterns)
-				patterns.AddPositivePatterns(Tools::Tool::ToWString(pattern));
+				patterns.AddSelectedPatterns(Tools::Tool::ToWString(pattern));
 
 			auto excludedPatterns = GetValue<std::vector<std::string>>(variables, excluded);
 			for (const auto& pattern : excludedPatterns)
-				patterns.AddNegativePatterns(Tools::Tool::ToWString(pattern));
+				patterns.AddExcludedPatterns(Tools::Tool::ToWString(pattern));
 
 			return patterns;
 		}

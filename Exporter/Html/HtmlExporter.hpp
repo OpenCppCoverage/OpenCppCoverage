@@ -4,6 +4,7 @@
 
 #include "TemplateHtmlExporter.hpp"
 #include "HtmlFileCoverageExporter.hpp"
+
 namespace CppCoverage
 {
 	class CoverageData;
@@ -23,10 +24,12 @@ namespace boost
 
 namespace Exporter
 {
+	class HtmlFolderStructure;
+
 	class EXPORTER_DLL HtmlExporter
 	{
 	public:
-		explicit HtmlExporter(const fs::path& templateFolder);
+		explicit HtmlExporter(const boost::filesystem::path& templateFolder);
 
 		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& outputFolder) const;
 
@@ -34,14 +37,19 @@ namespace Exporter
 		HtmlExporter(const HtmlExporter&) = delete;
 		HtmlExporter& operator=(const HtmlExporter&) = delete;
 
-		boost::optional<fs::path> ExportFile(
-			const fs::path& moduleFolderPath,
+		boost::optional<boost::filesystem::path> ExportFile(
+			const HtmlFolderStructure& htmlFolderStructure,
 			const CppCoverage::FileCoverage& fileCoverage) const;
+
+		void ExportFiles(
+			const CppCoverage::ModuleCoverage& module,
+			const HtmlFolderStructure& htmlFolderStructure,
+			ctemplate::TemplateDictionary& moduleTemplateDictionary) const;
 
 	private:
 		TemplateHtmlExporter exporter_;
 		HtmlFileCoverageExporter fileCoverageExporter_;
-		fs::path templateFolder_;
+		boost::filesystem::path templateFolder_;
 	};
 }
 

@@ -24,12 +24,20 @@ namespace Exporter
 		const std::string titleTemplate = "TITLE";
 		const std::string rateTemplate = "RATE";
 		const std::string codeTemplate = "CODE";
-
-
+		const std::string cssPathTemplate = "CSS_PATH";
+		const std::string prettifyPathTemplate = "PRETTIFY_PATH";
+	
 		//-------------------------------------------------------------------------
 		std::string ToStr(const std::wstring& str)
 		{
 			return Tools::Tool::ToString(str);
+		}
+
+		//-------------------------------------------------------------------------
+		void CheckFileExists(const fs::path& path)
+		{
+			if (!fs::exists(path))
+				THROW(path << " does not exist");
 		}
 
 		//-------------------------------------------------------------------------
@@ -40,18 +48,15 @@ namespace Exporter
 			const std::string& name)
 		{
 			if (link)
+			{
+				CheckFileExists(*link);				
 				sectionDictionary.SetValue(TemplateHtmlExporter::LinkTemplate, link->string());
+			}
 			sectionDictionary.SetIntValue(rateTemplate, coverageRate.GetPercentRate());
 			sectionDictionary.SetIntValue(TemplateHtmlExporter::ExecutedLineTemplate, coverageRate.GetExecutedLinesCount());
 			sectionDictionary.SetIntValue(TemplateHtmlExporter::TotalLineTemplate, coverageRate.GetTotalLinesCount());
 			sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);
-		}
-
-		void CheckFileExists(const fs::path& path)
-		{
-			if (!fs::exists(path))
-				THROW(path << " does not exist");
-		}
+		}		
 	}
 	
 	//-------------------------------------------------------------------------
@@ -64,7 +69,7 @@ namespace Exporter
 	TemplateHtmlExporter::TemplateHtmlExporter(const fs::path& templateFolder)
 		: projectTemplatePath_(templateFolder / "IndexTemplate.html")
 		, moduleTemplatePath_(templateFolder / "ModuleTemplate.html")
-		, fileTemplatePath_(templateFolder / "SourceTemplate.html")
+		, fileTemplatePath_(templateFolder / "SourceTemplate.html")		
 	{		
 	}
 
@@ -123,13 +128,23 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	std::string TemplateHtmlExporter::GenerateSourceTemplate(
 		const std::wstring& title,
-		const std::wstring& codeContent) const
+		const std::wstring& codeContent,
+		const fs::path& codeCss,
+		const fs::path& codePrettify) const
 	{
+		if (!fs::exists(codeCss))
+			THROW(codeCss << " does not exits"); // $$ make a fonction in tool for this
+		if (!fs::exists(codePrettify))
+			THROW(codePrettify << " does not exits"); // $$ make a fonction in tool for this
+
 		auto titleStr = Tools::Tool::ToString(title);
 		ctemplate::TemplateDictionary dictionary(titleStr);
 
 		dictionary.SetValue(titleTemplate, titleStr);
-		dictionary.SetValue(codeTemplate, Tools::Tool::ToString(codeContent));
+		dictionary.SetValue(codeTemplate, Tools::Tool::ToString(codeContent));	
+		dictionary.SetValue(cssPathTemplate, codeCss.string());
+		dictionary.SetValue(prettifyPathTemplate, codePrettify.string());
+
 		return GenerateTemplate(dictionary, fileTemplatePath_);
 	}
 
@@ -142,6 +157,7 @@ namespace Exporter
 		
 		if (!ctemplate::ExpandTemplate(templatePath.string(), ctemplate::DO_NOT_STRIP, &templateDictionary, &output))
 			THROW(L"Cannot generate output for " + templatePath.wstring()); 
+
 		return output;
 	}	
 }

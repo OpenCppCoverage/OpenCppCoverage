@@ -87,12 +87,14 @@ xcopy /s /y $(ProjectDir)\Html\Template $(OutDir)Template</Command>
     <ClInclude Include="ExporterExport.hpp" />
     <ClInclude Include="Html\HtmlExporter.hpp" />
     <ClInclude Include="Html\HtmlFileCoverageExporter.hpp" />
+    <ClInclude Include="Html\HtmlFolderStructure.hpp" />
     <ClInclude Include="Html\TemplateHtmlExporter.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ExporterException.cpp" />
     <ClCompile Include="Html\HtmlExporter.cpp" />
     <ClCompile Include="Html\HtmlFileCoverageExporter.cpp" />
+    <ClCompile Include="Html\HtmlFolderStructure.cpp" />
     <ClCompile Include="Html\TemplateHtmlExporter.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

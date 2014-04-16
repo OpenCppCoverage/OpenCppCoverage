@@ -2,6 +2,7 @@
 #include "Debugger.hpp"
 
 #include "tools/Log.hpp"
+#include "tools/ScopedAction.hpp"
 
 #include "Process.hpp"
 #include "CppCoverageException.hpp"
@@ -18,7 +19,22 @@ namespace CppCoverage
 				<< "(type:" << ripInfo.dwType << ")"
 				<< GetErrorMessage(ripInfo.dwError);
 		}
-	}
+	}	
+
+	//-------------------------------------------------------------------------
+	struct Debugger::ProcessStatus
+	{
+		ProcessStatus(
+			bool isProcessAlive = true,
+			DWORD continueStatus = DBG_CONTINUE)
+			: isProcessAlive_(isProcessAlive)
+			, continueStatus_(continueStatus)
+		{
+		}
+
+		bool isProcessAlive_;
+		DWORD continueStatus_;
+	};
 
 	//-------------------------------------------------------------------------
 	void Debugger::Debug(const StartInfo& startInfo, IDebugEventsHandler& debugEventsHandler)
@@ -27,9 +43,9 @@ namespace CppCoverage
 		process.Start(DEBUG_ONLY_THIS_PROCESS); // $$ manage child process too
 		
 		DEBUG_EVENT debugEvent;
-		bool processHasExited = false;
-						
-		while (!processHasExited)
+		ProcessStatus processStatus;
+								
+		while (processStatus.isProcessAlive_)
 		{
 			if (!WaitForDebugEvent(&debugEvent, INFINITE))
 				THROW_LAST_ERROR(L"Error WaitForDebugEvent:", GetLastError());
@@ -37,58 +53,66 @@ namespace CppCoverage
 			auto dwProcessId = debugEvent.dwProcessId;
 			auto dwThreadId = debugEvent.dwThreadId;						
 
-			auto continueStatus = DBG_CONTINUE;
-			if (debugEvent.dwDebugEventCode == CREATE_PROCESS_DEBUG_EVENT)
-				OnCreateProcess(debugEvent, debugEventsHandler);
-			else if (debugEvent.dwDebugEventCode == CREATE_THREAD_DEBUG_EVENT)
-				OnCreateThread(debugEvent.u.CreateThread.hThread, dwThreadId);
-			else
+			processStatus.continueStatus_ = DBG_CONTINUE;
+			switch (debugEvent.dwDebugEventCode)
 			{
-				auto hProcess = GetProcessHandle(dwProcessId);
-				auto hThread = GetThreadHandle(dwThreadId);
-
-				switch (debugEvent.dwDebugEventCode)
-				{				
-					case EXIT_PROCESS_DEBUG_EVENT:
-					{
-						OnExitProcess(debugEvent, hProcess, hThread, debugEventsHandler);
-						processHasExited = true;
-						break;
-					}
-					case EXIT_THREAD_DEBUG_EVENT: OnExitThread(dwThreadId); break;									
-					case LOAD_DLL_DEBUG_EVENT:
-					{
-						const auto& loadDll = debugEvent.u.LoadDll;
-						debugEventsHandler.OnLoadDll(hProcess, hThread, loadDll);
-						CloseHandle(loadDll.hFile); // $$ check for other evetns not listed here. Replace by handle  $$ split this code
-						break;
-					}
-					case EXCEPTION_DEBUG_EVENT:
-					{
-						continueStatus = debugEventsHandler.OnException(hProcess, hThread, debugEvent.u.Exception);
-						break;
-					}
-					case RIP_EVENT: 
-					{
-						OnRip(debugEvent.u.RipInfo);
-						processHasExited = true;
-						break;
-					}
-					default:
-						LOG_DEBUG << "Debug event:" << debugEvent.dwDebugEventCode;
+				case CREATE_PROCESS_DEBUG_EVENT: OnCreateProcess(debugEvent, debugEventsHandler); break;
+				case CREATE_THREAD_DEBUG_EVENT: OnCreateThread(debugEvent.u.CreateThread.hThread, dwThreadId); break;
+				default:
+				{
+					auto hProcess = GetProcessHandle(dwProcessId);
+					auto hThread = GetThreadHandle(dwThreadId);
+					processStatus = ProcessNoCreationalEvent(debugEvent, debugEventsHandler, hProcess, hThread, dwThreadId);
 				}
 			}
-			if (!ContinueDebugEvent(debugEvent.dwProcessId, debugEvent.dwThreadId, continueStatus))
+			if (!ContinueDebugEvent(debugEvent.dwProcessId, debugEvent.dwThreadId, processStatus.continueStatus_))
 				THROW_LAST_ERROR("Error in ContinueDebugEvent:", GetLastError());
 		}
 	}
+	
+	//-------------------------------------------------------------------------
+	Debugger::ProcessStatus
+		Debugger::ProcessNoCreationalEvent(
+		const DEBUG_EVENT& debugEvent,
+		IDebugEventsHandler& debugEventsHandler,
+		HANDLE hProcess,
+		HANDLE hThread,
+		DWORD dwThreadId)
+	{
+		switch (debugEvent.dwDebugEventCode)
+		{
+			case EXIT_PROCESS_DEBUG_EVENT:
+			{
+				OnExitProcess(debugEvent, hProcess, hThread, debugEventsHandler);
+				return ProcessStatus{ false };
+			}
+			case EXIT_THREAD_DEBUG_EVENT: OnExitThread(dwThreadId); break;
+			case LOAD_DLL_DEBUG_EVENT:
+			{
+				const auto& loadDll = debugEvent.u.LoadDll;
+				Tools::ScopedAction scopedAction{ [&loadDll]{ CloseHandle(loadDll.hFile); } };
+				debugEventsHandler.OnLoadDll(hProcess, hThread, loadDll);
+				break;
+			}
+			case EXCEPTION_DEBUG_EVENT:
+			{
+				auto continueStatus = debugEventsHandler.OnException(hProcess, hThread, debugEvent.u.Exception);
+				return ProcessStatus{ true, continueStatus };
+			}
+			case RIP_EVENT: OnRip(debugEvent.u.RipInfo); return ProcessStatus{ false };
+			default: LOG_DEBUG << "Debug event:" << debugEvent.dwDebugEventCode; break;
+		}
 
+		return ProcessStatus{};
+	}
+	
 	//-------------------------------------------------------------------------
 	void Debugger::OnCreateProcess(
 		const DEBUG_EVENT& debugEvent,
 		IDebugEventsHandler& debugEventsHandler)
 	{		
 		const auto& processInfo = debugEvent.u.CreateProcessInfo;
+		Tools::ScopedAction scopedAction{ [&processInfo]{ CloseHandle(processInfo.hFile); } };
 
 		LOG_DEBUG << "Create new Process:" << debugEvent.dwProcessId;
 
@@ -98,8 +122,6 @@ namespace CppCoverage
 		debugEventsHandler.OnCreateProcess(processInfo);
 
 		OnCreateThread(processInfo.hThread, debugEvent.dwThreadId);
-
-		CloseHandle(processInfo.hFile);		
 	}
 
 	//-------------------------------------------------------------------------
