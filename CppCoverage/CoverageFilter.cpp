@@ -2,7 +2,7 @@
 #include "CoverageFilter.hpp"
 
 #include <sstream>
-#include <regex>
+#include <boost/regex.hpp>
 
 #include "Tools/Log.hpp"
 
@@ -14,20 +14,20 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	struct CoverageFilter::Filter
 	{		
-		std::vector<std::wregex> selectedRegexes;
-		std::vector<std::wregex> excludedRegexes;
+		std::vector<boost::wregex> selectedRegexes;
+		std::vector<boost::wregex> excludedRegexes;
 	};
 
 	namespace
 	{
 		//---------------------------------------------------------------------
-		const std::wregex* MatchAny(
+		const boost::wregex* MatchAny(
 			const std::wstring& str, 
-			const std::vector<std::wregex>& regexes)
+			const std::vector<boost::wregex>& regexes)
 		{
 			for (const auto& regEx : regexes)
 			{
-				if (std::regex_match(str, regEx))
+				if (boost::regex_match(str, regEx))
 					return &regEx;				
 			}
 
@@ -35,12 +35,12 @@ namespace CppCoverage
 		}		
 		
 		//---------------------------------------------------------------------
-		std::vector<std::wregex> BuildRegexes(
+		std::vector<boost::wregex> BuildRegexes(
 			const std::vector<std::wstring>& regexesStr,
 			bool isRegexCaseSensitiv)
 		{
-			auto flags = (isRegexCaseSensitiv) ? std::regex::basic : std::regex::icase;
-			std::vector<std::wregex> regexes;
+			auto flags = (isRegexCaseSensitiv) ? boost::regex::basic : boost::regex::icase;
+			std::vector<boost::wregex> regexes;
 
 			for (const auto& regexStr : regexesStr)
 				regexes.emplace_back(regexStr, flags);
@@ -115,11 +115,11 @@ namespace CppCoverage
 
 		if (excludedRegEx)
 		{
-			ostr << L": " << str << L" is not selected because it matchs excluded pattern: ";
+			ostr << L": " << str << L" is not selected because it matchs excluded pattern: " << *excludedRegEx;
 			return false;
 		}
 
-		ostr << L": " << str << L" is selected because it matchs selected pattern: ";
+		ostr << L": " << str << L" is selected because it matchs selected pattern: " << *selectedRegEx;;
 		return true;			
-	}
+	} // $$ add logger in file. Reduce info in console
 }

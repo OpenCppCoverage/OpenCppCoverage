@@ -17,6 +17,7 @@ namespace Tools
 		static std::wstring ToWString(const std::string&);
 		static std::string ToString(const std::wstring&);
 		static void Try(std::function<void()>);
+		static void CheckPathExists(const boost::filesystem::path&);
 
 		static boost::filesystem::path GetUniquePath(const boost::filesystem::path& prefix);
 	};

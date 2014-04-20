@@ -32,14 +32,7 @@ namespace Exporter
 		{
 			return Tools::Tool::ToString(str);
 		}
-
-		//-------------------------------------------------------------------------
-		void CheckFileExists(const fs::path& path)
-		{
-			if (!fs::exists(path))
-				THROW(path << " does not exist");
-		}
-
+		
 		//-------------------------------------------------------------------------
 		void FillSection(
 			ctemplate::TemplateDictionary& sectionDictionary,
@@ -49,7 +42,7 @@ namespace Exporter
 		{
 			if (link)
 			{
-				CheckFileExists(*link);				
+				Tools::Tool::CheckPathExists(*link);
 				sectionDictionary.SetValue(TemplateHtmlExporter::LinkTemplate, link->string());
 			}
 			sectionDictionary.SetIntValue(rateTemplate, coverageRate.GetPercentRate());
@@ -132,10 +125,8 @@ namespace Exporter
 		const fs::path& codeCss,
 		const fs::path& codePrettify) const
 	{
-		if (!fs::exists(codeCss))
-			THROW(codeCss << " does not exits"); // $$ make a fonction in tool for this
-		if (!fs::exists(codePrettify))
-			THROW(codePrettify << " does not exits"); // $$ make a fonction in tool for this
+		Tools::Tool::CheckPathExists(codeCss);
+		Tools::Tool::CheckPathExists(codePrettify);
 
 		auto titleStr = Tools::Tool::ToString(title);
 		ctemplate::TemplateDictionary dictionary(titleStr);

@@ -117,8 +117,9 @@ namespace CppCoverage
 	{
 		CoverageData coverageData{name};
 		
-		for (const auto& module : modules_) // $$ add log
+		for (const auto& module : modules_)
 		{
+			LOG_INFO << L"Create coverage report for " << module->name_;
 			auto& moduleCoverage = coverageData.AddModule(module->name_);
 
 			for (const auto& file : module->files_)

@@ -46,6 +46,13 @@ namespace Tools
 		}
 	}
 
+	//-------------------------------------------------------------------------
+	void Tool::CheckPathExists(const fs::path& path)
+	{
+		if (!fs::exists(path))
+			throw std::runtime_error("TODO"); // $$ THROW(path << " does not exist");
+	}
+
 }
 
 

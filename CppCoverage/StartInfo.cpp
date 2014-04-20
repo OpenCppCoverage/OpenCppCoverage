@@ -3,25 +3,18 @@
 
 #include <boost/filesystem.hpp>
 
+#include "Tools/Tool.hpp"
 #include "CppCoverageException.hpp"
 
 namespace fs = boost::filesystem;
 
 namespace CppCoverage
-{
-	namespace
-	{
-		void CheckPathExists(const fs::path& path)
-		{			
-			if (!fs::exists(path))
-				THROW(L"File " << path << L" does not exists.");
-		}
-	}
+{	
 	//-------------------------------------------------------------------------
 	StartInfo::StartInfo(const fs::path& path)
 		: path_(path)
 	{
-		CheckPathExists(path);
+		Tools::Tool::CheckPathExists(path);
 		AddArguments(path.wstring());
 	}
 
@@ -36,7 +29,7 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	void StartInfo::SetWorkingDirectory(const fs::path& workingDirectory)
 	{
-		CheckPathExists(workingDirectory);
+		Tools::Tool::CheckPathExists(workingDirectory);
 		workingDirectory_ = workingDirectory;					
 	}
 
