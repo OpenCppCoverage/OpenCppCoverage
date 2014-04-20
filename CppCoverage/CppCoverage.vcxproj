@@ -55,19 +55,23 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\PropertySheet.props" />
+    <Import Project="..\PropertySheets\Boost.props" />
+    <Import Project="..\PropertySheets\Default.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\PropertySheet.props" />
+    <Import Project="..\PropertySheets\Boost.props" />
+    <Import Project="..\PropertySheets\Default.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\PropertySheet.props" />
+    <Import Project="..\PropertySheets\Boost.props" />
+    <Import Project="..\PropertySheets\Default.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\PropertySheet.props" />
+    <Import Project="..\PropertySheets\Boost.props" />
+    <Import Project="..\PropertySheets\Default.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -155,7 +159,6 @@
     <ClInclude Include="CoverageRate.hpp" />
     <ClInclude Include="CoverageSettings.hpp" />
     <ClInclude Include="CppCoverageException.hpp" />
-    <ClInclude Include="CppCoverageLog.hpp" />
     <ClInclude Include="Debugger.hpp" />
     <ClInclude Include="DebugInformation.hpp" />
     <ClInclude Include="ExecutedAddressManager.hpp" />
@@ -183,7 +186,6 @@
     <ClCompile Include="CoverageRate.cpp" />
     <ClCompile Include="CoverageSettings.cpp" />
     <ClCompile Include="CppCoverageException.cpp" />
-    <ClCompile Include="CppCoverageLog.cpp" />
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="DebugInformation.cpp" />
     <ClCompile Include="ExecutedAddressManager.cpp" />
