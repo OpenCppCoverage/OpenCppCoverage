@@ -116,7 +116,7 @@ namespace CppCoverage
 		Context context{ hProcess_, baseAddress, baseOfImage, debugInformationEventHandler };
 			
 		if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
-			LOG_WARNING << "Cannot find pdb for " << filename;
+			LOG_WARNING << L"Cannot find pdb for " << filename;
 	}
 
 	//-------------------------------------------------------------------------

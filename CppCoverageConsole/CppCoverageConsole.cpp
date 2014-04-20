@@ -7,7 +7,6 @@
 
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/Options.hpp"
-#include "CppCoverage/CppCoverageLog.hpp"
 #include "CppCoverage/CodeCoverageRunner.hpp"
 #include "CppCoverage/CoverageSettings.hpp"
 #include "CppCoverage/CoverageData.hpp"
@@ -47,16 +46,17 @@ namespace
 	// $$ remove warning compilations
 	//-----------------------------------------------------------------------------
 	void Run(const cov::Options& options)
-	{
+	{		
 		auto logLevel = (options.IsVerboseModeSelected()) ? logging::trivial::debug : logging::trivial::info;
-		cov::SetLoggerMinSeverity(logLevel); // $$ Set logger for exporter
-		
+		Tools::InitConsoleAndFileLog();
+		Tools::SetLoggerMinSeverity(logLevel);
+
 		const auto& startInfo = options.GetStartInfo();
 
 		cov::CodeCoverageRunner codeCoverageRunner;
 		cov::CoverageSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
 
-		std::wostringstream ostr;
+		std::wostringstream ostr; //$$ redirect executable code output?
 		ostr << std::endl << options;
 		LOG_INFO << ostr.str();
 

@@ -13,7 +13,7 @@
 #include "CppCoverage/FileCoverage.hpp"
 #include "CppCoverage/LineCoverage.hpp"
 #include "CppCoverage/Patterns.hpp"
-#include "CppCoverage/CppCoverageLog.hpp"
+#include "Tools/Log.hpp"
 
 #include "Tools.hpp"
 
@@ -38,14 +38,14 @@ namespace CppCoverageTest
 		{
 			error_ = boost::make_shared<std::ostringstream>();
 
-			CppCoverage::SetLoggerMinSeverity(logging::trivial::error);
-			CppCoverage::InitLoggerOstream(error_);
+			::Tools::SetLoggerMinSeverity(logging::trivial::error);
+			::Tools::InitLoggerOstream(error_);
 		}
 
 		//---------------------------------------------------------------------
 		void TearDown() override
 		{
-			CppCoverage::ResetLogger();
+			::Tools::ResetLogger();
 		}
 
 		//---------------------------------------------------------------------
