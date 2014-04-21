@@ -5,7 +5,7 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(GMOCK_ROOT)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(GMOCK_ROOT)/include;$(GMOCK_ROOT)/gtest/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(GMOCK_ROOT)/msvc/2010/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
