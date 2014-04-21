@@ -3,7 +3,7 @@
 #include <boost/filesystem.hpp>
 
 #include "CppCoverage/StartInfo.hpp"
-#include "CppCoverage/CppCoverageException.hpp"
+#include "Tools/ExceptionBase.hpp"
 
 namespace cov = CppCoverage;
 namespace fs = boost::filesystem;
@@ -23,7 +23,7 @@ namespace CppCoverageTest
 
 	TEST(StartInfoTest, ConstructorFileNotFound)
 	{		
-		ASSERT_THROW(cov::StartInfo s(L""), cov::CppCoverageException);
+		ASSERT_THROW(cov::StartInfo s(L""), ::Tools::ExceptionBase);
 	}
 
 	TEST(StartInfoTest, SetWorkingDirectoryNotExists)
@@ -31,7 +31,7 @@ namespace CppCoverageTest
 		cov::StartInfo s(validFilename);
 		fs::path folder{ L"" };
 		
-		ASSERT_THROW(s.SetWorkingDirectory(folder), cov::CppCoverageException);
+		ASSERT_THROW(s.SetWorkingDirectory(folder), ::Tools::ExceptionBase);
 	}
 
 	TEST(StartInfoTest, SetWorkingDirectoryExists)

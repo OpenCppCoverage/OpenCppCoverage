@@ -1,45 +1,33 @@
 #include "stdafx.h"
 #include "Log.hpp"
 
-#include <boost/log/core.hpp>
-#include <boost/log/sinks/sync_frontend.hpp>
-#include <boost/log/sinks/text_ostream_backend.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/support/date_time.hpp>
+
+#include <boost/date_time.hpp>
 #include <boost/shared_array.hpp>
+#include <boost/locale.hpp>
 
 namespace logging = boost::log;
 namespace sinks = boost::log::sinks;
 namespace keywords = boost::log::keywords;
 namespace expr = boost::log::expressions;
-
-#include <boost/locale.hpp> // $$
-namespace src = boost::log::sources;
-#include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/sources/logger.hpp>
-#include <boost/log/trivial.hpp>
-
-namespace logging = boost::log;
-namespace sinks = boost::log::sinks;
-namespace src = boost::log::sources;
-namespace expr = boost::log::expressions;
-namespace attrs = boost::log::attributes;
-namespace keywords = boost::log::keywords;
-
-std::locale loc;
-std::locale loc2;
 
 namespace Tools
 {
 	//-------------------------------------------------------------------------
-	void InitConsoleAndFileLog()
-	{
-		auto fileSink = logging::add_file_log("Test.log",
+	void InitConsoleAndFileLog(const boost::filesystem::path& logPath)
+	{		
+		boost::log::add_common_attributes();
+
+		auto fileSink = logging::add_file_log(logPath.wstring(),
 			boost::log::keywords::format =
 			expr::stream
-			<< "[" << logging::trivial::severity
+			<< "[" << expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "%Y-%m-%d %H:%M:%S")
+			<< "] [" << logging::trivial::severity
 			<< "] " << expr::message);
 
 		auto consoleSink = logging::add_console_log(std::clog,
@@ -49,18 +37,10 @@ namespace Tools
 			<< "] " << expr::message
 			);
 
-		loc = boost::locale::generator()("en_US.UTF-8");
-		loc2 = boost::locale::generator()("en_US.UTF-8");
+		// Set correct endocing for special char
+		auto loc = boost::locale::generator()("en_US.UTF-8");		
 		fileSink->imbue(loc);
-		consoleSink->imbue(loc2);
-
-		// National characters are also supported
-		const wchar_t national_chars[] = { 0x041f, 0x0440, 0x0438, 0x0432, 0x0435, 0x0442, L',', L' ', 0x043c, 0x0438, 0x0440, L'!', 0 };
-
-		//BOOST_LOG_SEV(slg, ::boost::log::trivial::normal) << L"A normal severity message, will not pass to the file";
-		LOG_ERROR << L"A warning severity message, will pass to the file111111111111111111111111111111111111";
-		LOG_ERROR << L"An error severity message, will pass to the file";
-		LOG_ERROR << national_chars;
+		consoleSink->imbue(loc);		
 	}
 
 	//-------------------------------------------------------------------------

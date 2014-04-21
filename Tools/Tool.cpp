@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Tool.hpp"
 #include "Log.hpp"
+#include "ToolsException.hpp"
 
 namespace fs = boost::filesystem;
 
@@ -50,7 +51,7 @@ namespace Tools
 	void Tool::CheckPathExists(const fs::path& path)
 	{
 		if (!fs::exists(path))
-			throw std::runtime_error("TODO"); // $$ THROW(path << " does not exist");
+			THROW(path.wstring() << L" does not exist");
 	}
 
 }

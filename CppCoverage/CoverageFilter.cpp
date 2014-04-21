@@ -121,5 +121,5 @@ namespace CppCoverage
 
 		ostr << L": " << str << L" is selected because it matchs selected pattern: " << *selectedRegEx;;
 		return true;			
-	} // $$ add logger in file. Reduce info in console
+	}
 }

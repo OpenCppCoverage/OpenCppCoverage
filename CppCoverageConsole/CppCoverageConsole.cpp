@@ -48,17 +48,17 @@ namespace
 	void Run(const cov::Options& options)
 	{		
 		auto logLevel = (options.IsVerboseModeSelected()) ? logging::trivial::debug : logging::trivial::info;
-		Tools::InitConsoleAndFileLog();
+		Tools::InitConsoleAndFileLog(L"Test.log"); // $$ todo
 		Tools::SetLoggerMinSeverity(logLevel);
 
 		const auto& startInfo = options.GetStartInfo();
-
+		// $$ check if code run correctly add log + export !!!
 		cov::CodeCoverageRunner codeCoverageRunner;
 		cov::CoverageSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
 
 		std::wostringstream ostr; //$$ redirect executable code output?
 		ostr << std::endl << options;
-		LOG_INFO << ostr.str();
+		LOG_INFO << L"Start Program:" << ostr.str();
 
 		cov::CoverageData coverage = codeCoverageRunner.RunCoverage(startInfo, settings);
 		fs::path templateFolder = GetExecutableFolder() / "Template";
