@@ -1,6 +1,11 @@
 #include "stdafx.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4005)
+
 #include <tests/template_test_util.h>
+
+#pragma warning(pop)
 
 #include "Exporter/Html/TemplateHtmlExporter.hpp"
 #include "CppCoverage/CoverageData.hpp"
@@ -56,7 +61,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST_F(TemplateHtmlExporterTest, CreateTemplateDictionary)
 	{		
-		ASSERT_EQ(Tools::Tool::ToString(title_), peer_->GetSectionValue("TITLE"));
+		ASSERT_EQ(Tools::ToString(title_), peer_->GetSectionValue("TITLE"));
 	}
 
 	//-------------------------------------------------------------------------

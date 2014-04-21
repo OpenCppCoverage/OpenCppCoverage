@@ -8,19 +8,19 @@ namespace fs = boost::filesystem;
 namespace Tools
 {
 	//-------------------------------------------------------------------------
-	std::string Tool::ToString(const std::wstring& str)
+	std::string ToString(const std::wstring& str)
 	{
 		return std::string(str.begin(), str.end());
 	}
 
 	//-------------------------------------------------------------------------
-	std::wstring Tool::ToWString(const std::string& str)
+	std::wstring ToWString(const std::string& str)
 	{
 		return std::wstring(str.begin(), str.end());
 	}
 
 	//-------------------------------------------------------------------------
-	boost::filesystem::path Tool::GetUniquePath(const boost::filesystem::path& prefix)
+	boost::filesystem::path GetUniquePath(const boost::filesystem::path& prefix)
 	{
 		std::string uniquePath = prefix.string();
 
@@ -31,7 +31,7 @@ namespace Tools
 	}
 
 	//-------------------------------------------------------------------------
-	void Tool::Try(std::function<void()> action)
+	void Try(std::function<void()> action)
 	{
 		try
 		{
@@ -48,7 +48,7 @@ namespace Tools
 	}
 
 	//-------------------------------------------------------------------------
-	void Tool::CheckPathExists(const fs::path& path)
+	void CheckPathExists(const fs::path& path)
 	{
 		if (!fs::exists(path))
 			THROW(path.wstring() << L" does not exist");

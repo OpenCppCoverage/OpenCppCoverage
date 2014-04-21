@@ -33,7 +33,7 @@ namespace CppCoverage
 	template<typename T_Handle, typename T_Releaser>
 	Handle<T_Handle, T_Releaser>::~Handle()
 	{
-		Tools::Tool::Try([&]
+		Tools::Try([&]
 		{
 			if (handle_ && !releaser_(handle_))
 			{

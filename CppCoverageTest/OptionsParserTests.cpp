@@ -11,7 +11,7 @@
 namespace cov = CppCoverage;
 namespace po = boost::program_options;
 
-namespace CppCoverageConsoleTest // $$ add namespace for test and separator -------
+namespace CppCoverageConsoleTest
 {
 	namespace
 	{
@@ -48,7 +48,7 @@ namespace CppCoverageConsoleTest // $$ add namespace for test and separator ----
 			auto options = Parse(parser, arguments);
 			auto option = getOption(*options);
 
-			ASSERT_EQ(Tools::Tool::ToWString(value), option);
+			ASSERT_EQ(Tools::ToWString(value), option);
 		}
 	}
 
@@ -138,7 +138,7 @@ namespace CppCoverageConsoleTest // $$ add namespace for test and separator ----
 		const auto* workingDirectory = options->GetStartInfo().GetWorkingDirectory();
 
 		ASSERT_NE(nullptr, workingDirectory);
-		ASSERT_EQ(Tools::Tool::ToWString(folder), *workingDirectory);
+		ASSERT_EQ(Tools::ToWString(folder), *workingDirectory);
 	}
 
 	//-------------------------------------------------------------------------
@@ -148,7 +148,7 @@ namespace CppCoverageConsoleTest // $$ add namespace for test and separator ----
 		const std::string arg1 = "arg1";
 		const std::string arg2 = "arg2";
 		const std::vector<std::wstring> expectedArgs =
-		{ Tools::Tool::ToWString(programToRun), Tools::Tool::ToWString(arg1), Tools::Tool::ToWString(arg2) };
+		{ Tools::ToWString(programToRun), Tools::ToWString(arg1), Tools::ToWString(arg2) };
 
 		auto options = Parse(parser, { programToRun, arg1, arg2}, false);
 		ASSERT_TRUE(options);

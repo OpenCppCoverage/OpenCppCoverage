@@ -46,7 +46,7 @@ namespace CppCoverage
 			auto* optionalValue = GetOptionalValue<T>(variables, optionName);
 			
 			if (!optionalValue)
-				THROW(L"Cannot find option:" + Tools::Tool::ToWString(optionName));
+				THROW(L"Cannot find option:" + Tools::ToWString(optionName));
 			
 			return *optionalValue;
 		}
@@ -61,11 +61,11 @@ namespace CppCoverage
 
 			auto selectedPatterns = GetValue<std::vector<std::string>>(variables, selected);
 			for (const auto& pattern : selectedPatterns)
-				patterns.AddSelectedPatterns(Tools::Tool::ToWString(pattern));
+				patterns.AddSelectedPatterns(Tools::ToWString(pattern));
 
 			auto excludedPatterns = GetValue<std::vector<std::string>>(variables, excluded);
 			for (const auto& pattern : excludedPatterns)
-				patterns.AddExcludedPatterns(Tools::Tool::ToWString(pattern));
+				patterns.AddExcludedPatterns(Tools::ToWString(pattern));
 
 			return patterns;
 		}
@@ -84,7 +84,7 @@ namespace CppCoverage
 			if (arguments)
 			{
 				for (const auto& arg : *arguments)
-					startInfo.AddArguments(Tools::Tool::ToWString(arg));
+					startInfo.AddArguments(Tools::ToWString(arg));
 			}
 
 			const auto* workingDirectory = GetOptionalValue<std::string>(variables, 
@@ -199,6 +199,6 @@ namespace CppCoverage
 		std::ostringstream output;
 		optionsParser.description_.print(output);
 
-		return ostr << Tools::Tool::ToWString(output.str());
+		return ostr << Tools::ToWString(output.str());
 	}
 }

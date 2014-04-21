@@ -6,7 +6,7 @@ namespace Tools
 {
 	//-------------------------------------------------------------------------
 	ExceptionBase::ExceptionBase(const std::wstring& message)
-		: std::exception(Tool::ToString(message).c_str())
+		: std::exception(ToString(message).c_str())
 	{
 	}
 }

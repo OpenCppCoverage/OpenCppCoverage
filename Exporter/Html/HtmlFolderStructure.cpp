@@ -29,7 +29,7 @@ namespace Exporter
 		//---------------------------------------------------------------------
 		fs::path CreateUniqueDirectories(const fs::path& initialPath)
 		{
-			auto uniquePath = Tools::Tool::GetUniquePath(initialPath);
+			auto uniquePath = Tools::GetUniquePath(initialPath);
 			
 			fs::create_directories(uniquePath);
 			
@@ -72,7 +72,7 @@ namespace Exporter
 		auto moduleHtmlName = moduleName.string() + ".html";
 		auto moduleHtmlPath = modulesPath / moduleHtmlName;
 		
-		return Tools::Tool::GetUniquePath(moduleHtmlPath);
+		return Tools::GetUniquePath(moduleHtmlPath);
 	}	
 
 	//---------------------------------------------------------------------
@@ -85,7 +85,7 @@ namespace Exporter
 		auto output = filename.replace_extension("html");
 		auto fileHtmlPath = *currentModule_ / output;
 
-		return Tools::Tool::GetUniquePath(fileHtmlPath);
+		return Tools::GetUniquePath(fileHtmlPath);
 	}
 
 	//---------------------------------------------------------------------

@@ -8,19 +8,13 @@
 #include "ToolsExport.hpp"
 
 namespace Tools
-{
-	class TOOLS_DLL Tool
-	{
-	public:
-		Tool() = delete;
+{	
+	TOOLS_DLL std::wstring ToWString(const std::string&);
+	TOOLS_DLL std::string ToString(const std::wstring&);
+	TOOLS_DLL void Try(std::function<void()>);
+	TOOLS_DLL void CheckPathExists(const boost::filesystem::path&);
 
-		static std::wstring ToWString(const std::string&);
-		static std::string ToString(const std::wstring&);
-		static void Try(std::function<void()>);
-		static void CheckPathExists(const boost::filesystem::path&);
-
-		static boost::filesystem::path GetUniquePath(const boost::filesystem::path& prefix);
-	};
+	TOOLS_DLL boost::filesystem::path GetUniquePath(const boost::filesystem::path& prefix);
 }
 
 

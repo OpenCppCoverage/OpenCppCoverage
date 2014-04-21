@@ -14,7 +14,7 @@ namespace CppCoverage
 	StartInfo::StartInfo(const fs::path& path)
 		: path_(path)
 	{
-		Tools::Tool::CheckPathExists(path);
+		Tools::CheckPathExists(path);
 		AddArguments(path.wstring());
 	}
 
@@ -29,7 +29,7 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	void StartInfo::SetWorkingDirectory(const fs::path& workingDirectory)
 	{
-		Tools::Tool::CheckPathExists(workingDirectory);
+		Tools::CheckPathExists(workingDirectory);
 		workingDirectory_ = workingDirectory;					
 	}
 

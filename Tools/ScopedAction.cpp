@@ -15,7 +15,7 @@ namespace Tools
 	//-------------------------------------------------------------------------
 	ScopedAction::~ScopedAction()
 	{
-		Tool::Try([&]
+		Try([&]
 		{
 			action_();
 		});

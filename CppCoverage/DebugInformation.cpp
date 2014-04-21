@@ -41,7 +41,7 @@ namespace CppCoverage
 				THROW("Invalid user context.");
 			
 			DWORD64 address = lineInfo->Address - lineInfo->ModBase + reinterpret_cast<DWORD64>(context->processBaseOfImage_);
-			std::wstring filename = Tools::Tool::ToWString(lineInfo->FileName);
+			std::wstring filename = Tools::ToWString(lineInfo->FileName);
 			context->debugInformationEventHandler_.OnNewLine(filename, lineInfo->LineNumber, address);
 
 			return TRUE;
@@ -56,7 +56,7 @@ namespace CppCoverage
 			if (!pSourceFile)
 				THROW("Source File is null");
 			
-			std::wstring filename = Tools::Tool::ToWString(pSourceFile->FileName);
+			std::wstring filename = Tools::ToWString(pSourceFile->FileName);
 			
 			if (context->debugInformationEventHandler_.IsSourceFileSelected(filename))
 			{				

@@ -30,7 +30,7 @@ namespace Exporter
 		//-------------------------------------------------------------------------
 		std::string ToStr(const std::wstring& str)
 		{
-			return Tools::Tool::ToString(str);
+			return Tools::ToString(str);
 		}
 		
 		//-------------------------------------------------------------------------
@@ -42,7 +42,7 @@ namespace Exporter
 		{
 			if (link)
 			{
-				Tools::Tool::CheckPathExists(*link);
+				Tools::CheckPathExists(*link);
 				sectionDictionary.SetValue(TemplateHtmlExporter::LinkTemplate, link->string());
 			}
 			sectionDictionary.SetIntValue(rateTemplate, coverageRate.GetPercentRate());
@@ -125,14 +125,14 @@ namespace Exporter
 		const fs::path& codeCss,
 		const fs::path& codePrettify) const
 	{
-		Tools::Tool::CheckPathExists(codeCss);
-		Tools::Tool::CheckPathExists(codePrettify);
+		Tools::CheckPathExists(codeCss);
+		Tools::CheckPathExists(codePrettify);
 
-		auto titleStr = Tools::Tool::ToString(title);
+		auto titleStr = Tools::ToString(title);
 		ctemplate::TemplateDictionary dictionary(titleStr);
 
 		dictionary.SetValue(titleTemplate, titleStr);
-		dictionary.SetValue(codeTemplate, Tools::Tool::ToString(codeContent));	
+		dictionary.SetValue(codeTemplate, Tools::ToString(codeContent));	
 		dictionary.SetValue(cssPathTemplate, codeCss.string());
 		dictionary.SetValue(prettifyPathTemplate, codePrettify.string());
 
