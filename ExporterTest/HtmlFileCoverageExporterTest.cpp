@@ -19,7 +19,7 @@ namespace ExporterTest
 		public:
 			HtmlFileCoverageExporterTest()
 			{
-				fs::path path = "../ConsoleForCppCoverageTest/ConsoleForCppCoverageTest.cpp";
+				fs::path path = "../TestCoverageConsole/TestCoverageConsole.cpp";
 
 				CppCoverage::FileCoverage fileCoverage{ path };
 				Exporter::HtmlFileCoverageExporter exporter;

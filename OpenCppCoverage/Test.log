@@ -1,0 +1,102 @@
+[2014-04-20 22:37:02] [info] Start Program:
+Path:"C:/Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\CppCoverageTest.exe"
+Arguments:C:/Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\CppCoverageTest.exe 
+Working directory: not set.
+
+Modules: Selected: .* Excluded:  
+Sources: Selected: .*CppCoverage.* Excluded:  
+Verbose mode: 0
+
+[2014-04-20 22:37:02] [info] Module: C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\CppCoverageTest.exe is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:03] [info] Module: C:\Windows\SysWOW64\ntdll.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:03] [warning] Cannot find pdb for C:\Windows\SysWOW64\ntdll.dll
+[2014-04-20 22:37:03] [info] Module: C:\Windows\SysWOW64\kernel32.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:03] [warning] Cannot find pdb for C:\Windows\SysWOW64\kernel32.dll
+[2014-04-20 22:37:03] [info] Module: C:\Windows\SysWOW64\KernelBase.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:03] [warning] Cannot find pdb for C:\Windows\SysWOW64\KernelBase.dll
+[2014-04-20 22:37:03] [info] Module: C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\CppCoverage.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:03] [info] Module: C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\Tools.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:03] [info] Module: C:\Windows\SysWOW64\msvcp120d.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\msvcp120d.dll
+[2014-04-20 22:37:04] [info] Module: C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_filesystem-vc120-mt-gd-1_55.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_filesystem-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:04] [info] Module: C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_system-vc120-mt-gd-1_55.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_system-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\msvcr120d.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\msvcr120d.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\dbghelp.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\dbghelp.dll
+[2014-04-20 22:37:04] [info] Module: C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_log-vc120-mt-gd-1_55.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_log-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:04] [info] Module: C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_regex-vc120-mt-gd-1_55.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_regex-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:04] [info] Module: C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_program_options-vc120-mt-gd-1_55.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_program_options-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:04] [info] Module: C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_thread-vc120-mt-gd-1_55.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_thread-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:04] [info] Module: C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_date_time-vc120-mt-gd-1_55.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_date_time-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:04] [info] Module: C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_locale-vc120-mt-gd-1_55.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_locale-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\advapi32.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\advapi32.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\msvcrt.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\msvcrt.dll
+[2014-04-20 22:37:04] [info] Module: C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_chrono-vc120-mt-gd-1_55.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_chrono-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\psapi.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\psapi.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\ws2_32.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\ws2_32.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\user32.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\user32.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\sechost.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\sechost.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\rpcrt4.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\rpcrt4.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\nsi.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\nsi.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\gdi32.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\gdi32.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\sspicli.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\sspicli.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\cryptbase.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\cryptbase.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\bcryptprimitives.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\bcryptprimitives.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\imm32.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\imm32.dll
+[2014-04-20 22:37:04] [info] Module: C:\Windows\SysWOW64\msctf.dll is selected because it matchs selected pattern: .*
+[2014-04-20 22:37:04] [warning] Cannot find pdb for C:\Windows\SysWOW64\msctf.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\CppCoverageTest.exe
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\ntdll.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\kernel32.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\KernelBase.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\CppCoverage.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\Tools.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\msvcp120d.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_filesystem-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_system-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\msvcr120d.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\dbghelp.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_log-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_regex-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_program_options-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_thread-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_date_time-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_locale-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\advapi32.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\msvcrt.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Users\Olivier_2\Desktop\Dev\CppCoverage\Debug\boost_chrono-vc120-mt-gd-1_55.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\psapi.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\ws2_32.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\user32.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\sechost.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\rpcrt4.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\nsi.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\gdi32.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\sspicli.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\cryptbase.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\bcryptprimitives.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\imm32.dll
+[2014-04-20 22:37:06] [info] Create coverage report for C:\Windows\SysWOW64\msctf.dll

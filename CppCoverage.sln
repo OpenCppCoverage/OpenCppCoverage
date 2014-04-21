@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppCoverage", "CppCoverage\CppCoverage.vcxproj", "{A50DD5A6-E85A-4E0B-9CC6-90D32503CE62}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppCoverageConsole", "CppCoverageConsole\CppCoverageConsole.vcxproj", "{3A493CE5-D6BE-4DA5-BC53-78A8F6481E03}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenCppCoverage", "OpenCppCoverage\OpenCppCoverage.vcxproj", "{3A493CE5-D6BE-4DA5-BC53-78A8F6481E03}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppCoverageTest", "CppCoverageTest\CppCoverageTest.vcxproj", "{4360D299-2F7D-462E-B7EF-0670FD06F478}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -13,7 +13,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppCoverageTest", "CppCover
 		{0DD16EDF-BD43-4D7B-B357-931F48F2FCC6} = {0DD16EDF-BD43-4D7B-B357-931F48F2FCC6}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleForCppCoverageTest", "ConsoleForCppCoverageTest\ConsoleForCppCoverageTest.vcxproj", "{0DD16EDF-BD43-4D7B-B357-931F48F2FCC6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCoverageConsole", "TestCoverageConsole\TestCoverageConsole.vcxproj", "{0DD16EDF-BD43-4D7B-B357-931F48F2FCC6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Exporter", "Exporter\Exporter.vcxproj", "{865B72E7-DA46-4392-A1B3-E5BD752C7041}"
 EndProject
@@ -23,9 +23,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExporterTest", "ExporterTes
 		{865B72E7-DA46-4392-A1B3-E5BD752C7041} = {865B72E7-DA46-4392-A1B3-E5BD752C7041}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DllForCppCoverageTest", "DllForCppCoverageTest\DllForCppCoverageTest.vcxproj", "{0481B51C-98F1-4E92-A51E-162B77ECD939}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCoverageSharedLib", "TestCoverageSharedLib\TestCoverageSharedLib.vcxproj", "{0481B51C-98F1-4E92-A51E-162B77ECD939}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppCoverageConsoleTest", "CppCoverageConsoleTest\CppCoverageConsoleTest.vcxproj", "{F892B2B1-64A9-4809-BA9C-24A1F2E82979}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenCppCoverageTest", "OpenCppCoverageTest\OpenCppCoverageTest.vcxproj", "{F892B2B1-64A9-4809-BA9C-24A1F2E82979}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3A493CE5-D6BE-4DA5-BC53-78A8F6481E03} = {3A493CE5-D6BE-4DA5-BC53-78A8F6481E03}
 	EndProjectSection

@@ -5,8 +5,9 @@
 
 #include <string>
 #include <iostream>
-#include "DllForCppCoverageTest/DllForCppCoverageTest.h"
+#include "TestCoverageSharedLib/TestCoverageSharedLib.h"
 
+// $$ clean this code
 void ThrowHandledException()
 {
 	try
@@ -31,7 +32,7 @@ int main(int argc, char* argv[])
 		else if (argument == "ThrowUnHandledException")
 			throw 42;
 		else
-			return Foo(std::stoul(argv[1]));
+			return TestCoverageSharedLib::IsOdd(std::stoul(argv[1]));
 	}
 	return 0;	
 }

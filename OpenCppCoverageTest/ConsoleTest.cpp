@@ -12,8 +12,8 @@ namespace fs = boost::filesystem;
 
 TEST(ConsoleTest, HtmlExport)
 {
-	fs::path console = fs::canonical("../Debug/CppCoverageConsole.exe"); // $$$ improve
-	fs::path testExe = fs::canonical("../Debug/ConsoleForCppCoverageTest.exe"); // $$$ improve
+	fs::path console = fs::canonical("../Debug/OpenCppCoverageTest.exe"); // $$$ improve
+	fs::path testExe = fs::canonical("../Debug/TestCoverageConsole.exe"); // $$$ improve
 	
 	std::vector<std::string> arguments{ testExe.string()};
 	Poco::Pipe output;
