@@ -11,6 +11,7 @@ namespace cov = CppCoverage;
 
 namespace CppCoverageTest
 {
+	//-------------------------------------------------------------------------
 	TEST(ExecutedAddressManagerTest, RegisterAddress)
 	{		
 		cov::ExecutedAddressManager manager;
@@ -21,6 +22,7 @@ namespace CppCoverageTest
 		manager.RegisterAddress(0, L"", 0, 0);
 	}
 
+	//-------------------------------------------------------------------------
 	TEST(ExecutedAddressManagerTest, MarkAddressAsExecuted)
 	{
 		cov::ExecutedAddressManager manager;
@@ -33,6 +35,7 @@ namespace CppCoverageTest
 		ASSERT_NO_THROW(manager.MarkAddressAsExecuted(0));
 	}	
 
+	//-------------------------------------------------------------------------
 	TEST(ExecutedAddressManagerTest, CreateCoverageData)
 	{
 		cov::ExecutedAddressManager manager;

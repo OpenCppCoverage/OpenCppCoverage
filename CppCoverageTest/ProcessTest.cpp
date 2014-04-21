@@ -7,6 +7,7 @@ namespace cov = CppCoverage;
 
 namespace CppCoverageTest
 {
+	//-------------------------------------------------------------------------
 	TEST(Process, Start)
 	{
 		cov::StartInfo startInfo{ Tools::GetConsoleForCppCoverageTestPath() };
@@ -15,7 +16,7 @@ namespace CppCoverageTest
 		ASSERT_NO_THROW(process.Start(0));
 	}
 
-
+	//-------------------------------------------------------------------------
 	TEST(Process, StartWithArgument)
 	{
 		cov::StartInfo startInfo{ Tools::GetConsoleForCppCoverageTestPath() };

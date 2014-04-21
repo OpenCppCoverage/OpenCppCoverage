@@ -23,7 +23,7 @@ namespace logging = boost::log;
 
 namespace CppCoverageTest
 {
-
+	//-------------------------------------------------------------------------
 	class CodeCoverageRunnerTest : public ::testing::Test
 	{
 	public:
@@ -73,6 +73,7 @@ namespace CppCoverageTest
 			return codeCoverageRunner.RunCoverage(*startInfo_, coverageSettings);
 		}
 
+		//---------------------------------------------------------------------
 		void GetFileCoverage(
 			const cov::CoverageData& coverageData,
 			cov::FileCoverage*& fileCoverage) // boost test does not support non void function
@@ -89,11 +90,13 @@ namespace CppCoverageTest
 			fileCoverage = files[0].get();
 		}
 
+		//---------------------------------------------------------------------
 		std::string GetError() const
 		{
 			return error_->str();
 		}
 
+		//---------------------------------------------------------------------
 		cov::StartInfo& GetStartInfo() const
 		{
 			return *startInfo_;
@@ -105,6 +108,7 @@ namespace CppCoverageTest
 		std::unique_ptr<cov::StartInfo> startInfo_;
 	};
 
+	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, RunCoverage)
 	{		
 		cov::CoverageData coverageData = ComputeCoverageData(
@@ -118,6 +122,7 @@ namespace CppCoverageTest
 		TestLine(*file, 26, false);
 	}
 
+	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, RunCoverageDll)
 	{	
 		GetStartInfo().AddArguments(L"42"); 
@@ -138,6 +143,7 @@ namespace CppCoverageTest
 		TestLine(file, 14, false);		
 	}
 	
+	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, HandledException)
 	{
 		GetStartInfo().AddArguments(L"ThrowHandledException");
@@ -146,6 +152,7 @@ namespace CppCoverageTest
 			GetError().find(cov::CodeCoverageRunner::unhandledExceptionErrorMessage));
 	}
 	
+	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, NotHandledException)
 	{
 		GetStartInfo().AddArguments(L"ThrowUnHandledException");

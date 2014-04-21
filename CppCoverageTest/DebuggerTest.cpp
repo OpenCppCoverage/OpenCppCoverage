@@ -9,6 +9,7 @@ namespace cov = CppCoverage;
 
 namespace CppCoverageTest
 {
+	//-----------------------------------------------------------------------------
 	TEST(DebugerTest, Debug)
 	{		
 		cov::StartInfo startInfo{ Tools::GetConsoleForCppCoverageTestPath() };

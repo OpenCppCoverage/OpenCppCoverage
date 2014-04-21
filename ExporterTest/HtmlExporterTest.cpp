@@ -15,6 +15,7 @@ namespace fs = boost::filesystem;
 
 namespace ExporterTest
 {
+	//-------------------------------------------------------------------------
 	TEST(HtmlExporterTest, Export)
 	{
 		fs::path templateFolder = fs::canonical("../Exporter/Html/Template");

@@ -16,16 +16,19 @@ namespace CppCoverageTest
 		const std::wstring validFilename(file.begin(), file.end());
 	}
 
+	//-------------------------------------------------------------------------
 	TEST(StartInfoTest, Constructor)
 	{
 		ASSERT_NO_THROW(cov::StartInfo s{ validFilename };);
 	}
 
+	//-------------------------------------------------------------------------
 	TEST(StartInfoTest, ConstructorFileNotFound)
 	{		
 		ASSERT_THROW(cov::StartInfo s(L""), ::Tools::ExceptionBase);
 	}
 
+	//-------------------------------------------------------------------------
 	TEST(StartInfoTest, SetWorkingDirectoryNotExists)
 	{
 		cov::StartInfo s(validFilename);
@@ -34,6 +37,7 @@ namespace CppCoverageTest
 		ASSERT_THROW(s.SetWorkingDirectory(folder), ::Tools::ExceptionBase);
 	}
 
+	//-------------------------------------------------------------------------
 	TEST(StartInfoTest, SetWorkingDirectoryExists)
 	{
 		cov::StartInfo s(validFilename);

@@ -10,6 +10,7 @@ namespace CppCoverageTest
 {
 	namespace
 	{
+		//-------------------------------------------------------------------------
 		struct CoverageFilterTest : public ::testing::Test
 		{
 			//---------------------------------------------------------------------

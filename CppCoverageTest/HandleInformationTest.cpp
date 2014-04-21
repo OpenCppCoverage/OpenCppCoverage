@@ -9,6 +9,7 @@ namespace bfs = boost::filesystem;
 
 namespace CppCoverageTest
 {	
+	//-------------------------------------------------------------------------
 	TEST(HandleInformationTest, ComputeFilename)
 	{
 		std::wstring consoleForCppCoverageTest = Tools::GetConsoleForCppCoverageTestPath();

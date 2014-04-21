@@ -14,6 +14,7 @@ namespace ExporterTest
 {
 	namespace
 	{
+		//---------------------------------------------------------------------
 		class HtmlFileCoverageExporterTest: public ::testing::Test
 		{
 		public:
@@ -32,12 +33,14 @@ namespace ExporterTest
 				boost::split(lines_, exportedString, boost::is_any_of("\n"));
 			}
 		
+			//-----------------------------------------------------------------
 			bool HasBeenExecuted(int lineNumber)
 			{				
 				return boost::starts_with(lines_[lineNumber - 1],
 					Exporter::HtmlFileCoverageExporter::StyleBackgroundColorExecuted);
 			}
 
+			//-----------------------------------------------------------------
 			bool HasBeenUnexecuted(int lineNumber)
 			{
 				return boost::starts_with(lines_[lineNumber - 1],
@@ -45,6 +48,7 @@ namespace ExporterTest
 			}
 
 		private:
+			//-----------------------------------------------------------------
 			std::wstring GetExportedString(
 				Exporter::HtmlFileCoverageExporter& exporter,
 				const CppCoverage::FileCoverage& fileCoverage)

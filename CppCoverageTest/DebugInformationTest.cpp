@@ -10,6 +10,7 @@ namespace CppCoverageTest
 {
 	namespace
 	{
+		//---------------------------------------------------------------------
 		void LoadModule(DebugInformationEventHandlerMock& mock, HANDLE hProcess, HANDLE hFile)
 		{
 			cov::DebugInformation debugInformation{ hProcess};
@@ -18,6 +19,7 @@ namespace CppCoverageTest
 		}
 	}
 
+	//-------------------------------------------------------------------------
 	TEST(DebugInformationTest, LoadModule)
 	{				
 		auto executableWString = Tools::GetConsoleForCppCoverageTestPath();
