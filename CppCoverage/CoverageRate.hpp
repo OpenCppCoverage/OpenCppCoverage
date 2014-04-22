@@ -65,7 +65,7 @@ namespace CppCoverage
 	template<typename T>
 	void CoverageRate::SortByLowestRate(std::vector<T>& values) const
 	{
-		std::sort(begin(values), end(values), [](const T& value1, const T& value2)
+		std::sort(begin(values), end(values), [this](const T& value1, const T& value2)
 		{
 			return GetPercentRate(value1) < GetPercentRate(value2);
 		});

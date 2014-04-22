@@ -35,8 +35,8 @@ namespace CppCoverage
 		virtual DWORD OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&) override;
 
 	private:
-		virtual bool IsSourceFileSelected(const std::wstring& filename) const;
-		virtual void OnNewLine(const std::wstring& fileName, int lineNumber, DWORD64 address);
+		virtual bool IsSourceFileSelected(const std::wstring& filename) const override;
+		virtual void OnNewLine(const std::wstring& fileName, int lineNumber, DWORD64 address) override;
 
 	private:
 		CodeCoverageRunner(const CodeCoverageRunner&) = delete;
