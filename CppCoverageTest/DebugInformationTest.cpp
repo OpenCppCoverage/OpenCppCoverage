@@ -30,7 +30,7 @@ namespace CppCoverageTest
 		EXPECT_CALL(mock, IsSourceFileSelected(testing::_))
 			.Times(testing::AnyNumber())
 			.WillRepeatedly(testing::Return(false));		
-		EXPECT_CALL(mock, IsSourceFileSelected(testing::EndsWith(L"consoleforcppcoveragetest.cpp")))
+		EXPECT_CALL(mock, IsSourceFileSelected(testing::EndsWith(L"testcoverageconsole.cpp"))) // $$ clean all test with cpp
 			.WillOnce(testing::Return(true));				
 		EXPECT_CALL(mock, OnNewLine(testing::_, testing::_, testing::_))
 			.Times(testing::AtLeast(1));

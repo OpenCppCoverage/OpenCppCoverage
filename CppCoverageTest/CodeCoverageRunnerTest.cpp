@@ -127,7 +127,7 @@ namespace CppCoverageTest
 	{	
 		GetStartInfo().AddArguments(L"42"); 
 		cov::CoverageData coverageData = ComputeCoverageData(
-			L".*ForCppCoverageTest.*", L".*CppCoverage.*.cpp");
+			L".*TestCoverage.*", L".*CppCoverage.*.cpp");
 
 		const auto& modules = coverageData.GetModules();
 		ASSERT_EQ(2, modules.size());		
@@ -136,11 +136,11 @@ namespace CppCoverageTest
 		ASSERT_EQ(1, files.size());
 		const auto& file = *files[0];
 
-		TestLine(file, 10, true);
-		TestLine(file, 11, true);
-		TestLine(file, 12, true);
-		ASSERT_TRUE(file[13] == nullptr);
-		TestLine(file, 14, false);		
+		TestLine(file, 13, true);
+		TestLine(file, 14, true);
+		TestLine(file, 15, true);
+		ASSERT_TRUE(file[16] == nullptr);
+		TestLine(file, 17, false);		
 	}
 	
 	//-------------------------------------------------------------------------

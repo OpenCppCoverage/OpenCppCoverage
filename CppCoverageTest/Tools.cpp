@@ -35,7 +35,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	std::wstring Tools::GetConsoleForCppCoverageTestFilename()
 	{
-		return L"ConsoleForCppCoverageTest.exe";		
+		return L"TestCoverageConsole.exe";		// $$ 
 	}
 
 	//-------------------------------------------------------------------------
