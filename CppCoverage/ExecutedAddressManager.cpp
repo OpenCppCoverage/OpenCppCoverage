@@ -13,9 +13,9 @@
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	struct ExecutedAddressManager::Line
-	{		
-		Line(char instruction)
+	struct ExecutedAddressManager::Instruction
+	{
+		explicit Instruction(unsigned char instruction)
 			: instruction_(instruction)
 			, hasBeenExecuted_(false)
 		{
@@ -24,10 +24,25 @@ namespace CppCoverage
 		unsigned char instruction_;
 		bool hasBeenExecuted_;
 	};
+	
+	//-------------------------------------------------------------------------
+	struct ExecutedAddressManager::Line
+	{
+		bool HasLineBeenExecuted() const
+		{
+			for (const auto& instruction : instructions_)
+				if (instruction.hasBeenExecuted_)
+					return true;
+			return false;
+		}
+
+		// We cannot use vector because we will take the adress of the item
+		std::list<ExecutedAddressManager::Instruction> instructions_;
+	};
 
 	//-------------------------------------------------------------------------
 	struct ExecutedAddressManager::File
-	{
+	{		
 		// We cannot use set because Line can be updated by MarkAddressAsExecuted
 		std::map<unsigned int, Line> lines;
 	};
@@ -61,29 +76,24 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
-	bool ExecutedAddressManager::RegisterAddress(
+	void ExecutedAddressManager::RegisterAddress(
 		void* address, 
 		const std::wstring& filename, 
 		unsigned int lineNumber, 
-		unsigned char instruction)
+		unsigned char instructionValue)
 	{
 		auto& module = GetCurrentModule();
 		auto& file = module.files_[filename];
 		auto& lines = file.lines;
+		auto& line = lines[lineNumber];
 
 		LOG_TRACE << "RegisterAddress: " << address << " for " << filename << ":" << lineNumber;
 
-		if (lines.find(lineNumber) != lines.end())
-		{
-			LOG_DEBUG << L"Line: " << lineNumber << L" in " << filename << L" already exists."; // $$ it is normal ??
-			return false; // $$ add void ??
-		}
-				
-		const auto& pair = lines.emplace(lineNumber, Line(instruction));
-
-		Line& insertedLine = pair.first->second;
-		addressLineMap_.emplace(address, &insertedLine);
-		return true;
+		line.instructions_.push_back(Instruction{instructionValue});
+		auto* instruction = &line.instructions_.back();
+		
+		if (!addressLineMap_.emplace(address, instruction).second)
+			THROW("Address already register");
 	}
 
 	//-------------------------------------------------------------------------
@@ -102,16 +112,16 @@ namespace CppCoverage
 		if (it == addressLineMap_.end())
 			THROW("Address should be register first");
 
-		Line* line = it->second;
+		Instruction* instruction = it->second;
 
-		if (!line)
+		if (!instruction)
 			THROW("Line cannot be null");
 
-		line->hasBeenExecuted_ = true;
+		instruction->hasBeenExecuted_ = true;
 			 
-		return line->instruction_;
+		return instruction->instruction_;
 	}
-	
+	// $$ add pdb in verbose mode 
 	//-------------------------------------------------------------------------
 	CoverageData ExecutedAddressManager::CreateCoverageData(const std::wstring& name) const
 	{
@@ -133,7 +143,8 @@ namespace CppCoverage
 				{
 					auto lineNumber = pair.first;
 					const auto& line = pair.second;
-					fileCoverage.AddLine(lineNumber, line.hasBeenExecuted_);
+					
+					fileCoverage.AddLine(lineNumber, line.HasLineBeenExecuted());
 				}
 			}			
 		}

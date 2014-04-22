@@ -158,7 +158,7 @@ namespace CppCoverage
 		auto addressPtr = reinterpret_cast<void*>(address);
 		auto oldInstruction = breakpoint_->SetBreakPointAt(addressPtr);
 
-		if (!executedAddressManager_->RegisterAddress(addressPtr, filename, lineNumber, oldInstruction))
-			breakpoint_->RemoveBreakPoint(addressPtr, oldInstruction);
+		executedAddressManager_->RegisterAddress(addressPtr, filename, lineNumber, oldInstruction);
+		breakpoint_->RemoveBreakPoint(addressPtr, oldInstruction);
 	}
 }

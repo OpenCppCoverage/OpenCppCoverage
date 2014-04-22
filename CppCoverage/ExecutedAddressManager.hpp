@@ -20,7 +20,7 @@ namespace CppCoverage
 		~ExecutedAddressManager();
 
 		void SetCurrentModule(const std::wstring& moduleName);
-		bool RegisterAddress(void* address, const std::wstring& filename, unsigned int line, unsigned char instruction);
+		void RegisterAddress(void* address, const std::wstring& filename, unsigned int line, unsigned char instruction);
 		unsigned  char MarkAddressAsExecuted(void* address);
 
 		CoverageData CreateCoverageData(const std::wstring& name) const;
@@ -28,7 +28,9 @@ namespace CppCoverage
 	private:
 		struct Module;
 		struct File;
+		struct File;
 		struct Line;
+		struct Instruction;
 
 	private:
 		ExecutedAddressManager(const ExecutedAddressManager&) = delete;
@@ -39,7 +41,7 @@ namespace CppCoverage
 	
 	private:
 		std::vector<std::unique_ptr<Module>> modules_;
-		std::unordered_map<void*, Line*> addressLineMap_;
+		std::unordered_map<void*, Instruction*> addressLineMap_;
 	};
 }
 
