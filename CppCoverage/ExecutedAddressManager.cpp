@@ -17,7 +17,7 @@ namespace CppCoverage
 	{
 		explicit Instruction(unsigned char instruction)
 			: instruction_(instruction)
-			, hasBeenExecuted_(false)
+			, hasBeenExecuted_(false)			
 		{
 		}
 
@@ -31,13 +31,17 @@ namespace CppCoverage
 		bool HasLineBeenExecuted() const
 		{
 			for (const auto& instruction : instructions_)
-				if (instruction.hasBeenExecuted_)
+			{
+				if (!instruction)
+					THROW(L"Null instruction");
+				if (instruction->hasBeenExecuted_)
 					return true;
+			}
 			return false;
 		}
 
 		// We cannot use vector because we will take the adress of the item
-		std::list<ExecutedAddressManager::Instruction> instructions_;
+		std::list<ExecutedAddressManager::Instruction*> instructions_;
 	};
 
 	//-------------------------------------------------------------------------
@@ -76,7 +80,7 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
-	void ExecutedAddressManager::RegisterAddress(
+	bool ExecutedAddressManager::RegisterAddress(
 		void* address, 
 		const std::wstring& filename, 
 		unsigned int lineNumber, 
@@ -89,11 +93,22 @@ namespace CppCoverage
 
 		LOG_TRACE << "RegisterAddress: " << address << " for " << filename << ":" << lineNumber;
 
-		line.instructions_.push_back(Instruction{instructionValue});
-		auto* instruction = &line.instructions_.back();
+		// Different {filename, line} can have the same address.
+		// Same {filename, line} can have several addresses.		
+		bool keepBreakpoint = false;
+		Instruction* instruction = nullptr;
+		auto itAddress = addressLineMap_.find(address);
+
+		if (itAddress == addressLineMap_.end())
+		{
+			itAddress = addressLineMap_.emplace(address, Instruction{ instructionValue }).first;
+			keepBreakpoint = true;
+		}
 		
-		if (!addressLineMap_.emplace(address, instruction).second)
-			THROW("Address already register");
+		instruction = &itAddress->second;
+		line.instructions_.push_back(instruction);
+		
+		return keepBreakpoint;
 	}
 
 	//-------------------------------------------------------------------------
@@ -112,14 +127,11 @@ namespace CppCoverage
 		if (it == addressLineMap_.end())
 			THROW("Address should be register first");
 
-		Instruction* instruction = it->second;
-
-		if (!instruction)
-			THROW("Line cannot be null");
-
-		instruction->hasBeenExecuted_ = true;
+		Instruction& instruction = it->second;
+				
+		instruction.hasBeenExecuted_ = true;
 			 
-		return instruction->instruction_;
+		return instruction.instruction_;
 	}
 	// $$ add pdb in verbose mode 
 	//-------------------------------------------------------------------------

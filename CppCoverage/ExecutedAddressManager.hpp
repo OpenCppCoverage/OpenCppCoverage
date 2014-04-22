@@ -4,7 +4,7 @@
 #include <vector>
 
 #include <memory>
-#include <unordered_map>
+#include <map>
 
 #include "CoverageData.hpp"
 #include "CppCoverageExport.hpp"
@@ -20,7 +20,7 @@ namespace CppCoverage
 		~ExecutedAddressManager();
 
 		void SetCurrentModule(const std::wstring& moduleName);
-		void RegisterAddress(void* address, const std::wstring& filename, unsigned int line, unsigned char instruction);
+		bool RegisterAddress(void* address, const std::wstring& filename, unsigned int line, unsigned char instruction);
 		unsigned  char MarkAddressAsExecuted(void* address);
 
 		CoverageData CreateCoverageData(const std::wstring& name) const;
@@ -41,7 +41,7 @@ namespace CppCoverage
 	
 	private:
 		std::vector<std::unique_ptr<Module>> modules_;
-		std::unordered_map<void*, Instruction*> addressLineMap_;
+		std::map<void*, Instruction> addressLineMap_;
 	};
 }
 
