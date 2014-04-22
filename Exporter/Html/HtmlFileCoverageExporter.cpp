@@ -3,6 +3,8 @@
 
 #include <fstream>
 #include <boost/filesystem.hpp>
+#include <boost/spirit/include/classic.hpp>
+#include <boost/spirit/include/classic_tree_to_xml.hpp>
 
 #include "CppCoverage/FileCoverage.hpp"
 
@@ -54,7 +56,9 @@ namespace Exporter
 		for (size_t i = 1; std::getline(ifs, line); ++i)
 		{			
 			auto lineCoverage = fileCoverage[i];
-
+			
+			line = boost::spirit::classic::xml::encode(line);
+				
 			if (lineCoverage)
 				line = UpdateLineColor(line, lineCoverage->HasBeenExecuted());
 				
