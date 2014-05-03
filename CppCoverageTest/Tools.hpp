@@ -5,20 +5,25 @@
 #include <string>
 #include <functional>
 
+namespace boost
+{
+	namespace filesystem
+	{
+		class path;
+	}
+}
+
 namespace CppCoverageTest
 {
-	class Tools
+	class Tools // rename
 	{	
 	public:
 		typedef std::function<void(HANDLE hProcess, HANDLE hFile)> T_HandlesFct;
 
 	public:
 		Tools() = delete;
-
-		static std::wstring GetConsoleForCppCoverageTestPath();
-		static std::wstring GetConsoleForCppCoverageTestFilename();
-
-		static void GetHandles(const std::wstring& filename, T_HandlesFct);
+	
+		static void GetHandles(const boost::filesystem::path&, T_HandlesFct);
 	};
 }
 

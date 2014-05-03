@@ -3,25 +3,27 @@
 #include <boost/filesystem.hpp>
 
 #include "CppCoverage/HandleInformation.hpp"
+#include "TestCoverageConsole/TestCoverageConsole.hpp"
+#include "Tools/Tool.hpp"
 
 namespace cov = CppCoverage;
-namespace bfs = boost::filesystem;
+namespace fs = boost::filesystem;
 
 namespace CppCoverageTest
 {	
 	//-------------------------------------------------------------------------
 	TEST(HandleInformationTest, ComputeFilename)
 	{
-		std::wstring consoleForCppCoverageTest = Tools::GetConsoleForCppCoverageTestPath();
-		bfs::path path;
+		auto outputBinaryPath = TestCoverageConsole::GetOutputBinaryPath();
+		fs::path path;
 
-		Tools::GetHandles(consoleForCppCoverageTest, [&](HANDLE hProcess, HANDLE hFile) 
+		Tools::GetHandles(outputBinaryPath, [&](HANDLE hProcess, HANDLE hFile)
 		{
 			cov::HandleInformation handleInformation;
 
 			path = handleInformation.ComputeFilename(hFile);
 		});
 
-		ASSERT_EQ(path, bfs::path(consoleForCppCoverageTest));
+		ASSERT_EQ(outputBinaryPath, path);
 	}
 }

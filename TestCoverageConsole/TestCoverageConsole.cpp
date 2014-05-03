@@ -2,38 +2,64 @@
 //
 
 #include <windows.h>
+#include <tchar.h>
 
 #include <string>
 #include <iostream>
-#include "TestCoverageSharedLib/TestCoverageSharedLib.h"
+#include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
-// $$ clean this code
-void ThrowHandledException()
+#include "TestCoverageConsole.hpp"
+
+namespace
 {
-	try
+	//-----------------------------------------------------------------------------
+	void ThrowHandledException()
 	{
-		throw 42;
-	}
-	catch (...)
-	{
+		try
+		{
+			throw 42;
+		}
+		catch (...)
+		{
+		}
 	}
 }
 
-int main(int argc, char* argv[])
+//-----------------------------------------------------------------------------
+int _tmain(int argc, _TCHAR* argv[])
 {	
-	if (argc <= 1)	
-		return 1;
-	
 	if (argc == 2)
 	{
-		std::string argument = argv[1];
-		if (argument == "ThrowHandledException")		
+		std::wstring type = argv[1];
+		if (type == TestCoverageConsole::TestThrowHandledException)
 			ThrowHandledException();
-		else if (argument == "ThrowUnHandledException")
+		else if (type == TestCoverageConsole::TestThrowUnHandledException)
 			throw 42;
+		else if (type == TestCoverageConsole::TestSharedLib)
+			return TestCoverageSharedLib::IsOdd(42);
 		else
-			return TestCoverageSharedLib::IsOdd(std::stoul(argv[1]));
+			std::wcerr << L"Unsupported type:" << type << std::endl;
 	}
 	return 0;	
 }
 
+namespace TestCoverageConsole
+{
+	//-------------------------------------------------------------------------
+	boost::filesystem::path GetTargetFileName()
+	{
+		return TARGET_FILE_NAME;
+	}
+
+	//-----------------------------------------------------------------------------
+	boost::filesystem::path GetMainCppPath()
+	{
+		return __FILE__;
+	}
+
+	//-----------------------------------------------------------------------------
+	boost::filesystem::path GetOutputBinaryPath()
+	{
+		return TARGET_PATH;
+	}
+}

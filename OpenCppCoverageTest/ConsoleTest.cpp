@@ -6,17 +6,19 @@
 #include <Poco/PipeStream.h>
 #include <Poco/StreamCopier.h>
 
+#include "TestCoverageConsole/TestCoverageConsole.hpp"
+
 #include "tools/ScopedAction.hpp"
 
 namespace fs = boost::filesystem;
 
 namespace OpenCppCoverageTest
-{
+{	
 	//-------------------------------------------------------------------------
 	TEST(ConsoleTest, HtmlExport)
 	{
-		fs::path console = fs::canonical("../Debug/OpenCppCoverageTest.exe"); // $$$ improve
-		fs::path testExe = fs::canonical("../Debug/TestCoverageConsole.exe");
+		fs::path console = fs::canonical("../Debug/OpenCppCoverageTest.exe"); // $$ clean this code
+		fs::path testExe = TestCoverageConsole::GetOutputBinaryPath();
 
 		std::vector<std::string> arguments{ testExe.string() };
 		Poco::Pipe output;

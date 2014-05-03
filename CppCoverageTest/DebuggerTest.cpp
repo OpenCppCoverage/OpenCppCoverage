@@ -2,6 +2,7 @@
 
 #include "CppCoverage/StartInfo.hpp"
 #include "CppCoverage/Debugger.hpp"
+#include "TestCoverageConsole/TestCoverageConsole.hpp"
 
 #include "DebugEventsMock.hpp"
 
@@ -12,7 +13,7 @@ namespace CppCoverageTest
 	//-----------------------------------------------------------------------------
 	TEST(DebugerTest, Debug)
 	{		
-		cov::StartInfo startInfo{ Tools::GetConsoleForCppCoverageTestPath() };
+		cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath() };
 		cov::Debugger debugger;
 		DebugEventsHandlerMock debugEventsHandlerMock;
 

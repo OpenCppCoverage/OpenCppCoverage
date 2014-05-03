@@ -2,9 +2,11 @@
 //
 
 #include "stdafx.h"
-#include "TestCoverageSharedLib.h"
+#include "TestCoverageSharedLib.hpp"
 
 #include <iostream>
+
+namespace fs = boost::filesystem;
 
 namespace TestCoverageSharedLib
 {
@@ -15,5 +17,17 @@ namespace TestCoverageSharedLib
 			return true;
 
 		return false;
+	}
+
+	//-------------------------------------------------------------------------
+	fs::path GetMainCppPath()
+	{
+		return fs::path{ __FILE__ };		
+	}
+
+	//-------------------------------------------------------------------------
+	fs::path GetTargetFileName()
+	{		
+		return TARGET_FILE_NAME;
 	}
 }

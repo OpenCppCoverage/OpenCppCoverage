@@ -3,6 +3,8 @@
 #include "CppCoverage/StartInfo.hpp"
 #include "CppCoverage/Process.hpp"
 
+#include "TestCoverageConsole/TestCoverageConsole.hpp"
+
 namespace cov = CppCoverage;
 
 namespace CppCoverageTest
@@ -10,7 +12,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(Process, Start)
 	{
-		cov::StartInfo startInfo{ Tools::GetConsoleForCppCoverageTestPath() };
+		cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath() };
 		cov::Process process{ startInfo };
 				
 		ASSERT_NO_THROW(process.Start(0));
@@ -19,8 +21,8 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(Process, StartWithArgument)
 	{
-		cov::StartInfo startInfo{ Tools::GetConsoleForCppCoverageTestPath() };
-		startInfo.AddArguments(L"42");
+		cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath() };
+		startInfo.AddArguments(TestCoverageConsole::TestThrowHandledException);
 		
 		cov::Process process{ startInfo };
 		ASSERT_NO_THROW(process.Start(0));

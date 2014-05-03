@@ -31,24 +31,11 @@ namespace CppCoverageTest
 		};
 
 	}
-
+		
 	//-------------------------------------------------------------------------
-	std::wstring Tools::GetConsoleForCppCoverageTestFilename()
-	{
-		return L"TestCoverageConsole.exe";		// $$ 
-	}
-
-	//-------------------------------------------------------------------------
-	std::wstring Tools::GetConsoleForCppCoverageTestPath()
+	void Tools::GetHandles(const boost::filesystem::path& path, T_HandlesFct action)
 	{		
-		bfs::path path = { L"../Debug/" + Tools::GetConsoleForCppCoverageTestFilename()};
-		return bfs::canonical(path).wstring();
-	}	
-
-	//-------------------------------------------------------------------------
-	void Tools::GetHandles(const std::wstring& filename, T_HandlesFct action)
-	{		
-		cov::StartInfo startInfo{ filename };
+		cov::StartInfo startInfo{ path };
 		cov::Debugger debugger;
 		DebugEventsHandler debugEventsHandler{ action };
 
