@@ -18,7 +18,7 @@ namespace Tools
 #define GENERATE_EXCEPTION_CLASS(namespaceName, exceptionName)	\
 namespace namespaceName											\
 {																\
-	class exceptionName : public ::Tools::ExceptionBase			\
+	class exceptionName : public Tools::ExceptionBase			\
 	{															\
 	public:														\
 			explicit exceptionName(const std::wstring& message) \

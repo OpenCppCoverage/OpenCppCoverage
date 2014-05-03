@@ -43,16 +43,15 @@ namespace
 		return executablePath.parent_path();
 	}
 
-	// $$ remove warning compilations
 	//-----------------------------------------------------------------------------
 	void Run(const cov::Options& options)
 	{		
 		auto logLevel = (options.IsVerboseModeSelected()) ? logging::trivial::debug : logging::trivial::info;
-		Tools::InitConsoleAndFileLog(L"Test.log"); // $$ todo
+		Tools::InitConsoleAndFileLog(L"LastCoverageResults.log");
 		Tools::SetLoggerMinSeverity(logLevel);
 
 		const auto& startInfo = options.GetStartInfo();
-		// $$ check if code run correctly add log + export !!!
+		// $$ check if code run correctly. If exception notify the user  (add log + export html) !!!
 		cov::CodeCoverageRunner codeCoverageRunner;
 		cov::CoverageSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
 
@@ -68,7 +67,7 @@ namespace
 		htmlExporter.Export(coverage, output);
 	}
 }
-
+// $$$ improve. Move Arg parsing here ?
 //-----------------------------------------------------------------------------
 int main(int argc, const char* argv[])
 {	

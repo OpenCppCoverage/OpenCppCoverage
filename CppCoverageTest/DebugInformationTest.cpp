@@ -4,6 +4,7 @@
 
 #include "CppCoverage/DebugInformation.hpp"
 #include "Tools/Tool.hpp"
+#include "TestTools.hpp"
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 
@@ -36,7 +37,7 @@ namespace CppCoverageTest
 		EXPECT_CALL(mock, OnNewLine(testing::_, testing::_, testing::_))
 			.Times(testing::AtLeast(1));
 
-		Tools::GetHandles(TestCoverageConsole::GetOutputBinaryPath(), [&](HANDLE hProcess, HANDLE hFile)
+		TestTools::GetHandles(TestCoverageConsole::GetOutputBinaryPath(), [&](HANDLE hProcess, HANDLE hFile)
 		{ 
 			LoadModule(mock, hProcess, hFile);
 		});				

@@ -20,7 +20,7 @@
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
-#include "Tools.hpp"
+#include "TestTools.hpp"
 
 namespace cov = CppCoverage;
 namespace fs = boost::filesystem;
@@ -43,14 +43,14 @@ namespace CppCoverageTest
 		{
 			error_ = boost::make_shared<std::ostringstream>();
 
-			::Tools::SetLoggerMinSeverity(logging::trivial::error);
-			::Tools::InitLoggerOstream(error_);
+			Tools::SetLoggerMinSeverity(logging::trivial::error);
+			Tools::InitLoggerOstream(error_);
 		}
 
 		//---------------------------------------------------------------------
 		void TearDown() override
 		{
-			::Tools::ResetLogger();
+			Tools::ResetLogger();
 		}
 
 		//---------------------------------------------------------------------

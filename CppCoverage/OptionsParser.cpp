@@ -114,7 +114,6 @@ namespace CppCoverage
 	const std::string OptionsParser::HelpOption = "help";
 	const std::string OptionsParser::HelpShortOption = "h";
 	const std::string OptionsParser::WorkingDirectoryOption = "working_dir";
-
 	
 	using T_Strings = std::vector<std::string>;
 

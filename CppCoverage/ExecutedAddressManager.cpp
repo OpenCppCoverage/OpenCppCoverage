@@ -133,7 +133,7 @@ namespace CppCoverage
 			 
 		return instruction.instruction_;
 	}
-	// $$ add pdb in verbose mode 
+	
 	//-------------------------------------------------------------------------
 	CoverageData ExecutedAddressManager::CreateCoverageData(const std::wstring& name) const
 	{

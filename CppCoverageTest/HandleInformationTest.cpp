@@ -6,6 +6,8 @@
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "Tools/Tool.hpp"
 
+#include "TestTools.hpp"
+
 namespace cov = CppCoverage;
 namespace fs = boost::filesystem;
 
@@ -17,7 +19,7 @@ namespace CppCoverageTest
 		auto outputBinaryPath = TestCoverageConsole::GetOutputBinaryPath();
 		fs::path path;
 
-		Tools::GetHandles(outputBinaryPath, [&](HANDLE hProcess, HANDLE hFile)
+		TestTools::GetHandles(outputBinaryPath, [&](HANDLE hProcess, HANDLE hFile)
 		{
 			cov::HandleInformation handleInformation;
 

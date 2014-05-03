@@ -15,13 +15,13 @@ namespace boost
 
 namespace CppCoverageTest
 {
-	class Tools // rename
+	class TestTools // rename
 	{	
 	public:
 		typedef std::function<void(HANDLE hProcess, HANDLE hFile)> T_HandlesFct;
 
 	public:
-		Tools() = delete;
+		TestTools() = delete;
 	
 		static void GetHandles(const boost::filesystem::path&, T_HandlesFct);
 	};

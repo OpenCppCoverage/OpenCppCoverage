@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <functional>
+
 #include "CppCoverage/CoverageFilter.hpp"
 #include "CppCoverage/CoverageSettings.hpp"
 #include "CppCoverage/Patterns.hpp"

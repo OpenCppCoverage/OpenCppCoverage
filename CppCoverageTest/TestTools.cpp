@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Tools.hpp"
+#include "TestTools.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -16,7 +16,7 @@ namespace CppCoverageTest
 	{
 		struct DebugEventsHandler : public cov::IDebugEventsHandler
 		{
-			explicit DebugEventsHandler(Tools::T_HandlesFct action)
+			explicit DebugEventsHandler(TestTools::T_HandlesFct action)
 			: action_(action)
 			{
 			}
@@ -27,13 +27,13 @@ namespace CppCoverageTest
 			}
 
 		private:
-			Tools::T_HandlesFct action_;
+			TestTools::T_HandlesFct action_;
 		};
 
 	}
 		
 	//-------------------------------------------------------------------------
-	void Tools::GetHandles(const boost::filesystem::path& path, T_HandlesFct action)
+	void TestTools::GetHandles(const boost::filesystem::path& path, T_HandlesFct action)
 	{		
 		cov::StartInfo startInfo{ path };
 		cov::Debugger debugger;
