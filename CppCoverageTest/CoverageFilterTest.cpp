@@ -15,7 +15,7 @@ namespace CppCoverageTest
 		{
 			//---------------------------------------------------------------------
 			CoverageFilterTest()
-			: emptyPatterns_{ false }
+			: emptyPatterns_{}
 			, defaultPatterns_{BuildDefaultPatterns()}
 			{
 
@@ -26,8 +26,8 @@ namespace CppCoverageTest
 			{
 				cov::Patterns patterns{false};
 
-				patterns.AddSelectedPatterns(L".*12.*");
-				patterns.AddExcludedPatterns(L".*3.*");
+				patterns.AddSelectedPatterns(L"a*b");
+				patterns.AddExcludedPatterns(L"3");
 
 				return patterns;
 			}
@@ -40,8 +40,8 @@ namespace CppCoverageTest
 				cov::CoverageFilter filter{settings};
 
 				ASSERT_FALSE(isSelected(filter, L"aa"));
-				ASSERT_FALSE(isSelected(filter, L"1234756"));
-				ASSERT_TRUE(isSelected(filter, L"12456"));			
+				ASSERT_FALSE(isSelected(filter, L"a3b"));
+				ASSERT_TRUE(isSelected(filter, L"ab"));			
 			}	
 
 			cov::Patterns emptyPatterns_;

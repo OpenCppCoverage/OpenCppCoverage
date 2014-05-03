@@ -13,7 +13,7 @@ namespace CppCoverage
 		typedef std::vector<std::wstring> T_Patterns;
 
 	public:
-		explicit Patterns(bool isRegexCaseSensitiv);
+		explicit Patterns(bool isRegexCaseSensitiv = false);
 		Patterns(const Patterns&) = default;
 		Patterns(Patterns&&);
 

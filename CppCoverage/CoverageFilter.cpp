@@ -8,44 +8,45 @@
 
 #include "CoverageSettings.hpp"
 #include "Patterns.hpp"
+#include "Wildcards.hpp"
 
 namespace CppCoverage
 {	
 	//-------------------------------------------------------------------------
 	struct CoverageFilter::Filter
 	{		
-		std::vector<boost::wregex> selectedRegexes;
-		std::vector<boost::wregex> excludedRegexes;
+		std::vector<Wildcards> selectedWildcards;
+		std::vector<Wildcards> excludedWildcards;
 	};
 
 	namespace
 	{
 		//---------------------------------------------------------------------
-		const boost::wregex* MatchAny(
+		const Wildcards* MatchAny(
 			const std::wstring& str, 
-			const std::vector<boost::wregex>& regexes)
+			const std::vector<Wildcards>& wildcardsCollection)
 		{
-			for (const auto& regEx : regexes)
-			{
-				if (boost::regex_match(str, regEx))
-					return &regEx;				
+			
+			for (const auto& wildcards : wildcardsCollection)
+			{				
+				if (wildcards.Match(str))
+					return &wildcards;
 			}
 
 			return nullptr;
 		}		
-		
+				
 		//---------------------------------------------------------------------
-		std::vector<boost::wregex> BuildRegexes(
+		std::vector<Wildcards> BuildWildcards(
 			const std::vector<std::wstring>& regexesStr,
 			bool isRegexCaseSensitiv)
-		{
-			auto flags = (isRegexCaseSensitiv) ? boost::regex::basic : boost::regex::icase;
-			std::vector<boost::wregex> regexes;
+		{			
+			std::vector<Wildcards> wildcardsCollection;
 
 			for (const auto& regexStr : regexesStr)
-				regexes.emplace_back(regexStr, flags);
-
-			return regexes;
+				wildcardsCollection.emplace_back(regexStr, isRegexCaseSensitiv);
+						
+			return wildcardsCollection;
 		}	
 	}
 
@@ -87,10 +88,10 @@ namespace CppCoverage
 	{
 		std::unique_ptr<Filter> filter{ new Filter()};
 
-		filter->selectedRegexes = BuildRegexes(
+		filter->selectedWildcards = BuildWildcards(
 			patterns.GetSelectedPatterns(), 
 			patterns.IsRegexCaseSensitiv());
-		filter->excludedRegexes = BuildRegexes(
+		filter->excludedWildcards = BuildWildcards(
 			patterns.GetExcludedPatterns(), 
 			patterns.IsRegexCaseSensitiv());
 
@@ -103,15 +104,15 @@ namespace CppCoverage
 		const Filter& filter,
 		std::wostream& ostr) const
 	{
-		const auto* selectedRegEx = MatchAny(str, filter.selectedRegexes);
+		const auto* selectedRegEx = MatchAny(str, filter.selectedWildcards);
 
 		if (!selectedRegEx)
 		{
 			ostr << L": " << str << L" is skipped. Match no selected patterns";
 			return false;
 		}
-		// $$ no wargningfor normal message (same line for same file) for example
-		const auto* excludedRegEx = MatchAny(str, filter.excludedRegexes);
+		
+		const auto* excludedRegEx = MatchAny(str, filter.excludedWildcards);
 
 		if (excludedRegEx)
 		{
@@ -121,5 +122,5 @@ namespace CppCoverage
 
 		ostr << L": " << str << L" is selected because it matchs selected pattern: " << *selectedRegEx;;
 		return true;			
-	}
+	} // $$ test with 64 bits
 }
