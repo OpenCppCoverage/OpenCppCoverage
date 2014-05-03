@@ -8,6 +8,8 @@
 #include "CppCoverage/ModuleCoverage.hpp"
 #include "CppCoverage/FileCoverage.hpp"
 
+#include "Tools/Log.hpp"
+
 #include "TemplateHtmlExporter.hpp"
 #include "HtmlFileCoverageExporter.hpp"
 #include "HtmlFolderStructure.hpp"
@@ -25,6 +27,15 @@ namespace Exporter
 
 			ofs << content;
 			ofs.flush();
+		}
+
+		//---------------------------------------------------------------------
+		void ShowOutputMessage(const fs::path& outputFolder)
+		{
+			auto separators = L"----------------------------------------------------";
+			LOG_INFO << separators;
+			LOG_INFO << L"Coverage generated in Folder " << outputFolder.wstring();
+			LOG_INFO << separators;
 		}
 	}
 	
@@ -62,6 +73,7 @@ namespace Exporter
 
 		auto content = exporter_.GenerateProjectTemplate(*projectDictionary);
 		WriteContentTo(content, outputFolder / L"index.html");
+		ShowOutputMessage(outputFolder);
 	}	
 
 	//---------------------------------------------------------------------
