@@ -1,13 +1,15 @@
 #include "stdafx.h"
 #include "Options.hpp"
 
-namespace CppCoverage
+namespace cov = CppCoverage;
+
+namespace OpenCppCoverage
 {
 	//-------------------------------------------------------------------------
 	Options::Options(
-		const StartInfo& startInfo,
-		const Patterns& modulePatterns,
-		const Patterns& sourcePatterns)
+		const cov::StartInfo& startInfo,
+		const cov::Patterns& modulePatterns,
+		const cov::Patterns& sourcePatterns)
 		: startInfo_{startInfo}
 		, modules_{modulePatterns}
 		, sources_{sourcePatterns}
@@ -16,19 +18,19 @@ namespace CppCoverage
 	}	
 
 	//-------------------------------------------------------------------------
-	const Patterns& Options::GetModulePatterns() const
+	const cov::Patterns& Options::GetModulePatterns() const
 	{
 		return modules_;
 	}
 	
 	//-------------------------------------------------------------------------
-	const Patterns& Options::GetSourcePatterns() const
+	const cov::Patterns& Options::GetSourcePatterns() const
 	{
 		return sources_;
 	}
 	
 	//-------------------------------------------------------------------------
-	const StartInfo& Options::GetStartInfo() const
+	const cov::StartInfo& Options::GetStartInfo() const
 	{
 		return startInfo_;
 	}

@@ -39,6 +39,7 @@
     <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\Poco.Debug.props" />
     <Import Project="..\PropertySheets\TestCoverageConsole.props" />
+    <Import Project="..\PropertySheets\OpenCppCoverage.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -47,6 +48,7 @@
     <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\Poco.Release.props" />
     <Import Project="..\PropertySheets\TestCoverageConsole.props" />
+    <Import Project="..\PropertySheets\OpenCppCoverage.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -93,14 +95,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ConsoleTest.cpp" />
+    <ClCompile Include="OpenCppCoverageConsoleTest.cpp" />
     <ClCompile Include="OpenCppCoverageTest.cpp" />
+    <ClCompile Include="OptionsParserTests.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CppCoverage\CppCoverage.vcxproj">
+      <Project>{a50dd5a6-e85a-4e0b-9cc6-90d32503ce62}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\Tools.vcxproj">
+      <Project>{7f6d05ef-deb0-4c64-bd13-a85f46314b91}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

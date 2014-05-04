@@ -27,7 +27,7 @@ namespace CppCoverage
 
 		Patterns& operator=(const Patterns&) = default;
 		
-		friend std::wostream& operator<<(std::wostream&, const Patterns&);
+		CPPCOVERAGE_DLL friend std::wostream& operator<<(std::wostream&, const Patterns&);
 	
 	private:
 		T_Patterns selectedPatterns_;

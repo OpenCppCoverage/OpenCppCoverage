@@ -6,14 +6,15 @@
 #include <sstream>
 
 #include "Tools/Tool.hpp"
+#include "CppCoverage/Patterns.hpp"
 
-#include "CppCoverageException.hpp"
 #include "Options.hpp"
-#include "Patterns.hpp"
+#include "OpenCppCoverageException.hpp"
 
 namespace po = boost::program_options;
+namespace cov = CppCoverage;
 
-namespace CppCoverage
+namespace OpenCppCoverage
 {
 	namespace
 	{
@@ -52,12 +53,12 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
-		Patterns GetPatterns(
+		cov::Patterns GetPatterns(
 			const po::variables_map& variables, 
 			const std::string& selected, 
 			const std::string& excluded)
 		{
-			Patterns patterns{false};
+			cov::Patterns patterns{ false };
 
 			auto selectedPatterns = GetValue<std::vector<std::string>>(variables, selected);
 			for (const auto& pattern : selectedPatterns)
@@ -74,14 +75,14 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
-		StartInfo GetStartInfo(const po::variables_map& variables)
+		cov::StartInfo GetStartInfo(const po::variables_map& variables)
 		{
 			const auto* programToRun = GetOptionalValue<std::string>(variables, ProgramToRunOption);
 
 			if (!programToRun)
 				THROW("No program specified.");
 
-			StartInfo startInfo{*programToRun};
+			cov::StartInfo startInfo{ *programToRun };
 
 			const auto* arguments = GetOptionalValue<std::vector<std::string>>(variables, ProgramToRunArgOption);
 			if (arguments)

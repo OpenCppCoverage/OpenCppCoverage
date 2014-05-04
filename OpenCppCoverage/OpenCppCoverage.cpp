@@ -2,11 +2,13 @@
 //
 
 #include "stdafx.h"
+#include "OpenCppCoverage.hpp"
+
+#include <ctime>
+#include <iomanip>
 
 #include <boost/log/trivial.hpp>
 
-#include "CppCoverage/OptionsParser.hpp"
-#include "CppCoverage/Options.hpp"
 #include "CppCoverage/CodeCoverageRunner.hpp"
 #include "CppCoverage/CoverageSettings.hpp"
 #include "CppCoverage/CoverageData.hpp"
@@ -17,61 +19,86 @@
 #include "Tools/Tool.hpp"
 #include "Tools/Log.hpp"
 
-#include "CppCoverageConsoleException.hpp"
+#include "OpenCppCoverageException.hpp"
+#include "OptionsParser.hpp"
+#include "Options.hpp"
 
 namespace cov = CppCoverage;
 namespace logging = boost::log;
 
-namespace
+namespace OpenCppCoverage
 {
-	//-----------------------------------------------------------------------------
-	fs::path GetExecutablePath()
+	//-------------------------------------------------------------------------
+	boost::filesystem::path GetOutputBinaryPath()
 	{
-		std::vector<wchar_t> filename(4096);
-
-		if (!GetModuleFileName(nullptr, &filename[0], filename.size()))
-			THROW("Cannot get current executable path.");
-
-		return fs::path{&filename[0]};
+		return TARGET_PATH;
 	}
 
-	//-----------------------------------------------------------------------------
-	fs::path GetExecutableFolder()
+	namespace
 	{
-		fs::path executablePath = GetExecutablePath();
+		//-----------------------------------------------------------------------------
+		fs::path GetExecutablePath()
+		{
+			std::vector<wchar_t> filename(4096);
 
-		return executablePath.parent_path();
-	}
+			if (!GetModuleFileName(nullptr, &filename[0], filename.size()))
+				THROW("Cannot get current executable path.");
 
-	//-----------------------------------------------------------------------------
-	void Run(const cov::Options& options)
-	{		
-		auto logLevel = (options.IsVerboseModeSelected()) ? logging::trivial::debug : logging::trivial::info;
-		Tools::InitConsoleAndFileLog(L"LastCoverageResults.log");
-		Tools::SetLoggerMinSeverity(logLevel);
+			return fs::path{ &filename[0] };
+		}
 
-		const auto& startInfo = options.GetStartInfo();
-		// $$ check if code run correctly. If exception notify the user  (add log + export html) !!!
-		cov::CodeCoverageRunner codeCoverageRunner;
-		cov::CoverageSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
+		//-----------------------------------------------------------------------------
+		fs::path GetExecutableFolder()
+		{
+			fs::path executablePath = GetExecutablePath();
 
-		std::wostringstream ostr;
-		ostr << std::endl << options;
-		LOG_INFO << L"Start Program:" << ostr.str();
+			return executablePath.parent_path();
+		}
 
-		cov::CoverageData coverage = codeCoverageRunner.RunCoverage(startInfo, settings);
-		fs::path templateFolder = GetExecutableFolder() / "Template";
-		Exporter::HtmlExporter htmlExporter{ templateFolder };
-		
-		boost::filesystem::path output = "Coverage"; // $$ add the name of the module
-		htmlExporter.Export(coverage, output);
+		//-----------------------------------------------------------------------------
+		fs::path GetOutputPath()
+		{
+			auto now = std::time(nullptr);
+			auto localNow = std::localtime(&now);
+			std::ostringstream ostr;
+
+			ostr << "CoverageReport-" << std::put_time(localNow, "%Y-%m-%d-%Hh%Mm%Ss");
+
+			return ostr.str();
+		}
+
+		//-----------------------------------------------------------------------------
+		void Run(const Options& options)
+		{
+			auto logLevel = (options.IsVerboseModeSelected()) ? logging::trivial::debug : logging::trivial::info;
+			Tools::InitConsoleAndFileLog(L"LastCoverageResults.log");
+			Tools::SetLoggerMinSeverity(logLevel);
+
+			const auto& startInfo = options.GetStartInfo();
+			cov::CodeCoverageRunner codeCoverageRunner;
+			cov::CoverageSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
+
+			std::wostringstream ostr;
+			ostr << std::endl << options;
+			LOG_INFO << L"Start Program:" << ostr.str();
+
+			cov::CoverageData coverage = codeCoverageRunner.RunCoverage(startInfo, settings);
+			fs::path templateFolder = GetExecutableFolder() / "Template";
+			Exporter::HtmlExporter htmlExporter{ templateFolder };
+
+			auto now = std::time(nullptr);
+			auto localNow = std::localtime(&now);
+
+			boost::filesystem::path output = GetOutputPath();
+			htmlExporter.Export(coverage, output);
+		}
 	}
 }
 
 //-----------------------------------------------------------------------------
 int main(int argc, const char* argv[])
 {	
-	cov::OptionsParser optionsParser;
+	OpenCppCoverage::OptionsParser optionsParser;
 
 	try
 	{		
@@ -79,7 +106,7 @@ int main(int argc, const char* argv[])
 
 		if (options)
 		{
-			Run(*options);
+			OpenCppCoverage::Run(*options);
 			return 0;
 		}
 		
