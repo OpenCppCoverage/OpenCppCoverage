@@ -63,9 +63,12 @@ namespace CppCoverage
 			for (const auto& pattern : selectedPatterns)
 				patterns.AddSelectedPatterns(Tools::ToWString(pattern));
 
-			auto excludedPatterns = GetValue<std::vector<std::string>>(variables, excluded);
-			for (const auto& pattern : excludedPatterns)
-				patterns.AddExcludedPatterns(Tools::ToWString(pattern));
+			auto excludedPatterns = GetOptionalValue<std::vector<std::string>>(variables, excluded);
+			if (excludedPatterns)
+			{
+				for (const auto& pattern : *excludedPatterns)
+					patterns.AddExcludedPatterns(Tools::ToWString(pattern));
+			}
 
 			return patterns;
 		}
@@ -121,10 +124,8 @@ namespace CppCoverage
 	OptionsParser::OptionsParser()
 		: description_("Usage [options] program_to_run optional_arguments")
 	{		
-		const std::string all = ".*";
-		const std::string nothing = "";
-		const std::string nothingStr = "\"\"";
-
+		const std::string all = "*";
+		
 		std::vector<std::string> gg;
 
 		description_.add_options()
@@ -132,13 +133,13 @@ namespace CppCoverage
 				po::value<T_Strings>()->default_value(T_Strings{ { all } }, all),
 				"The pattern that module's paths should match.")
 			(ExcludedModulesOption.c_str(),
-				po::value<T_Strings>()->default_value(T_Strings{ { nothing } }, nothingStr),
+				po::value<T_Strings>(),
 				"The pattern that module's paths should NOT match.")
 			(SelectedSourcesOption.c_str(),
 				po::value<T_Strings>()->default_value(T_Strings{ { all } }, all), 
 				"The pattern that sources's paths should be match.")
-			(ExcludedSourcesOption.c_str(),
-				po::value<T_Strings>()->default_value(T_Strings{ { nothing } }, nothingStr),
+			(ExcludedSourcesOption.c_str(), 
+				po::value<T_Strings>(),
 				"The pattern that source's paths should NOT match.")
 			(WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")			
 			((VerboseOption + "," + VerboseShortOption).c_str(), "Show verbose log")
