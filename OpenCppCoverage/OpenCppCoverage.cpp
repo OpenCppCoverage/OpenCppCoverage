@@ -6,6 +6,7 @@
 
 #include <ctime>
 #include <iomanip>
+#include <iostream>
 
 #include <boost/log/trivial.hpp>
 

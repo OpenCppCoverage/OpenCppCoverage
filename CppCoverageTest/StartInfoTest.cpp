@@ -5,6 +5,8 @@
 #include "CppCoverage/StartInfo.hpp"
 #include "Tools/ExceptionBase.hpp"
 
+#include "TestCoverageConsole/TestCoverageConsole.hpp"
+
 namespace cov = CppCoverage;
 namespace fs = boost::filesystem;
 
@@ -12,8 +14,7 @@ namespace CppCoverageTest
 {
 	namespace
 	{
-		const std::string file = __FILE__;
-		const std::wstring validFilename(file.begin(), file.end());
+		const std::wstring validFilename = TestCoverageConsole::GetOutputBinaryPath().wstring(); 
 	}
 
 	//-------------------------------------------------------------------------

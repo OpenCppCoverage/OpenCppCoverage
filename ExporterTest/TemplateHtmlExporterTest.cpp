@@ -13,6 +13,8 @@
 #include "CppCoverage/ModuleCoverage.hpp"
 #include "Tools/Tool.hpp"
 
+#include "TestCoverageConsole/TestCoverageConsole.hpp"
+
 namespace cov = CppCoverage;
 
 namespace ExporterTest
@@ -25,7 +27,7 @@ namespace ExporterTest
 		TemplateHtmlExporterTest()
 			: templateHtmlExporter_("")
 			, title_(L"title")
-			, fileOutput_{ __FILE__ }
+			, fileOutput_{TestCoverageConsole::GetOutputBinaryPath()}
 			, filePath_{ "path" }
 		{			
 			templateDictionary_ = templateHtmlExporter_.CreateTemplateDictionary(title_, L"");

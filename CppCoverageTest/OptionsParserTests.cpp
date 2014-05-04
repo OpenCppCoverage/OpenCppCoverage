@@ -3,6 +3,8 @@
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/Options.hpp"
 
+#include "TestCoverageConsole/TestCoverageConsole.hpp"
+
 #include "tools/Tool.hpp"
 
 namespace po = boost::program_options;
@@ -14,7 +16,7 @@ namespace CppCoverageTest
 	{
 		const std::string optionPrefix = "--";
 		const std::string optionShortPrefix = "-";
-		const std::string programToRun = __FILE__; // Need existing file
+		const std::string programToRun = TestCoverageConsole::GetOutputBinaryPath().string();
 
 		//---------------------------------------------------------------------
 		boost::optional<cov::Options> Parse(
@@ -162,4 +164,4 @@ namespace CppCoverageTest
 
 		ASSERT_THROW(Parse(parser, { "--unknownOption" }), po::unknown_option);
 	}
-} // $$ uncomment
+}
