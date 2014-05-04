@@ -141,7 +141,7 @@ namespace CppCoverage
 			po::value<T_Strings>(),
 			"The pattern that source's paths should NOT match.")
 			(WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")
-			((VerboseOption + "," + VerboseShortOption).c_str(), "Show verbose log");
+			((VerboseOption + "," + VerboseShortOption).c_str(), "Show verbose log")
 			((HelpOption + "," + HelpShortOption).c_str(), "Show help message");
 	}
 	

@@ -8,26 +8,73 @@
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "OpenCppCoverage/OpenCppCoverage.hpp"
+#include "CppCoverage/OptionsParser.hpp"
 
 #include "tools/ScopedAction.hpp"
 #include "Tools/Tool.hpp"
 
 namespace fs = boost::filesystem;
+namespace cov = CppCoverage;
 
 namespace OpenCppCoverageTest
 {	
-	//-------------------------------------------------------------------------
-	TEST(ConsoleTest, UnhandledException)
+	namespace
 	{
-		fs::path console = OpenCppCoverage::GetOutputBinaryPath();
-		fs::path testExe = TestCoverageConsole::GetOutputBinaryPath();
+		//---------------------------------------------------------------------
+		int RunCoverageOnProgram(
+			const fs::path& programToRun,
+			const std::vector<std::wstring>& arguments)
+		{
+			fs::path openCppCoverage = OpenCppCoverage::GetOutputBinaryPath();
 
-		std::vector<std::string> arguments{ testExe.string(), Tools::ToString(TestCoverageConsole::TestThrowUnHandledException) };
-		Poco::Pipe output;
-		auto handle = Poco::Process::launch(console.string(), arguments, "../Debug", nullptr, &output, &output);
-		handle.wait(); // $$ check return value
+			std::vector<std::string> coverageArguments{
+				"--" + cov::OptionsParser::SelectedModulesOption,
+				programToRun.string(),
+				"--" + cov::OptionsParser::SelectedSourcesOption,
+				SOLUTION_DIR,
+				programToRun.string() };
+			
+			for (const auto& argument : arguments)
+				coverageArguments.push_back(Tools::ToString(argument));
 
-		Poco::PipeInputStream inputStream(output);
-		Poco::StreamCopier::copyStream(inputStream, std::cout);
+			auto handle = Poco::Process::launch(openCppCoverage.string(), coverageArguments, ".", nullptr, nullptr, nullptr);
+			
+			return handle.wait();
+		}
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OpenCppCoverageConsoleTest, Basic) // $$ use temp folder
+	{		
+		fs::path testCoverageConsole = TestCoverageConsole::GetOutputBinaryPath();
+							
+		ASSERT_EQ(0, RunCoverageOnProgram(testCoverageConsole, {}));
+	}	
+
+	
+	//-------------------------------------------------------------------------
+	TEST(OpenCppCoverageConsoleTest, UnhandledException)
+	{
+		fs::path testCoverageConsole = TestCoverageConsole::GetOutputBinaryPath();
+
+		ASSERT_NE(0, RunCoverageOnProgram(testCoverageConsole, { TestCoverageConsole::TestThrowUnHandledException }));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OpenCppCoverageConsoleTest, CppCoverageTest)
+	{
+		fs::path cppCoverageTest{ OUT_DIR };
+		
+		cppCoverageTest /= "CppCoverageTest.exe";	
+		ASSERT_EQ(0, RunCoverageOnProgram(cppCoverageTest, {}));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OpenCppCoverageConsoleTest, ExporterTest)
+	{
+		fs::path exporterTest{ OUT_DIR };
+		
+		exporterTest /= "ExporterTest.exe";
+		ASSERT_EQ(0, RunCoverageOnProgram(exporterTest, {}));
 	}	
 }
