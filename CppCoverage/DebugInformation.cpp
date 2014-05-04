@@ -111,8 +111,7 @@ namespace CppCoverage
 	{		
 		SymSetOptions(SYMOPT_DEFERRED_LOADS | SYMOPT_LOAD_LINES
 				| SYMOPT_NO_UNQUALIFIED_LOADS | SYMOPT_UNDNAME | SYMOPT_DEBUG);
-				
-		// $$ test if not found pdb		
+						
 		if (!SymInitialize(hProcess_, nullptr, FALSE))
 			THROW("Error when calling SymInitialize. You cannot call this function twice.");
 		

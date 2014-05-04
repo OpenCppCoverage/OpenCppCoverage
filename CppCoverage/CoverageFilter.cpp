@@ -122,5 +122,5 @@ namespace CppCoverage
 
 		ostr << L": " << str << L" is selected because it matchs selected pattern: " << *selectedRegEx;;
 		return true;			
-	} // $$ test with 64 bits
+	}
 }

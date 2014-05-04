@@ -55,7 +55,7 @@ namespace
 		cov::CodeCoverageRunner codeCoverageRunner;
 		cov::CoverageSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
 
-		std::wostringstream ostr; //$$ redirect executable code output?
+		std::wostringstream ostr;
 		ostr << std::endl << options;
 		LOG_INFO << L"Start Program:" << ostr.str();
 
@@ -67,7 +67,7 @@ namespace
 		htmlExporter.Export(coverage, output);
 	}
 }
-// $$$ improve. Move Arg parsing here ?
+
 //-----------------------------------------------------------------------------
 int main(int argc, const char* argv[])
 {	

@@ -36,7 +36,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		else if (type == TestCoverageConsole::TestThrowUnHandledException)
 			throw 42;
 		else if (type == TestCoverageConsole::TestSharedLib)
-			return TestCoverageSharedLib::IsOdd(42);
+			TestCoverageSharedLib::IsOdd(42);
 		else
 			std::wcerr << L"Unsupported type:" << type << std::endl;
 	}
