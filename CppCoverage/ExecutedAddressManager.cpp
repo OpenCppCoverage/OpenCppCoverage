@@ -135,9 +135,11 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
-	CoverageData ExecutedAddressManager::CreateCoverageData(const std::wstring& name) const
+	CoverageData ExecutedAddressManager::CreateCoverageData(
+		const std::wstring& name,
+		int exitCode) const
 	{
-		CoverageData coverageData{name};
+		CoverageData coverageData{ name, exitCode };
 		
 		for (const auto& module : modules_)
 		{

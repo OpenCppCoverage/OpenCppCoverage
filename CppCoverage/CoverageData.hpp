@@ -17,7 +17,7 @@ namespace CppCoverage
 		typedef std::vector<std::unique_ptr<ModuleCoverage>> T_ModuleCoverageCollection;
 
 	public:
-		explicit CoverageData(const std::wstring& name);
+		explicit CoverageData(const std::wstring& name, int exitCode);
 		~CoverageData();
 
 		CoverageData(CoverageData&&);
@@ -29,6 +29,8 @@ namespace CppCoverage
 		const T_ModuleCoverageCollection& GetModules() const;
 		const std::wstring& GetName() const;
 
+		int GetExitCode() const;
+
 	private:
 		CoverageData(const CoverageData&) = delete;
 		CoverageData& operator=(const CoverageData&) = delete;
@@ -36,6 +38,7 @@ namespace CppCoverage
 	private:
 		T_ModuleCoverageCollection modules_;
 		std::wstring name_;
+		int exitCode_;
 		CoverageRate coverageRate_;
 	};
 }

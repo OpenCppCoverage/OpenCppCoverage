@@ -15,7 +15,7 @@ namespace CppCoverage
 	public:
 		Debugger() = default;
 
-		void Debug(const StartInfo&, IDebugEventsHandler&);
+		int Debug(const StartInfo&, IDebugEventsHandler&);
 
 	private:
 		Debugger(const Debugger&) = delete;
@@ -25,7 +25,7 @@ namespace CppCoverage
 			const DEBUG_EVENT& debugEvent,
 			IDebugEventsHandler& debugEventsHandler);
 
-		void OnExitProcess(
+		int OnExitProcess(
 			const DEBUG_EVENT& debugEvent,
 			HANDLE hProcess,
 			HANDLE hThread,
@@ -41,7 +41,7 @@ namespace CppCoverage
 		HANDLE GetThreadHandle(DWORD dwThreadId) const;
 
 		struct ProcessStatus;
-		ProcessStatus ProcessNoCreationalEvent(
+		ProcessStatus HandleNotCreateEvent(
 			const DEBUG_EVENT& debugEvent,
 			IDebugEventsHandler& debugEventsHandler,
 			HANDLE hProcess,

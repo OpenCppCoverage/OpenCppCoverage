@@ -25,27 +25,27 @@ namespace CppCoverage
 	struct Debugger::ProcessStatus
 	{
 		ProcessStatus(
-			bool isProcessAlive = true,
+			boost::optional<int> exitCode = boost::optional<int>(),
 			DWORD continueStatus = DBG_CONTINUE)
-			: isProcessAlive_(isProcessAlive)
+			: exitCode_(exitCode)
 			, continueStatus_(continueStatus)
 		{
 		}
 
-		bool isProcessAlive_;
+		boost::optional<int> exitCode_;
 		DWORD continueStatus_;
 	};
 
 	//-------------------------------------------------------------------------
-	void Debugger::Debug(const StartInfo& startInfo, IDebugEventsHandler& debugEventsHandler)
+	int Debugger::Debug(const StartInfo& startInfo, IDebugEventsHandler& debugEventsHandler)
 	{
 		Process process(startInfo);
-		process.Start(DEBUG_ONLY_THIS_PROCESS); // $$ manage child process too
+		process.Start(DEBUG_ONLY_THIS_PROCESS);
 		
 		DEBUG_EVENT debugEvent;
 		ProcessStatus processStatus;
 								
-		while (processStatus.isProcessAlive_)
+		while (!processStatus.exitCode_)
 		{
 			if (!WaitForDebugEvent(&debugEvent, INFINITE))
 				THROW_LAST_ERROR(L"Error WaitForDebugEvent:", GetLastError());
@@ -62,17 +62,19 @@ namespace CppCoverage
 				{
 					auto hProcess = GetProcessHandle(dwProcessId);
 					auto hThread = GetThreadHandle(dwThreadId);
-					processStatus = ProcessNoCreationalEvent(debugEvent, debugEventsHandler, hProcess, hThread, dwThreadId);
+					processStatus = HandleNotCreateEvent(debugEvent, debugEventsHandler, hProcess, hThread, dwThreadId);
 				}
 			}
 			if (!ContinueDebugEvent(debugEvent.dwProcessId, debugEvent.dwThreadId, processStatus.continueStatus_))
 				THROW_LAST_ERROR("Error in ContinueDebugEvent:", GetLastError());
 		}
+
+		return *processStatus.exitCode_;
 	}
 	
 	//-------------------------------------------------------------------------
 	Debugger::ProcessStatus
-		Debugger::ProcessNoCreationalEvent(
+		Debugger::HandleNotCreateEvent(
 		const DEBUG_EVENT& debugEvent,
 		IDebugEventsHandler& debugEventsHandler,
 		HANDLE hProcess,
@@ -83,8 +85,8 @@ namespace CppCoverage
 		{
 			case EXIT_PROCESS_DEBUG_EVENT:
 			{
-				OnExitProcess(debugEvent, hProcess, hThread, debugEventsHandler);
-				return ProcessStatus{ false };
+				auto exitCode = OnExitProcess(debugEvent, hProcess, hThread, debugEventsHandler);
+				return ProcessStatus{exitCode};
 			}
 			case EXIT_THREAD_DEBUG_EVENT: OnExitThread(dwThreadId); break;
 			case LOAD_DLL_DEBUG_EVENT:
@@ -97,7 +99,7 @@ namespace CppCoverage
 			case EXCEPTION_DEBUG_EVENT:
 			{
 				auto continueStatus = debugEventsHandler.OnException(hProcess, hThread, debugEvent.u.Exception);
-				return ProcessStatus{ true, continueStatus };
+				return ProcessStatus{ boost::optional<int>(), continueStatus };
 			}
 			case RIP_EVENT: OnRip(debugEvent.u.RipInfo); return ProcessStatus{ false };
 			default: LOG_DEBUG << "Debug event:" << debugEvent.dwDebugEventCode; break;
@@ -125,7 +127,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void Debugger::OnExitProcess(
+	int Debugger::OnExitProcess(
 		const DEBUG_EVENT& debugEvent,
 		HANDLE hProcess,
 		HANDLE hThread,
@@ -133,10 +135,13 @@ namespace CppCoverage
 	{
 		LOG_DEBUG << "Exit Process:" << hProcess;
 
-		debugEventsHandler.OnExitProcess(hProcess, hThread, debugEvent.u.ExitProcess);
+		auto exitProcess = debugEvent.u.ExitProcess;
+		debugEventsHandler.OnExitProcess(hProcess, hThread, exitProcess);
 
 		if (processHandles_.erase(debugEvent.dwProcessId) != 1)
-			THROW("Cannot find exited process.");		
+			THROW("Cannot find exited process.");
+
+		return exitProcess.dwExitCode;
 	}
 
 	//-------------------------------------------------------------------------

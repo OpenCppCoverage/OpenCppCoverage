@@ -29,6 +29,9 @@ namespace Exporter
 	class EXPORTER_DLL HtmlExporter
 	{
 	public:
+		static const std::wstring WarningExitCodeMessage;
+
+	public:
 		explicit HtmlExporter(const boost::filesystem::path& templateFolder);
 
 		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& outputFolder) const;

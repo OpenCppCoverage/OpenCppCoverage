@@ -35,7 +35,7 @@ namespace Exporter
 		explicit TemplateHtmlExporter(const fs::path& templateFolder);
 
 		std::unique_ptr<ctemplate::TemplateDictionary>	
-		CreateTemplateDictionary(const std::wstring& title) const;
+		CreateTemplateDictionary(const std::wstring& title, const std::wstring& message) const;
 
 		void AddFileSectionToDictionary(
 			const CppCoverage::FileCoverage& fileCoverage,

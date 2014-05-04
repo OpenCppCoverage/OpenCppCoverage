@@ -26,7 +26,8 @@ namespace Exporter
 		const std::string codeTemplate = "CODE";
 		const std::string cssPathTemplate = "CSS_PATH";
 		const std::string prettifyPathTemplate = "PRETTIFY_PATH";
-	
+		const std::string messageTemplate = "MAIN_MESSAGE";
+
 		//-------------------------------------------------------------------------
 		std::string ToStr(const std::wstring& str)
 		{
@@ -68,7 +69,9 @@ namespace Exporter
 
 	//-------------------------------------------------------------------------
 	std::unique_ptr<ctemplate::TemplateDictionary> 
-	TemplateHtmlExporter::CreateTemplateDictionary(const std::wstring& title) const
+	TemplateHtmlExporter::CreateTemplateDictionary(
+		const std::wstring& title, 
+		const std::wstring& message) const
 	{
 		std::string titleStr{ ToStr(title) };
 		std::unique_ptr<ctemplate::TemplateDictionary> dictionary;
@@ -76,6 +79,7 @@ namespace Exporter
 		dictionary.reset(new ctemplate::TemplateDictionary(titleStr));
 
 		dictionary->SetValue(titleTemplate, titleStr);
+		dictionary->SetValue(messageTemplate, ToStr(message));
 
 		return dictionary;
 	}

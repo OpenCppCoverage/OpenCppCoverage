@@ -131,6 +131,7 @@ namespace CppCoverageTest
 		TestLine(*file, line++, true);
 		ASSERT_TRUE((*file)[line++] == nullptr);
 		TestLine(*file, line++, false);
+		ASSERT_EQ(0, coverageData.GetExitCode());
 	}
 
 	//-------------------------------------------------------------------------
@@ -159,18 +160,19 @@ namespace CppCoverageTest
 	TEST_F(CodeCoverageRunnerTest, HandledException)
 	{
 		GetStartInfo().AddArguments(TestCoverageConsole::TestThrowHandledException);
-		ComputeCoverageData(L"*", L"*");		
+		cov::CoverageData coverageData = ComputeCoverageData(L"*", L"*");
 		ASSERT_EQ(std::string::npos, 
 			GetError().find(cov::CodeCoverageRunner::unhandledExceptionErrorMessage));
+		ASSERT_EQ(0, coverageData.GetExitCode());
 	}
 	
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, NotHandledException)
 	{
 		GetStartInfo().AddArguments(TestCoverageConsole::TestThrowUnHandledException);
-		ComputeCoverageData(L"*", L"*");
+		cov::CoverageData coverageData = ComputeCoverageData(L"*", L"*");
 		ASSERT_NE(std::string::npos, 
 			GetError().find(cov::CodeCoverageRunner::unhandledExceptionErrorMessage));
+		ASSERT_NE(0, coverageData.GetExitCode());
 	}
-
 }

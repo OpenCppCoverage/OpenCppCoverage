@@ -23,7 +23,7 @@ namespace CppCoverage
 		bool RegisterAddress(void* address, const std::wstring& filename, unsigned int line, unsigned char instruction);
 		unsigned  char MarkAddressAsExecuted(void* address);
 
-		CoverageData CreateCoverageData(const std::wstring& name) const;
+		CoverageData CreateCoverageData(const std::wstring& name, int exitCode) const;
 
 	private:
 		struct Module;

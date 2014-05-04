@@ -83,7 +83,7 @@ namespace CppCoverageTest
 	//---------------------------------------------------------------------
 	TEST(CoverageDataTest, CoverageData)
 	{
-		cov::CoverageData data{L""};
+		cov::CoverageData data{L"", 0};
 		
 		FillCoverageData(data);
 		CheckCoverageData(data);
@@ -92,7 +92,7 @@ namespace CppCoverageTest
 	//---------------------------------------------------------------------
 	TEST(CoverageDataTest, MoveConstructor)
 	{
-		cov::CoverageData data{L""};
+		cov::CoverageData data{L"", 0};
 
 		FillCoverageData(data);
 
@@ -103,7 +103,7 @@ namespace CppCoverageTest
 	//---------------------------------------------------------------------
 	TEST(CoverageDataTest, CoverageRate)
 	{
-		cov::CoverageData data{ L"" };
+		cov::CoverageData data{ L"", 0};
 
 		auto& module1 = data.AddModule(L"module1");
 		CreateNewFileCoverage(module1, L"filename1", 1, 2);			

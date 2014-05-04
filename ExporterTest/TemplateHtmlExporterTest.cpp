@@ -28,7 +28,7 @@ namespace ExporterTest
 			, fileOutput_{ __FILE__ }
 			, filePath_{ "path" }
 		{			
-			templateDictionary_ = templateHtmlExporter_.CreateTemplateDictionary(title_);
+			templateDictionary_ = templateHtmlExporter_.CreateTemplateDictionary(title_, L"");
 			peer_.reset(new ctemplate::TemplateDictionaryPeer(templateDictionary_.get()));
 		}
 		

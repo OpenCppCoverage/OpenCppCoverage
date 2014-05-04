@@ -6,8 +6,9 @@
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	CoverageData::CoverageData(const std::wstring& name)
+	CoverageData::CoverageData(const std::wstring& name, int exitCode)
 		: name_(name)
+		, exitCode_(exitCode)
 	{
 	}
 
@@ -21,6 +22,8 @@ namespace CppCoverage
 	{
 		std::swap(modules_, coverageData.modules_);
 		coverageRate_ = coverageData.coverageRate_;
+		name_ = coverageData.name_;
+		exitCode_ = coverageData.exitCode_;		
 	}
 
 	//-------------------------------------------------------------------------
@@ -54,6 +57,12 @@ namespace CppCoverage
 	{
 		coverageRate_.RecursiveComputeFrom(modules_);
 		coverageRate_.SortByLowestRate(modules_);
+	}
+
+	//-------------------------------------------------------------------------	
+	int CoverageData::GetExitCode() const
+	{
+		return exitCode_;
 	}
 }
 

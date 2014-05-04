@@ -64,11 +64,11 @@ namespace CppCoverage
 		Debugger debugger;
 
 		coverageFilter_.reset(new CoverageFilter(coverageSettings));
-		debugger.Debug(startInfo, *this);
+		int exitCode = debugger.Debug(startInfo, *this);
 
 		const auto& path = startInfo.GetPath();
 
-		return executedAddressManager_->CreateCoverageData(path.filename().wstring());
+		return executedAddressManager_->CreateCoverageData(path.filename().wstring(), exitCode);
 	}
 
 	//-------------------------------------------------------------------------

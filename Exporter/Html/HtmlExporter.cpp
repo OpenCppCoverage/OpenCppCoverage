@@ -37,8 +37,21 @@ namespace Exporter
 			LOG_INFO << L"Coverage generated in Folder " << outputFolder.wstring();
 			LOG_INFO << separators;
 		}
+
+		//-------------------------------------------------------------------------
+		std::wstring GetMainMessage(const CppCoverage::CoverageData& coverageData)
+		{
+			auto exitCode = coverageData.GetExitCode();
+
+			if (exitCode)
+				return HtmlExporter::WarningExitCodeMessage + std::to_wstring(exitCode);
+			return L"";
+		}
 	}
 	
+	//-------------------------------------------------------------------------
+	const std::wstring HtmlExporter::WarningExitCodeMessage = L"Warning: Your program has exited with error code: ";
+
 	//-------------------------------------------------------------------------
 	HtmlExporter::HtmlExporter(const fs::path& templateFolder)
 		: exporter_(templateFolder)
@@ -53,15 +66,16 @@ namespace Exporter
 		const boost::filesystem::path& outputFolderPrefix) const
 	{	
 		HtmlFolderStructure htmlFolderStructure{templateFolder_};
+		auto mainMessage = GetMainMessage(coverageData);
 
-		auto projectDictionary = exporter_.CreateTemplateDictionary(coverageData.GetName());				
+		auto projectDictionary = exporter_.CreateTemplateDictionary(coverageData.GetName(), mainMessage);
 		auto outputFolder = htmlFolderStructure.CreateCurrentRoot(outputFolderPrefix);
 
 		for (const auto& module : coverageData.GetModules())
 		{			
 			const auto& modulePath = module->GetPath();
 			auto moduleFilename = module->GetPath().filename();			
-			auto moduleTemplateDictionary = exporter_.CreateTemplateDictionary(moduleFilename.wstring());
+			auto moduleTemplateDictionary = exporter_.CreateTemplateDictionary(moduleFilename.wstring(), L"");
 			
 			auto htmlModulePath = htmlFolderStructure.CreateCurrentModule(modulePath);
 			ExportFiles(*module, htmlFolderStructure, *moduleTemplateDictionary);

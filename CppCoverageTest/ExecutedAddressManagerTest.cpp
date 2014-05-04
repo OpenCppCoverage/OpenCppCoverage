@@ -52,7 +52,7 @@ namespace CppCoverageTest
 		manager.RegisterAddress(address2, filename, 43, instructionLine43);
 		manager.MarkAddressAsExecuted(address2);
 
-		const cov::CoverageData coverageData = manager.CreateCoverageData(L"");
+		const cov::CoverageData coverageData = manager.CreateCoverageData(L"", 0);
 		
 		const auto& modules = coverageData.GetModules();
 		ASSERT_EQ(1, modules.size());
