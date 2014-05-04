@@ -10,8 +10,9 @@
 #include "OpenCppCoverage/OpenCppCoverage.hpp"
 #include "CppCoverage/OptionsParser.hpp"
 
-#include "tools/ScopedAction.hpp"
+#include "Tools/ScopedAction.hpp"
 #include "Tools/Tool.hpp"
+#include "Tools/TemporaryFolder.hpp"
 
 namespace fs = boost::filesystem;
 namespace cov = CppCoverage;
@@ -21,10 +22,17 @@ namespace OpenCppCoverageTest
 	namespace
 	{
 		//---------------------------------------------------------------------
+		void CheckOutputDirectory(const Tools::TemporaryFolder& tempFolder)
+		{			
+			ASSERT_FALSE(fs::is_empty(tempFolder.GetPath()));
+		}
+
+		//---------------------------------------------------------------------
 		int RunCoverageOnProgram(
 			const fs::path& programToRun,
 			const std::vector<std::wstring>& arguments)
 		{
+			Tools::TemporaryFolder tempFolder;
 			fs::path openCppCoverage = OpenCppCoverage::GetOutputBinaryPath();
 
 			std::vector<std::string> coverageArguments{
@@ -32,19 +40,23 @@ namespace OpenCppCoverageTest
 				programToRun.string(),
 				"--" + cov::OptionsParser::SelectedSourcesOption,
 				SOLUTION_DIR,
+				"--" + cov::OptionsParser::OutputDirectoryOption,
+				tempFolder.GetPath().string(),
 				programToRun.string() };
 			
 			for (const auto& argument : arguments)
 				coverageArguments.push_back(Tools::ToString(argument));
 
-			auto handle = Poco::Process::launch(openCppCoverage.string(), coverageArguments, ".", nullptr, nullptr, nullptr);
-			
-			return handle.wait();
+			auto handle = Poco::Process::launch(openCppCoverage.string(), coverageArguments, ".", nullptr, nullptr, nullptr);			
+			int exitCode = handle.wait();
+
+			CheckOutputDirectory(tempFolder);
+			return exitCode;
 		}
 	}
 
 	//-------------------------------------------------------------------------
-	TEST(OpenCppCoverageConsoleTest, Basic) // $$ use temp folder
+	TEST(OpenCppCoverageConsoleTest, Basic)
 	{		
 		fs::path testCoverageConsole = TestCoverageConsole::GetOutputBinaryPath();
 							

@@ -118,6 +118,7 @@ namespace CppCoverage
 	const std::string OptionsParser::HelpOption = "help";
 	const std::string OptionsParser::HelpShortOption = "h";
 	const std::string OptionsParser::WorkingDirectoryOption = "working_dir";
+	const std::string OptionsParser::OutputDirectoryOption = "output_dir";
 	
 	using T_Strings = std::vector<std::string>;
 
@@ -141,6 +142,7 @@ namespace CppCoverage
 			po::value<T_Strings>(),
 			"The pattern that source's paths should NOT match.")
 			(WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")
+			(OutputDirectoryOption.c_str(), po::value<std::string>(), "The coverage report directory.")
 			((VerboseOption + "," + VerboseShortOption).c_str(), "Show verbose log")
 			((HelpOption + "," + HelpShortOption).c_str(), "Show help message");
 	}
@@ -186,6 +188,11 @@ namespace CppCoverage
 			return boost::optional<Options>();
 		if (IsOptionSelected(variables, VerboseOption))
 			options.SetVerboseModeSelected();
+
+		const auto* outputDirectoryOption = GetOptionalValue<std::string>(variables, OptionsParser::OutputDirectoryOption);
+
+		if (outputDirectoryOption)
+			options.SetOutputDirectoryOption(*outputDirectoryOption);
 
 		return options;
 	}

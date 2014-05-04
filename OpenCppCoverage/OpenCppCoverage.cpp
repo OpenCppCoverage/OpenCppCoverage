@@ -57,8 +57,13 @@ namespace OpenCppCoverage
 		}
 
 		//-----------------------------------------------------------------------------
-		fs::path GetOutputPath()
+		fs::path GetOutputPath(const cov::Options& options)
 		{
+			auto outputDirectoryOption = options.GetOutputDirectoryOption();
+
+			if (outputDirectoryOption)
+				return *outputDirectoryOption;
+
 			auto now = std::time(nullptr);
 			auto localNow = std::localtime(&now);
 			std::ostringstream ostr;
@@ -90,7 +95,7 @@ namespace OpenCppCoverage
 			auto now = std::time(nullptr);
 			auto localNow = std::localtime(&now);
 
-			boost::filesystem::path output = GetOutputPath();
+			boost::filesystem::path output = GetOutputPath(options);
 			htmlExporter.Export(coverage, output);
 			return coverage.GetExitCode();
 		}

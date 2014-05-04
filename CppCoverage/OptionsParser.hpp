@@ -23,6 +23,7 @@ namespace CppCoverage
 		static const std::string HelpOption;
 		static const std::string HelpShortOption;
 		static const std::string WorkingDirectoryOption;
+		static const std::string OutputDirectoryOption;
 
 	public:
 		OptionsParser();

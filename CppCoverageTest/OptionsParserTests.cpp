@@ -141,6 +141,22 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, OutputDirectory)
+	{
+		cov::OptionsParser parser;
+		const std::string folder = "Output";
+
+		auto options = Parse(parser,
+			{ optionPrefix + cov::OptionsParser::OutputDirectoryOption, folder });
+		ASSERT_TRUE(options);
+
+		auto outputDirectoryOption = options->GetOutputDirectoryOption();
+		
+		ASSERT_TRUE(outputDirectoryOption);
+		ASSERT_EQ(folder, outputDirectoryOption->string());		
+	}
+	
+	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, Program)
 	{
 		cov::OptionsParser parser;		

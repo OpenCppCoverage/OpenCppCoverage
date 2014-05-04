@@ -1,5 +1,8 @@
 #pragma once
 
+#include <boost/optional.hpp>
+#include <boost/filesystem.hpp>
+
 #include "CppCoverageExport.hpp"
 #include "CppCoverage/Patterns.hpp"
 #include "CppCoverage/StartInfo.hpp"
@@ -25,6 +28,10 @@ namespace CppCoverage
 		void SetVerboseModeSelected();
 		bool IsVerboseModeSelected() const;
 			
+		void SetOutputDirectoryOption(const boost::filesystem::path&);
+		const boost::optional<boost::filesystem::path>& 
+			GetOutputDirectoryOption() const;
+
 		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream&, const Options&);
 
 	private:
@@ -36,5 +43,6 @@ namespace CppCoverage
 		CppCoverage::Patterns modules_;
 		CppCoverage::Patterns sources_;
 		bool verboseModeSelected_;
+		boost::optional<boost::filesystem::path> outputDirectoryOption_;
 	};
 }

@@ -48,6 +48,19 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	void Options::SetOutputDirectoryOption(const boost::filesystem::path& outputDirectoryOption)
+	{
+		outputDirectoryOption_ = outputDirectoryOption;
+	}
+
+	//-------------------------------------------------------------------------
+	const boost::optional<boost::filesystem::path>& 
+		Options::GetOutputDirectoryOption() const
+	{
+		return outputDirectoryOption_;
+	}
+
+	//-------------------------------------------------------------------------
 	std::wostream& operator<<(std::wostream& ostr, const Options& options)
 	{
 		ostr << options.startInfo_ << std::endl;
