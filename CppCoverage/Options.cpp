@@ -3,7 +3,7 @@
 
 namespace cov = CppCoverage;
 
-namespace OpenCppCoverage
+namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
 	Options::Options(

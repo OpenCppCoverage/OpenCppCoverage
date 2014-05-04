@@ -1,17 +1,17 @@
 #pragma once
 
-#include "OpenCppCoverageExport.hpp"
+#include "CppCoverageExport.hpp"
 
 #include <boost/program_options.hpp>
 #include <boost/optional.hpp>
 
 #include <iosfwd>
 
-namespace OpenCppCoverage
+namespace CppCoverage
 {
 	class Options;
 
-	class OPEN_CPP_COVERAGE_DLL OptionsParser
+	class CPPCOVERAGE_DLL OptionsParser
 	{
 	public:
 		static const std::string SelectedModulesOption;
@@ -29,7 +29,7 @@ namespace OpenCppCoverage
 
 		boost::optional<Options> Parse(int argc, const char** argv) const;
 		
-		friend OPEN_CPP_COVERAGE_DLL std::wostream& operator<<(std::wostream&, const OptionsParser&);
+		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream&, const OptionsParser&);
 
 	private:
 		OptionsParser(const OptionsParser&) = delete;

@@ -13,6 +13,8 @@
 #include "CppCoverage/CoverageSettings.hpp"
 #include "CppCoverage/CoverageData.hpp"
 #include "CppCoverage/StartInfo.hpp"
+#include "CppCoverage/OptionsParser.hpp"
+#include "CppCoverage/Options.hpp"
 
 #include "Exporter/Html/HtmlExporter.hpp"
 
@@ -20,8 +22,6 @@
 #include "Tools/Log.hpp"
 
 #include "OpenCppCoverageException.hpp"
-#include "OptionsParser.hpp"
-#include "Options.hpp"
 
 namespace cov = CppCoverage;
 namespace logging = boost::log;
@@ -68,7 +68,7 @@ namespace OpenCppCoverage
 		}
 
 		//-----------------------------------------------------------------------------
-		void Run(const Options& options)
+		int Run(const cov::Options& options)
 		{
 			auto logLevel = (options.IsVerboseModeSelected()) ? logging::trivial::debug : logging::trivial::info;
 			Tools::InitConsoleAndFileLog(L"LastCoverageResults.log");
@@ -91,6 +91,7 @@ namespace OpenCppCoverage
 
 			boost::filesystem::path output = GetOutputPath();
 			htmlExporter.Export(coverage, output);
+			return coverage.GetExitCode();
 		}
 	}
 }
@@ -98,17 +99,14 @@ namespace OpenCppCoverage
 //-----------------------------------------------------------------------------
 int main(int argc, const char* argv[])
 {	
-	OpenCppCoverage::OptionsParser optionsParser;
+	cov::OptionsParser optionsParser;
 
 	try
 	{		
 		auto options = optionsParser.Parse(argc, argv);
 
 		if (options)
-		{
-			OpenCppCoverage::Run(*options);
-			return 0;
-		}
+			return OpenCppCoverage::Run(*options);			
 		
 		std::wcerr << optionsParser << std::endl;
 	}

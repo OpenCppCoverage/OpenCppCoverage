@@ -9,12 +9,12 @@
 #include "CppCoverage/Patterns.hpp"
 
 #include "Options.hpp"
-#include "OpenCppCoverageException.hpp"
+#include "CppCoverageException.hpp"
 
 namespace po = boost::program_options;
 namespace cov = CppCoverage;
 
-namespace OpenCppCoverage
+namespace CppCoverage
 {
 	namespace
 	{
@@ -109,12 +109,12 @@ namespace OpenCppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	const std::string OptionsParser::SelectedModulesOption = "modules";
+	const std::string OptionsParser::SelectedModulesOption  = "modules";
 	const std::string OptionsParser::ExcludedModulesOption = "excluded_modules";
 	const std::string OptionsParser::SelectedSourcesOption = "sources";
 	const std::string OptionsParser::ExcludedSourcesOption = "excluded_sources";
 	const std::string OptionsParser::VerboseOption = "verbose";
-	const std::string OptionsParser::VerboseShortOption = "v";	
+	const std::string OptionsParser::VerboseShortOption = "v";
 	const std::string OptionsParser::HelpOption = "help";
 	const std::string OptionsParser::HelpShortOption = "h";
 	const std::string OptionsParser::WorkingDirectoryOption = "working_dir";
@@ -126,24 +126,22 @@ namespace OpenCppCoverage
 		: description_("Usage [options] program_to_run optional_arguments")
 	{		
 		const std::string all = "*";
-		
-		std::vector<std::string> gg;
-
+				
 		description_.add_options()
 			(SelectedModulesOption.c_str(),
-				po::value<T_Strings>()->default_value(T_Strings{ { all } }, all),
-				"The pattern that module's paths should match.")
+			po::value<T_Strings>()->default_value(T_Strings{ { all } }, all),
+			"The pattern that module's paths should match.")
 			(ExcludedModulesOption.c_str(),
-				po::value<T_Strings>(),
-				"The pattern that module's paths should NOT match.")
+			po::value<T_Strings>(),
+			"The pattern that module's paths should NOT match.")
 			(SelectedSourcesOption.c_str(),
-				po::value<T_Strings>()->default_value(T_Strings{ { all } }, all), 
-				"The pattern that sources's paths should be match.")
-			(ExcludedSourcesOption.c_str(), 
-				po::value<T_Strings>(),
-				"The pattern that source's paths should NOT match.")
-			(WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")			
-			((VerboseOption + "," + VerboseShortOption).c_str(), "Show verbose log")
+			po::value<T_Strings>()->default_value(T_Strings{ { all } }, all),
+			"The pattern that sources's paths should be match.")
+			(ExcludedSourcesOption.c_str(),
+			po::value<T_Strings>(),
+			"The pattern that source's paths should NOT match.")
+			(WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")
+			((VerboseOption + "," + VerboseShortOption).c_str(), "Show verbose log");
 			((HelpOption + "," + HelpShortOption).c_str(), "Show help message");
 	}
 	
@@ -179,7 +177,7 @@ namespace OpenCppCoverage
 		FillVariableMap(argc, argv, variables);
 
 		auto modulePatterns = GetPatterns(variables, SelectedModulesOption, ExcludedModulesOption);
-		auto sourcePatterns	= GetPatterns(variables, SelectedSourcesOption, ExcludedSourcesOption);
+		auto sourcePatterns = GetPatterns(variables, SelectedSourcesOption, ExcludedSourcesOption);
 
 		auto startInfo = GetStartInfo(variables);
 		Options options{ startInfo, modulePatterns, sourcePatterns };

@@ -1,14 +1,14 @@
 #pragma once
 
-#include "OpenCppCoverageExport.hpp"
+#include "CppCoverageExport.hpp"
 #include "CppCoverage/Patterns.hpp"
 #include "CppCoverage/StartInfo.hpp"
 
-namespace OpenCppCoverage
+namespace CppCoverage
 {
 	class Patterns;
 	
-	class OPEN_CPP_COVERAGE_DLL Options
+	class CPPCOVERAGE_DLL Options
 	{
 	public:
 		Options(
@@ -25,7 +25,7 @@ namespace OpenCppCoverage
 		void SetVerboseModeSelected();
 		bool IsVerboseModeSelected() const;
 			
-		friend OPEN_CPP_COVERAGE_DLL std::wostream& operator<<(std::wostream&, const Options&);
+		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream&, const Options&);
 
 	private:
 		Options(const Options&&) = delete;

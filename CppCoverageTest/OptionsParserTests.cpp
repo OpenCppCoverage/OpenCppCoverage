@@ -1,16 +1,14 @@
 #include "stdafx.h"
 
-#include <boost/program_options.hpp> // $$ remove ?
-
-#include "OpenCppCoverage/OptionsParser.hpp"
-#include "OpenCppCoverage/Options.hpp"
+#include "CppCoverage/OptionsParser.hpp"
+#include "CppCoverage/Options.hpp"
 
 #include "tools/Tool.hpp"
 
 namespace po = boost::program_options;
-namespace occ = OpenCppCoverage;
+namespace cov = CppCoverage;
 
-namespace OpenCppCoverageTest
+namespace CppCoverageTest
 {
 	namespace
 	{
@@ -19,8 +17,8 @@ namespace OpenCppCoverageTest
 		const std::string programToRun = __FILE__; // Need existing file
 
 		//---------------------------------------------------------------------
-		boost::optional<occ::Options> Parse(
-			const occ::OptionsParser& parser,
+		boost::optional<cov::Options> Parse(
+			const cov::OptionsParser& parser,
 			const std::vector<std::string>& arguments,
 			bool appendProgramToRun = true)
 		{
@@ -39,9 +37,9 @@ namespace OpenCppCoverageTest
 		void CheckPatternOption(
 			const std::string& optionName,
 			const std::string& value,
-			std::function<std::wstring (const occ::Options&)> getOption)
+			std::function<std::wstring (const cov::Options&)> getOption)
 		{
-			occ::OptionsParser parser;
+			cov::OptionsParser parser;
 			std::vector<std::string> arguments = { optionPrefix + optionName, value };
 
 			auto options = Parse(parser, arguments);
@@ -54,7 +52,7 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, Print)
 	{
-		occ::OptionsParser parser;
+		cov::OptionsParser parser;
 		std::wostringstream ostr;
 
 		ASSERT_NO_THROW(ostr << parser);
@@ -63,7 +61,7 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, Default)
 	{
-		occ::OptionsParser parser;
+		cov::OptionsParser parser;
 
 		auto options = Parse(parser, {});
 		ASSERT_TRUE(options);
@@ -73,65 +71,65 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, Help)
 	{
-		occ::OptionsParser parser;
+		cov::OptionsParser parser;
 
 		ASSERT_FALSE(Parse(parser, 
-		{ optionShortPrefix + occ::OptionsParser::HelpShortOption }));
+		{ optionShortPrefix + cov::OptionsParser::HelpShortOption }));
 		ASSERT_FALSE(Parse(parser, 
-		{ optionPrefix + occ::OptionsParser::HelpOption }));
+		{ optionPrefix + cov::OptionsParser::HelpOption }));
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, Verbose)
 	{
-		occ::OptionsParser parser;
+		cov::OptionsParser parser;
 
 		ASSERT_TRUE(Parse(parser, 
-			{ optionShortPrefix + occ::OptionsParser::VerboseShortOption })->IsVerboseModeSelected());
+		{ optionShortPrefix + cov::OptionsParser::VerboseShortOption })->IsVerboseModeSelected());
 		ASSERT_TRUE(Parse(parser, 
-			{ optionPrefix + occ::OptionsParser::VerboseOption })->IsVerboseModeSelected());
+			{ optionPrefix + cov::OptionsParser::VerboseOption })->IsVerboseModeSelected());
 	}
 	
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, SelectedModulePatterns)
 	{
-		CheckPatternOption(occ::OptionsParser::SelectedModulesOption, "module", 
-			[](const occ::Options& options) { return options.GetModulePatterns().GetSelectedPatterns().front(); }
+		CheckPatternOption(cov::OptionsParser::SelectedModulesOption, "module",
+			[](const cov::Options& options) { return options.GetModulePatterns().GetSelectedPatterns().front(); }
 		);
 	}
 	
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, ExcludedModulePatterns)
 	{
-		CheckPatternOption(occ::OptionsParser::ExcludedModulesOption, "module",
-			[](const occ::Options& options) { return options.GetModulePatterns().GetExcludedPatterns().front(); }
+		CheckPatternOption(cov::OptionsParser::ExcludedModulesOption, "module",
+			[](const cov::Options& options) { return options.GetModulePatterns().GetExcludedPatterns().front(); }
 		);
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, SelectedSourcePatterns)
 	{
-		CheckPatternOption(occ::OptionsParser::SelectedSourcesOption, "source",
-			[](const occ::Options& options) { return options.GetSourcePatterns().GetSelectedPatterns().front(); }
+		CheckPatternOption(cov::OptionsParser::SelectedSourcesOption, "source",
+			[](const cov::Options& options) { return options.GetSourcePatterns().GetSelectedPatterns().front(); }
 		);
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, ExcludedSourcePatterns)
 	{
-		CheckPatternOption(occ::OptionsParser::ExcludedSourcesOption, "source",
-			[](const occ::Options& options) { return options.GetSourcePatterns().GetExcludedPatterns().front(); }
+		CheckPatternOption(cov::OptionsParser::ExcludedSourcesOption, "source",
+			[](const cov::Options& options) { return options.GetSourcePatterns().GetExcludedPatterns().front(); }
 		);
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, WorkingDirectory)
 	{
-		occ::OptionsParser parser;
+		cov::OptionsParser parser;
 		const std::string folder = ".";
 
 		auto options = Parse(parser, 
-			{ optionPrefix + occ::OptionsParser::WorkingDirectoryOption, folder});
+		{ optionPrefix + cov::OptionsParser::WorkingDirectoryOption, folder });
 		ASSERT_TRUE(options);
 
 		const auto* workingDirectory = options->GetStartInfo().GetWorkingDirectory();
@@ -143,7 +141,7 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, Program)
 	{
-		occ::OptionsParser parser;		
+		cov::OptionsParser parser;		
 		const std::string arg1 = "arg1";
 		const std::string arg2 = "arg2";
 		const std::vector<std::wstring> expectedArgs =
@@ -160,8 +158,8 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, UnknownOption)
 	{
-		occ::OptionsParser parser;
+		cov::OptionsParser parser;
 
 		ASSERT_THROW(Parse(parser, { "--unknownOption" }), po::unknown_option);
 	}
-}
+} // $$ uncomment
