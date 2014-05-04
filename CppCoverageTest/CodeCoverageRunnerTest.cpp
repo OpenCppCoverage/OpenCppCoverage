@@ -121,7 +121,7 @@ namespace CppCoverageTest
 	TEST_F(CodeCoverageRunnerTest, RunCoverage)
 	{		
 		cov::CoverageData coverageData = ComputeCoverageData(
-			TestCoverageConsole::GetTargetFileName().wstring(),
+			TestCoverageConsole::GetOutputBinaryPath().wstring(),
 			TestCoverageConsole::GetMainCppPath().wstring());
 		cov::FileCoverage* file;
 		GetFileCoverage(coverageData, file);
@@ -139,7 +139,7 @@ namespace CppCoverageTest
 	{			
 		GetStartInfo().AddArguments(TestCoverageConsole::TestSharedLib);
 		cov::CoverageData coverageData = ComputeCoverageData(			
-			TestCoverageSharedLib::GetTargetFileName().wstring(),
+			TestCoverageSharedLib::GetOutputBinaryPath().wstring(),
 			TestCoverageSharedLib::GetMainCppPath().wstring());
 
 		const auto& modules = coverageData.GetModules();

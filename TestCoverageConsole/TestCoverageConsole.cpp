@@ -45,12 +45,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 namespace TestCoverageConsole
 {
-	//-------------------------------------------------------------------------
-	boost::filesystem::path GetTargetFileName()
-	{
-		return TARGET_FILE_NAME;
-	}
-
 	//-----------------------------------------------------------------------------
 	boost::filesystem::path GetMainCppPath()
 	{

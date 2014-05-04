@@ -22,11 +22,11 @@ namespace TestCoverageSharedLib
 	//-------------------------------------------------------------------------
 	fs::path GetMainCppPath()
 	{
-		return fs::path{ __FILE__ };		
+		return __FILE__ ;
 	}
 
 	//-------------------------------------------------------------------------
-	fs::path GetTargetFileName()
+	fs::path GetOutputBinaryPath()
 	{		
 		return TARGET_FILE_NAME;
 	}

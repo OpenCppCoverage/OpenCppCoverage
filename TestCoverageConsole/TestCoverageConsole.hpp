@@ -10,7 +10,6 @@ namespace boost
 
 namespace TestCoverageConsole
 {
-	__declspec(dllexport) boost::filesystem::path GetTargetFileName();
 	__declspec(dllexport) boost::filesystem::path GetMainCppPath();
 	__declspec(dllexport) boost::filesystem::path GetOutputBinaryPath();
 
