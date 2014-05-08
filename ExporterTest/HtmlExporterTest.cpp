@@ -3,7 +3,7 @@
 #include "CppCoverage/CoverageData.hpp"
 #include "CppCoverage/ModuleCoverage.hpp"
 #include "CppCoverage/FileCoverage.hpp"
-#include "Tools/TemporaryFolder.hpp"
+#include "Tools/TemporaryPath.hpp"
 
 #include <boost/filesystem.hpp>
 
@@ -51,7 +51,7 @@ namespace ExporterTest
 		}
 
 		Exporter::HtmlExporter htmlExporter_;
-		Tools::TemporaryFolder output_;
+		Tools::TemporaryPath output_;
 	};	
 
 	//-------------------------------------------------------------------------

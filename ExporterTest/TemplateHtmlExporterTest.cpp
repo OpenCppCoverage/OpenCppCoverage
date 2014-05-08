@@ -11,7 +11,7 @@
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 
-#include "Tools/TemporaryFolder.hpp"
+#include "Tools/TemporaryPath.hpp"
 
 namespace cov = CppCoverage;
 
@@ -54,7 +54,7 @@ namespace ExporterTest
 		std::unique_ptr<ctemplate::TemplateDictionaryPeer> peer_;
 		std::unique_ptr<ctemplate::TemplateDictionary> templateDictionary_;	
 		Exporter::TemplateHtmlExporter templateHtmlExporter_;	
-		Tools::TemporaryFolder fileOutput_;
+		Tools::TemporaryPath fileOutput_;
 		fs::path filePath_;
 	};
 

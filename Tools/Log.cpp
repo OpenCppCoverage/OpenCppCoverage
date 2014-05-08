@@ -52,6 +52,12 @@ namespace Tools
 	}
 
 	//-------------------------------------------------------------------------
+	void EnableLogger(bool isEnabled)
+	{
+		logging::core::get()->set_logging_enabled(isEnabled);
+	}
+
+	//-------------------------------------------------------------------------
 	void InitLoggerOstream(const boost::shared_ptr<std::ostringstream>& ostr)
 	{
 		typedef sinks::synchronous_sink<sinks::text_ostream_backend> text_sink;
@@ -60,12 +66,7 @@ namespace Tools
 		
 		backend->add_stream(ostr);
 		backend->auto_flush(true);
-		logging::core::get()->add_sink(sink);
-	}
-
-	//-------------------------------------------------------------------------
-	void ResetLogger()
-	{
 		logging::core::get()->remove_all_sinks();
+		logging::core::get()->add_sink(sink);
 	}
 }

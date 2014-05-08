@@ -43,6 +43,7 @@ namespace CppCoverageTest
 		{
 			error_ = boost::make_shared<std::ostringstream>();
 
+			Tools::EnableLogger(true);
 			Tools::SetLoggerMinSeverity(logging::trivial::error);
 			Tools::InitLoggerOstream(error_);
 		}
@@ -50,7 +51,7 @@ namespace CppCoverageTest
 		//---------------------------------------------------------------------
 		void TearDown() override
 		{
-			Tools::ResetLogger();
+			Tools::EnableLogger(false);
 		}
 
 		//---------------------------------------------------------------------

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "TemporaryFolder.hpp"
+#include "TemporaryPath.hpp"
 
 #include "Log.hpp"
 
@@ -8,13 +8,13 @@ namespace fs = boost::filesystem;
 namespace Tools
 {
 	//-------------------------------------------------------------------------	
-	TemporaryFolder::TemporaryFolder()
+	TemporaryPath::TemporaryPath()
 	{
 		path_ = fs::absolute(fs::temp_directory_path() / fs::unique_path());
 	}
 
 	//-------------------------------------------------------------------------
-	TemporaryFolder::~TemporaryFolder()
+	TemporaryPath::~TemporaryPath()
 	{
 		boost::system::error_code error;
 		if (!fs::remove_all(path_, error))
@@ -24,13 +24,13 @@ namespace Tools
 	}
 
 	//-------------------------------------------------------------------------
-	TemporaryFolder::operator const boost::filesystem::path& () const
+	TemporaryPath::operator const boost::filesystem::path& () const
 	{
 		return GetPath();
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path& TemporaryFolder::GetPath() const
+	const boost::filesystem::path& TemporaryPath::GetPath() const
 	{
 		return path_;
 	}

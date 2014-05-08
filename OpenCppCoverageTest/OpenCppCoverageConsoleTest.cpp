@@ -12,7 +12,7 @@
 
 #include "Tools/ScopedAction.hpp"
 #include "Tools/Tool.hpp"
-#include "Tools/TemporaryFolder.hpp"
+#include "Tools/TemporaryPath.hpp"
 
 namespace fs = boost::filesystem;
 namespace cov = CppCoverage;
@@ -22,7 +22,7 @@ namespace OpenCppCoverageTest
 	namespace
 	{
 		//---------------------------------------------------------------------
-		void CheckOutputDirectory(const Tools::TemporaryFolder& tempFolder)
+		void CheckOutputDirectory(const Tools::TemporaryPath& tempFolder)
 		{			
 			ASSERT_FALSE(fs::is_empty(tempFolder.GetPath()));
 		}
@@ -32,7 +32,7 @@ namespace OpenCppCoverageTest
 			const fs::path& programToRun,
 			const std::vector<std::wstring>& arguments)
 		{
-			Tools::TemporaryFolder tempFolder;
+			Tools::TemporaryPath tempFolder;
 			fs::path openCppCoverage = OpenCppCoverage::GetOutputBinaryPath();
 
 			std::vector<std::string> coverageArguments{
