@@ -15,7 +15,7 @@ namespace CppCoverage
 	public:
 		explicit StartInfo(const boost::filesystem::path&);
 		
-		StartInfo(const StartInfo&&);
+		StartInfo(StartInfo&&);
 
 		StartInfo(const StartInfo&) = default;		
 		StartInfo& operator=(const StartInfo&) = default;

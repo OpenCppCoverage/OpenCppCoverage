@@ -35,7 +35,7 @@ namespace CppCoverage
 		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream&, const Options&);
 
 	private:
-		Options(const Options&&) = delete;
+		Options(Options&&) = delete;
 		Options& operator=(Options&&) = delete;
 
 	private:

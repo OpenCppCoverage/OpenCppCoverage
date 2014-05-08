@@ -82,7 +82,7 @@ namespace Exporter
 			THROW(L"No root module selected");
 		
 		auto filename = filePath.filename();
-		auto output = filename.replace_extension("html");
+		auto output = filename.wstring() + L".html";
 		auto fileHtmlPath = Tools::GetUniquePath(*currentModule_ / output);
 
 		return HtmlFile{fileHtmlPath, currentModule_->filename() / output};
