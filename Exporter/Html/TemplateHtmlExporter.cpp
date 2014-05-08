@@ -2,8 +2,7 @@
 #include "TemplateHtmlExporter.hpp"
 
 #include <boost/filesystem.hpp>
-#include <ctemplate/template.h>
-
+#include "CTemplate.hpp"
 #include "Tools/Tool.hpp"
 
 #include "CppCoverage/CoverageData.hpp"
@@ -23,9 +22,7 @@ namespace Exporter
 		const std::string fileSection = "FILE";
 		const std::string titleTemplate = "TITLE";
 		const std::string rateTemplate = "RATE";
-		const std::string codeTemplate = "CODE";
-		const std::string cssPathTemplate = "CSS_PATH";
-		const std::string prettifyPathTemplate = "PRETTIFY_PATH";
+		const std::string codeTemplate = "CODE";				
 		const std::string messageTemplate = "MAIN_MESSAGE";
 
 		//-------------------------------------------------------------------------
@@ -42,15 +39,72 @@ namespace Exporter
 			const std::string& name)
 		{
 			if (link)
-			{
-				Tools::CheckPathExists(*link);
 				sectionDictionary.SetValue(TemplateHtmlExporter::LinkTemplate, link->string());
-			}
+
 			sectionDictionary.SetIntValue(rateTemplate, coverageRate.GetPercentRate());
 			sectionDictionary.SetIntValue(TemplateHtmlExporter::ExecutedLineTemplate, coverageRate.GetExecutedLinesCount());
 			sectionDictionary.SetIntValue(TemplateHtmlExporter::TotalLineTemplate, coverageRate.GetTotalLinesCount());
 			sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);
-		}		
+		}	
+
+		//-------------------------------------------------------------------------
+		void WriteContentTo(const std::string& content, const fs::path& path)
+		{
+			std::ofstream ofs(path.string());
+
+			if (!ofs)
+				THROW(L"Cannot open file" << path);
+			ofs << content;
+			ofs.flush();
+		}
+
+		//-------------------------------------------------------------------------
+		std::string GenerateTemplate(
+			const ctemplate::TemplateDictionary& templateDictionary,
+			const fs::path& templatePath)
+		{
+			std::string output;
+
+			if (!ctemplate::ExpandTemplate(templatePath.string(), ctemplate::DO_NOT_STRIP, &templateDictionary, &output))
+				THROW(L"Cannot generate output for " + templatePath.wstring());
+
+			return output;
+		}
+
+		//-------------------------------------------------------------------------
+		void CheckLinkExists(
+			const ctemplate::TemplateDictionary& templateDictionary,
+			const std::string& sectionName,
+			const fs::path& output)
+		{
+			ctemplate::TemplateDictionaryPeer rootPeer(&templateDictionary);
+			std::vector<const ctemplate::TemplateDictionary*> dicts;
+			rootPeer.GetSectionDictionaries(sectionName, &dicts);
+
+			for (const auto& dictionary : dicts)
+			{
+				ctemplate::TemplateDictionaryPeer peer(dicts[0]);
+				auto linkStr = peer.GetSectionValue(TemplateHtmlExporter::LinkTemplate);
+
+				if (linkStr)
+				{
+					auto fullPath = output.parent_path() / linkStr;
+
+					if (!fs::exists(fullPath))
+						THROW("Link: " << fullPath << " does not exists");
+				}
+			}
+		}
+
+		//-------------------------------------------------------------------------
+		void WriteTemplate(
+			const ctemplate::TemplateDictionary& templateDictionary,
+			const fs::path& templatePath,
+			const fs::path& output)
+		{			
+			std::string content = GenerateTemplate(templateDictionary, templatePath);
+			WriteContentTo(content, output);
+		}
 	}
 	
 	//-------------------------------------------------------------------------
@@ -107,52 +161,36 @@ namespace Exporter
 				
 		FillSection(*sectionDictionary, &moduleOutput, moduleCoverage.GetCoverageRate(), path.string());
 	}				
-
+	
 	//-------------------------------------------------------------------------
-	std::string TemplateHtmlExporter::GenerateModuleTemplate(
-		const ctemplate::TemplateDictionary& templateDictionary) const
+	void TemplateHtmlExporter::GenerateModuleTemplate(
+		const ctemplate::TemplateDictionary& templateDictionary,
+		const fs::path& output) const
 	{
-		return GenerateTemplate(templateDictionary, moduleTemplatePath_);
+		CheckLinkExists(templateDictionary, moduleSection, output);
+		WriteTemplate(templateDictionary, moduleTemplatePath_, output);
 	}
 
 	//-------------------------------------------------------------------------
-	std::string TemplateHtmlExporter::GenerateProjectTemplate(
-		const ctemplate::TemplateDictionary& templateDictionary) const
+	void TemplateHtmlExporter::GenerateProjectTemplate(
+		const ctemplate::TemplateDictionary& templateDictionary,
+		const fs::path& output) const
 	{
-		return GenerateTemplate(templateDictionary, projectTemplatePath_);
+		CheckLinkExists(templateDictionary, fileSection, output);
+		WriteTemplate(templateDictionary, projectTemplatePath_, output);
 	}
 
 	//-------------------------------------------------------------------------
-	std::string TemplateHtmlExporter::GenerateSourceTemplate(
+	void TemplateHtmlExporter::GenerateSourceTemplate(
 		const std::wstring& title,
-		const std::wstring& codeContent,
-		const fs::path& codeCss,
-		const fs::path& codePrettify) const
+		const std::wstring& codeContent,		
+		const fs::path& output) const
 	{
-		Tools::CheckPathExists(codeCss);
-		Tools::CheckPathExists(codePrettify);
-
 		auto titleStr = Tools::ToString(title);
 		ctemplate::TemplateDictionary dictionary(titleStr);
 
 		dictionary.SetValue(titleTemplate, titleStr);
 		dictionary.SetValue(codeTemplate, Tools::ToString(codeContent));	
-		dictionary.SetValue(cssPathTemplate, codeCss.string());
-		dictionary.SetValue(prettifyPathTemplate, codePrettify.string());
-
-		return GenerateTemplate(dictionary, fileTemplatePath_);
-	}
-
-	//-------------------------------------------------------------------------
-	std::string TemplateHtmlExporter::GenerateTemplate(
-		const ctemplate::TemplateDictionary& templateDictionary, 
-		const fs::path& templatePath) const
-	{
-		std::string output;
-		
-		if (!ctemplate::ExpandTemplate(templatePath.string(), ctemplate::DO_NOT_STRIP, &templateDictionary, &output))
-			THROW(L"Cannot generate output for " + templatePath.wstring()); 
-
-		return output;
+		WriteTemplate(dictionary, fileTemplatePath_, output);
 	}	
 }

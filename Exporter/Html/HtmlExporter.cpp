@@ -19,16 +19,7 @@ namespace Exporter
 {		
 
 	namespace
-	{		
-		//-------------------------------------------------------------------------
-		void WriteContentTo(const std::string& content, const fs::path& path)
-		{
-			std::ofstream ofs(path.string());
-
-			ofs << content;
-			ofs.flush();
-		}
-
+	{				
 		//---------------------------------------------------------------------
 		void ShowOutputMessage(const fs::path& outputFolder)
 		{
@@ -73,20 +64,21 @@ namespace Exporter
 
 		for (const auto& module : coverageData.GetModules())
 		{			
-			const auto& modulePath = module->GetPath();
-			auto moduleFilename = module->GetPath().filename();			
-			auto moduleTemplateDictionary = exporter_.CreateTemplateDictionary(moduleFilename.wstring(), L"");
-			
-			auto htmlModulePath = htmlFolderStructure.CreateCurrentModule(modulePath);
-			ExportFiles(*module, htmlFolderStructure, *moduleTemplateDictionary);
-			
-			auto content = exporter_.GenerateModuleTemplate(*moduleTemplateDictionary);			
-			WriteContentTo(content, htmlModulePath);
-			exporter_.AddModuleSectionToDictionary(*module, htmlModulePath, *projectDictionary);
+			if (module->GetCoverageRate().GetTotalLinesCount())
+			{
+				const auto& modulePath = module->GetPath();
+				auto moduleFilename = module->GetPath().filename();
+				auto moduleTemplateDictionary = exporter_.CreateTemplateDictionary(moduleFilename.wstring(), L"");
+
+				auto htmlModulePath = htmlFolderStructure.CreateCurrentModule(modulePath);
+				ExportFiles(*module, htmlFolderStructure, *moduleTemplateDictionary);
+
+				exporter_.GenerateModuleTemplate(*moduleTemplateDictionary, htmlModulePath.GetAbsolutePath());				
+				exporter_.AddModuleSectionToDictionary(*module, htmlModulePath.GetRelativeLinkPath(), *projectDictionary);
+			}
 		}
 
-		auto content = exporter_.GenerateProjectTemplate(*projectDictionary);
-		WriteContentTo(content, outputFolder / L"index.html");
+		exporter_.GenerateProjectTemplate(*projectDictionary, outputFolder / L"index.html");
 		ShowOutputMessage(outputFolder);
 	}	
 
@@ -115,12 +107,10 @@ namespace Exporter
 			return boost::optional<fs::path>();
 		
 		auto title = fileCoverage.GetPath().filename().wstring();
-		auto content = exporter_.GenerateSourceTemplate(
-			title, ostr.str(), htmlFolderStructure.GetCodeCssPath(), htmlFolderStructure.GetCodePrettifyPath());
+		exporter_.GenerateSourceTemplate(
+			title, ostr.str(), htmlFilePath.GetAbsolutePath());
 
-		WriteContentTo(content, htmlFilePath);
-
-		return htmlFilePath;
+		return htmlFilePath.GetRelativeLinkPath();
 	}	
 }
 

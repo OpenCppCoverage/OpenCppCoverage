@@ -56,7 +56,7 @@ namespace ExporterTest
 		auto expectedOutputFolder = modulesFolder / Module;
 		ASSERT_TRUE(fs::exists(expectedOutputFolder));
 		auto expectedPath = modulesFolder / (Module + ".html");
-		ASSERT_EQ(expectedPath, htmlPath);
+		ASSERT_EQ(expectedPath, htmlPath.GetAbsolutePath());
 	}
 
 	//-------------------------------------------------------------------------
@@ -71,7 +71,7 @@ namespace ExporterTest
 		expectedPath /= Exporter::HtmlFolderStructure::FolderModules;		
 		expectedPath /= Module;
 		expectedPath /= File + ".html";
-		ASSERT_EQ(expectedPath, htmlFilePath);
+		ASSERT_EQ(expectedPath, htmlFilePath.GetAbsolutePath());
 	}
 	
 	//-------------------------------------------------------------------------
@@ -91,12 +91,13 @@ namespace ExporterTest
 		htmlFolderStructure_->CreateCurrentRoot(outputFolder_);		
 
 		auto module = htmlFolderStructure_->CreateCurrentModule(Module);
+		auto modulePath = module.GetAbsolutePath();
 
-		CreateEmptyFile(module);
+		CreateEmptyFile(modulePath);
 		auto otherModule = htmlFolderStructure_->CreateCurrentModule(Module);
 
-		ASSERT_NE(module, otherModule);
-	}
+		ASSERT_NE(modulePath, otherModule.GetAbsolutePath());
+	} 
 
 	//-------------------------------------------------------------------------
 	TEST_F(HtmlFolderStructureTest, TestConflictFile)
@@ -105,9 +106,11 @@ namespace ExporterTest
 		htmlFolderStructure_->CreateCurrentModule(Module);
 
 		auto file = htmlFolderStructure_->GetHtmlFilePath(File);
-		CreateEmptyFile(file);
+		auto filePath = file.GetAbsolutePath();
+
+		CreateEmptyFile(filePath);
 		auto otherFile = htmlFolderStructure_->GetHtmlFilePath(File);
 
-		ASSERT_NE(file, otherFile);
+		ASSERT_NE(filePath, otherFile.GetAbsolutePath());
 	}
 }

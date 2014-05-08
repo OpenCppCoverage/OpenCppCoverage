@@ -59,7 +59,7 @@ namespace Exporter
 	}
 
 	//-------------------------------------------------------------------------
-	boost::filesystem::path HtmlFolderStructure::CreateCurrentModule(const boost::filesystem::path& modulePath)
+	HtmlFile HtmlFolderStructure::CreateCurrentModule(const boost::filesystem::path& modulePath)
 	{
 		if (!currentRoot_)
 			THROW(L"No root is selected");
@@ -70,39 +70,21 @@ namespace Exporter
 		currentModule_ = CreateUniqueDirectories(modulesPath / moduleName);
 		
 		auto moduleHtmlName = moduleName.string() + ".html";
-		auto moduleHtmlPath = modulesPath / moduleHtmlName;
+		auto moduleHtmlPath = Tools::GetUniquePath(modulesPath / moduleHtmlName);
 		
-		return Tools::GetUniquePath(moduleHtmlPath);
+		return HtmlFile{ moduleHtmlPath, fs::path{ HtmlFolderStructure::FolderModules } / moduleHtmlName };
 	}	
-
+	
 	//---------------------------------------------------------------------
-	fs::path HtmlFolderStructure::GetHtmlFilePath(const boost::filesystem::path& filePath) const
+	HtmlFile HtmlFolderStructure::GetHtmlFilePath(const boost::filesystem::path& filePath) const
 	{
 		if (!currentModule_)
 			THROW(L"No root module selected");
 		
 		auto filename = filePath.filename();
 		auto output = filename.replace_extension("html");
-		auto fileHtmlPath = *currentModule_ / output;
+		auto fileHtmlPath = Tools::GetUniquePath(*currentModule_ / output);
 
-		return Tools::GetUniquePath(fileHtmlPath);
-	}
-
-	//---------------------------------------------------------------------
-	boost::filesystem::path HtmlFolderStructure::GetCodeCssPath() const
-	{
-		if (!currentRoot_)
-			THROW(L"No root is selected");
-
-		return *currentRoot_ / CodePrettifyFolderName / "prettify-CppCoverage.css";		
-	}
-
-	//---------------------------------------------------------------------
-	boost::filesystem::path HtmlFolderStructure::GetCodePrettifyPath() const
-	{
-		if (!currentRoot_)
-			THROW(L"No root is selected");
-
-		return *currentRoot_ / CodePrettifyFolderName / "prettify.js";
-	}
+		return HtmlFile{fileHtmlPath, currentModule_->filename() / output};
+	}	
 }

@@ -89,7 +89,9 @@ xcopy /s /y $(ProjectDir)\Html\Template $(OutDir)Template</Command>
   <ItemGroup>
     <ClInclude Include="ExporterException.hpp" />
     <ClInclude Include="ExporterExport.hpp" />
+    <ClInclude Include="Html\CTemplate.hpp" />
     <ClInclude Include="Html\HtmlExporter.hpp" />
+    <ClInclude Include="Html\HtmlFile.hpp" />
     <ClInclude Include="Html\HtmlFileCoverageExporter.hpp" />
     <ClInclude Include="Html\HtmlFolderStructure.hpp" />
     <ClInclude Include="Html\TemplateHtmlExporter.hpp" />
@@ -97,6 +99,7 @@ xcopy /s /y $(ProjectDir)\Html\Template $(OutDir)Template</Command>
   <ItemGroup>
     <ClCompile Include="ExporterException.cpp" />
     <ClCompile Include="Html\HtmlExporter.cpp" />
+    <ClCompile Include="Html\HtmlFile.cpp" />
     <ClCompile Include="Html\HtmlFileCoverageExporter.cpp" />
     <ClCompile Include="Html\HtmlFolderStructure.cpp" />
     <ClCompile Include="Html\TemplateHtmlExporter.cpp" />

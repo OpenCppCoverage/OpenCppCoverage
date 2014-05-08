@@ -36,26 +36,7 @@ namespace OpenCppCoverage
 	}
 
 	namespace
-	{
-		//-----------------------------------------------------------------------------
-		fs::path GetExecutablePath()
-		{
-			std::vector<wchar_t> filename(4096);
-
-			if (!GetModuleFileName(nullptr, &filename[0], filename.size()))
-				THROW("Cannot get current executable path.");
-
-			return fs::path{ &filename[0] };
-		}
-
-		//-----------------------------------------------------------------------------
-		fs::path GetExecutableFolder()
-		{
-			fs::path executablePath = GetExecutablePath();
-
-			return executablePath.parent_path();
-		}
-
+	{		
 		//-----------------------------------------------------------------------------
 		fs::path GetOutputPath(const cov::Options& options)
 		{
@@ -89,7 +70,7 @@ namespace OpenCppCoverage
 			LOG_INFO << L"Start Program:" << ostr.str();
 
 			cov::CoverageData coverage = codeCoverageRunner.RunCoverage(startInfo, settings);
-			fs::path templateFolder = GetExecutableFolder() / "Template";
+			fs::path templateFolder = Tools::GetTemplateFolder();
 			Exporter::HtmlExporter htmlExporter{ templateFolder };
 
 			auto now = std::time(nullptr);

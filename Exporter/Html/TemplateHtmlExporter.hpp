@@ -47,19 +47,18 @@ namespace Exporter
 			const fs::path& moduleOutput,
 			ctemplate::TemplateDictionary& projectDictionary) const;
 
-		std::string GenerateModuleTemplate(const ctemplate::TemplateDictionary& templateDictionary) const;
-		std::string GenerateProjectTemplate(const ctemplate::TemplateDictionary& templateDictionary) const;
-		std::string GenerateSourceTemplate(
+		void GenerateModuleTemplate(
+			const ctemplate::TemplateDictionary& templateDictionary,
+			const fs::path&) const;
+
+		void GenerateProjectTemplate(
+			const ctemplate::TemplateDictionary& templateDictionary,
+			const fs::path&) const;
+
+		void GenerateSourceTemplate(
 			const std::wstring& title, 
 			const std::wstring& codeContent,
-			const fs::path& sourceCss,
-			const fs::path& prettify) const;
-
-	private:
-
-		std::string GenerateTemplate(
-			const ctemplate::TemplateDictionary& templateDictionary, 
-			const fs::path& templatePath) const;
+			const fs::path& output) const;
 
 	private:
 		TemplateHtmlExporter(const TemplateHtmlExporter&) = delete;

@@ -63,15 +63,19 @@ namespace ExporterTest
 		auto& module1 = data.AddModule(L"Module1.exe");
 		auto& file1 = module1.AddFile(testFolder / L"TestFile1.cpp");
 		auto& file2 = module1.AddFile(testFolder / L"TestFile2.cpp");
-
+		
+		file1.AddLine(0, true);
+		file2.AddLine(0, true);
+		
 		data.AddModule(L"Module2.exe");
+		data.ComputeCoverageRate();
 
 		htmlExporter_.Export(data, output_);
 
 		auto modulesPath = output_.GetPath() / Exporter::HtmlFolderStructure::FolderModules;
 		ASSERT_TRUE(fs::exists(output_.GetPath() / "index.html"));
 		ASSERT_TRUE(fs::exists(modulesPath / "module1.html"));
-		ASSERT_TRUE(fs::exists(modulesPath / "module2.html"));
+		ASSERT_FALSE(fs::exists(modulesPath / "module2.html"));
 		ASSERT_TRUE(fs::exists(modulesPath / "module1" / "TestFile1.html"));
 		ASSERT_TRUE(fs::exists(modulesPath / "module1" / "TestFile2.html"));
 	}

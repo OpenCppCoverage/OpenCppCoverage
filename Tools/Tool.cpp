@@ -1,5 +1,9 @@
 #include "stdafx.h"
 #include "Tool.hpp"
+
+#include <cvt/wstring>
+#include <codecvt>
+
 #include "Log.hpp"
 #include "ToolsException.hpp"
 
@@ -7,18 +11,50 @@ namespace fs = boost::filesystem;
 
 namespace Tools
 {
+	namespace
+	{
+		//-----------------------------------------------------------------------------
+		fs::path GetExecutablePath()
+		{
+			std::vector<wchar_t> filename(4096);
+
+			if (!GetModuleFileName(nullptr, &filename[0], filename.size()))
+				THROW("Cannot get current executable path.");
+
+			return fs::path{ &filename[0] };
+		}
+
+		//-----------------------------------------------------------------------------
+		fs::path GetExecutableFolder()
+		{
+			fs::path executablePath = GetExecutablePath();
+
+			return executablePath.parent_path();
+		}
+	}
+
 	//-------------------------------------------------------------------------
 	std::string ToString(const std::wstring& str)
 	{
-		return std::string(str.begin(), str.end());
+		std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+
+		return converter.to_bytes(str);
 	}
 
 	//-------------------------------------------------------------------------
 	std::wstring ToWString(const std::string& str)
 	{
-		return std::wstring(str.begin(), str.end());
+		std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+		
+		return converter.from_bytes(str);
 	}
-
+		
+	//-------------------------------------------------------------------------
+	boost::filesystem::path GetTemplateFolder()
+	{
+		return GetExecutableFolder() / "Template";
+	}
+		
 	//-------------------------------------------------------------------------
 	boost::filesystem::path GetUniquePath(const boost::filesystem::path& prefix)
 	{

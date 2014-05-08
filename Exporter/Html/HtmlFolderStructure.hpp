@@ -3,6 +3,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 
+#include "HtmlFile.hpp"
 #include "../ExporterExport.hpp"
 
 namespace Exporter
@@ -17,11 +18,8 @@ namespace Exporter
 		HtmlFolderStructure(const boost::filesystem::path& templateFolder);
 
 		boost::filesystem::path CreateCurrentRoot(const boost::filesystem::path& outputFolder);
-		boost::filesystem::path CreateCurrentModule(const boost::filesystem::path&);
-
-		boost::filesystem::path GetHtmlFilePath(const boost::filesystem::path& filePath) const;
-		boost::filesystem::path GetCodeCssPath() const;
-		boost::filesystem::path GetCodePrettifyPath() const;
+		HtmlFile CreateCurrentModule(const boost::filesystem::path&);		
+		HtmlFile GetHtmlFilePath(const boost::filesystem::path& filePath) const;
 
 	private:
 		HtmlFolderStructure(const HtmlFolderStructure&) = delete;
