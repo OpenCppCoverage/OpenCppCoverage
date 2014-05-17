@@ -24,14 +24,14 @@ namespace Exporter
 {
 	namespace
 	{
-		const std::string moduleSection = "MODULE";		
-		const std::string fileSection = "FILE";
+		const std::string mainTemplateItemSection = "ITEMS";		
 		const std::string titleTemplate = "TITLE";
 		const std::string coverRateTemplate = "COVER_RATE";
 		const std::string uncoverRateTemplate = "UNCOVER_RATE";
 		const std::string codeTemplate = "CODE";				
 		const std::string messageTemplate = "MAIN_MESSAGE";
 		const std::string idTemplate = "ID";
+		const std::string thirdPartyPathTemplate = "THIRD_PARTY_PATH";
 
 
 		//-------------------------------------------------------------------------
@@ -41,6 +41,15 @@ namespace Exporter
 		}
 		
 		//-------------------------------------------------------------------------
+		std::string GetUuid()
+		{
+			boost::uuids::random_generator generator;
+			boost::uuids::uuid id(generator());
+			
+			return boost::uuids::to_string(id);
+		}
+
+		//-------------------------------------------------------------------------
 		void FillSection(
 			ctemplate::TemplateDictionary& sectionDictionary,
 			const fs::path* link,
@@ -49,19 +58,16 @@ namespace Exporter
 		{
 			if (link)
 				sectionDictionary.SetValue(TemplateHtmlExporter::LinkTemplate, link->string());
-
-			boost::uuids::random_generator generator;
-			boost::uuids::uuid id(generator()); 
-			auto idStr = boost::uuids::to_string(id);
+			
 			sectionDictionary.SetIntValue(coverRateTemplate, coverageRate.GetPercentRate());
 			sectionDictionary.SetIntValue(uncoverRateTemplate, 100 - coverageRate.GetPercentRate());
 			sectionDictionary.SetIntValue(TemplateHtmlExporter::ExecutedLineTemplate, coverageRate.GetExecutedLinesCount());
 			sectionDictionary.SetIntValue(TemplateHtmlExporter::UnExecutedLineTemplate, coverageRate.GetUnExecutedLinesCount());
 			sectionDictionary.SetIntValue(TemplateHtmlExporter::TotalLineTemplate, coverageRate.GetTotalLinesCount());			
-			sectionDictionary.SetValue(idTemplate, idStr);
-			sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);			
+			sectionDictionary.SetValue(idTemplate, GetUuid());
+			sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);				
 		}	
-
+		
 		//-------------------------------------------------------------------------
 		void WriteContentTo(const std::string& content, const fs::path& path)
 		{
@@ -131,8 +137,7 @@ namespace Exporter
 
 	//-------------------------------------------------------------------------
 	TemplateHtmlExporter::TemplateHtmlExporter(const fs::path& templateFolder)
-		: projectTemplatePath_(templateFolder / "IndexTemplate.html")
-		, moduleTemplatePath_(templateFolder / "ModuleTemplate.html")
+		: mainTemplatePath_(templateFolder / "MainTemplate.html")		
 		, fileTemplatePath_(templateFolder / "SourceTemplate.html")		
 	{		
 	}
@@ -160,21 +165,23 @@ namespace Exporter
 		const fs::path* fileOutput,		
 		ctemplate::TemplateDictionary& moduleTemplateDictionary) const
 	{
-		auto sectionDictionary = moduleTemplateDictionary.AddSectionDictionary(fileSection);
+		auto sectionDictionary = moduleTemplateDictionary.AddSectionDictionary(mainTemplateItemSection);
 		auto filePath = fileCoverage.GetPath();
 
+		moduleTemplateDictionary.SetValue(thirdPartyPathTemplate, "../third-party");
 		FillSection(*sectionDictionary, fileOutput, fileCoverage.GetCoverageRate(), filePath.string());
 	}
-
+	
 	//-------------------------------------------------------------------------
 	void TemplateHtmlExporter::AddModuleSectionToDictionary(			
 		const cov::ModuleCoverage& moduleCoverage,
 		const fs::path& moduleOutput,
 		ctemplate::TemplateDictionary& projectDictionary) const
 	{
-		auto sectionDictionary = projectDictionary.AddSectionDictionary(moduleSection);
+		auto sectionDictionary = projectDictionary.AddSectionDictionary(mainTemplateItemSection);
 		auto path = moduleCoverage.GetPath();									
-				
+			
+		projectDictionary.SetValue(thirdPartyPathTemplate, "third-party");
 		FillSection(*sectionDictionary, &moduleOutput, moduleCoverage.GetCoverageRate(), path.string());
 	}				
 	
@@ -183,8 +190,8 @@ namespace Exporter
 		const ctemplate::TemplateDictionary& templateDictionary,
 		const fs::path& output) const
 	{
-		CheckLinkExists(templateDictionary, moduleSection, output);
-		WriteTemplate(templateDictionary, moduleTemplatePath_, output);
+		CheckLinkExists(templateDictionary, mainTemplateItemSection, output);
+		WriteTemplate(templateDictionary, mainTemplatePath_, output);
 	}
 
 	//-------------------------------------------------------------------------
@@ -192,8 +199,8 @@ namespace Exporter
 		const ctemplate::TemplateDictionary& templateDictionary,
 		const fs::path& output) const
 	{
-		CheckLinkExists(templateDictionary, fileSection, output);
-		WriteTemplate(templateDictionary, projectTemplatePath_, output);
+		CheckLinkExists(templateDictionary, mainTemplateItemSection, output);
+		WriteTemplate(templateDictionary, mainTemplatePath_, output);
 	}
 
 	//-------------------------------------------------------------------------

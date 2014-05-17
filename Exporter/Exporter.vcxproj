@@ -116,10 +116,9 @@ xcopy /s /y $(ProjectDir)\Html\Template $(OutDir)Template</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Html\Template\IndexTemplate.html">
+    <None Include="Html\Template\MainTemplate.html">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Html\Template\ModuleTemplate.html" />
     <None Include="Html\Template\SourceTemplate.html" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

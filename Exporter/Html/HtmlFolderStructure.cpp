@@ -43,7 +43,7 @@ namespace Exporter
 			return uniquePath;
 		}
 	}
-	// $$ cannot add gtest filter in gtest run by the profiler (position arg not working)
+	
 	//-------------------------------------------------------------------------
 	const std::wstring HtmlFolderStructure::ThirdParty = L"third-party";
 	const std::wstring HtmlFolderStructure::FolderModules = L"Modules";
