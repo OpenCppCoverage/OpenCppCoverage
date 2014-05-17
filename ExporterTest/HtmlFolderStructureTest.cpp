@@ -16,7 +16,7 @@ namespace ExporterTest
 			HtmlFolderStructureTest()
 			{
 				boost::system::error_code error;
-				auto folder = templateFolder_.GetPath() / Exporter::HtmlFolderStructure::CodePrettifyFolderName;
+				auto folder = templateFolder_.GetPath() / Exporter::HtmlFolderStructure::ThirdParty;
 				fs::create_directories(folder);
 				htmlFolderStructure_.reset(new Exporter::HtmlFolderStructure(templateFolder_));
 			}
@@ -43,7 +43,7 @@ namespace ExporterTest
 	TEST_F(HtmlFolderStructureTest, CreateCurrentRoot)
 	{								
 		htmlFolderStructure_->CreateCurrentRoot(outputFolder_);
-		auto createdPath = outputFolder_.GetPath() / Exporter::HtmlFolderStructure::CodePrettifyFolderName;
+		auto createdPath = outputFolder_.GetPath() / Exporter::HtmlFolderStructure::ThirdParty;
 		ASSERT_TRUE(fs::exists(createdPath));	
 	}
 	

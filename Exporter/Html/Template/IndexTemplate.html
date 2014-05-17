@@ -1,20 +1,68 @@
 <html>
-<title>
-{{TITLE}}
-</title>
-<body>
-<h1>
-{{TITLE}}
-</h1>
-<h4>
-{{MAIN_MESSAGE}}
-</h4>
-<ul>
-{{#MODULE}}
-	<li>
-    {{RATE}}%: <a href="{{LINK}}">{{NAME}}</a> {{EXECUTED_LINE}}/{{TOTAL_LINE}}
-  </li>
-  {{/MODULE}}
-</ul>
-</body>
+	<title>
+		{{TITLE}}
+	</title>
+	<head>
+		<link rel="stylesheet" type="text/css" href="third-party/css/style.css">
+    <script src="third-party/RGraph/libraries/RGraph.common.core.js" ></script>
+    <script src="third-party/RGraph/libraries/RGraph.common.dynamic.js" ></script>
+    <script src="third-party/RGraph/libraries/RGraph.common.tooltips.js"></script>
+    <script src="third-party/RGraph/libraries/RGraph.pie.js" ></script>
+
+    <script src="third-party/JQuery/jquery-1.11.1.min.js"></script>     		
+	</head>
+	<body>
+    <script>
+      $(document).ready(function ()
+      {
+
+      {{#MODULE}}
+      new RGraph.Pie('pi_{{ID}}', [{{EXECUTED_LINE}}, {{UNEXECUTED_LINE}}])
+      .set('labels', ['Cover {{COVER_RATE}}%','Uncover {{UNCOVER_RATE}}%'])
+      .set('colors', ['rgb(0,255,0)','rgb(255,0,0)'])
+      .set('linewidth', 1)
+      .set('shadow', true)
+      .set('tooltips', ['cover {{EXECUTED_LINE}} lines ({{COVER_RATE}}%)', 'uncover {{UNEXECUTED_LINE}} lines ({{UNCOVER_RATE}}%)'])
+      .set('tooltips.event', 'onmousemove')
+      .set('labels.sticks', true)
+      .set('labels.sticks.length', 10)
+      .draw();
+      {{/MODULE}}
+
+      })
+    </script>
+    
+		<h1>
+		{{TITLE}}
+		</h1>
+		<h4>
+		{{MAIN_MESSAGE}}
+		</h4>
+		<table id="rounded-corner">
+			<thead>
+				<tr>
+					<th scope="col" class="rounded-left">Coverage</th>
+					<th scope="col">Total lines</th>
+					<th scope="col" class="rounded-right">Modules</th>            
+				</tr>
+			</thead> 
+			<tfoot>
+				<tr>
+				<td colspan="2" class="rounded-foot-left"></td>
+				<td class="rounded-foot-right">&nbsp;</td>
+				</tr>
+			</tfoot>			
+			<tbody>
+				{{#MODULE}}
+				<tr>
+					<td>
+            <canvas id="pi_{{ID}}" width="250" height="100">Cover {{COVER_RATE}}%</canvas>						
+					</td>        	
+					<td>{{TOTAL_LINE}}</td>
+					<td><a href="{{LINK}}">{{NAME}}</a></td>           
+				</tr>        
+				{{/MODULE}}
+			</tbody>
+		</table>
+	</body>
 </html>

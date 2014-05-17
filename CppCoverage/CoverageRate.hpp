@@ -19,6 +19,7 @@ namespace CppCoverage
 		void SetUnexecutedLinesCount(int);
 
 		int GetExecutedLinesCount() const;
+		int GetUnExecutedLinesCount() const;
 		int GetTotalLinesCount() const;
 		int GetPercentRate() const;
 

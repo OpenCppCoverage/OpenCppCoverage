@@ -11,7 +11,7 @@ namespace Exporter
 	class EXPORTER_DLL HtmlFolderStructure
 	{
 	public:
-		static const std::wstring CodePrettifyFolderName;
+		static const std::wstring ThirdParty;
 		static const std::wstring FolderModules;
 
 	public:

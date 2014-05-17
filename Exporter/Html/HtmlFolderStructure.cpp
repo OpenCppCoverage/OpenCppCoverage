@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "HtmlFolderStructure.hpp"
 
+#include <boost/algorithm/string.hpp>
+
 #include "Exporter\ExporterException.hpp"
 
 #include "Tools/Tool.hpp"
@@ -15,14 +17,19 @@ namespace Exporter
 		void CopyRecursiveDirectoryContent(
 			const fs::path& from,
 			const fs::path& to)
-		{
-			fs::create_directory(to);
+		{			
 			for (fs::recursive_directory_iterator it(from);
 				it != fs::recursive_directory_iterator(); ++it)
 			{
 				const auto& path = it->path();
+				std::string destination = path.string();
+				
+				boost::replace_first(destination, from.string(), to.string());
 
-				fs::copy_file(path, to / path.filename(), fs::copy_option::overwrite_if_exists);
+				if (fs::is_directory(path))
+					fs::create_directories(destination);
+				else
+					fs::copy_file(path, destination, fs::copy_option::overwrite_if_exists);
 			}
 		}
 
@@ -36,9 +43,9 @@ namespace Exporter
 			return uniquePath;
 		}
 	}
-
+	// $$ cannot add gtest filter in gtest run by the profiler (position arg not working)
 	//-------------------------------------------------------------------------
-	const std::wstring HtmlFolderStructure::CodePrettifyFolderName = L"google-code-prettify";
+	const std::wstring HtmlFolderStructure::ThirdParty = L"third-party";
 	const std::wstring HtmlFolderStructure::FolderModules = L"Modules";
 
 	//-------------------------------------------------------------------------
@@ -52,8 +59,8 @@ namespace Exporter
 	{
 		currentRoot_ = CreateUniqueDirectories(fs::absolute(outputFolder));
 		CopyRecursiveDirectoryContent(
-			templateFolder_ / HtmlFolderStructure::CodePrettifyFolderName,
-			*currentRoot_ / HtmlFolderStructure::CodePrettifyFolderName);
+			templateFolder_ / HtmlFolderStructure::ThirdParty,
+			*currentRoot_ / HtmlFolderStructure::ThirdParty);
 
 		return *currentRoot_;
 	}

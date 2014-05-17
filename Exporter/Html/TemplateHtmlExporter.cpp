@@ -2,6 +2,12 @@
 #include "TemplateHtmlExporter.hpp"
 
 #include <boost/filesystem.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
+
+#include <boost/lexical_cast.hpp>
+
 #include "CTemplate.hpp"
 #include "Tools/Tool.hpp"
 
@@ -21,9 +27,12 @@ namespace Exporter
 		const std::string moduleSection = "MODULE";		
 		const std::string fileSection = "FILE";
 		const std::string titleTemplate = "TITLE";
-		const std::string rateTemplate = "RATE";
+		const std::string coverRateTemplate = "COVER_RATE";
+		const std::string uncoverRateTemplate = "UNCOVER_RATE";
 		const std::string codeTemplate = "CODE";				
 		const std::string messageTemplate = "MAIN_MESSAGE";
+		const std::string idTemplate = "ID";
+
 
 		//-------------------------------------------------------------------------
 		std::string ToStr(const std::wstring& str)
@@ -41,10 +50,16 @@ namespace Exporter
 			if (link)
 				sectionDictionary.SetValue(TemplateHtmlExporter::LinkTemplate, link->string());
 
-			sectionDictionary.SetIntValue(rateTemplate, coverageRate.GetPercentRate());
+			boost::uuids::random_generator generator;
+			boost::uuids::uuid id(generator()); 
+			auto idStr = boost::uuids::to_string(id);
+			sectionDictionary.SetIntValue(coverRateTemplate, coverageRate.GetPercentRate());
+			sectionDictionary.SetIntValue(uncoverRateTemplate, 100 - coverageRate.GetPercentRate());
 			sectionDictionary.SetIntValue(TemplateHtmlExporter::ExecutedLineTemplate, coverageRate.GetExecutedLinesCount());
-			sectionDictionary.SetIntValue(TemplateHtmlExporter::TotalLineTemplate, coverageRate.GetTotalLinesCount());
-			sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);
+			sectionDictionary.SetIntValue(TemplateHtmlExporter::UnExecutedLineTemplate, coverageRate.GetUnExecutedLinesCount());
+			sectionDictionary.SetIntValue(TemplateHtmlExporter::TotalLineTemplate, coverageRate.GetTotalLinesCount());			
+			sectionDictionary.SetValue(idTemplate, idStr);
+			sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);			
 		}	
 
 		//-------------------------------------------------------------------------
@@ -109,6 +124,7 @@ namespace Exporter
 	
 	//-------------------------------------------------------------------------
 	const std::string TemplateHtmlExporter::ExecutedLineTemplate = "EXECUTED_LINE";
+	const std::string TemplateHtmlExporter::UnExecutedLineTemplate = "UNEXECUTED_LINE";
 	const std::string TemplateHtmlExporter::LinkTemplate = "LINK";
 	const std::string TemplateHtmlExporter::TotalLineTemplate = "TOTAL_LINE";	
 	const std::string TemplateHtmlExporter::NameTemplate = "NAME";

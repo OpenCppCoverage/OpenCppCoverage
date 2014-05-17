@@ -27,6 +27,7 @@ namespace Exporter
 	{
 	public:
 		static const std::string ExecutedLineTemplate;
+		static const std::string UnExecutedLineTemplate; // $$ to test
 		static const std::string LinkTemplate;
 		static const std::string TotalLineTemplate;		
 		static const std::string NameTemplate;
