@@ -17,7 +17,9 @@ namespace Exporter
 		void CopyRecursiveDirectoryContent(
 			const fs::path& from,
 			const fs::path& to)
-		{			
+		{
+			fs::create_directories(to);
+
 			for (fs::recursive_directory_iterator it(from);
 				it != fs::recursive_directory_iterator(); ++it)
 			{

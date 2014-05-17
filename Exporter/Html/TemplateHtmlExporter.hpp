@@ -27,11 +27,15 @@ namespace Exporter
 	{
 	public:
 		static const std::string ExecutedLineTemplate;
+		static const std::string TitleTemplate;
+		static const std::string MainTemplateItemSection;
 		static const std::string UnExecutedLineTemplate;
 		static const std::string LinkTemplate;
 		static const std::string TotalLineTemplate;		
 		static const std::string NameTemplate;
-		
+		static const std::string ItemLinkSection;
+		static const std::string ItemNoLinkSection;
+
 	public:
 		explicit TemplateHtmlExporter(const fs::path& templateFolder);
 

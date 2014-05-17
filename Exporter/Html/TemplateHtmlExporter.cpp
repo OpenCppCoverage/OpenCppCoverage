@@ -23,9 +23,7 @@ namespace fs = boost::filesystem;
 namespace Exporter
 {
 	namespace
-	{
-		const std::string mainTemplateItemSection = "ITEMS";		
-		const std::string titleTemplate = "TITLE";
+	{				
 		const std::string coverRateTemplate = "COVER_RATE";
 		const std::string uncoverRateTemplate = "UNCOVER_RATE";
 		const std::string codeTemplate = "CODE";				
@@ -57,17 +55,19 @@ namespace Exporter
 			const std::string& name)
 		{
 			if (link)
-				sectionDictionary.SetValue(TemplateHtmlExporter::LinkTemplate, link->string());
-			
+				sectionDictionary.SetValueAndShowSection(TemplateHtmlExporter::LinkTemplate, link->string(), TemplateHtmlExporter::ItemLinkSection);
+			else
+				sectionDictionary.ShowSection(TemplateHtmlExporter::ItemNoLinkSection);
+
 			sectionDictionary.SetIntValue(coverRateTemplate, coverageRate.GetPercentRate());
 			sectionDictionary.SetIntValue(uncoverRateTemplate, 100 - coverageRate.GetPercentRate());
 			sectionDictionary.SetIntValue(TemplateHtmlExporter::ExecutedLineTemplate, coverageRate.GetExecutedLinesCount());
 			sectionDictionary.SetIntValue(TemplateHtmlExporter::UnExecutedLineTemplate, coverageRate.GetUnExecutedLinesCount());
-			sectionDictionary.SetIntValue(TemplateHtmlExporter::TotalLineTemplate, coverageRate.GetTotalLinesCount());			
+			sectionDictionary.SetIntValue(TemplateHtmlExporter::TotalLineTemplate, coverageRate.GetTotalLinesCount());
 			sectionDictionary.SetValue(idTemplate, GetUuid());
-			sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);				
-		}	
-		
+			sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);
+		}
+
 		//-------------------------------------------------------------------------
 		void WriteContentTo(const std::string& content, const fs::path& path)
 		{
@@ -92,31 +92,47 @@ namespace Exporter
 			return output;
 		}
 
+		//---------------------------------------------------------------------
+		std::vector<const ctemplate::TemplateDictionary*> GetSectionDictionaries(
+			const ctemplate::TemplateDictionaryPeer& peer,
+			const std::string& sectionName)
+		{
+			std::vector<const ctemplate::TemplateDictionary*> templateDictionaries;
+			peer.GetSectionDictionaries(sectionName, &templateDictionaries);
+
+			return templateDictionaries;
+		}
+		
 		//-------------------------------------------------------------------------
 		void CheckLinkExists(
 			const ctemplate::TemplateDictionary& templateDictionary,
 			const std::string& sectionName,
 			const fs::path& output)
 		{
-			ctemplate::TemplateDictionaryPeer rootPeer(&templateDictionary);
-			std::vector<const ctemplate::TemplateDictionary*> dicts;
-			rootPeer.GetSectionDictionaries(sectionName, &dicts);
+			ctemplate::TemplateDictionaryPeer rootPeer(&templateDictionary);			
+			auto dictionaries = GetSectionDictionaries(rootPeer, sectionName);
 
-			for (const auto& dictionary : dicts)
+			for (const auto& dictionary : dictionaries)
 			{
-				ctemplate::TemplateDictionaryPeer peer(dicts[0]);
-				auto linkStr = peer.GetSectionValue(TemplateHtmlExporter::LinkTemplate);
+				ctemplate::TemplateDictionaryPeer peer(dictionary);
+				auto itemLinkDictionaries = GetSectionDictionaries(peer, TemplateHtmlExporter::ItemLinkSection);
 
-				if (linkStr)
+				if (!itemLinkDictionaries.empty())
 				{
-					auto fullPath = output.parent_path() / linkStr;
+					ctemplate::TemplateDictionaryPeer itemLinkPeer(itemLinkDictionaries[0]);
+					auto linkStr = itemLinkPeer.GetSectionValue(TemplateHtmlExporter::LinkTemplate);
 
-					if (!fs::exists(fullPath))
-						THROW("Link: " << fullPath << " does not exists");
+					if (linkStr)
+					{
+						auto fullPath = output.parent_path() / linkStr;
+
+						if (!fs::exists(fullPath))
+							THROW("Link: " << fullPath << " does not exists");
+					}
 				}
 			}
 		}
-
+		
 		//-------------------------------------------------------------------------
 		void WriteTemplate(
 			const ctemplate::TemplateDictionary& templateDictionary,
@@ -129,11 +145,15 @@ namespace Exporter
 	}
 	
 	//-------------------------------------------------------------------------
+	const std::string TemplateHtmlExporter::MainTemplateItemSection = "ITEMS";
+	const std::string TemplateHtmlExporter::TitleTemplate = "TITLE";
 	const std::string TemplateHtmlExporter::ExecutedLineTemplate = "EXECUTED_LINE";
 	const std::string TemplateHtmlExporter::UnExecutedLineTemplate = "UNEXECUTED_LINE";
 	const std::string TemplateHtmlExporter::LinkTemplate = "LINK";
 	const std::string TemplateHtmlExporter::TotalLineTemplate = "TOTAL_LINE";	
 	const std::string TemplateHtmlExporter::NameTemplate = "NAME";
+	const std::string TemplateHtmlExporter::ItemLinkSection = "ITEM_LINK";
+	const std::string TemplateHtmlExporter::ItemNoLinkSection = "ITEM_NO_LINK";
 
 	//-------------------------------------------------------------------------
 	TemplateHtmlExporter::TemplateHtmlExporter(const fs::path& templateFolder)
@@ -153,7 +173,7 @@ namespace Exporter
 
 		dictionary.reset(new ctemplate::TemplateDictionary(titleStr));
 
-		dictionary->SetValue(titleTemplate, titleStr);
+		dictionary->SetValue(TitleTemplate, titleStr);
 		dictionary->SetValue(messageTemplate, ToStr(message));
 
 		return dictionary;
@@ -165,7 +185,7 @@ namespace Exporter
 		const fs::path* fileOutput,		
 		ctemplate::TemplateDictionary& moduleTemplateDictionary) const
 	{
-		auto sectionDictionary = moduleTemplateDictionary.AddSectionDictionary(mainTemplateItemSection);
+		auto sectionDictionary = moduleTemplateDictionary.AddSectionDictionary(MainTemplateItemSection);
 		auto filePath = fileCoverage.GetPath();
 
 		moduleTemplateDictionary.SetValue(thirdPartyPathTemplate, "../third-party");
@@ -178,7 +198,7 @@ namespace Exporter
 		const fs::path& moduleOutput,
 		ctemplate::TemplateDictionary& projectDictionary) const
 	{
-		auto sectionDictionary = projectDictionary.AddSectionDictionary(mainTemplateItemSection);
+		auto sectionDictionary = projectDictionary.AddSectionDictionary(MainTemplateItemSection);
 		auto path = moduleCoverage.GetPath();									
 			
 		projectDictionary.SetValue(thirdPartyPathTemplate, "third-party");
@@ -190,7 +210,7 @@ namespace Exporter
 		const ctemplate::TemplateDictionary& templateDictionary,
 		const fs::path& output) const
 	{
-		CheckLinkExists(templateDictionary, mainTemplateItemSection, output);
+		CheckLinkExists(templateDictionary, MainTemplateItemSection, output);
 		WriteTemplate(templateDictionary, mainTemplatePath_, output);
 	}
 
@@ -199,7 +219,7 @@ namespace Exporter
 		const ctemplate::TemplateDictionary& templateDictionary,
 		const fs::path& output) const
 	{
-		CheckLinkExists(templateDictionary, mainTemplateItemSection, output);
+		CheckLinkExists(templateDictionary, MainTemplateItemSection, output);
 		WriteTemplate(templateDictionary, mainTemplatePath_, output);
 	}
 
@@ -212,8 +232,8 @@ namespace Exporter
 		auto titleStr = Tools::ToString(title);
 		ctemplate::TemplateDictionary dictionary(titleStr);
 
-		dictionary.SetValue(titleTemplate, titleStr);
+		dictionary.SetValue(TitleTemplate, titleStr);
 		dictionary.SetValue(codeTemplate, Tools::ToString(codeContent));	
 		WriteTemplate(dictionary, fileTemplatePath_, output);
-	}	
+	}		
 }

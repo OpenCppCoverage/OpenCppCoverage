@@ -1,68 +1,70 @@
 <html>
-	<title>
-		{{TITLE}}
-	</title>
-	<head>
-		<link rel="stylesheet" type="text/css" href="{{THIRD_PARTY_PATH}}/css/style.css">
-		<script src="{{THIRD_PARTY_PATH}}/RGraph/libraries/RGraph.common.core.js" ></script>
-		<script src="{{THIRD_PARTY_PATH}}/RGraph/libraries/RGraph.common.dynamic.js" ></script>
-		<script src="{{THIRD_PARTY_PATH}}/RGraph/libraries/RGraph.common.tooltips.js"></script>
-		<script src="{{THIRD_PARTY_PATH}}/RGraph/libraries/RGraph.pie.js" ></script>
+    <title>
+        {{TITLE}}
+    </title>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{{THIRD_PARTY_PATH}}/css/style.css">
+        <script src="{{THIRD_PARTY_PATH}}/RGraph/libraries/RGraph.common.core.js" ></script>
+        <script src="{{THIRD_PARTY_PATH}}/RGraph/libraries/RGraph.common.dynamic.js" ></script>
+        <script src="{{THIRD_PARTY_PATH}}/RGraph/libraries/RGraph.common.tooltips.js"></script>
+        <script src="{{THIRD_PARTY_PATH}}/RGraph/libraries/RGraph.pie.js" ></script>
 
-		<script src="{{THIRD_PARTY_PATH}}/JQuery/jquery-1.11.1.min.js"></script>
-	</head>
-	<body>
-	<script>
-		$(document).ready(function ()
-		{
-
-			{{#ITEMS}}
-			new RGraph.Pie('pi_{{ID}}', [{{EXECUTED_LINE}}, {{UNEXECUTED_LINE}}])
-				.set('labels', ['Cover {{COVER_RATE}}%','Uncover {{UNCOVER_RATE}}%'])
-				.set('colors', ['rgb(0,255,0)','rgb(255,0,0)'])
-				.set('linewidth', 1)
-				.set('shadow', true)
-				.set('tooltips', ['cover {{EXECUTED_LINE}} lines ({{COVER_RATE}}%)', 'uncover {{UNEXECUTED_LINE}} lines ({{UNCOVER_RATE}}%)'])
-				.set('tooltips.event', 'onmousemove')
-				.set('labels.sticks', true)
-				.set('labels.sticks.length', 10)
-				.draw();
-			{{/ITEMS}}
+        <script src="{{THIRD_PARTY_PATH}}/JQuery/jquery-1.11.1.min.js"></script>
+    </head>
+    <body>
+    <script>
+        $(document).ready(function ()
+        {
+            {{#ITEMS}}
+            new RGraph.Pie('pi_{{ID}}', [{{EXECUTED_LINE}}, {{UNEXECUTED_LINE}}])
+                .set('labels', ['Cover {{COVER_RATE}}%','Uncover {{UNCOVER_RATE}}%'])
+                .set('colors', ['rgb(0,255,0)','rgb(255,0,0)'])
+                .set('linewidth', 1)
+                .set('shadow', true)
+                .set('tooltips', ['cover {{EXECUTED_LINE}} lines ({{COVER_RATE}}%)', 'uncover {{UNEXECUTED_LINE}} lines ({{UNCOVER_RATE}}%)'])
+                .set('tooltips.event', 'onmousemove')
+                .set('labels.sticks', true)
+                .set('labels.sticks.length', 10)
+                .draw();
+            {{/ITEMS}}
 
       })
-	</script>
-	
-		<h1>
-		{{TITLE}}
-		</h1>
-		<h4>
-		{{MAIN_MESSAGE}}
-		</h4>
-		<table id="rounded-corner">
-			<thead>
-				<tr>
-					<th scope="col" class="rounded-left">Coverage</th>
-					<th scope="col">Total lines</th>
-					<th scope="col" class="rounded-right">Items</th>
-				</tr>
-			</thead> 
-			<tfoot>
-				<tr>
-				<td colspan="2" class="rounded-foot-left"></td>
-				<td class="rounded-foot-right">&nbsp;</td>
-				</tr>
-			</tfoot>			
-			<tbody>
-				{{#ITEMS}}
-				<tr>
-					<td>
+    </script>
+    
+        <h1>
+        {{TITLE}}
+        </h1>
+        <h4>
+        {{MAIN_MESSAGE}}
+        </h4>
+        <table id="rounded-corner">
+            <thead>
+                <tr>
+                    <th scope="col" class="rounded-left">Coverage</th>
+                    <th scope="col">Total lines</th>
+                    <th scope="col" class="rounded-right">Items</th>
+                </tr>
+            </thead> 
+            <tfoot>
+                <tr>
+                <td colspan="2" class="rounded-foot-left"></td>
+                <td class="rounded-foot-right"></td>
+                </tr>
+            </tfoot>            
+            <tbody>
+                {{#ITEMS}}
+                <tr>
+                    <td>
             <canvas id="pi_{{ID}}" width="280" height="100">Cover {{COVER_RATE}}%</canvas>
-					</td>        	
-					<td>{{TOTAL_LINE}}</td>
-					<td><a href="{{LINK}}">{{NAME}}</a></td>
-				</tr>        
-				{{/ITEMS}}
-			</tbody>
-		</table>
-	</body>
+                    </td>            
+                    <td>{{TOTAL_LINE}}</td>
+                    <td>            
+                      {{#ITEM_LINK}} <a href="{{LINK}}">{{NAME}}</a> {{/ITEM_LINK}}
+                      {{#ITEM_NO_LINK}}{{NAME}}(File Not Found){{/ITEM_NO_LINK}}
+                    </td>
+                </tr>        
+                {{/ITEMS}}
+            </tbody>
+        </table>
+    </body>
 </html>

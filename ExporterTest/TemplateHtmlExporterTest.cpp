@@ -33,20 +33,40 @@ namespace ExporterTest
 		}
 		
 		//---------------------------------------------------------------------
-		void CheckSection(const std::string& sectionName)
+		std::vector<const ctemplate::TemplateDictionary*> GetSectionDictionaries(
+			const ctemplate::TemplateDictionaryPeer& peer,
+			const std::string& sectionName)
 		{
-			std::vector<const ctemplate::TemplateDictionary*> fileTemplates;
-			peer_->GetSectionDictionaries(sectionName, &fileTemplates);
-			EXPECT_EQ(1, fileTemplates.size());
-			ctemplate::TemplateDictionaryPeer fileTemplatePeer{ fileTemplates[0] };
+			std::vector<const ctemplate::TemplateDictionary*> templateDictionaries;
+			peer.GetSectionDictionaries(sectionName, &templateDictionaries);
 
-			EXPECT_EQ(fileOutput_.GetPath().string(), fileTemplatePeer.GetSectionValue(
+			return templateDictionaries;
+		}
+
+		//---------------------------------------------------------------------
+		std::unique_ptr<ctemplate::TemplateDictionaryPeer> GetSection(
+			const ctemplate::TemplateDictionaryPeer& peer,
+			const std::string& sectionName)
+		{									
+			auto dictionary = GetSectionDictionaries(peer, sectionName);
+			return std::unique_ptr<ctemplate::TemplateDictionaryPeer>{new ctemplate::TemplateDictionaryPeer{ dictionary.at(0) }};
+		}
+
+		//---------------------------------------------------------------------
+		void CheckItems()
+		{
+			auto fileTemplatePeer = GetSection(*peer_, Exporter::TemplateHtmlExporter::MainTemplateItemSection);			
+			auto itemLink = GetSection(*fileTemplatePeer, Exporter::TemplateHtmlExporter::ItemLinkSection);
+						
+			EXPECT_EQ(fileOutput_.GetPath().string(), itemLink->GetSectionValue(
 				Exporter::TemplateHtmlExporter::LinkTemplate));
-			EXPECT_EQ(std::string("0"), fileTemplatePeer.GetSectionValue(
+			EXPECT_EQ(std::string("0"), fileTemplatePeer->GetSectionValue(
 				Exporter::TemplateHtmlExporter::ExecutedLineTemplate));
-			EXPECT_EQ(std::string("0"), fileTemplatePeer.GetSectionValue(
+			EXPECT_EQ(std::string("0"), fileTemplatePeer->GetSectionValue(
+				Exporter::TemplateHtmlExporter::UnExecutedLineTemplate));
+			EXPECT_EQ(std::string("0"), fileTemplatePeer->GetSectionValue(
 				Exporter::TemplateHtmlExporter::TotalLineTemplate));						
-			EXPECT_EQ(filePath_.string(), fileTemplatePeer.GetSectionValue(
+			EXPECT_EQ(filePath_.string(), fileTemplatePeer->GetSectionValue(
 				Exporter::TemplateHtmlExporter::NameTemplate));
 		}
 
@@ -61,7 +81,8 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST_F(TemplateHtmlExporterTest, CreateTemplateDictionary)
 	{		
-		ASSERT_EQ(Tools::ToString(title_), peer_->GetSectionValue("TITLE"));
+		ASSERT_EQ(Tools::ToString(title_), peer_->GetSectionValue(
+			Exporter::TemplateHtmlExporter::TitleTemplate));
 	}
 
 	//-------------------------------------------------------------------------
@@ -69,7 +90,7 @@ namespace ExporterTest
 	{			
 		CppCoverage::FileCoverage fileCoverage{filePath_};
 		templateHtmlExporter_.AddFileSectionToDictionary(fileCoverage, &fileOutput_.GetPath(), *templateDictionary_);
-		CheckSection("FILE");
+		CheckItems();
 	}
 
 	//-------------------------------------------------------------------------
@@ -77,16 +98,27 @@ namespace ExporterTest
 	{
 		CppCoverage::ModuleCoverage moduleCoverage{ filePath_ };
 		templateHtmlExporter_.AddModuleSectionToDictionary(moduleCoverage, fileOutput_.GetPath(), *templateDictionary_);
-		CheckSection("MODULE");		
+		CheckItems();
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(TemplateHtmlExporterTest, AddFileSectionToDictionaryNoLink)
+	{
+		CppCoverage::FileCoverage fileCoverage{ filePath_ };
+		templateHtmlExporter_.AddFileSectionToDictionary(fileCoverage, nullptr, *templateDictionary_);
+		auto itemSection = GetSection(*peer_, Exporter::TemplateHtmlExporter::MainTemplateItemSection);
+
+		ASSERT_EQ(0, GetSectionDictionaries(*itemSection, 
+			Exporter::TemplateHtmlExporter::ItemLinkSection).size());
+		ASSERT_EQ(1, GetSectionDictionaries(*itemSection, 
+			Exporter::TemplateHtmlExporter::ItemNoLinkSection).size());
 	}
 
 	//-------------------------------------------------------------------------
 	TEST_F(TemplateHtmlExporterTest, FileExists)
 	{		
 		CppCoverage::ModuleCoverage moduleCoverage{ filePath_ };
-		templateHtmlExporter_.AddModuleSectionToDictionary(moduleCoverage, ".", *templateDictionary_);
-
-			
+		templateHtmlExporter_.AddModuleSectionToDictionary(moduleCoverage, ".", *templateDictionary_);			
 		templateHtmlExporter_.GenerateModuleTemplate(*templateDictionary_, fileOutput_.GetPath());
 
 		ASSERT_TRUE(fs::exists(fileOutput_.GetPath()));

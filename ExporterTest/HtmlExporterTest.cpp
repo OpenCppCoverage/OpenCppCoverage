@@ -59,16 +59,17 @@ namespace ExporterTest
 	{	
 		fs::path testFolder = fs::canonical("../ExporterTest/Data");	
 		cov::CoverageData data{ L"Test", 0};
+		std::wstring filename1{ L"TestFile1.cpp"};
+		std::wstring filename2{ L"TestFile2.cpp"};
 
 		auto& module1 = data.AddModule(L"Module1.exe");
-		auto& file1 = module1.AddFile(testFolder / L"TestFile1.cpp");
-		auto& file2 = module1.AddFile(testFolder / L"TestFile2.cpp");
+		auto& file1 = module1.AddFile(testFolder / filename1);
+		auto& file2 = module1.AddFile(testFolder / filename2);
 		
 		file1.AddLine(0, true);
 		file2.AddLine(0, true);
 		
-		data.AddModule(L"Module2.exe").AddFile(testFolder / L"TestFile1.cpp").AddLine(0,true);
-		data.AddModule(L"Module3.exe").AddFile(testFolder / L"TestFile1.cpp").AddLine(0, true);
+		data.AddModule(L"Module2.exe");		
 		data.ComputeCoverageRate();
 
 		htmlExporter_.Export(data, output_);
@@ -77,8 +78,8 @@ namespace ExporterTest
 		ASSERT_TRUE(fs::exists(output_.GetPath() / "index.html"));
 		ASSERT_TRUE(fs::exists(modulesPath / "module1.html"));
 		ASSERT_FALSE(fs::exists(modulesPath / "module2.html"));
-		ASSERT_TRUE(fs::exists(modulesPath / "module1" / "TestFile1.html"));
-		ASSERT_TRUE(fs::exists(modulesPath / "module1" / "TestFile2.html"));
+		ASSERT_TRUE(fs::exists(modulesPath / "module1" / (filename1 + L".html")));
+		ASSERT_TRUE(fs::exists(modulesPath / "module1" / (filename2 + L".html")));
 	}
 
 	//-------------------------------------------------------------------------

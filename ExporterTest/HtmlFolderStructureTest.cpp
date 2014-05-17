@@ -11,23 +11,6 @@ namespace ExporterTest
 	namespace
 	{
 		//-------------------------------------------------------------------------
-		struct HtmlFolderStructureTest : public ::testing::Test
-		{
-			HtmlFolderStructureTest()
-			{
-				boost::system::error_code error;
-				auto folder = templateFolder_.GetPath() / Exporter::HtmlFolderStructure::ThirdParty;
-				fs::create_directories(folder);
-				htmlFolderStructure_.reset(new Exporter::HtmlFolderStructure(templateFolder_));
-			}
-
-			std::unique_ptr<Exporter::HtmlFolderStructure> htmlFolderStructure_;
-
-			Tools::TemporaryPath templateFolder_;
-			Tools::TemporaryPath outputFolder_;
-		};
-
-		//-------------------------------------------------------------------------
 		void CreateEmptyFile(const fs::path& path)
 		{
 			std::ofstream ofs;
@@ -35,13 +18,31 @@ namespace ExporterTest
 		}
 
 		//-------------------------------------------------------------------------
+		struct HtmlFolderStructureTest : public ::testing::Test
+		{
+			HtmlFolderStructureTest()
+			{
+				boost::system::error_code error;
+				auto folder = templateFolder_.GetPath() / Exporter::HtmlFolderStructure::ThirdParty;
+				fs::create_directories(folder);				
+				htmlFolderStructure_.reset(new Exporter::HtmlFolderStructure(templateFolder_));				
+			}
+
+			std::unique_ptr<Exporter::HtmlFolderStructure> htmlFolderStructure_;
+
+			Tools::TemporaryPath templateFolder_;
+			Tools::TemporaryPath outputFolder_;
+		};
+		
+		//-------------------------------------------------------------------------
 		const std::string Module = "Module";
 		const std::string File = "file";
 	}
 
 	//-------------------------------------------------------------------------
 	TEST_F(HtmlFolderStructureTest, CreateCurrentRoot)
-	{								
+	{						
+		CreateEmptyFile(templateFolder_.GetPath() / Exporter::HtmlFolderStructure::ThirdParty / "EmptyFile");
 		htmlFolderStructure_->CreateCurrentRoot(outputFolder_);
 		auto createdPath = outputFolder_.GetPath() / Exporter::HtmlFolderStructure::ThirdParty;
 		ASSERT_TRUE(fs::exists(createdPath));	
