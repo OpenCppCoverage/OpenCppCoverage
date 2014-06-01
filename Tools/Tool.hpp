@@ -20,6 +20,8 @@ namespace Tools
 		const boost::filesystem::path& currentFolder);
 
 	TOOLS_DLL boost::filesystem::path GetUniquePath(const boost::filesystem::path& prefix);
+
+	TOOLS_DLL void CreateMiniDumpOnUnHandledException();
 }
 
 

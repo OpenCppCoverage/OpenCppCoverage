@@ -83,13 +83,16 @@ namespace OpenCppCoverage
 	}
 }
 
+
 //-----------------------------------------------------------------------------
 int main(int argc, const char* argv[])
 {	
+	Tools::CreateMiniDumpOnUnHandledException();
+
 	cov::OptionsParser optionsParser;
 
 	try
-	{		
+	{
 		auto options = optionsParser.Parse(argc, argv);
 
 		if (options)
@@ -105,10 +108,6 @@ int main(int argc, const char* argv[])
 	catch (const std::exception& e)
 	{
 		std::cerr << "Error:" << e.what() << std::endl;
-	}
-	catch (...)
-	{
-		std::cerr << "Unknown Error:" << std::endl;
 	}
 
 	return 1;
