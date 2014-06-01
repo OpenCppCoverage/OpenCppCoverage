@@ -1,10 +1,6 @@
 #include "stdafx.h"
 
 #include <boost/filesystem.hpp>
-#include <Poco/Process.h>
-#include <Poco/Pipe.h>
-#include <Poco/PipeStream.h>
-#include <Poco/StreamCopier.h>
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "OpenCppCoverage/OpenCppCoverage.hpp"
@@ -13,6 +9,8 @@
 #include "Tools/ScopedAction.hpp"
 #include "Tools/Tool.hpp"
 #include "Tools/TemporaryPath.hpp"
+
+#include "OpenCppCoverageTestTools.hpp"
 
 namespace fs = boost::filesystem;
 namespace cov = CppCoverage;
@@ -33,23 +31,13 @@ namespace OpenCppCoverageTest
 			const std::vector<std::wstring>& arguments)
 		{
 			Tools::TemporaryPath tempFolder;
-			fs::path openCppCoverage = OpenCppCoverage::GetOutputBinaryPath();
 
-			std::vector<std::string> coverageArguments{
-				"--" + cov::OptionsParser::SelectedModulesOption,
-				programToRun.string(),
-				"--" + cov::OptionsParser::SelectedSourcesOption,
-				SOLUTION_DIR,
-				"--" + cov::OptionsParser::OutputDirectoryOption,
-				tempFolder.GetPath().string(),
-				programToRun.string() };
+			std::vector<std::pair<std::string, std::string>> coverageArguments{
+				{ cov::OptionsParser::SelectedModulesOption, programToRun.string() },
+				{ cov::OptionsParser::SelectedSourcesOption, SOLUTION_DIR } };
+
+			int exitCode = RunCoverageOn(coverageArguments, tempFolder, programToRun, arguments);
 			
-			for (const auto& argument : arguments)
-				coverageArguments.push_back(Tools::ToString(argument));
-
-			auto handle = Poco::Process::launch(openCppCoverage.string(), coverageArguments, ".", nullptr, nullptr, nullptr);			
-			int exitCode = handle.wait();
-
 			CheckOutputDirectory(tempFolder);
 			return exitCode;
 		}
