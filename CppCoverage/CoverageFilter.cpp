@@ -108,7 +108,7 @@ namespace CppCoverage
 
 		if (!selectedRegEx)
 		{
-			ostr << L": " << str << L" is skipped. Match no selected patterns";
+			ostr << L": " << str << L" is skipped because it matches no selected patterns";
 			return false;
 		}
 		
@@ -116,11 +116,11 @@ namespace CppCoverage
 
 		if (excludedRegEx)
 		{
-			ostr << L": " << str << L" is not selected because it matchs excluded pattern: " << *excludedRegEx;
+			ostr << L": " << str << L" is not selected because it matches excluded pattern: " << *excludedRegEx;
 			return false;
 		}
 
-		ostr << L": " << str << L" is selected because it matchs selected pattern: " << *selectedRegEx;;
+		ostr << L": " << str << L" is selected because it matches selected pattern: " << *selectedRegEx;;
 		return true;			
 	}
 }
