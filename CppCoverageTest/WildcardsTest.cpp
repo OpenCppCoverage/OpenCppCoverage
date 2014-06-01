@@ -24,9 +24,10 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(WildcardsTest, StarsMatch)
 	{
-		ASSERT_TRUE(cov::Wildcards(L"*").Match(L"aa"));
-		ASSERT_TRUE(cov::Wildcards(L"b*").Match(L"ba"));
-		ASSERT_TRUE(cov::Wildcards(L"*b").Match(L"ab"));
+		ASSERT_TRUE(cov::Wildcards(L"a*b").Match(L"aab"));
+		ASSERT_TRUE(cov::Wildcards(L"b**").Match(L"ba"));
+		ASSERT_TRUE(cov::Wildcards(L"**b").Match(L"ab"));
+		ASSERT_TRUE(cov::Wildcards(L"**b**").Match(L"ab"));
 	}
 
 	//-------------------------------------------------------------------------

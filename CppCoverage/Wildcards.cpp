@@ -16,7 +16,7 @@ namespace CppCoverage
 		: originalStr_{ str }
 	{
 		auto flags = (isRegexCaseSensitiv) ? std::regex::basic : std::regex::icase;
-		// Do not escaped '*' and '?'
+		// Do not escaped '*'
 		
 		for (auto c : EscapedChars)
 		{
@@ -24,6 +24,8 @@ namespace CppCoverage
 			boost::replace_all(str, escapedString, L"\\" + escapedString);
 		}
 		
+		// remove useless * 
+		boost::trim_if(str, [](char c){ return c == '*';});
 		boost::replace_all(str, L"*", L".*");
 		wildcars_.assign(str, flags);
 	}
