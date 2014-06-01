@@ -37,7 +37,7 @@ namespace Tools
 		{
 			std::vector<wchar_t> filename(4096);
 
-			if (!GetModuleFileName(nullptr, &filename[0], filename.size()))
+			if (!GetModuleFileName(nullptr, &filename[0], static_cast<DWORD>(filename.size())))
 				THROW("Cannot get current executable path.");
 
 			return fs::path{ &filename[0] };

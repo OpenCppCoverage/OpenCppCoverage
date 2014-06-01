@@ -69,7 +69,7 @@ namespace Exporter
 			THROW(L"Cannot open file : " + filePath.wstring());
 
 		std::wstring line;
-		for (size_t i = 1; std::getline(ifs, line); ++i)
+		for (int i = 1; std::getline(ifs, line); ++i)
 		{			
 			auto lineCoverage = fileCoverage[i];
 			

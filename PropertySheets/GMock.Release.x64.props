@@ -8,7 +8,7 @@
       <AdditionalIncludeDirectories>$(GMOCK_ROOT)/include;$(GMOCK_ROOT)/gtest/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(GMOCK_ROOT)/build/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(GMOCK_ROOT)/build/x64/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>gmock.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

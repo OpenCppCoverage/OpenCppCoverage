@@ -100,7 +100,14 @@ namespace CppCoverage
 			&processInformation_.get()
 			))
 		{
-			THROW_LAST_ERROR(L"Error when creating the process:" << startInfo_, GetLastError());
+			std::wstring addtionalInformation;
+
+			#ifndef _WIN64
+			addtionalInformation = L"\n*** This version support only 32 bits executable ***.\n\n";
+			#endif
+
+			THROW_LAST_ERROR(L"Error when creating the process:" << std::endl			
+				<< addtionalInformation << startInfo_, GetLastError());
 		}		
 	}
 }

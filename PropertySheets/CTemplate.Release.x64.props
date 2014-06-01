@@ -4,13 +4,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
   <ItemDefinitionGroup>
-    <Link>
-      <AdditionalLibraryDirectories>$(CTEMPLATE_ROOT)/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libctemplate-debug.lib;template_test_util_test.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>$(CTEMPLATE_ROOT)/src/windows;$(CTEMPLATE_ROOT)/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(CTEMPLATE_ROOT)/x64/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libctemplate.lib;template_test_util_test.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

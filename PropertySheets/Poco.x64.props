@@ -5,7 +5,7 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <Link>
-      <AdditionalLibraryDirectories>$(POCO_ROOT)/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(POCO_ROOT)/lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>$(POCO_ROOT)/Foundation/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

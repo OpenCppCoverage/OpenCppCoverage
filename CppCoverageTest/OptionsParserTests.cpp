@@ -48,7 +48,7 @@ namespace CppCoverageTest
 
 			if (appendProgramToRun)
 				argv.push_back(programToRun.c_str());
-			return parser.Parse(argv.size(), &argv[0]);
+			return parser.Parse(static_cast<int>(argv.size()), &argv[0]);
 		}	
 
 		//-------------------------------------------------------------------------

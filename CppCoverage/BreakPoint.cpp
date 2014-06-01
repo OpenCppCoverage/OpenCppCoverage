@@ -50,7 +50,11 @@ namespace CppCoverage
 		CONTEXT lcContext;
 		lcContext.ContextFlags = CONTEXT_ALL;
 		GetThreadContext(hThread, &lcContext);
-		lcContext.Eip--; // Move back one byte
+		#ifdef _WIN64
+			lcContext.Rip--; // Move back one byte
+		#else
+			lcContext.Eip--; // Move back one byte
+		#endif
 		SetThreadContext(hThread, &lcContext);
 	}
 
