@@ -41,7 +41,7 @@ namespace CppCoverage
 		}
 		
 		// remove useless * 
-		boost::trim_if(str, [](char c){ return c == '*';});
+		boost::trim_if(str, [](wchar_t c){ return c == L'*';});
 		boost::replace_all(str, L"*", L".*");
 		wildcars_.assign(str, flags);
 	}

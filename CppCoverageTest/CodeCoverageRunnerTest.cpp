@@ -143,7 +143,7 @@ namespace CppCoverageTest
 		cov::FileCoverage* file;
 		GetFileCoverage(coverageData, file);
 
-		int line = 30;
+		int line = 43;
 		TestLine(*file, line++, true);
 		TestLine(*file, line++, true);
 		ASSERT_TRUE((*file)[line++] == nullptr);
@@ -165,7 +165,7 @@ namespace CppCoverageTest
 		const auto& files = modules[0]->GetFiles();
 		ASSERT_EQ(1, files.size());
 		const auto& file = *files[0];
-		int line = 15;
+		int line = 31;
 		TestLine(file, line++, true);
 		TestLine(file, line++, true);
 		TestLine(file, line++, true);
