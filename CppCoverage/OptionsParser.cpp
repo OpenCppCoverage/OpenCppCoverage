@@ -140,7 +140,7 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	OptionsParser::OptionsParser()
-		: description_("Usage [options] -- program_to_run optional_arguments")
+		: description_("Usage: [options] -- program_to_run optional_arguments")
 	{		
 		const std::string all = "*";
 				
@@ -219,8 +219,11 @@ namespace CppCoverage
 		const OptionsParser& optionsParser)
 	{
 		std::ostringstream output;
-		optionsParser.description_.print(output);
 
+		output << "OpenCppCoverage Version: " << OPENCPPCOVERAGE_VERSION << std::endl;
+		output << std::endl;
+		optionsParser.description_.print(output);
+		
 		return ostr << Tools::ToWString(output.str());
 	}
 }

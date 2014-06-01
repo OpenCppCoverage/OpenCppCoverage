@@ -10,3 +10,4 @@ ipch/*
 *.filters
 *.user
 CoverageReport-*
+NewRelease
