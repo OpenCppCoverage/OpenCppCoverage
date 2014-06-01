@@ -91,7 +91,6 @@
     <ClInclude Include="TemporaryPath.hpp" />
     <ClInclude Include="ToolsExport.hpp" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
     <ClInclude Include="Tool.hpp" />
   </ItemGroup>
   <ItemGroup>

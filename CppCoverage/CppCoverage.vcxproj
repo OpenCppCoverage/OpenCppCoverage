@@ -176,7 +176,6 @@
     <ClInclude Include="Process.hpp" />
     <ClInclude Include="StartInfo.hpp" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
     <ClInclude Include="Wildcards.hpp" />
   </ItemGroup>
   <ItemGroup>

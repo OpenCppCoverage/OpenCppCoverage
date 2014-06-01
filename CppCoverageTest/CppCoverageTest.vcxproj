@@ -94,7 +94,6 @@
     <ClInclude Include="DebugEventsMock.hpp" />
     <ClInclude Include="DebugInformationEventHandlerMock.hpp" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
     <ClInclude Include="TestTools.hpp" />
   </ItemGroup>
   <ItemGroup>
