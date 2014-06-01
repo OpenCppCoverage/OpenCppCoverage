@@ -107,16 +107,15 @@ namespace CppCoverageTest
 
 		auto& module1 = data.AddModule(L"module1");
 		CreateNewFileCoverage(module1, L"filename1", 1, 2);			
-		module1.ComputeCoverageRate();
-		CheckCoverageRate(module1, 1, 3);
-
+				
 		auto& module2 = data.AddModule(L"module1");
 		CreateNewFileCoverage(module2, L"filename2", 3, 0);
 		CreateNewFileCoverage(module2, L"filename3", 1, 1);		
-		module2.ComputeCoverageRate();
-		CheckCoverageRate(module2, 4, 5);
-
+		
 		data.ComputeCoverageRate();
+
+		CheckCoverageRate(module1, 1, 3); 
+		CheckCoverageRate(module2, 4, 5);		
 		CheckCoverageRate(data, 5, 8);
 	}
 }
