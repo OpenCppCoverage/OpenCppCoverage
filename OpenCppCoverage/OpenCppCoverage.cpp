@@ -94,7 +94,11 @@ namespace OpenCppCoverage
 
 			boost::filesystem::path output = GetOutputPath(options);
 			htmlExporter.Export(coverage, output);
-			return coverage.GetExitCode();
+			auto exitCode = coverage.GetExitCode();
+
+			if (exitCode)
+				LOG_ERROR << L"Your program stop with error code: " << exitCode;
+			return exitCode;
 		}
 	}
 }
