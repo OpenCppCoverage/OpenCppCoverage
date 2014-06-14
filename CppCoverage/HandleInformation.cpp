@@ -88,7 +88,7 @@ namespace CppCoverage
 		const std::wstring& mappedFileNameStr,
 		const std::vector<std::wstring>& logicalDrives)
 	{		
-		wchar_t dosDevice[4096];
+		wchar_t dosDevice[2 * MAX_PATH];
 
 		for (const auto& logicalDrive : logicalDrives)
 		{
