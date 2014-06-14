@@ -46,8 +46,10 @@ int _tmain(int argc, _TCHAR* argv[])
 		std::wstring type = argv[1];
 		if (type == TestCoverageConsole::TestThrowHandledException)
 			ThrowHandledException();
-		else if (type == TestCoverageConsole::TestThrowUnHandledException)
+		else if (type == TestCoverageConsole::TestThrowUnHandledCppException)
 			throw 42;
+		else if (type == TestCoverageConsole::TestThrowUnHandledSEHException)
+			*reinterpret_cast<int*>(0) = 42;
 		else if (type == TestCoverageConsole::TestSharedLib)
 			TestCoverageSharedLib::IsOdd(42);
 		else

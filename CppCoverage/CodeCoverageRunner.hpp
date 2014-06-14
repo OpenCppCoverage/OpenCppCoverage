@@ -17,7 +17,6 @@
 #pragma once
 
 #include <memory>
-#include <unordered_map>
 
 #include "CoverageData.hpp"
 #include "IDebugEventsHandler.hpp"
@@ -33,12 +32,10 @@ namespace CppCoverage
 	class ExecutedAddressManager;
 	class BreakPoint;
 	class CoverageFilter;
+	class ExceptionHandler;
 
 	class CPPCOVERAGE_DLL CodeCoverageRunner : private IDebugEventsHandler, private IDebugInformationEventHandler
 	{
-	public:
-		static const std::string unhandledExceptionErrorMessage;
-
 	public:
 		CodeCoverageRunner();
 		~CodeCoverageRunner();
@@ -59,16 +56,13 @@ namespace CppCoverage
 		CodeCoverageRunner& operator=(const CodeCoverageRunner&) = delete;
 
 		void LoadModule(HANDLE hFile, void* baseOfImage);
-		void InitExceptionCode();
-		std::wstring GetExceptionStrFromCode(DWORD) const;
-
+		
 	private:
 		std::unique_ptr<DebugInformation> debugInformation_;		
 		std::unique_ptr<BreakPoint> breakpoint_;
 		std::unique_ptr<ExecutedAddressManager> executedAddressManager_;
 		std::unique_ptr<CoverageFilter> coverageFilter_;
-		std::unordered_map<DWORD, std::wstring> exceptionCode_;
-		bool isFirstException_;
+		std::unique_ptr<ExceptionHandler> exceptionHandler_;		
 	};
 }
 

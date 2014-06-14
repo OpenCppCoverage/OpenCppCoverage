@@ -17,6 +17,7 @@
 #include "stdafx.h"
 #include "CodeCoverageRunner.hpp"
 
+#include <sstream>
 #include <boost/optional.hpp>
 #include <boost/filesystem.hpp>
 
@@ -30,45 +31,19 @@
 #include "BreakPoint.hpp"
 #include "CoverageFilter.hpp"
 #include "StartInfo.hpp"
+#include "ExceptionHandler.hpp"
+
+#include "tools/Tool.hpp"
 
 namespace CppCoverage
-{		
-
-	//-------------------------------------------------------------------------
-	const std::string CodeCoverageRunner::unhandledExceptionErrorMessage = "Unhandled exception: ";
-	
+{			
 	//-------------------------------------------------------------------------
 	CodeCoverageRunner::CodeCoverageRunner()
 	{ 
-		InitExceptionCode();
 		executedAddressManager_.reset(new ExecutedAddressManager());
+		exceptionHandler_.reset(new ExceptionHandler());
 	}
-
-	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::InitExceptionCode()
-	{
-		exceptionCode_.emplace(EXCEPTION_ACCESS_VIOLATION, L"EXCEPTION_ACCESS_VIOLATION");
-		exceptionCode_.emplace(EXCEPTION_ARRAY_BOUNDS_EXCEEDED, L"EXCEPTION_ARRAY_BOUNDS_EXCEEDED");
-		exceptionCode_.emplace(EXCEPTION_BREAKPOINT, L"EXCEPTION_BREAKPOINT");
-		exceptionCode_.emplace(EXCEPTION_DATATYPE_MISALIGNMENT, L"EXCEPTION_DATATYPE_MISALIGNMENT");
-		exceptionCode_.emplace(EXCEPTION_FLT_DENORMAL_OPERAND, L"EXCEPTION_FLT_DENORMAL_OPERAND");
-		exceptionCode_.emplace(EXCEPTION_FLT_DIVIDE_BY_ZERO, L"EXCEPTION_FLT_DIVIDE_BY_ZERO");
-		exceptionCode_.emplace(EXCEPTION_FLT_INEXACT_RESULT, L"EXCEPTION_FLT_INEXACT_RESULT");
-		exceptionCode_.emplace(EXCEPTION_FLT_INVALID_OPERATION, L"EXCEPTION_FLT_INVALID_OPERATION");
-		exceptionCode_.emplace(EXCEPTION_FLT_OVERFLOW, L"EXCEPTION_FLT_OVERFLOW");
-		exceptionCode_.emplace(EXCEPTION_FLT_STACK_CHECK, L"EXCEPTION_FLT_STACK_CHECK");
-		exceptionCode_.emplace(EXCEPTION_FLT_UNDERFLOW, L"EXCEPTION_FLT_UNDERFLOW");
-		exceptionCode_.emplace(EXCEPTION_ILLEGAL_INSTRUCTION, L"EXCEPTION_ILLEGAL_INSTRUCTION");
-		exceptionCode_.emplace(EXCEPTION_IN_PAGE_ERROR, L"EXCEPTION_IN_PAGE_ERROR");
-		exceptionCode_.emplace(EXCEPTION_INT_DIVIDE_BY_ZERO, L"EXCEPTION_INT_DIVIDE_BY_ZERO");
-		exceptionCode_.emplace(EXCEPTION_INT_OVERFLOW, L"EXCEPTION_INT_OVERFLOW");
-		exceptionCode_.emplace(EXCEPTION_INVALID_DISPOSITION, L"EXCEPTION_INVALID_DISPOSITION");
-		exceptionCode_.emplace(EXCEPTION_NONCONTINUABLE_EXCEPTION, L"EXCEPTION_NONCONTINUABLE_EXCEPTION");
-		exceptionCode_.emplace(EXCEPTION_PRIV_INSTRUCTION, L"EXCEPTION_PRIV_INSTRUCTION");
-		exceptionCode_.emplace(EXCEPTION_SINGLE_STEP, L"EXCEPTION_SINGLE_STEP");
-		exceptionCode_.emplace(EXCEPTION_STACK_OVERFLOW, L"EXCEPTION_STACK_OVERFLOW");
-	}
-
+	
 	//-------------------------------------------------------------------------
 	CodeCoverageRunner::~CodeCoverageRunner()
 	{
@@ -96,7 +71,6 @@ namespace CppCoverage
 		debugInformation_.reset(new DebugInformation(hProcess));
 		breakpoint_.reset(new BreakPoint(hProcess));
 		LoadModule(processDebugInfo.hFile, lpBaseOfImage);
-		isFirstException_ = true;
 	}
 	
 	//-------------------------------------------------------------------------
@@ -107,44 +81,45 @@ namespace CppCoverage
 	{
 		LoadModule(dllDebugInfo.hFile, dllDebugInfo.lpBaseOfDll);
 	}
-
+	
 	//-------------------------------------------------------------------------
 	DWORD CodeCoverageRunner::OnException(
 		HANDLE hProcess, 
 		HANDLE hThread, 
 		const EXCEPTION_DEBUG_INFO& exceptionDebugInfo)
 	{
-		const auto& exceptionRecord = exceptionDebugInfo.ExceptionRecord;								
-		auto address = exceptionRecord.ExceptionAddress;
+		std::wostringstream ostr;
+		
+		auto status = exceptionHandler_->HandleException(exceptionDebugInfo, ostr);
 
-		if (exceptionDebugInfo.dwFirstChance)
+		switch (status)
 		{
-			if (!isFirstException_ && exceptionRecord.ExceptionCode == EXCEPTION_BREAKPOINT) // Skip the first exception set by default.
+			case CppCoverage::ExceptionHandlerStatus::BreakPoint:
 			{
+				const auto& exceptionRecord = exceptionDebugInfo.ExceptionRecord;
+				auto address = exceptionRecord.ExceptionAddress;
 				auto oldInstruction = executedAddressManager_->MarkAddressAsExecuted(address);
 
 				breakpoint_->RemoveBreakPoint(address, oldInstruction);
 				breakpoint_->AdjustEipAfterBreakPointRemoval(hThread);
 				return DBG_CONTINUE;
 			}
+			case CppCoverage::ExceptionHandlerStatus::ExceptionEmulationX86:
+			{
+				LOG_DEBUG << ostr.str();
+				return DBG_EXCEPTION_NOT_HANDLED;
+			}
+			case CppCoverage::ExceptionHandlerStatus::Fatal:
+			{
+				LOG_ERROR << ostr.str();
+				return DBG_EXCEPTION_NOT_HANDLED;
+			}
+			case CppCoverage::ExceptionHandlerStatus::FirstBreakPoint:
+				return DBG_EXCEPTION_NOT_HANDLED;
 		}
-		else
-			LOG_ERROR << unhandledExceptionErrorMessage << GetExceptionStrFromCode(exceptionRecord.ExceptionCode);
-	
-		isFirstException_ = false;
 		return DBG_EXCEPTION_NOT_HANDLED;
 	}
-
-	//-------------------------------------------------------------------------
-	std::wstring CodeCoverageRunner::GetExceptionStrFromCode(DWORD exceptionCode) const
-	{
-		auto it = exceptionCode_.find(exceptionCode);
-
-		if (it != exceptionCode_.end())
-			return it->second;
-		return L"Unknown";
-	}
-
+	
 	//-------------------------------------------------------------------------
 	void CodeCoverageRunner::LoadModule(HANDLE hFile, void* baseOfImage)
 	{

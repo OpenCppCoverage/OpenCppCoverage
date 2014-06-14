@@ -163,6 +163,7 @@
     <ClInclude Include="CppCoverageException.hpp" />
     <ClInclude Include="Debugger.hpp" />
     <ClInclude Include="DebugInformation.hpp" />
+    <ClInclude Include="ExceptionHandler.hpp" />
     <ClInclude Include="ExecutedAddressManager.hpp" />
     <ClInclude Include="CppCoverageExport.hpp" />
     <ClInclude Include="FileCoverage.hpp" />
@@ -190,6 +191,7 @@
     <ClCompile Include="CppCoverageException.cpp" />
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="DebugInformation.cpp" />
+    <ClCompile Include="ExceptionHandler.cpp" />
     <ClCompile Include="ExecutedAddressManager.cpp" />
     <ClCompile Include="FileCoverage.cpp" />
     <ClCompile Include="HandleInformation.cpp" />

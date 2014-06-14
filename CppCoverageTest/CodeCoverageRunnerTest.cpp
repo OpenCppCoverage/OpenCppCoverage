@@ -30,6 +30,8 @@
 #include "CppCoverage/FileCoverage.hpp"
 #include "CppCoverage/LineCoverage.hpp"
 #include "CppCoverage/Patterns.hpp"
+#include "CppCoverage/ExceptionHandler.hpp"
+
 #include "Tools/Log.hpp"
 #include "Tools/Tool.hpp"
 
@@ -117,9 +119,9 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		std::string GetError() const
+		std::wstring GetError() const
 		{
-			return error_->str();
+			return Tools::ToWString(error_->str());
 		}
 
 		//---------------------------------------------------------------------
@@ -177,19 +179,19 @@ namespace CppCoverageTest
 	TEST_F(CodeCoverageRunnerTest, HandledException)
 	{
 		GetStartInfo().AddArguments(TestCoverageConsole::TestThrowHandledException);
-		cov::CoverageData coverageData = ComputeCoverageData(L"*", L"*");
+		cov::CoverageData coverageData = ComputeCoverageData(L"*", TestCoverageConsole::GetMainCppPath().wstring());
 		ASSERT_EQ(std::string::npos, 
-			GetError().find(cov::CodeCoverageRunner::unhandledExceptionErrorMessage));
+			GetError().find(cov::ExceptionHandler::UnhandledExceptionErrorMessage));
 		ASSERT_EQ(0, coverageData.GetExitCode());
 	}
 	
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, NotHandledException)
+	TEST_F(CodeCoverageRunnerTest, UnHandledSEHException)
 	{
-		GetStartInfo().AddArguments(TestCoverageConsole::TestThrowUnHandledException);
-		cov::CoverageData coverageData = ComputeCoverageData(L"*", L"*");
+		GetStartInfo().AddArguments(TestCoverageConsole::TestThrowUnHandledSEHException);
+		cov::CoverageData coverageData = ComputeCoverageData(L"*", TestCoverageConsole::GetMainCppPath().wstring());
 		ASSERT_NE(std::string::npos, 
-			GetError().find(cov::CodeCoverageRunner::unhandledExceptionErrorMessage));
+			GetError().find(cov::ExceptionHandler::UnhandledExceptionErrorMessage));
 		ASSERT_NE(0, coverageData.GetExitCode());
-	}
+	}	
 }

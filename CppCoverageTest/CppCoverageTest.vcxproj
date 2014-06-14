@@ -178,6 +178,7 @@
     <ClCompile Include="CppCoverageTest.cpp" />
     <ClCompile Include="DebuggerTest.cpp" />
     <ClCompile Include="DebugInformationTest.cpp" />
+    <ClCompile Include="ExceptionHandlerTest.cpp" />
     <ClCompile Include="ExecutedAddressManagerTest.cpp" />
     <ClCompile Include="HandleInformationTest.cpp" />
     <ClCompile Include="OptionsParserTests.cpp" />

@@ -67,24 +67,14 @@ namespace OpenCppCoverageTest
 		ASSERT_EQ(0, RunCoverageOnProgram(testCoverageConsole, {}));
 	}	
 
-	
 	//-------------------------------------------------------------------------
 	TEST(OpenCppCoverageConsoleTest, UnhandledException)
 	{
 		fs::path testCoverageConsole = TestCoverageConsole::GetOutputBinaryPath();
 
-		ASSERT_NE(0, RunCoverageOnProgram(testCoverageConsole, { TestCoverageConsole::TestThrowUnHandledException }));
+		ASSERT_NE(0, RunCoverageOnProgram(testCoverageConsole, { TestCoverageConsole::TestThrowUnHandledSEHException }));
 	}
-
-	//-------------------------------------------------------------------------
-	TEST(OpenCppCoverageConsoleTest, CppCoverageTest)
-	{
-		fs::path cppCoverageTest{ OUT_DIR };
-		
-		cppCoverageTest /= "CppCoverageTest.exe";	
-		ASSERT_EQ(0, RunCoverageOnProgram(cppCoverageTest, {}));
-	}
-
+	
 	//-------------------------------------------------------------------------
 	TEST(OpenCppCoverageConsoleTest, ExporterTest)
 	{
