@@ -42,7 +42,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(StartInfoTest, ConstructorFileNotFound)
 	{		
-		ASSERT_THROW(cov::StartInfo s(L""), Tools::ExceptionBase);
+		ASSERT_THROW(cov::StartInfo s(L""), std::runtime_error);
 	}
 
 	//-------------------------------------------------------------------------
@@ -51,7 +51,7 @@ namespace CppCoverageTest
 		cov::StartInfo s(validFilename);
 		fs::path folder{ L"" };
 		
-		ASSERT_THROW(s.SetWorkingDirectory(folder), Tools::ExceptionBase);
+		ASSERT_THROW(s.SetWorkingDirectory(folder), std::runtime_error);
 	}
 
 	//-------------------------------------------------------------------------

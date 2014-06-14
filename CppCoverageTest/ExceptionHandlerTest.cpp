@@ -64,6 +64,7 @@ namespace CppCoverageTest
 			EXCEPTION_DEBUG_INFO exceptionDebugInfo{};
 			std::wostringstream ostr;
 
+			exceptionDebugInfo.dwFirstChance = 0;
 			exceptionDebugInfo.ExceptionRecord.ExceptionCode = errorCode;
 			handler.HandleException(exceptionDebugInfo, ostr); // skip first exception
 			handler.HandleException(exceptionDebugInfo, ostr);
@@ -92,7 +93,6 @@ namespace CppCoverageTest
 	TEST_F(ExceptionHandlerTest, TestFormatMessage)
 	{
 		auto message = GetErrorMessage(cov::ExceptionHandler::ExceptionEmulationX86ErroCode);
-		ASSERT_EQ(CppCoverage::ExceptionHandlerStatus::Fatal, exceptionHandlerStatus_);
 		ASSERT_NE(std::string::npos, message.find(L"Exception status code used by Win32 x86 emulation subsystem"));
 	}
 
@@ -100,7 +100,6 @@ namespace CppCoverageTest
 	TEST_F(ExceptionHandlerTest, TestUnknown)
 	{
 		auto message = GetErrorMessage(42);
-		ASSERT_EQ(CppCoverage::ExceptionHandlerStatus::Fatal, exceptionHandlerStatus_);
 		ASSERT_NE(std::string::npos, message.find(cov::ExceptionHandler::ExceptionUnknown));
 	}
 }
