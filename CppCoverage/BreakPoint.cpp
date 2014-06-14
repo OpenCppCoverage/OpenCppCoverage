@@ -49,13 +49,16 @@ namespace CppCoverage
 	{
 		CONTEXT lcContext;
 		lcContext.ContextFlags = CONTEXT_ALL;
-		GetThreadContext(hThread, &lcContext);
+		if (!GetThreadContext(hThread, &lcContext))
+			THROW_LAST_ERROR("Error in GetThreadContext", GetLastError());
+
 		#ifdef _WIN64
 			lcContext.Rip--; // Move back one byte
 		#else
 			lcContext.Eip--; // Move back one byte
 		#endif
-		SetThreadContext(hThread, &lcContext);
+		if (!SetThreadContext(hThread, &lcContext))
+			THROW_LAST_ERROR("Error in SetThreadContext", GetLastError());
 	}
 
 	//-------------------------------------------------------------------------
