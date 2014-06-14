@@ -26,11 +26,21 @@ namespace fs = boost::filesystem;
 
 namespace CppCoverage
 {	
+	namespace
+	{
+		//-------------------------------------------------------------------------
+		void CheckPathExists(const fs::path& path)
+		{
+			if (!fs::exists(path))
+				throw std::runtime_error(path.string() + " does not exist");
+		}
+	}
+
 	//-------------------------------------------------------------------------
 	StartInfo::StartInfo(const fs::path& path)
 		: path_(path)
 	{
-		Tools::CheckPathExists(path);
+		CheckPathExists(path);
 		AddArguments(path.wstring());
 	}
 
@@ -45,7 +55,7 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	void StartInfo::SetWorkingDirectory(const fs::path& workingDirectory)
 	{
-		Tools::CheckPathExists(workingDirectory);
+		CheckPathExists(workingDirectory);
 		workingDirectory_ = workingDirectory;					
 	}
 
@@ -80,9 +90,11 @@ namespace CppCoverage
 	{
 		ostr << L"Path:" << startInfo.path_ << std::endl;
 		ostr << L"Arguments:";
-		
-		for (const auto& arg : startInfo.arguments_)
-			ostr << arg << " ";
+
+		const auto& arguments = startInfo.arguments_;
+
+		for (size_t i = 1; i < arguments.size(); ++i)
+			ostr << arguments[i] << " ";
 		ostr << std::endl;
 		ostr << L"Working directory:";
 		

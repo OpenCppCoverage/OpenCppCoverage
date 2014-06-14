@@ -20,7 +20,8 @@
 #include <Windows.h>
 #include <boost/optional.hpp>
 
-#include "tools/Log.hpp"
+#include "Tools/Log.hpp"
+#include "Tools/Tool.hpp"
 
 #include "StartInfo.hpp"
 #include "CppCoverageException.hpp"
@@ -65,10 +66,12 @@ namespace CppCoverage
 	{
 		if (processInformation_)
 		{			
-			if (!CloseHandle(processInformation_->hProcess))
+			auto hProcess = processInformation_->hProcess;
+			if (hProcess && !CloseHandle(hProcess))
 				LOG_ERROR << "Cannot close process handle";
 
-			if (!CloseHandle(processInformation_->hThread))
+			auto hThread = processInformation_->hThread;
+			if (hThread && !CloseHandle(hThread))
 				LOG_ERROR << "Cannot close thread handle";
 		}
 	}
@@ -86,7 +89,7 @@ namespace CppCoverage
 		auto optionalCommandLine = CreateCommandLine(startInfo_.GetArguments());
 		auto commandLine = (optionalCommandLine) ? &(*optionalCommandLine)[0] : nullptr;
 
-		processInformation_ = PROCESS_INFORMATION();
+		processInformation_ = PROCESS_INFORMATION{};
 		if (!CreateProcess(
 			startInfo_.GetPath().c_str(),
 			commandLine,
@@ -100,14 +103,15 @@ namespace CppCoverage
 			&processInformation_.get()
 			))
 		{
-			std::wstring addtionalInformation;
+			std::wostringstream ostr;
+			
+			ostr << L"Cannot run process, check if it is a valid executable:" << std::endl;
 
 			#ifndef _WIN64
-			addtionalInformation = L"\n*** This version support only 32 bits executable ***.\n\n";
+			ostr << L"\n*** This version support only 32 bits executable ***.\n\n";
 			#endif
-
-			THROW_LAST_ERROR(L"Error when creating the process:" << std::endl			
-				<< addtionalInformation << startInfo_, GetLastError());
+			ostr << startInfo_ << CppCoverage::GetErrorMessage(GetLastError());
+			throw std::runtime_error(Tools::ToString(ostr.str()));
 		}		
 	}
 }

@@ -96,7 +96,7 @@ namespace CppCoverage
 			const auto* programToRun = GetOptionalValue<std::string>(variables, ProgramToRunOption);
 
 			if (!programToRun)
-				THROW("No program specified.");
+				throw std::runtime_error("No program specified.");
 
 			cov::StartInfo startInfo{ *programToRun };
 

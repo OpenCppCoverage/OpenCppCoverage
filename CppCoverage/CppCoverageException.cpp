@@ -30,9 +30,9 @@ namespace CppCoverage
 		std::wostringstream ostr;
 			
 		if (FormatMessage(
-				FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+				FORMAT_MESSAGE_FROM_SYSTEM,
 				NULL, lastErrorCode,
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+				MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), // Default language
 				sysMsg, sizeof(sysMsg), NULL))
 		{
 			ostr << sysMsg;

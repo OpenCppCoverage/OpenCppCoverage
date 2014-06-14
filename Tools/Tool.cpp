@@ -163,13 +163,6 @@ namespace Tools
 	}
 
 	//-------------------------------------------------------------------------
-	void CheckPathExists(const fs::path& path)
-	{
-		if (!fs::exists(path))
-			THROW(path.wstring() << L" does not exist");
-	}
-
-	//-------------------------------------------------------------------------
 	void CreateMiniDumpOnUnHandledException()
 	{
 		DWORD dwMode = GetErrorMode();
