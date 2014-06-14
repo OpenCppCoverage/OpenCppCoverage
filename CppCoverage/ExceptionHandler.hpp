@@ -25,10 +25,9 @@
 namespace CppCoverage
 {	
 	enum class ExceptionHandlerStatus
-	{
-		FirstBreakPoint,
+	{		
 		BreakPoint,
-		ExceptionEmulationX86,
+		FirstChanceException,
 		Fatal
 	};
 
@@ -53,7 +52,7 @@ namespace CppCoverage
 		std::wstring GetExceptionStrFromCode(DWORD) const;
 
 		std::unordered_map<DWORD, std::wstring> exceptionCode_;
-		bool isFirstException_;
+		std::unordered_map<DWORD, bool> breakPointExceptionCode_;
 	};
 }
 

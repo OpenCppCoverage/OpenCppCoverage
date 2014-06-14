@@ -104,19 +104,18 @@ namespace CppCoverage
 				breakpoint_->AdjustEipAfterBreakPointRemoval(hThread);
 				return DBG_CONTINUE;
 			}
-			case CppCoverage::ExceptionHandlerStatus::ExceptionEmulationX86:
+			case CppCoverage::ExceptionHandlerStatus::FirstChanceException:
 			{
-				LOG_DEBUG << ostr.str();
 				return DBG_EXCEPTION_NOT_HANDLED;
 			}
 			case CppCoverage::ExceptionHandlerStatus::Fatal:
 			{
 				LOG_ERROR << ostr.str();
+				
 				return DBG_EXCEPTION_NOT_HANDLED;
-			}
-			case CppCoverage::ExceptionHandlerStatus::FirstBreakPoint:
-				return DBG_EXCEPTION_NOT_HANDLED;
+			}			
 		}
+
 		return DBG_EXCEPTION_NOT_HANDLED;
 	}
 	

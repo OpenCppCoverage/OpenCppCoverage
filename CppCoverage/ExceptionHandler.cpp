@@ -30,8 +30,9 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	ExceptionHandler::ExceptionHandler()
-		: isFirstException_{true}
 	{
+		breakPointExceptionCode_.emplace(EXCEPTION_BREAKPOINT, true);
+		breakPointExceptionCode_.emplace(ExceptionEmulationX86ErroCode, true);
 		InitExceptionCode();
 	}
 
@@ -67,30 +68,33 @@ namespace CppCoverage
 	ExceptionHandlerStatus ExceptionHandler::HandleException(const EXCEPTION_DEBUG_INFO& exceptionDebugInfo, std::wostream& message)
 	{
 		const auto& exceptionRecord = exceptionDebugInfo.ExceptionRecord;
-		auto address = exceptionRecord.ExceptionAddress;
-
-		if (isFirstException_)
-		{
-			isFirstException_ = false;
-			return ExceptionHandlerStatus::FirstBreakPoint;
-		}
-
+				
 		if (exceptionDebugInfo.dwFirstChance)
 		{
-			if (exceptionRecord.ExceptionCode == EXCEPTION_BREAKPOINT) // Skip the first exception set by default.
-				return ExceptionHandlerStatus::BreakPoint;
+			auto it = breakPointExceptionCode_.find(exceptionRecord.ExceptionCode);
+			
+			if (it != breakPointExceptionCode_.end())
+			{
+				// Breakpoint exception need to be ignore the first time
+				if (it->second)
+					it->second = false; // Mark exception as not first time
+				else
+					return ExceptionHandlerStatus::BreakPoint;
+			}
+
+			return ExceptionHandlerStatus::FirstChanceException;
 		}
 		else
 		{			
-			message << UnhandledExceptionErrorMessage << exceptionRecord.ExceptionCode 
-				<< ": " << GetExceptionStrFromCode(exceptionRecord.ExceptionCode);
-		
-			if (exceptionRecord.ExceptionCode == ExceptionEmulationX86ErroCode)
-				return ExceptionHandlerStatus::ExceptionEmulationX86;
-		}
-		
-		return ExceptionHandlerStatus::Fatal;
+			message << std::endl << std::endl;
+			message << L"-----------------------------------------------" << std::endl;
+			message << L"*** ";
+			message << UnhandledExceptionErrorMessage << exceptionRecord.ExceptionCode;
+			message << L": " << GetExceptionStrFromCode(exceptionRecord.ExceptionCode) << std::endl;
+			message << L"-----------------------------------------------" << std::endl;
+		}						
 
+		return ExceptionHandlerStatus::Fatal;
 	}
 
 	//-------------------------------------------------------------------------

@@ -52,7 +52,7 @@ namespace CppCoverageTest
 				return DBG_EXCEPTION_NOT_HANDLED;
 			}
 			
-			cov::ExceptionHandlerStatus exceptionHandlerStatus_;			
+			CppCoverage::ExceptionHandlerStatus exceptionHandlerStatus_;
 			std::wstring message_;
 			cov::ExceptionHandler handler_;
 		};
@@ -83,7 +83,8 @@ namespace CppCoverageTest
 	//-----------------------------------------------------------------------------
 	TEST_F(ExceptionHandlerTest, TestUnHandleSEHException)
 	{
-		Run(TestCoverageConsole::TestThrowUnHandledSEHException);		
+		Run(TestCoverageConsole::TestThrowUnHandledSEHException);	
+		ASSERT_EQ(CppCoverage::ExceptionHandlerStatus::Fatal, exceptionHandlerStatus_);
 		ASSERT_NE(std::string::npos, message_.find(cov::ExceptionHandler::ExceptionAccesViolation));
 	}
 	
@@ -91,6 +92,7 @@ namespace CppCoverageTest
 	TEST_F(ExceptionHandlerTest, TestFormatMessage)
 	{
 		auto message = GetErrorMessage(cov::ExceptionHandler::ExceptionEmulationX86ErroCode);
+		ASSERT_EQ(CppCoverage::ExceptionHandlerStatus::Fatal, exceptionHandlerStatus_);
 		ASSERT_NE(std::string::npos, message.find(L"Exception status code used by Win32 x86 emulation subsystem"));
 	}
 
@@ -98,6 +100,7 @@ namespace CppCoverageTest
 	TEST_F(ExceptionHandlerTest, TestUnknown)
 	{
 		auto message = GetErrorMessage(42);
+		ASSERT_EQ(CppCoverage::ExceptionHandlerStatus::Fatal, exceptionHandlerStatus_);
 		ASSERT_NE(std::string::npos, message.find(cov::ExceptionHandler::ExceptionUnknown));
 	}
 }
