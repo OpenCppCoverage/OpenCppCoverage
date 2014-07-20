@@ -53,9 +53,9 @@ namespace CppCoverage
 			THROW_LAST_ERROR("Error in GetThreadContext", GetLastError());
 
 		#ifdef _WIN64
-			lcContext.Rip--; // Move back one byte
+			--lcContext.Rip; // Move back one byte
 		#else
-			lcContext.Eip--; // Move back one byte
+			--lcContext.Eip; // Move back one byte
 		#endif
 		if (!SetThreadContext(hThread, &lcContext))
 			THROW_LAST_ERROR("Error in SetThreadContext", GetLastError());
