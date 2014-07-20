@@ -16,15 +16,18 @@
 
 #include "stdafx.h"
 
+
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/Options.hpp"
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 
-#include "tools/Tool.hpp"
+#include "Tools/Tool.hpp"
+#include "Tools/TemporaryPath.hpp"
 
 namespace po = boost::program_options;
 namespace cov = CppCoverage;
+namespace fs = boost::filesystem;
 
 namespace CppCoverageTest
 {
@@ -48,7 +51,7 @@ namespace CppCoverageTest
 
 			if (appendProgramToRun)
 				argv.push_back(programToRun.c_str());
-			return parser.Parse(static_cast<int>(argv.size()), &argv[0]);
+			return parser.Parse(static_cast<int>(argv.size()), &argv[0], nullptr);
 		}	
 
 		//-------------------------------------------------------------------------
@@ -65,17 +68,31 @@ namespace CppCoverageTest
 
 			ASSERT_EQ(Tools::ToWString(value), option);
 		}
-	}
+		
+		//-------------------------------------------------------------------------	
+		boost::optional<cov::Options> MutipleSourceParse(
+			const std::vector<std::pair<std::string, std::wstring>>& configArguments,
+			const std::vector<std::pair<std::string, std::wstring>>& commandLineArguments)
+		{
+			cov::OptionsParser parser;
+			Tools::TemporaryPath path;
+			std::wofstream ofs(path.GetPath().string().c_str());
 
-	//-------------------------------------------------------------------------
-	TEST(OptionsParserTest, Print)
-	{
-		cov::OptionsParser parser;
-		std::wostringstream ostr;
+			for (const auto& argument : configArguments)
+				ofs << Tools::ToWString(argument.first) << L"=" << argument.second << std::endl;
 
-		ASSERT_NO_THROW(ostr << parser);
+			std::vector<std::string> arguments {"--config_file", path.GetPath().string() };
+
+			for (const auto& argumentValue : commandLineArguments)
+			{
+				arguments.push_back(optionPrefix + argumentValue.first);
+				arguments.push_back(Tools::ToString(argumentValue.second));
+			}
+
+			return Parse(parser, arguments);
+		}
 	}
-	
+		
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, Default)
 	{
@@ -92,9 +109,9 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 
 		ASSERT_FALSE(Parse(parser, 
-		{ optionShortPrefix + cov::OptionsParser::HelpShortOption }));
+		{ optionShortPrefix + cov::ProgramOptions::HelpShortOption }, false));
 		ASSERT_FALSE(Parse(parser, 
-		{ optionPrefix + cov::OptionsParser::HelpOption }));
+		{ optionPrefix + cov::ProgramOptions::HelpOption }, false));
 	}
 
 	//-------------------------------------------------------------------------
@@ -103,15 +120,15 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 
 		ASSERT_TRUE(Parse(parser, 
-		{ optionShortPrefix + cov::OptionsParser::VerboseShortOption })->IsVerboseModeSelected());
+		{ optionShortPrefix + cov::ProgramOptions::VerboseShortOption })->IsVerboseModeSelected());
 		ASSERT_TRUE(Parse(parser, 
-			{ optionPrefix + cov::OptionsParser::VerboseOption })->IsVerboseModeSelected());
+			{ optionPrefix + cov::ProgramOptions::VerboseOption })->IsVerboseModeSelected());
 	}
 	
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, SelectedModulePatterns)
 	{
-		CheckPatternOption(cov::OptionsParser::SelectedModulesOption, "module",
+		CheckPatternOption(cov::ProgramOptions::SelectedModulesOption, "module",
 			[](const cov::Options& options) { return options.GetModulePatterns().GetSelectedPatterns().front(); }
 		);
 	}
@@ -119,7 +136,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, ExcludedModulePatterns)
 	{
-		CheckPatternOption(cov::OptionsParser::ExcludedModulesOption, "module",
+		CheckPatternOption(cov::ProgramOptions::ExcludedModulesOption, "module",
 			[](const cov::Options& options) { return options.GetModulePatterns().GetExcludedPatterns().front(); }
 		);
 	}
@@ -127,7 +144,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, SelectedSourcePatterns)
 	{
-		CheckPatternOption(cov::OptionsParser::SelectedSourcesOption, "source",
+		CheckPatternOption(cov::ProgramOptions::SelectedSourcesOption, "source",
 			[](const cov::Options& options) { return options.GetSourcePatterns().GetSelectedPatterns().front(); }
 		);
 	}
@@ -135,7 +152,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, ExcludedSourcePatterns)
 	{
-		CheckPatternOption(cov::OptionsParser::ExcludedSourcesOption, "source",
+		CheckPatternOption(cov::ProgramOptions::ExcludedSourcesOption, "source",
 			[](const cov::Options& options) { return options.GetSourcePatterns().GetExcludedPatterns().front(); }
 		);
 	}
@@ -147,7 +164,7 @@ namespace CppCoverageTest
 		const std::string folder = ".";
 
 		auto options = Parse(parser, 
-		{ optionPrefix + cov::OptionsParser::WorkingDirectoryOption, folder });
+		{ optionPrefix + cov::ProgramOptions::WorkingDirectoryOption, folder });
 		ASSERT_TRUE(options);
 
 		const auto* workingDirectory = options->GetStartInfo().GetWorkingDirectory();
@@ -163,7 +180,7 @@ namespace CppCoverageTest
 		const std::string folder = "Output";
 
 		auto options = Parse(parser,
-			{ optionPrefix + cov::OptionsParser::OutputDirectoryOption, folder });
+			{ optionPrefix + cov::ProgramOptions::OutputDirectoryOption, folder });
 		ASSERT_TRUE(options);
 
 		auto outputDirectoryOption = options->GetOutputDirectoryOption();
@@ -194,6 +211,61 @@ namespace CppCoverageTest
 	{
 		cov::OptionsParser parser;
 
-		ASSERT_THROW(Parse(parser, { "--unknownOption" }), po::unknown_option);
+		ASSERT_FALSE(Parse(parser, { "--unknownOption" }));
+	}
+	
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, ConfigurationFileMultipleValue)
+	{
+		const std::wstring source1 = L"s1";
+		const std::wstring source2 = L"s2";
+
+		auto options = MutipleSourceParse(
+		{ { cov::ProgramOptions::SelectedSourcesOption, source1 }, { cov::ProgramOptions::SelectedSourcesOption, source2 } }, 
+		{});
+		ASSERT_TRUE(options);
+		const auto& sourcePatterns = options->GetSourcePatterns().GetSelectedPatterns();
+		ASSERT_EQ(2, sourcePatterns.size());
+		ASSERT_EQ(source1, sourcePatterns[0]);
+		ASSERT_EQ(source2, sourcePatterns[1]);
+	}
+	
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, ConfigurationFileCmdLineOverride)
+	{
+		const std::wstring source1 = L"s1";
+		const std::wstring source2 = L"s2";
+
+		auto options = MutipleSourceParse(
+			{ { cov::ProgramOptions::OutputDirectoryOption, source1 } }, 
+			{ { cov::ProgramOptions::OutputDirectoryOption, source2 } });
+		ASSERT_TRUE(options);
+		auto outputDirectory = options->GetOutputDirectoryOption();
+		ASSERT_TRUE(outputDirectory);
+		ASSERT_EQ(source2, outputDirectory->wstring());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, ConfigurationFileMerge)
+	{
+		const std::wstring source1 = L"s1";
+		const std::wstring source2 = L"s2";
+
+		auto options = MutipleSourceParse(
+			{ {cov::ProgramOptions::SelectedSourcesOption, source1 } }, 
+			{ { cov::ProgramOptions::SelectedSourcesOption, source2 } });
+		ASSERT_TRUE(options);
+		const auto& sourcePatterns = options->GetSourcePatterns().GetSelectedPatterns();
+		ASSERT_EQ(2, sourcePatterns.size());
+		ASSERT_EQ(source2, sourcePatterns[0]);
+		ASSERT_EQ(source1, sourcePatterns[1]);		
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, ConfigurationFileInvalidOption)
+	{
+		auto options = MutipleSourceParse({ { cov::ProgramOptions::ConfigFileOption, L"." } }, {});
+
+		ASSERT_FALSE(options);
 	}
 }

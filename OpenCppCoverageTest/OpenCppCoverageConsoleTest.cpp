@@ -49,8 +49,8 @@ namespace OpenCppCoverageTest
 			Tools::TemporaryPath tempFolder;
 
 			std::vector<std::pair<std::string, std::string>> coverageArguments{
-				{ cov::OptionsParser::SelectedModulesOption, programToRun.string() },
-				{ cov::OptionsParser::SelectedSourcesOption, SOLUTION_DIR } };
+				{ cov::ProgramOptions::SelectedModulesOption, programToRun.string() },
+				{ cov::ProgramOptions::SelectedSourcesOption, SOLUTION_DIR } };
 
 			int exitCode = RunCoverageOn(coverageArguments, tempFolder, programToRun, arguments);
 			

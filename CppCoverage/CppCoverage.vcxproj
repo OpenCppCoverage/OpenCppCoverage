@@ -177,6 +177,7 @@
     <ClInclude Include="OptionsParser.hpp" />
     <ClInclude Include="Patterns.hpp" />
     <ClInclude Include="Process.hpp" />
+    <ClInclude Include="ProgramOptions.hpp" />
     <ClInclude Include="StartInfo.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Wildcards.hpp" />
@@ -203,6 +204,7 @@
     <ClCompile Include="OptionsParser.cpp" />
     <ClCompile Include="Patterns.cpp" />
     <ClCompile Include="Process.cpp" />
+    <ClCompile Include="ProgramOptions.cpp" />
     <ClCompile Include="StartInfo.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

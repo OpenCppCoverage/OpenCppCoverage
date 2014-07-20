@@ -64,7 +64,7 @@ namespace OpenCppCoverageTest
 				bool useSourceInSolutionDir = true)
 			{
 				if (useSourceInSolutionDir)
-					coverageArguments.push_back({ cov::OptionsParser::SelectedSourcesOption, SOLUTION_DIR });
+					coverageArguments.push_back({ cov::ProgramOptions::SelectedSourcesOption, SOLUTION_DIR });
 				int exitCode = RunCoverageOn(coverageArguments, GetTempPath(), testCoverageConsole, {});
 
 				ASSERT_EQ(0, exitCode);
@@ -98,7 +98,7 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CommandLineOptionsTest, SelectedModulesOption)
 	{		
-		RunCoverageOnProgram({ { cov::OptionsParser::SelectedModulesOption, testCoverageConsole.string() } });
+		RunCoverageOnProgram({ { cov::ProgramOptions::SelectedModulesOption, testCoverageConsole.string() } });
 		CheckFilenameExistsInOutput(testCoverageConsole, true);
 		CheckFilenameExistsInOutput(testCoverageSharedLib, false);
 	}
@@ -106,7 +106,7 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CommandLineOptionsTest, ExcludedModulesOption)
 	{
-		RunCoverageOnProgram({ { cov::OptionsParser::ExcludedModulesOption, testCoverageConsole.string() } });
+		RunCoverageOnProgram({ { cov::ProgramOptions::ExcludedModulesOption, testCoverageConsole.string() } });
 		CheckFilenameExistsInOutput(testCoverageConsole, false);
 		CheckFilenameExistsInOutput(testCoverageSharedLib, true);
 	}
@@ -114,7 +114,7 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CommandLineOptionsTest, SelectedSourcesOption)
 	{
-		RunCoverageOnProgram({ { cov::OptionsParser::SelectedSourcesOption, testCoverageConsoleMain.string() } }, false);
+		RunCoverageOnProgram({ { cov::ProgramOptions::SelectedSourcesOption, testCoverageConsoleMain.string() } }, false);
 		CheckFilenameWithExtensionExistsInOutput(testCoverageConsoleMain, true);
 		CheckFilenameWithExtensionExistsInOutput(testCoverageSharedLibMain, false);
 	}
@@ -122,7 +122,7 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CommandLineOptionsTest, ExcludedSourcesOption)
 	{
-		RunCoverageOnProgram({ { cov::OptionsParser::ExcludedSourcesOption, testCoverageConsoleMain.string() } });
+		RunCoverageOnProgram({ { cov::ProgramOptions::ExcludedSourcesOption, testCoverageConsoleMain.string() } });
 		CheckFilenameWithExtensionExistsInOutput(testCoverageConsoleMain, false);
 		CheckFilenameWithExtensionExistsInOutput(testCoverageSharedLibMain, true);
 	}

@@ -34,7 +34,7 @@ namespace OpenCppCoverageTest
 		const boost::filesystem::path& programToRun,
 		const std::vector<std::wstring>& arguments)
 	{		
-		coverageArguments.push_back({ CppCoverage::OptionsParser::OutputDirectoryOption, outputFolder.string() });		
+		coverageArguments.push_back({ CppCoverage::ProgramOptions::OutputDirectoryOption, outputFolder.string() });		
 		
 		return RunCoverageOn(coverageArguments, programToRun, arguments);
 	}
