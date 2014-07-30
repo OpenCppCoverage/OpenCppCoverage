@@ -161,6 +161,7 @@ xcopy /s /y $(ProjectDir)\Html\Template $(OutDir)Template</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CoberturaExporter.hpp" />
     <ClInclude Include="ExporterException.hpp" />
     <ClInclude Include="ExporterExport.hpp" />
     <ClInclude Include="Html\CTemplate.hpp" />
@@ -172,6 +173,7 @@ xcopy /s /y $(ProjectDir)\Html\Template $(OutDir)Template</Command>
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CoberturaExporter.cpp" />
     <ClCompile Include="ExporterException.cpp" />
     <ClCompile Include="Html\HtmlExporter.cpp" />
     <ClCompile Include="Html\HtmlFile.cpp" />

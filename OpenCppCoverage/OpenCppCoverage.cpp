@@ -1,6 +1,3 @@
-// CppCoverageConsole.cpp : Defines the entry point for the console application.
-//
-
 // OpenCppCoverage is an open source code coverage for C++.
 // Copyright (C) 2014 OpenCppCoverage
 //
@@ -20,39 +17,35 @@
 #include "stdafx.h"
 #include "OpenCppCoverage.hpp"
 
-#include <ctime>
-#include <iomanip>
-#include <iostream>
+namespace OpenCppCoverage
+{
+}
 
-#include <boost/log/trivial.hpp>
+#include "stdafx.h"
+#include "OpenCppCoverage.hpp"
+
+#include <iomanip>
 
 #include "CppCoverage/CodeCoverageRunner.hpp"
 #include "CppCoverage/CoverageSettings.hpp"
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/StartInfo.hpp"
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/Options.hpp"
+#include "CppCoverage/ProgramOptions.hpp"
 
 #include "Exporter/Html/HtmlExporter.hpp"
+#include "Exporter/CoberturaExporter.hpp"
 
 #include "Tools/Tool.hpp"
 #include "Tools/Log.hpp"
-
-#include "OpenCppCoverageException.hpp"
 
 namespace cov = CppCoverage;
 namespace logging = boost::log;
 
 namespace OpenCppCoverage
 {
-	//-------------------------------------------------------------------------
-	boost::filesystem::path GetOutputBinaryPath()
-	{
-		return TARGET_PATH;
-	}
-
+	
 	namespace
-	{		
+	{
 		//-----------------------------------------------------------------------------
 		fs::path GetOutputPath(const cov::Options& options)
 		{
@@ -71,6 +64,31 @@ namespace OpenCppCoverage
 		}
 
 		//-----------------------------------------------------------------------------
+		void Export(
+			const cov::Options& options, 
+			const cov::CoverageData& coverage)
+		{
+			const auto& exportTypes = options.GetExportTypes();
+			std::set<cov::OptionsExportType> exportTypesSet{ exportTypes.begin(), exportTypes.end()};
+
+			if (exportTypesSet.find(cov::OptionsExportType::Html) != exportTypesSet.end())
+			{
+				fs::path templateFolder = Tools::GetTemplateFolder();
+				Exporter::HtmlExporter htmlExporter{ templateFolder };
+
+				boost::filesystem::path output = GetOutputPath(options);
+				htmlExporter.Export(coverage, output);
+			}
+
+			if (exportTypesSet.find(cov::OptionsExportType::Cobertura) != exportTypesSet.end())
+			{
+				Exporter::CoberturaExporter coberturaExporter;
+
+				coberturaExporter.Export(coverage, "coverage.xml");
+			}
+		}
+
+		//-----------------------------------------------------------------------------
 		int Run(const cov::Options& options)
 		{
 			auto logLevel = (options.IsVerboseModeSelected()) ? logging::trivial::debug : logging::trivial::info;
@@ -86,14 +104,8 @@ namespace OpenCppCoverage
 			LOG_INFO << L"Start Program:" << ostr.str();
 
 			cov::CoverageData coverage = codeCoverageRunner.RunCoverage(startInfo, settings);
-			fs::path templateFolder = Tools::GetTemplateFolder();
-			Exporter::HtmlExporter htmlExporter{ templateFolder };
+			Export(options, coverage);
 
-			auto now = std::time(nullptr);
-			auto localNow = std::localtime(&now);
-
-			boost::filesystem::path output = GetOutputPath(options);
-			htmlExporter.Export(coverage, output);
 			auto exitCode = coverage.GetExitCode();
 
 			if (exitCode)
@@ -101,34 +113,18 @@ namespace OpenCppCoverage
 			return exitCode;
 		}
 	}
-}
 
-
-//-----------------------------------------------------------------------------
-int main(int argc, const char* argv[])
-{	
-	Tools::CreateMiniDumpOnUnHandledException();
-
-	cov::OptionsParser optionsParser;
-
-	try
+	//-----------------------------------------------------------------------------
+	int OpenCppCoverage::Run(int argc,
+		const char** argv,
+		std::wostream* emptyOptionsExplanation) const
 	{
-		auto options = optionsParser.Parse(argc, argv);
+		cov::OptionsParser optionsParser;
+
+		auto options = optionsParser.Parse(argc, argv, emptyOptionsExplanation);
 
 		if (options)
-			return OpenCppCoverage::Run(*options);			
-		
-		std::wcerr << optionsParser << std::endl;
+			return ::OpenCppCoverage::Run(*options);
+		return 1;
 	}
-	catch (const boost::program_options::unknown_option& unknownOption)
-	{
-		std::wcerr << unknownOption.what() << std::endl;
-		std::wcerr << optionsParser << std::endl;
-	}
-	catch (const std::exception& e)
-	{
-		std::cerr << "Error: " << e.what() << std::endl;
-	}
-
-	return 1;
 }

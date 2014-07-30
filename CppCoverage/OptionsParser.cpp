@@ -26,6 +26,7 @@
 
 #include "Options.hpp"
 #include "CppCoverageException.hpp"
+#include "ProgramOptions.hpp"
 
 namespace po = boost::program_options;
 namespace cov = CppCoverage;
@@ -100,7 +101,7 @@ namespace CppCoverage
 			const auto* programToRun = GetOptionalValue<std::string>(variables, ProgramOptions::ProgramToRunOption);
 
 			if (!programToRun)
-				throw OptionsParserException(std::string("No program specified."));
+				throw OptionsParserException("No program specified.");
 
 			cov::StartInfo startInfo{ *programToRun };
 
@@ -139,9 +140,28 @@ namespace CppCoverage
 				throw OptionsParserException("Cannot open config file: " + path);
 
 			programOptions.FillVariableMap(ifs, variables);
-		}
+		}		
 	}
-					
+		
+	//-------------------------------------------------------------------------
+	OptionsParser::OptionsParser()
+	{
+		exportTypes_.emplace(ProgramOptions::ExportTypeHtmlValue, OptionsExportType::Html);
+		exportTypes_.emplace(ProgramOptions::ExportTypeCoberturaValue, OptionsExportType::Cobertura);
+
+		std::vector<std::string> optionsExportTypes;
+
+		for (const auto& pair : exportTypes_)
+			optionsExportTypes.push_back(pair.first);
+
+		programOptions_.reset(new ProgramOptions(optionsExportTypes));
+	}
+
+	//-------------------------------------------------------------------------
+	OptionsParser::~OptionsParser()
+	{
+	}
+
 	//-------------------------------------------------------------------------
 	boost::optional<Options> OptionsParser::Parse(
 			int argc, 
@@ -153,7 +173,7 @@ namespace CppCoverage
 			auto options = Parse(argc, argv);
 
 			if (!options && emptyOptionsExplanation)
-				*emptyOptionsExplanation << programOptions_;
+				*emptyOptionsExplanation << *programOptions_;
 
 			return options;
 		}
@@ -177,20 +197,20 @@ namespace CppCoverage
 		if (emptyOptionsExplanation)
 		{
 			*emptyOptionsExplanation << message << std::endl;
-			*emptyOptionsExplanation << programOptions_ << std::endl;
+			*emptyOptionsExplanation << *programOptions_ << std::endl;
 		}
 	}
-	
+		
 	//-------------------------------------------------------------------------
 	boost::optional<Options> OptionsParser::Parse(int argc, const char** argv) const
 	{
 		po::variables_map variables;
 
-		programOptions_.FillVariableMap(argc, argv, variables);
+		programOptions_->FillVariableMap(argc, argv, variables);
 		const auto* configFile = GetOptionalValue<std::string>(variables, ProgramOptions::ConfigFileOption);
 
 		if (configFile)
-			ParseConfigFile(programOptions_, variables, *configFile);
+			ParseConfigFile(*programOptions_, variables, *configFile);
 
 		if (IsOptionSelected(variables, ProgramOptions::HelpOption))
 			return boost::none;
@@ -204,11 +224,37 @@ namespace CppCoverage
 		if (IsOptionSelected(variables, ProgramOptions::VerboseOption))
 			options.SetVerboseModeSelected();
 
+		AddExporTypes(variables, *programOptions_, options);
 		const auto* outputDirectoryOption = GetOptionalValue<std::string>(variables, ProgramOptions::OutputDirectoryOption);
 
 		if (outputDirectoryOption)
 			options.SetOutputDirectoryOption(*outputDirectoryOption);
 
 		return options;
-	}	
+	}
+
+	//----------------------------------------------------------------------------
+	void OptionsParser::AddExporTypes(
+		const po::variables_map& variables,
+		const ProgramOptions& programOptions,
+		Options& options) const
+	{
+		auto exportTypeStrCollection = GetValue<std::vector<std::string>>(variables, ProgramOptions::ExportTypeOption);
+
+		for (const auto& exportTypeStr : exportTypeStrCollection)
+		{
+			auto exportType = GetExportType(exportTypeStr);
+
+			options.AddExportType(exportType);
+		}
+	}
+	//-------------------------------------------------------------------------
+	OptionsExportType OptionsParser::GetExportType(const std::string& exportType) const
+	{
+		auto it = exportTypes_.find(exportType);
+
+		if (it == exportTypes_.end())
+			throw OptionsParserException(exportType + " is not a valid export type.");
+		return it->second;
+	}
 }

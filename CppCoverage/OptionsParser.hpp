@@ -18,18 +18,30 @@
 
 #include <boost/optional.hpp>
 #include <iosfwd>
+#include <map>
+#include <memory>
 
 #include "CppCoverageExport.hpp"
-#include "ProgramOptions.hpp"
+
+namespace boost
+{
+	namespace program_options
+	{
+		class variables_map;
+	}
+}
 
 namespace CppCoverage
 {
 	class Options;
+	class ProgramOptions;
+	enum class OptionsExportType;
 
 	class CPPCOVERAGE_DLL OptionsParser
 	{
 	public:
-		OptionsParser() = default;
+		OptionsParser();
+		~OptionsParser();
 
 		boost::optional<Options> Parse(int argc, const char** argv, std::wostream* emptyOptionsExplanation) const;
 				
@@ -40,7 +52,15 @@ namespace CppCoverage
 		boost::optional<Options> Parse(int argc, const char** argv) const;
 		void ShowExplanation(std::wostream* emptyOptionsExplanation, const char* message) const;
 		
-		ProgramOptions programOptions_;		
+		void AddExporTypes(
+			const boost::program_options::variables_map& variables,
+			const ProgramOptions& programOptions,
+			Options& options) const;
+
+		OptionsExportType GetExportType(const std::string&) const;
+
+		std::map<std::string, OptionsExportType> exportTypes_;
+		std::unique_ptr<ProgramOptions> programOptions_;		
 	};
 }
 

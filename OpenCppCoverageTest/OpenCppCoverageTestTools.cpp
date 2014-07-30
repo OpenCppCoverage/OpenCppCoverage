@@ -22,8 +22,9 @@
 
 #include "Tools/Tool.hpp"
 #include "CppCoverage/OptionsParser.hpp"
+#include "CppCoverage/ProgramOptions.hpp"
 
-#include "OpenCppCoverage/OpenCppCoverage.hpp"
+#include "OpenCppCoverage/main.hpp"
 
 namespace OpenCppCoverageTest
 {

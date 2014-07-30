@@ -21,6 +21,8 @@
 
 #include "Tools/Tool.hpp"
 
+#include "CppCoverageException.hpp"
+
 namespace po = boost::program_options;
 
 namespace CppCoverage
@@ -28,8 +30,23 @@ namespace CppCoverage
 	namespace
 	{
 		using T_Strings = std::vector<std::string>;
-
+		
 		//-------------------------------------------------------------------------
+		std::string GetExportTypesAsString(const std::vector<std::string>& optionsExportTypes)
+		{
+			std::string possibleExportType;
+
+			for (const auto& exportType : optionsExportTypes)
+			{
+				if (!possibleExportType.empty())
+					possibleExportType += ", ";
+				possibleExportType += exportType;				
+			}
+
+			return possibleExportType;
+		}
+
+		//---------------------------------------------------------------------
 		void FillGenericOptions(po::options_description& options)
 		{			
 			options.add_options()
@@ -38,24 +55,40 @@ namespace CppCoverage
 				(ProgramOptions::ConfigFileOption.c_str(), po::value<std::string>(), "Filename of a configuration file.");
 		}
 
-		//-------------------------------------------------------------------------
-		void FillConfigurationOptions(po::options_description& options)
+		//---------------------------------------------------------------------
+		std::string GetExportTypeText(const std::vector<std::string>& exportTypes)
+		{
+			std::string exportTypeText{ "The export type. Possible values are: " };
+
+			exportTypeText += GetExportTypesAsString(exportTypes);
+			exportTypeText += ". Can have multiple occurrences.";
+
+			return exportTypeText;
+		}
+
+		//---------------------------------------------------------------------
+		void FillConfigurationOptions(
+			po::options_description& options, 
+			const std::vector<std::string>& exportTypes)
 		{
 			const std::string all = "*";
 			
 			options.add_options()
 				(ProgramOptions::SelectedModulesOption.c_str(),
-				po::value<T_Strings>()->default_value(T_Strings{ { all } }, all)->composing(),
-				"The pattern that module's paths should match. Can have multiple occurrence.")
+				po::value<T_Strings>()->default_value({ all }, all)->composing(),
+				"The pattern that module's paths should match. Can have multiple occurrences.")
 				(ProgramOptions::ExcludedModulesOption.c_str(),
 				po::value<T_Strings>()->composing(),
-				"The pattern that module's paths should NOT match. Can have multiple occurrence.")
+				"The pattern that module's paths should NOT match. Can have multiple occurrences.")
 				(ProgramOptions::SelectedSourcesOption.c_str(),
-				po::value<T_Strings>()->default_value(T_Strings{ { all } }, all)->composing(),
-				"The pattern that source's paths should match. Can have multiple occurrence.")
+				po::value<T_Strings>()->default_value({ all }, all)->composing(),
+				"The pattern that source's paths should match. Can have multiple occurrences.")
 				(ProgramOptions::ExcludedSourcesOption.c_str(),
 				po::value<T_Strings>()->composing(),
-				"The pattern that source's paths should NOT match. Can have multiple occurrence.")
+				"The pattern that source's paths should NOT match. Can have multiple occurrences.")
+				(ProgramOptions::ExportTypeOption.c_str(),
+				po::value<T_Strings>()->default_value({ ProgramOptions::ExportTypeHtmlValue }, ProgramOptions::ExportTypeHtmlValue),
+				GetExportTypeText(exportTypes).c_str())
 				(ProgramOptions::WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")
 				(ProgramOptions::OutputDirectoryOption.c_str(), po::value<std::string>(), "The coverage report directory.");
 		}
@@ -83,16 +116,19 @@ namespace CppCoverage
 	const std::string ProgramOptions::OutputDirectoryOption = "output";
 	const std::string ProgramOptions::ProgramToRunOption = "programToRun";
 	const std::string ProgramOptions::ProgramToRunArgOption = "programToRunArg";
-	
+	const std::string ProgramOptions::ExportTypeOption = "export_type";
+	const std::string ProgramOptions::ExportTypeHtmlValue = "html";
+	const std::string ProgramOptions::ExportTypeCoberturaValue = "cobertura";
+
 	//-------------------------------------------------------------------------
-	ProgramOptions::ProgramOptions()
+	ProgramOptions::ProgramOptions(const std::vector<std::string>& exportTypes)
 		: visibleOptions_{ "Usage: [options] -- program_to_run optional_arguments" }
 		, configurationOptions_{"Command line and configuration file"}
 		, hiddenOptions_{"Hidden"}
 		, genericOptions_{"Command line only"}
-	{		
+	{				
 		FillGenericOptions(genericOptions_);
-		FillConfigurationOptions(configurationOptions_);
+		FillConfigurationOptions(configurationOptions_, exportTypes);
 		FillHiddenOptions(hiddenOptions_);
 
 		positionalOptions_.add(ProgramToRunOption.c_str(), 1);
@@ -124,7 +160,7 @@ namespace CppCoverage
 		po::store(po::parse_config_file(istr, configFileOptions_), variables);
 		po::notify(variables);
 	}
-
+	
 	//-------------------------------------------------------------------------
 	std::wostream& operator<<(
 		std::wostream& ostr,

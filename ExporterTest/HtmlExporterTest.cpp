@@ -73,7 +73,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST_F(HtmlExporterTest, Export)
 	{	
-		fs::path testFolder = fs::canonical("../ExporterTest/Data");	
+		fs::path testFolder = fs::path(PROJECT_DIR) / "Data";
 		cov::CoverageData data{ L"Test", 0};
 		std::wstring filename1{ L"TestFile1.cpp"};
 		std::wstring filename2{ L"TestFile2.cpp"};

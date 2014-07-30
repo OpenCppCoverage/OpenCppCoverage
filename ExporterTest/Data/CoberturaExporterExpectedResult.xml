@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<coverage>
+  <packages>
+    <package name="Module">
+      <classes>
+        <class name="EmptyFile" filename="EmptyFile">
+          <lines/>
+        </class>
+        <class name="File" filename="File">
+          <lines>
+            <line number="0" hits="1"/>
+            <line number="1" hits="0"/>
+            <line number="2" hits="1"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+  <sources>
+    <source/>
+  </sources>
+</coverage>

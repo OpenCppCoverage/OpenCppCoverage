@@ -77,4 +77,14 @@ namespace CppCoverage
 		return coverageRate_;
 	}
 
+	//-------------------------------------------------------------------------
+	std::vector<LineCoverage> FileCoverage::GetLines() const
+	{
+		std::vector<LineCoverage> lines;
+		
+		for (const auto& pair : lines_)
+			lines.push_back(pair.second);
+		
+		return lines;
+	}
 }

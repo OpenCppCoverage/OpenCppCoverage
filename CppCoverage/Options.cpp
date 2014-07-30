@@ -77,6 +77,18 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	void Options::AddExportType(OptionsExportType type)
+	{
+		exportTypes_.push_back(type);
+	}
+	
+	//-------------------------------------------------------------------------
+	const std::vector<OptionsExportType>& Options::GetExportTypes() const
+	{
+		return exportTypes_;
+	}
+
+	//-------------------------------------------------------------------------
 	std::wostream& operator<<(std::wostream& ostr, const Options& options)
 	{
 		ostr << options.startInfo_ << std::endl;

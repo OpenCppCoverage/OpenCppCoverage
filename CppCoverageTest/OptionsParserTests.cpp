@@ -19,6 +19,7 @@
 
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/Options.hpp"
+#include "CppCoverage/ProgramOptions.hpp"
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 
@@ -90,6 +91,32 @@ namespace CppCoverageTest
 			}
 
 			return Parse(parser, arguments);
+		}
+
+		//-------------------------------------------------------------------------
+		void TestExportTypes(
+			const std::vector<std::string>& exportTypesStr,
+			const std::vector<cov::OptionsExportType>& expectedValue)
+		{
+			cov::OptionsParser parser;
+			std::vector<std::string> arguments;
+
+			for (const auto& exportTypeStr : exportTypesStr)
+			{
+				arguments.push_back(optionPrefix + cov::ProgramOptions::ExportTypeOption);
+				arguments.push_back(exportTypeStr);
+			}
+
+			auto options = Parse(parser, arguments);
+
+			ASSERT_TRUE(options);
+
+			const auto& exportTypes = options->GetExportTypes();
+
+			ASSERT_EQ(expectedValue.size(), exportTypes.size());
+
+			for (size_t i = 0; i < expectedValue.size(); ++i)
+				ASSERT_EQ(expectedValue[i], exportTypes[i]);
 		}
 	}
 		
@@ -267,5 +294,50 @@ namespace CppCoverageTest
 		auto options = MutipleSourceParse({ { cov::ProgramOptions::ConfigFileOption, L"." } }, {});
 
 		ASSERT_FALSE(options);
+	}
+	
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, ExportTypesDefault)
+	{
+		TestExportTypes({}, { cov::OptionsExportType::Html });
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, ExportTypesHtml)
+	{
+		TestExportTypes({ cov::ProgramOptions::ExportTypeHtmlValue }, { cov::OptionsExportType::Html });
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, ExportTypesCoberturaValue)
+	{
+		TestExportTypes({ cov::ProgramOptions::ExportTypeCoberturaValue }, { cov::OptionsExportType::Cobertura });
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, ExportTypesBoth)
+	{
+		TestExportTypes(
+			{ cov::ProgramOptions::ExportTypeHtmlValue, cov::ProgramOptions::ExportTypeCoberturaValue }, 
+			{ cov::OptionsExportType::Html, cov::OptionsExportType::Cobertura });		
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, InvalidExportTypes)
+	{
+		cov::OptionsParser parser;
+
+		auto options = Parse(parser, { optionPrefix + cov::ProgramOptions::ExportTypeOption, "Invalid" });
+		ASSERT_FALSE(options);
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, OptionOstream)
+	{
+		auto options = MutipleSourceParse({ { cov::ProgramOptions::ConfigFileOption, L"." } }, {});
+		std::wostringstream ostr;
+
+		ostr << options;
+		ASSERT_LT(0, ostr.str().size());
 	}
 }

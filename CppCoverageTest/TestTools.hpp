@@ -31,7 +31,7 @@ namespace boost
 
 namespace CppCoverageTest
 {
-	class TestTools // rename
+	class TestTools
 	{	
 	public:
 		typedef std::function<void(HANDLE hProcess, HANDLE hFile)> T_HandlesFct;

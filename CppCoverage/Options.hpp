@@ -26,7 +26,9 @@
 namespace CppCoverage
 {
 	class Patterns;
-	
+
+	enum class OptionsExportType;
+
 	class CPPCOVERAGE_DLL Options
 	{
 	public:
@@ -43,7 +45,10 @@ namespace CppCoverage
 
 		void SetVerboseModeSelected();
 		bool IsVerboseModeSelected() const;
-			
+
+		void AddExportType(OptionsExportType);
+		const std::vector<OptionsExportType>& GetExportTypes() const;
+
 		void SetOutputDirectoryOption(const boost::filesystem::path&);
 		const boost::optional<boost::filesystem::path>& 
 			GetOutputDirectoryOption() const;
@@ -59,6 +64,7 @@ namespace CppCoverage
 		CppCoverage::Patterns modules_;
 		CppCoverage::Patterns sources_;
 		bool verboseModeSelected_;
+		std::vector<OptionsExportType> exportTypes_;
 		boost::optional<boost::filesystem::path> outputDirectoryOption_;
 	};
 }

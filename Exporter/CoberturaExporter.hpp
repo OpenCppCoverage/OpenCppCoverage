@@ -18,18 +18,34 @@
 
 #include <iosfwd>
 
-namespace OpenCppCoverage
+#include "ExporterExport.hpp"
+
+namespace CppCoverage
 {
-	class OpenCppCoverage
+	class CoverageData;
+}
+
+namespace boost
+{	
+	namespace filesystem
+	{
+		class path;
+	}
+}
+
+namespace Exporter
+{
+	class EXPORTER_DLL CoberturaExporter
 	{
 	public:
-		OpenCppCoverage() = default;
+		CoberturaExporter() = default;
 
-		int Run(int argc, const char** argv, std::wostream* emptyOptionsExplanation) const;
+		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& output) const;
+		void Export(const CppCoverage::CoverageData&, std::wostream&) const;
 
 	private:
-		OpenCppCoverage(const OpenCppCoverage&) = delete;
-		OpenCppCoverage& operator=(const OpenCppCoverage&) = delete;
+		CoberturaExporter(const CoberturaExporter&) = delete;
+		CoberturaExporter& operator=(const CoberturaExporter&) = delete;
 	};
 }
 
