@@ -93,8 +93,7 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>if not exist $(OutDir)Template mkdir $(OutDir)Template
-xcopy /s /y $(ProjectDir)Html\Template $(OutDir)Template</Command>
+      <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -112,8 +111,7 @@ xcopy /s /y $(ProjectDir)Html\Template $(OutDir)Template</Command>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>if not exist $(OutDir)Template mkdir $(OutDir)Template
-xcopy /s /y $(ProjectDir)Html\Template $(OutDir)Template</Command>
+      <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -134,8 +132,7 @@ xcopy /s /y $(ProjectDir)Html\Template $(OutDir)Template</Command>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if not exist $(OutDir)Template mkdir $(OutDir)Template
-xcopy /s /y $(ProjectDir)\Html\Template $(OutDir)Template</Command>
+      <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -156,8 +153,7 @@ xcopy /s /y $(ProjectDir)\Html\Template $(OutDir)Template</Command>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if not exist $(OutDir)Template mkdir $(OutDir)Template
-xcopy /s /y $(ProjectDir)\Html\Template $(OutDir)Template</Command>
+      <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
