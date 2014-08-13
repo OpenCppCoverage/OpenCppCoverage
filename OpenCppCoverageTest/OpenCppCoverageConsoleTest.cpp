@@ -21,6 +21,7 @@
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "OpenCppCoverage/OpenCppCoverage.hpp"
 #include "CppCoverage/OptionsParser.hpp"
+#include "CppCoverage/ProgramOptions.hpp"
 
 #include "Tools/ScopedAction.hpp"
 #include "Tools/Tool.hpp"

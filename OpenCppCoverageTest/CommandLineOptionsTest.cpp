@@ -20,6 +20,7 @@
 
 #include "tools/TemporaryPath.hpp"
 #include "CppCoverage/OptionsParser.hpp"
+#include "CppCoverage/ProgramOptions.hpp"
 #include "OpenCppCoverage/OpenCppCoverage.hpp"
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
