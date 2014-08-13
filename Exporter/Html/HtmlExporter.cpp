@@ -18,7 +18,7 @@
 #include "HtmlExporter.hpp"
 
 #include <sstream>
-#include <ctemplate/template.h>
+#include "CTemplate.hpp"
 
 #include "CppCoverage/CoverageData.hpp"
 #include "CppCoverage/ModuleCoverage.hpp"

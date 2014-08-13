@@ -17,9 +17,11 @@
 #pragma once 
 
 #pragma warning(push)
-#pragma warning(disable: 4005)
+
+#pragma warning(disable: 4005) // 'va_copy' : macro redefinition
 #pragma warning(disable: 4251) // needs to have dll-interface to be used by clients of class
 #pragma warning(disable: 4273) // inconsistent dll linkage
+#pragma warning(disable: 4267) // 'initializing' : conversion from 'size_t' to 'int'
 
 #include <ctemplate/template.h>
 #include <tests/template_test_util.h>
