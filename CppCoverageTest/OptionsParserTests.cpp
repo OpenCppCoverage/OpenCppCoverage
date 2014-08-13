@@ -333,8 +333,10 @@ namespace CppCoverageTest
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, OptionOstream)
-	{
-		auto options = MutipleSourceParse({ { cov::ProgramOptions::ConfigFileOption, L"." } }, {});
+	{ 
+		cov::OptionsParser parser;
+		auto options = Parse(parser, { optionPrefix + cov::ProgramOptions::SelectedSourcesOption, "source1" });
+		
 		std::wostringstream ostr;
 
 		ostr << options;
