@@ -65,7 +65,7 @@ namespace OpenCppCoverageTest
 				bool useSourceInSolutionDir = true)
 			{
 				if (useSourceInSolutionDir)
-					coverageArguments.push_back({ cov::ProgramOptions::SelectedSourcesOption, SOLUTION_DIR });
+					coverageArguments.push_back({ cov::ProgramOptions::SelectedSourcesOption, GetSolutionFolderName()});
 				int exitCode = RunCoverageOn(coverageArguments, GetTempPath(), testCoverageConsole, {});
 
 				ASSERT_EQ(0, exitCode);

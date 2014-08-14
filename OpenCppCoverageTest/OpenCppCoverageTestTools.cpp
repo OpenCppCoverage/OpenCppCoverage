@@ -40,7 +40,7 @@ namespace OpenCppCoverageTest
 		return RunCoverageOn(coverageArguments, programToRun, arguments);
 	}
 
-	//---------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	int RunCoverageOn(
 		const std::vector<std::pair<std::string, std::string>>& coverageArguments,
 		const boost::filesystem::path& programToRun,
@@ -58,10 +58,19 @@ namespace OpenCppCoverageTest
 		for (const auto& argument : arguments)
 			allCoverageArguments.push_back(Tools::ToString(argument));
 
+		for (auto& argument : allCoverageArguments)
+			argument = "\"" + argument + "\"";
+
 		boost::filesystem::path openCppCoverage = OpenCppCoverage::GetOutputBinaryPath();
 		auto handle = Poco::Process::launch(openCppCoverage.string(), allCoverageArguments, ".", nullptr, nullptr, nullptr);
 		int exitCode = handle.wait();
 
 		return exitCode;
+	}
+
+	//-------------------------------------------------------------------------
+	std::string GetSolutionFolderName()
+	{
+		return boost::filesystem::canonical(SOLUTION_DIR).filename().string();
 	}
 }
