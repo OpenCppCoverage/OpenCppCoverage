@@ -36,7 +36,7 @@ namespace ExporterTest
 	{
 		//-------------------------------------------------------------------------
 		HtmlExporterTest()
-			: htmlExporter_{fs::canonical("../Exporter/Html/Template") }
+			: htmlExporter_{ fs::canonical(OUT_DIR) / "Template" }
 		{
 
 		}

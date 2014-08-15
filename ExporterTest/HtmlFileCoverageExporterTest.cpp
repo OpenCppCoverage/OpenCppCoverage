@@ -24,6 +24,8 @@
 #include "CppCoverage/FileCoverage.hpp"
 #include "Exporter/Html/HtmlFileCoverageExporter.hpp"
 
+#include "TestCoverageConsole/TestCoverageConsole.hpp"
+
 namespace fs = boost::filesystem;
 
 namespace ExporterTest
@@ -36,7 +38,7 @@ namespace ExporterTest
 		public:
 			HtmlFileCoverageExporterTest()
 			{
-				fs::path path = "../TestCoverageConsole/TestCoverageConsole.cpp";
+				fs::path path = TestCoverageConsole::GetMainCppPath();
 
 				CppCoverage::FileCoverage fileCoverage{ path };
 				Exporter::HtmlFileCoverageExporter exporter;
