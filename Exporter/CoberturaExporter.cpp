@@ -27,6 +27,8 @@
 #include "CppCoverage/FileCoverage.hpp"
 #include "CppCoverage/LineCoverage.hpp"
 
+#include "Tools/Tool.hpp"
+
 namespace cov = CppCoverage;
 namespace property_tree = boost::property_tree;
 namespace fs = boost::filesystem;
@@ -114,6 +116,7 @@ namespace Exporter
 		std::wofstream ofs{ output.string().c_str() };
 
 		Export(coverageData, ofs);
+		Tools::ShowOutputMessage(L"Cobertura report generated: ", output);
 	}
 
 	//-------------------------------------------------------------------------

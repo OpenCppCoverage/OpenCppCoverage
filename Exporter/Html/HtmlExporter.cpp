@@ -25,6 +25,7 @@
 #include "CppCoverage/FileCoverage.hpp"
 
 #include "Tools/Log.hpp"
+#include "Tools/Tool.hpp"
 
 #include "TemplateHtmlExporter.hpp"
 #include "HtmlFileCoverageExporter.hpp"
@@ -35,16 +36,7 @@ namespace Exporter
 {		
 
 	namespace
-	{				
-		//---------------------------------------------------------------------
-		void ShowOutputMessage(const fs::path& outputFolder)
-		{
-			auto separators = L"----------------------------------------------------";
-			LOG_INFO << separators;
-			LOG_INFO << L"Coverage generated in Folder " << outputFolder.wstring();
-			LOG_INFO << separators;
-		}
-
+	{
 		//-------------------------------------------------------------------------
 		std::wstring GetMainMessage(const CppCoverage::CoverageData& coverageData)
 		{
@@ -95,7 +87,7 @@ namespace Exporter
 		}
 
 		exporter_.GenerateProjectTemplate(*projectDictionary, outputFolder / L"index.html");
-		ShowOutputMessage(outputFolder);
+		Tools::ShowOutputMessage(L"Coverage generated in Folder ", outputFolder);
 	}	
 
 	//---------------------------------------------------------------------

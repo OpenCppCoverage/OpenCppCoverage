@@ -37,6 +37,8 @@ namespace Tools
 	TOOLS_DLL boost::filesystem::path GetUniquePath(const boost::filesystem::path& prefix);
 
 	TOOLS_DLL void CreateMiniDumpOnUnHandledException();
+
+	TOOLS_DLL void ShowOutputMessage(const std::wstring& message, const boost::filesystem::path& path);
 }
 
 

@@ -64,6 +64,17 @@ namespace OpenCppCoverage
 		}
 
 		//-----------------------------------------------------------------------------
+		fs::path GetCoverageOutput(const cov::Options& options)
+		{
+			auto path = options.GetStartInfo().GetPath();
+
+			path = path.filename().replace_extension("");
+			path += "Coverage.xml";
+			
+			return path;
+		}
+
+		//-----------------------------------------------------------------------------
 		void Export(
 			const cov::Options& options, 
 			const cov::CoverageData& coverage)
@@ -83,8 +94,8 @@ namespace OpenCppCoverage
 			if (exportTypesSet.find(cov::OptionsExportType::Cobertura) != exportTypesSet.end())
 			{
 				Exporter::CoberturaExporter coberturaExporter;
-
-				coberturaExporter.Export(coverage, "coverage.xml");
+				auto coverageOutput = GetCoverageOutput(options);
+				coberturaExporter.Export(coverage, coverageOutput);
 			}
 		}
 

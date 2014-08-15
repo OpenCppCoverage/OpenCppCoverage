@@ -170,4 +170,15 @@ namespace Tools
 
 		SetUnhandledExceptionFilter(CreateMiniDumpOnUnHandledException);
 	}
+
+	//-------------------------------------------------------------------------
+	void ShowOutputMessage(
+		const std::wstring& message, 
+		const boost::filesystem::path& path)
+	{
+		auto separators = L"----------------------------------------------------";
+		LOG_INFO << separators;
+		LOG_INFO << message << path.wstring();
+		LOG_INFO << separators;
+	}
 }
