@@ -26,15 +26,6 @@ namespace cov = CppCoverage;
 namespace CppCoverageTest
 {
 	//-------------------------------------------------------------------------
-	TEST(Process, Start)
-	{
-		cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath() };
-		cov::Process process{ startInfo };
-				
-		ASSERT_NO_THROW(process.Start(0));
-	}
-
-	//-------------------------------------------------------------------------
 	TEST(Process, StartWithArgument)
 	{
 		cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath() };
@@ -42,5 +33,14 @@ namespace CppCoverageTest
 		
 		cov::Process process{ startInfo };
 		ASSERT_NO_THROW(process.Start(0));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(Process, InvalidProgram)
+	{		
+		cov::StartInfo startInfo{ __FILE__ };
+
+		cov::Process process{ startInfo };
+		ASSERT_THROW(process.Start(0), std::runtime_error);
 	}
 }

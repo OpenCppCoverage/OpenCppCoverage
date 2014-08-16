@@ -84,15 +84,13 @@ namespace CppCoverage
 
 			return ExceptionHandlerStatus::FirstChanceException;
 		}
-		else
-		{			
-			message << std::endl << std::endl;
-			message << L"-----------------------------------------------" << std::endl;
-			message << L"*** ";
-			message << UnhandledExceptionErrorMessage << exceptionRecord.ExceptionCode;
-			message << L": " << GetExceptionStrFromCode(exceptionRecord.ExceptionCode) << std::endl;
-			message << L"-----------------------------------------------" << std::endl;
-		}						
+				
+		message << std::endl << std::endl;
+		message << L"-----------------------------------------------" << std::endl;
+		message << L"*** ";
+		message << UnhandledExceptionErrorMessage << exceptionRecord.ExceptionCode;
+		message << L": " << GetExceptionStrFromCode(exceptionRecord.ExceptionCode) << std::endl;
+		message << L"-----------------------------------------------" << std::endl;
 
 		return ExceptionHandlerStatus::Fatal;
 	}

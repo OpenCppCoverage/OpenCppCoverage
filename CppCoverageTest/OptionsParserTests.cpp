@@ -42,7 +42,8 @@ namespace CppCoverageTest
 		boost::optional<cov::Options> Parse(
 			const cov::OptionsParser& parser,
 			const std::vector<std::string>& arguments,
-			bool appendProgramToRun = true)
+			bool appendProgramToRun = true,
+			std::wostream* emptyOptionsExplanation = nullptr)
 		{
 			std::vector<const char*> argv;
 
@@ -52,7 +53,7 @@ namespace CppCoverageTest
 
 			if (appendProgramToRun)
 				argv.push_back(programToRun.c_str());
-			return parser.Parse(static_cast<int>(argv.size()), &argv[0], nullptr);
+			return parser.Parse(static_cast<int>(argv.size()), &argv[0], emptyOptionsExplanation);
 		}	
 
 		//-------------------------------------------------------------------------
@@ -134,9 +135,12 @@ namespace CppCoverageTest
 	TEST(OptionsParserTest, Help)
 	{
 		cov::OptionsParser parser;
+		std::wostringstream ostr;
 
 		ASSERT_FALSE(Parse(parser, 
-		{ optionShortPrefix + cov::ProgramOptions::HelpShortOption }, false));
+		{ optionShortPrefix + cov::ProgramOptions::HelpShortOption }, false, &ostr));
+		
+		ASSERT_NE(L"", ostr.str());
 		ASSERT_FALSE(Parse(parser, 
 		{ optionPrefix + cov::ProgramOptions::HelpOption }, false));
 	}
@@ -237,8 +241,9 @@ namespace CppCoverageTest
 	TEST(OptionsParserTest, UnknownOption)
 	{
 		cov::OptionsParser parser;
-
-		ASSERT_FALSE(Parse(parser, { "--unknownOption" }));
+		std::wostringstream ostr;
+		ASSERT_FALSE(Parse(parser, { "--unknownOption" }, true, &ostr));
+		ASSERT_NE(L"", ostr.str());
 	}
 	
 	//-------------------------------------------------------------------------
@@ -339,7 +344,8 @@ namespace CppCoverageTest
 		
 		std::wostringstream ostr;
 
-		ostr << options;
-		ASSERT_LT(0, ostr.str().size());
+		ASSERT_TRUE(options);
+		ostr << *options;
+		ASSERT_LT(L"", ostr.str());
 	}
 }

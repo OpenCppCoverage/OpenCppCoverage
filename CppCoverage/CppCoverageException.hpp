@@ -17,12 +17,12 @@
 #pragma once
 
 #include "tools/ExceptionBase.hpp"
-
+#include "CppCoverageExport.hpp"
 #include <string>
 
 namespace CppCoverage
 {
-	std::wstring GetErrorMessage(int errorCode);
+	CPPCOVERAGE_DLL std::wstring GetErrorMessage(int errorCode);
 }
 
 

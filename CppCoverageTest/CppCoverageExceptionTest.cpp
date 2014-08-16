@@ -14,44 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
+#include "stdafx.h"
 
-#include <iosfwd> 
+#include "CppCoverage/CppCoverageException.hpp"
 
-#include "../ExporterExport.hpp"
+namespace cov = CppCoverage;
 
-namespace CppCoverage
+namespace CppCoverageTest
 {
-	class FileCoverage;
-}
-
-namespace boost
-{
-	namespace filesystem
+	
+	//-------------------------------------------------------------------------
+	TEST(CppCoverageException, GetErrorMessage)
 	{
-		class path;
+		ASSERT_NE(L"", cov::GetErrorMessage(1));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(CppCoverageException, GetErrorMessageInvalid)
+	{
+		ASSERT_NE(L"", cov::GetErrorMessage(-1));
 	}
 }
-
-namespace Exporter
-{
-	class EXPORTER_DLL HtmlFileCoverageExporter
-	{
-	public:
-		static const std::wstring StyleBackgroundColorExecuted;
-		static const std::wstring StyleBackgroundColorUnexecuted;
-
-	public:
-		HtmlFileCoverageExporter();
-
-		bool Export(
-			const CppCoverage::FileCoverage&,
-			std::wostream& output) const;
-		
-	private:
-		HtmlFileCoverageExporter(const HtmlFileCoverageExporter&) = delete;
-		HtmlFileCoverageExporter& operator=(const HtmlFileCoverageExporter&) = delete;
-	};
-}
-
-

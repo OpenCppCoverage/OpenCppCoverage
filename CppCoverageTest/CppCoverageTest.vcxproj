@@ -175,6 +175,7 @@
     <ClCompile Include="CodeCoverageRunnerTest.cpp" />
     <ClCompile Include="CoverageDataTest.cpp" />
     <ClCompile Include="CoverageFilterTest.cpp" />
+    <ClCompile Include="CppCoverageExceptionTest.cpp" />
     <ClCompile Include="CppCoverageTest.cpp" />
     <ClCompile Include="DebuggerTest.cpp" />
     <ClCompile Include="DebugInformationTest.cpp" />

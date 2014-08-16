@@ -158,7 +158,9 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TestBasic.hpp" />
     <ClInclude Include="TestCoverageConsole.hpp" />
+    <ClInclude Include="TestThread.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestCoverageConsole.cpp" />

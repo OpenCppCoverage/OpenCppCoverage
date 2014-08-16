@@ -82,28 +82,32 @@ namespace CppCoverage
 
 			return logicalDrives;
 		}
-	}
 
-	std::pair<std::wstring, std::wstring> GetMatchingDriveInfo(
-		const std::wstring& mappedFileNameStr,
-		const std::vector<std::wstring>& logicalDrives)
-	{		
-		wchar_t dosDevice[2 * MAX_PATH];
-
-		for (const auto& logicalDrive : logicalDrives)
+		//-------------------------------------------------------------------------
+		std::pair<std::wstring, std::wstring> GetMatchingDriveInfo(
+			const std::wstring& mappedFileNameStr,
+			const std::vector<std::wstring>& logicalDrives)
 		{
-			auto pos = logicalDrive.find('\\');
-			std::wstring drive = (pos != std::string::npos) ? logicalDrive.substr(0, pos) : logicalDrive;
+			wchar_t dosDevice[2 * MAX_PATH];
 
-			if (QueryDosDevice(drive.c_str(), dosDevice, sizeof(dosDevice)))
+			for (const auto& logicalDrive : logicalDrives)
 			{
-				if (mappedFileNameStr.find(dosDevice) == 0)
-					return std::make_pair(drive, dosDevice);
-			}
-		}
+				auto pos = logicalDrive.find('\\');
+				std::wstring drive = (pos != std::string::npos) ? logicalDrive.substr(0, pos) : logicalDrive;
 
-		THROW(L"Cannot find drive for " << mappedFileNameStr);
-	}
+				if (QueryDosDevice(drive.c_str(), dosDevice, sizeof(dosDevice)))
+				{
+					if (mappedFileNameStr.find(dosDevice) == 0)
+						return std::make_pair(drive, dosDevice);
+				}
+			}
+
+			THROW(L"Cannot find drive for " << mappedFileNameStr);
+		}
+	}	
+
+	//-------------------------------------------------------------------------
+	HandleInformation::HandleInformation() = default;
 
 	//-------------------------------------------------------------------------
 	std::wstring HandleInformation::ComputeFilename(HANDLE hfile) const

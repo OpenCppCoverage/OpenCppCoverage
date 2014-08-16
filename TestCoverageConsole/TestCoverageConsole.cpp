@@ -19,9 +19,12 @@
 
 #include <string>
 #include <iostream>
+
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
 #include "TestCoverageConsole.hpp"
+#include "TestBasic.hpp"
+#include "TestThread.hpp"
 
 namespace
 {
@@ -35,23 +38,30 @@ namespace
 		catch (...)
 		{
 		}
-	}
+	}	
 }
 
 //-----------------------------------------------------------------------------
 int _tmain(int argc, _TCHAR* argv[])
 {	
-	if (argc == 2)
+	if (argc != 2)
+		std::wcout << L"Invalid number of argument. Expect 2 instead of " << argc << std::endl;
+	else
 	{
 		std::wstring type = argv[1];
-		if (type == TestCoverageConsole::TestThrowHandledException)
+
+		if (type == TestCoverageConsole::GetTestBasicPath())
+			TestCoverageConsole::TestBasic();
+		else if (type == TestCoverageConsole::GetTestThreadPath())
+			TestCoverageConsole::RunThread();
+		else if (type == TestCoverageSharedLib::GetMainCppPath())
+			TestCoverageSharedLib::IsOdd(42);
+		else if (type == TestCoverageConsole::TestThrowHandledException)
 			ThrowHandledException();
 		else if (type == TestCoverageConsole::TestThrowUnHandledCppException)
 			throw 42;
 		else if (type == TestCoverageConsole::TestThrowUnHandledSEHException)
 			*reinterpret_cast<int*>(0) = 42;
-		else if (type == TestCoverageConsole::TestSharedLib)
-			TestCoverageSharedLib::IsOdd(42);
 		else
 			std::wcerr << L"Unsupported type:" << type << std::endl;
 	}
@@ -59,13 +69,13 @@ int _tmain(int argc, _TCHAR* argv[])
 }
 
 namespace TestCoverageConsole
-{
+{	
 	//-----------------------------------------------------------------------------
 	boost::filesystem::path GetMainCppPath()
 	{
 		return __FILE__;
 	}
-
+	
 	//-----------------------------------------------------------------------------
 	boost::filesystem::path GetOutputBinaryPath()
 	{

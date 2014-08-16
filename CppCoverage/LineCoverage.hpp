@@ -25,8 +25,7 @@ namespace CppCoverage
 	public:
 		LineCoverage(unsigned int lineNumber, bool hasBeenExecuted);
 		LineCoverage(const LineCoverage&) = default;
-		LineCoverage& operator=(const LineCoverage&) = default;
-
+		
 		unsigned int GetLineNumber() const;
 		bool HasBeenExecuted() const;
 		

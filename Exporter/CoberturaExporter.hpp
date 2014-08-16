@@ -38,7 +38,7 @@ namespace Exporter
 	class EXPORTER_DLL CoberturaExporter
 	{
 	public:
-		CoberturaExporter() = default;
+		CoberturaExporter() ;
 
 		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& output) const;
 		void Export(const CppCoverage::CoverageData&, std::wostream&) const;

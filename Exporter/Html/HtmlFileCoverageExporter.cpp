@@ -55,6 +55,9 @@ namespace Exporter
 	const std::wstring HtmlFileCoverageExporter::StyleBackgroundColorUnexecuted = StyleBackgroundColor + L"fdd" + L"\">";
 	
 	//-------------------------------------------------------------------------
+	HtmlFileCoverageExporter::HtmlFileCoverageExporter() = default;
+
+	//-------------------------------------------------------------------------
 	bool HtmlFileCoverageExporter::Export(
 		const CppCoverage::FileCoverage& fileCoverage,
 		std::wostream& output) const

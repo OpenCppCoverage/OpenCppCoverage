@@ -27,6 +27,9 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	CoverageRate& CoverageRate::operator=(const CoverageRate&) = default;
+		
+	//-------------------------------------------------------------------------
 	void CoverageRate::SetExecutedLinesCount(int executedLinesCount)
 	{
 		executedLinesCount_ = executedLinesCount;

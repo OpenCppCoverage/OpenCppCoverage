@@ -25,7 +25,7 @@ namespace CppCoverage
 	class CPPCOVERAGE_DLL HandleInformation
 	{
 	public:
-		HandleInformation() = default;
+		HandleInformation();
 		std::wstring ComputeFilename(HANDLE hfile) const;
 
 	private:

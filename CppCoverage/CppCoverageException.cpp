@@ -32,7 +32,7 @@ namespace CppCoverage
 		if (FormatMessage(
 				FORMAT_MESSAGE_FROM_SYSTEM,
 				NULL, lastErrorCode,
-				MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), // Default language
+				MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL),
 				sysMsg, sizeof(sysMsg), NULL))
 		{
 			ostr << sysMsg;

@@ -109,6 +109,9 @@ namespace Exporter
 	}
 
 	//-------------------------------------------------------------------------
+	CoberturaExporter::CoberturaExporter() = default;
+
+	//-------------------------------------------------------------------------
 	void CoberturaExporter::Export(
 		const CppCoverage::CoverageData& coverageData, 
 		const boost::filesystem::path& output) const

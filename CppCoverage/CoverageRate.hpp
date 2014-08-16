@@ -39,8 +39,8 @@ namespace CppCoverage
 		int GetTotalLinesCount() const;
 		int GetPercentRate() const;
 
-		CoverageRate& operator=(const CoverageRate&) = default;
-		CoverageRate(const CoverageRate&) = default;
+		CoverageRate& operator=(const CoverageRate&);
+		CoverageRate(const CoverageRate&) = delete;
 
 	private:
 		template <typename T>

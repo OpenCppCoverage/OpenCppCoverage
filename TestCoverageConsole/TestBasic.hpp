@@ -16,42 +16,22 @@
 
 #pragma once
 
-#include <iosfwd> 
+#include <boost/filesystem.hpp>
 
-#include "../ExporterExport.hpp"
-
-namespace CppCoverage
+namespace TestCoverageConsole
 {
-	class FileCoverage;
-}
-
-namespace boost
-{
-	namespace filesystem
+	//-------------------------------------------------------------------------
+	inline void TestBasic()
 	{
-		class path;
+		if (false)
+		{
+			int answer = 42;
+		}
+	}
+
+	//-------------------------------------------------------------------------
+	inline boost::filesystem::path GetTestBasicPath()
+	{
+		return __FILE__;
 	}
 }
-
-namespace Exporter
-{
-	class EXPORTER_DLL HtmlFileCoverageExporter
-	{
-	public:
-		static const std::wstring StyleBackgroundColorExecuted;
-		static const std::wstring StyleBackgroundColorUnexecuted;
-
-	public:
-		HtmlFileCoverageExporter();
-
-		bool Export(
-			const CppCoverage::FileCoverage&,
-			std::wostream& output) const;
-		
-	private:
-		HtmlFileCoverageExporter(const HtmlFileCoverageExporter&) = delete;
-		HtmlFileCoverageExporter& operator=(const HtmlFileCoverageExporter&) = delete;
-	};
-}
-
-

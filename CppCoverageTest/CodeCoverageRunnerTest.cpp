@@ -36,6 +36,8 @@
 #include "Tools/Tool.hpp"
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
+#include "TestCoverageConsole/TestBasic.hpp"
+#include "TestCoverageConsole/TestThread.hpp"
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
 #include "TestTools.hpp"
@@ -50,12 +52,7 @@ namespace CppCoverageTest
 	class CodeCoverageRunnerTest : public ::testing::Test
 	{
 	public:
-		CodeCoverageRunnerTest()
-			: exePath_(TestCoverageConsole::GetOutputBinaryPath())
-		{
-			startInfo_.reset(new cov::StartInfo(exePath_.wstring()));
-		}
-		
+				
 		//---------------------------------------------------------------------
 		void SetUp() override
 		{
@@ -83,6 +80,7 @@ namespace CppCoverageTest
 
 		//---------------------------------------------------------------------
 		cov::CoverageData ComputeCoverageData(
+			const std::wstring& programArg,
 			std::wstring modulePattern,
 			std::wstring sourcePattern)
 		{
@@ -98,22 +96,43 @@ namespace CppCoverageTest
 			modulePatterns.AddSelectedPatterns(modulePattern);
 			sourcePatterns.AddSelectedPatterns(sourcePattern);
 
-			return codeCoverageRunner.RunCoverage(*startInfo_, coverageSettings);
+			
+			cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath().wstring() };
+			startInfo.AddArguments(programArg);
+
+			return codeCoverageRunner.RunCoverage(startInfo, coverageSettings);
 		}
 
 		//---------------------------------------------------------------------
-		void GetFileCoverage(
-			const cov::CoverageData& coverageData,
+		cov::CoverageData RunCoverageWithException(const std::wstring& programArg)
+		{
+			return ComputeCoverageData(
+				programArg,
+				TestCoverageSharedLib::GetOutputBinaryPath().wstring(),
+				TestCoverageSharedLib::GetMainCppPath().wstring());
+		}
+
+		//---------------------------------------------------------------------
+		cov::CoverageData ComputeCoverageData(const std::wstring& fileArgument)
+		{
+			return ComputeCoverageData(
+				fileArgument,
+				TestCoverageConsole::GetOutputBinaryPath().wstring(),
+				fileArgument);
+		}
+
+
+		//---------------------------------------------------------------------
+		void GetFirstFileCoverage(
+			const cov::CoverageData& coverageData,			
 			cov::FileCoverage*& fileCoverage) // boost test does not support non void function
 		{
 			const auto& modules = coverageData.GetModules();
 			ASSERT_EQ(1, modules.size());
 
-			const auto& module = *modules[0];
-			ASSERT_EQ(exePath_, module.GetPath());
-
+			const auto& module = *modules[0];			
 			const auto& files = module.GetFiles();
-			ASSERT_EQ(1, files.size());
+			ASSERT_LT(0u, files.size());
 
 			fileCoverage = files[0].get();
 		}
@@ -122,30 +141,23 @@ namespace CppCoverageTest
 		std::wstring GetError() const
 		{
 			return Tools::ToWString(error_->str());
-		}
-
-		//---------------------------------------------------------------------
-		cov::StartInfo& GetStartInfo() const
-		{
-			return *startInfo_;
-		}
+		}		
 
 	private:
-		fs::path exePath_;
-		boost::shared_ptr<std::ostringstream> error_;
-		std::unique_ptr<cov::StartInfo> startInfo_;
+		boost::shared_ptr<std::ostringstream> error_;		
 	};
 
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, RunCoverage)
 	{		
-		cov::CoverageData coverageData = ComputeCoverageData(
-			TestCoverageConsole::GetOutputBinaryPath().wstring(),
-			TestCoverageConsole::GetMainCppPath().wstring());
-		cov::FileCoverage* file;
-		GetFileCoverage(coverageData, file);
+		const auto testBasic = TestCoverageConsole::GetTestBasicPath().wstring();
+		
+		cov::CoverageData coverageData = ComputeCoverageData(testBasic);
+		cov::FileCoverage* file = nullptr;
+		GetFirstFileCoverage(coverageData, file);
 
-		int line = 43;
+		int line = 25;
+		ASSERT_NE(nullptr, file);
 		TestLine(*file, line++, true);
 		TestLine(*file, line++, true);
 		ASSERT_TRUE((*file)[line++] == nullptr);
@@ -156,30 +168,45 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, RunCoverageDll)
 	{			
-		GetStartInfo().AddArguments(TestCoverageConsole::TestSharedLib);
-		cov::CoverageData coverageData = ComputeCoverageData(			
-			TestCoverageSharedLib::GetOutputBinaryPath().wstring(),
-			TestCoverageSharedLib::GetMainCppPath().wstring());
+		auto mainSharedLibFile = TestCoverageSharedLib::GetMainCppPath().wstring();
 
-		const auto& modules = coverageData.GetModules();
-		ASSERT_EQ(1, modules.size());		
+		cov::CoverageData coverageData = ComputeCoverageData(mainSharedLibFile, 
+			TestCoverageSharedLib::GetOutputBinaryPath().wstring(), mainSharedLibFile);
+		cov::FileCoverage* file = nullptr;
+		GetFirstFileCoverage(coverageData, file);
 
-		const auto& files = modules[0]->GetFiles();
-		ASSERT_EQ(1, files.size());
-		const auto& file = *files[0];
 		int line = 31;
-		TestLine(file, line++, true);
-		TestLine(file, line++, true);
-		TestLine(file, line++, true);
-		ASSERT_TRUE(file[line++] == nullptr);
-		TestLine(file, line++, false);
+		ASSERT_NE(nullptr, file);
+		TestLine(*file, line++, true);
+		TestLine(*file, line++, true);
+		TestLine(*file, line++, true);
+		ASSERT_EQ(nullptr, (*file)[line++]);
+		TestLine(*file, line++, false);
 	}
 	
 	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, RunThread)
+	{
+		const auto testThread = TestCoverageConsole::GetTestThreadPath().wstring();
+
+		cov::CoverageData coverageData = ComputeCoverageData(testThread);
+		cov::FileCoverage* file = nullptr;
+		GetFirstFileCoverage(coverageData, file);
+
+		int line = 27;
+		ASSERT_NE(nullptr, file);
+
+		TestLine(*file, line++, true);
+		ASSERT_EQ(nullptr, (*file)[line++]);
+		TestLine(*file, line++, true);
+		TestLine(*file, line++, true);
+		TestLine(*file, line++, true);				
+	}
+
+	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, HandledException)
 	{
-		GetStartInfo().AddArguments(TestCoverageConsole::TestThrowHandledException);
-		cov::CoverageData coverageData = ComputeCoverageData(L"*", TestCoverageConsole::GetMainCppPath().wstring());
+		cov::CoverageData coverageData = RunCoverageWithException(TestCoverageConsole::TestThrowHandledException);
 		ASSERT_EQ(std::string::npos, 
 			GetError().find(cov::ExceptionHandler::UnhandledExceptionErrorMessage));
 		ASSERT_EQ(0, coverageData.GetExitCode());
@@ -188,8 +215,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, UnHandledSEHException)
 	{
-		GetStartInfo().AddArguments(TestCoverageConsole::TestThrowUnHandledSEHException);
-		cov::CoverageData coverageData = ComputeCoverageData(L"*", TestCoverageConsole::GetMainCppPath().wstring());
+		cov::CoverageData coverageData = RunCoverageWithException(TestCoverageConsole::TestThrowUnHandledSEHException);
 		ASSERT_NE(std::string::npos, 
 			GetError().find(cov::ExceptionHandler::UnhandledExceptionErrorMessage));
 		ASSERT_NE(0, coverageData.GetExitCode());

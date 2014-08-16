@@ -25,7 +25,7 @@ namespace CppCoverage
 		, hasBeenExecuted_(hasBeenExecuted)
 	{
 	}
-
+		
 	//-------------------------------------------------------------------------
 	unsigned int LineCoverage::GetLineNumber() const
 	{
