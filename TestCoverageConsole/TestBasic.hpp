@@ -20,18 +20,7 @@
 
 namespace TestCoverageConsole
 {
-	//-------------------------------------------------------------------------
-	inline void TestBasic()
-	{
-		if (false)
-		{
-			int answer = 42;
-		}
-	}
-
-	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetTestBasicPath()
-	{
-		return __FILE__;
-	}
+	void TestBasic();
+	
+	__declspec(dllexport) boost::filesystem::path GetTestBasicPath();
 }

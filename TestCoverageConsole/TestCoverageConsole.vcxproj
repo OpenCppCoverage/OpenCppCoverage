@@ -163,7 +163,9 @@
     <ClInclude Include="TestThread.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="TestBasic.cpp" />
     <ClCompile Include="TestCoverageConsole.cpp" />
+    <ClCompile Include="TestThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TestCoverageSharedLib\TestCoverageSharedLib.vcxproj">

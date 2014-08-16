@@ -16,10 +16,25 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
+#include "TestThread.hpp"
+
+#include <thread>
 
 namespace TestCoverageConsole
 {
-	void RunThread();	
-	__declspec(dllexport) boost::filesystem::path GetTestThreadPath();
+	//-----------------------------------------------------------------------------
+	void RunThread()
+	{
+		std::thread t([]()
+		{
+			int answer = 42;
+		});
+		t.join();
+	}
+
+	//-------------------------------------------------------------------------
+	boost::filesystem::path GetTestThreadPath()
+	{
+		return __FILE__;
+	}
 }

@@ -14,12 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
 
-#include <boost/filesystem.hpp>
+#include "TestBasic.hpp"
 
+// We cannot move this code in the header, because the tests will not work in
+// release mode. (This project has no optmisation in release mode).
 namespace TestCoverageConsole
 {
-	void RunThread();	
-	__declspec(dllexport) boost::filesystem::path GetTestThreadPath();
+	//-------------------------------------------------------------------------
+	void TestBasic()
+	{
+		if (false)
+		{
+			int answer = 42;
+		}
+	}
+
+	//-------------------------------------------------------------------------
+	boost::filesystem::path GetTestBasicPath()
+	{
+		return __FILE__;
+	}
 }

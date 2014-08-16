@@ -156,7 +156,7 @@ namespace CppCoverageTest
 		cov::FileCoverage* file = nullptr;
 		GetFirstFileCoverage(coverageData, file);
 
-		int line = 25;
+		int line = 26;
 		ASSERT_NE(nullptr, file);
 		TestLine(*file, line++, true);
 		TestLine(*file, line++, true);
@@ -193,7 +193,7 @@ namespace CppCoverageTest
 		cov::FileCoverage* file = nullptr;
 		GetFirstFileCoverage(coverageData, file);
 
-		int line = 27;
+		int line = 28;
 		ASSERT_NE(nullptr, file);
 
 		TestLine(*file, line++, true);
