@@ -83,7 +83,7 @@ namespace CppCoverageTest
 			for (const auto& argument : configArguments)
 				ofs << Tools::ToWString(argument.first) << L"=" << argument.second << std::endl;
 
-			std::vector<std::string> arguments {"--config_file", path.GetPath().string() };
+			std::vector<std::string> arguments{ "--" + cov::ProgramOptions::ConfigFileOption, path.GetPath().string() };
 
 			for (const auto& argumentValue : commandLineArguments)
 			{
