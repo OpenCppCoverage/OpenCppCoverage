@@ -38,7 +38,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(Process, InvalidProgram)
 	{		
-		cov::StartInfo startInfo{ __FILE__ };
+		cov::StartInfo startInfo{ TestCoverageConsole::GetMainCppPath() };
 
 		cov::Process process{ startInfo };
 		ASSERT_THROW(process.Start(0), std::runtime_error);
