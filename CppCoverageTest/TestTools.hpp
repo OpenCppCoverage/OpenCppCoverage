@@ -21,6 +21,9 @@
 #include <string>
 #include <functional>
 
+#include "CppCoverage/OptionsParser.hpp"
+#include "CppCoverage/Options.hpp"
+
 namespace boost
 {
 	namespace filesystem
@@ -40,6 +43,15 @@ namespace CppCoverageTest
 		TestTools() = delete;
 	
 		static void GetHandles(const boost::filesystem::path&, T_HandlesFct);
+
+		static boost::optional<CppCoverage::Options> Parse(
+				const CppCoverage::OptionsParser& parser,
+				const std::vector<std::string>& arguments,
+				bool appendProgramToRun = true,
+				std::wostream* emptyOptionsExplanation = nullptr);
+
+		static const std::string OptionPrefix;
+		static const std::string ProgramToRun;
 	};
 }
 

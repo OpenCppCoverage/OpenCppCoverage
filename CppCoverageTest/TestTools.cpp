@@ -23,6 +23,8 @@
 #include "CppCoverage/Debugger.hpp"
 #include "CppCoverage/IDebugEventsHandler.hpp"
 
+#include "TestCoverageConsole/TestCoverageConsole.hpp"
+
 namespace bfs = boost::filesystem;
 namespace cov = CppCoverage;
 
@@ -48,6 +50,9 @@ namespace CppCoverageTest
 
 	}
 		
+	const std::string TestTools::OptionPrefix = "--";
+	const std::string TestTools::ProgramToRun = TestCoverageConsole::GetOutputBinaryPath().string();
+
 	//-------------------------------------------------------------------------
 	void TestTools::GetHandles(const boost::filesystem::path& path, T_HandlesFct action)
 	{		
@@ -57,5 +62,23 @@ namespace CppCoverageTest
 
 		debugger.Debug(startInfo, debugEventsHandler);
 	}				
+
+	//---------------------------------------------------------------------
+	boost::optional<cov::Options> TestTools::Parse(
+		const cov::OptionsParser& parser,
+		const std::vector<std::string>& arguments,
+		bool appendProgramToRun,
+		std::wostream* emptyOptionsExplanation)
+	{
+		std::vector<const char*> argv;
+
+		argv.push_back("programName");
+		for (const auto& argument : arguments)
+			argv.push_back(argument.c_str());
+
+		if (appendProgramToRun)
+			argv.push_back(ProgramToRun.c_str());
+		return parser.Parse(static_cast<int>(argv.size()), &argv[0], emptyOptionsExplanation);
+	}
 }
 

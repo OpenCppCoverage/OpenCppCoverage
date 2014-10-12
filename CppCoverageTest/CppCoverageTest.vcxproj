@@ -182,7 +182,10 @@
     <ClCompile Include="ExceptionHandlerTest.cpp" />
     <ClCompile Include="ExecutedAddressManagerTest.cpp" />
     <ClCompile Include="HandleInformationTest.cpp" />
-    <ClCompile Include="OptionsParserTests.cpp" />
+    <ClCompile Include="OptionsParserConfigTest.cpp" />
+    <ClCompile Include="OptionsParserExportTest.cpp" />
+    <ClCompile Include="OptionsParserPatternTest.cpp" />
+    <ClCompile Include="OptionsParserTest.cpp" />
     <ClCompile Include="ProcessTest.cpp" />
     <ClCompile Include="StartInfoTest.cpp" />
     <ClCompile Include="stdafx.cpp">
