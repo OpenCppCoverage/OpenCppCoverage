@@ -47,7 +47,7 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	StartInfo::StartInfo(StartInfo&& startInfo)
 		: path_{ std::move(startInfo.path_) }
-		, arguments_{ std::move(startInfo.arguments_) }
+		, arguments_( std::move(startInfo.arguments_) )
 		, workingDirectory_{ std::move(startInfo.workingDirectory_) }
 	{
 	}

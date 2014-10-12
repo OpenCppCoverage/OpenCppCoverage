@@ -29,7 +29,7 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	Wildcards::Wildcards(std::wstring str, bool isRegexCaseSensitiv)
-		: originalStr_{ str }
+		: originalStr_( str )
 	{
 		auto flags = (isRegexCaseSensitiv) ? std::regex::basic : std::regex::icase;
 		// Do not escaped '*'
