@@ -20,6 +20,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <boost/filesystem.hpp>
 
 #include "Tools/Tool.hpp"
 #include "CppCoverage/Patterns.hpp"
@@ -140,9 +141,36 @@ namespace CppCoverage
 				throw OptionsParserException("Cannot open config file: " + path);
 
 			programOptions.FillVariableMap(ifs, variables);
-		}		
+		}
+
+		//---------------------------------------------------------------------
+		struct ExportString
+		{
+			std::string exportOutputPath;
+			std::string exportType;
+		};
+
+		//---------------------------------------------------------------------
+		ExportString ParseExportString(const std::string& exportStr)
+		{
+			ExportString exportString;
+			auto pos = exportStr.find(OptionsParser::ExportSeparator);
+
+			if (pos != std::string::npos)
+			{
+				exportString.exportType = exportStr.substr(0, pos);
+				exportString.exportOutputPath = exportStr.substr(pos + 1);
+			}
+			else
+				exportString.exportType = exportStr;
+
+			return exportString;
+		}
 	}
 		
+	//-------------------------------------------------------------------------
+	const char OptionsParser::ExportSeparator = ':';
+
 	//-------------------------------------------------------------------------
 	OptionsParser::OptionsParser()
 	{
@@ -225,11 +253,7 @@ namespace CppCoverage
 			options.SetVerboseModeSelected();
 
 		AddExporTypes(variables, *programOptions_, options);
-		const auto* outputDirectoryOption = GetOptionalValue<std::string>(variables, ProgramOptions::OutputDirectoryOption);
-
-		if (outputDirectoryOption)
-			options.SetOutputDirectoryOption(*outputDirectoryOption);
-
+		
 		return options;
 	}
 
@@ -243,18 +267,31 @@ namespace CppCoverage
 
 		for (const auto& exportTypeStr : exportTypeStrCollection)
 		{
-			auto exportType = GetExportType(exportTypeStr);
+			auto optionExport = CreateExport(exportTypeStr);
 
-			options.AddExportType(exportType);
+			options.AddExport(optionExport);
 		}
 	}
+	
 	//-------------------------------------------------------------------------
-	OptionsExportType OptionsParser::GetExportType(const std::string& exportType) const
+	OptionsExport OptionsParser::CreateExport(const std::string& exportStr) const
 	{
-		auto it = exportTypes_.find(exportType);
+		auto exportString = ParseExportString(exportStr);		
+		auto it = exportTypes_.find(exportString.exportType);
 
 		if (it == exportTypes_.end())
-			throw OptionsParserException(exportType + " is not a valid export type.");
-		return it->second;
+			throw OptionsParserException(exportString.exportType + " is not a valid export type.");		
+
+		OptionsExportType type = it->second;
+		auto exportOutputPath = exportString.exportOutputPath;
+
+		if (!exportOutputPath.empty())
+		{
+			if (boost::filesystem::exists(exportOutputPath))
+				throw OptionsParserException("Export output " + exportOutputPath + " already exists.");
+			return OptionsExport{ type, exportOutputPath };
+		}
+
+		return OptionsExport{ type };
 	}
 }

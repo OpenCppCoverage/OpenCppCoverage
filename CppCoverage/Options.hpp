@@ -22,12 +22,11 @@
 #include "CppCoverageExport.hpp"
 #include "CppCoverage/Patterns.hpp"
 #include "CppCoverage/StartInfo.hpp"
+#include "CppCoverage/OptionsExport.hpp"
 
 namespace CppCoverage
 {
-	class Patterns;
-
-	enum class OptionsExportType;
+	class Patterns;	
 
 	class CPPCOVERAGE_DLL Options
 	{
@@ -45,14 +44,10 @@ namespace CppCoverage
 
 		void SetVerboseModeSelected();
 		bool IsVerboseModeSelected() const;
-
-		void AddExportType(OptionsExportType);
-		const std::vector<OptionsExportType>& GetExportTypes() const;
-
-		void SetOutputDirectoryOption(const boost::filesystem::path&);
-		const boost::optional<boost::filesystem::path>& 
-			GetOutputDirectoryOption() const;
-
+		
+		void AddExport(const OptionsExport&);
+		const std::vector<OptionsExport>& GetExports() const;
+		
 		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream&, const Options&);
 
 	private:
@@ -64,7 +59,6 @@ namespace CppCoverage
 		CppCoverage::Patterns modules_;
 		CppCoverage::Patterns sources_;
 		bool verboseModeSelected_;
-		std::vector<OptionsExportType> exportTypes_;
-		boost::optional<boost::filesystem::path> outputDirectoryOption_;
+		std::vector<OptionsExport> exports_;		
 	};
 }

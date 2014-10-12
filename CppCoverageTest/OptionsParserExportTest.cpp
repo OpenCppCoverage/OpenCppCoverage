@@ -18,6 +18,7 @@
 
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
+#include "CppCoverage/OptionsExport.hpp"
 
 #include "CppCoverageTest/TestTools.hpp"
 
@@ -27,11 +28,17 @@ namespace CppCoverageTest
 {
 	namespace
 	{
+		//-------------------------------------------------------------------------
+		bool operator==(const cov::OptionsExport& export1, const cov::OptionsExport& export2)
+		{
+			return export1.GetType() == export2.GetType()
+				&& export1.GetOutputPath() == export2.GetOutputPath();
+		}
 
 		//-------------------------------------------------------------------------
 		void TestExportTypes(
 			const std::vector<std::string>& exportTypesStr,
-			const std::vector<cov::OptionsExportType>& expectedValue)
+			const std::vector<cov::OptionsExport>& expectedValue)
 		{
 			cov::OptionsParser parser;
 			std::vector<std::string> arguments;
@@ -45,32 +52,35 @@ namespace CppCoverageTest
 			auto options = TestTools::Parse(parser, arguments);
 
 			ASSERT_TRUE(options);
+			const auto& exports = options->GetExports();
 
-			const auto& exportTypes = options->GetExportTypes();
+			ASSERT_EQ(expectedValue.size(), exports.size());
 
-			ASSERT_EQ(expectedValue.size(), exportTypes.size());
-
-			for (size_t i = 0; i < expectedValue.size(); ++i)
-				ASSERT_EQ(expectedValue[i], exportTypes[i]);
+			for (size_t i = 0; i < exports.size(); ++i)
+				ASSERT_TRUE(expectedValue[i] == exports[i]);
 		}
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserExportTest, ExportTypesDefault)
 	{
-		TestExportTypes({}, { cov::OptionsExportType::Html });
+		TestExportTypes({}, { cov::OptionsExport{ cov::OptionsExportType::Html } });
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserExportTest, ExportTypesHtml)
 	{
-		TestExportTypes({ cov::ProgramOptions::ExportTypeHtmlValue }, { cov::OptionsExportType::Html });
+		TestExportTypes(
+		{ cov::ProgramOptions::ExportTypeHtmlValue },
+		{ cov::OptionsExport{ cov::OptionsExportType::Html } });
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserExportTest, ExportTypesCoberturaValue)
 	{
-		TestExportTypes({ cov::ProgramOptions::ExportTypeCoberturaValue }, { cov::OptionsExportType::Cobertura });
+		TestExportTypes(
+		{ cov::ProgramOptions::ExportTypeCoberturaValue }, 
+		{ cov::OptionsExport{ cov::OptionsExportType::Cobertura } });
 	}
 
 	//-------------------------------------------------------------------------
@@ -78,7 +88,26 @@ namespace CppCoverageTest
 	{
 		TestExportTypes(
 		{ cov::ProgramOptions::ExportTypeHtmlValue, cov::ProgramOptions::ExportTypeCoberturaValue },
-		{ cov::OptionsExportType::Html, cov::OptionsExportType::Cobertura });
+		{ cov::OptionsExport{ cov::OptionsExportType::Html }, cov::OptionsExport{ cov::OptionsExportType::Cobertura } });
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserExportTest, OutputPath)
+	{
+		const std::string path = "path";
+		TestExportTypes(
+		{ cov::ProgramOptions::ExportTypeHtmlValue + cov::OptionsParser::ExportSeparator + path},
+		{ cov::OptionsExport{ cov::OptionsExportType::Html, path } });
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserExportTest, InvalidOutputPath)
+	{	
+		cov::OptionsParser parser;
+		std::string exportStr = cov::ProgramOptions::ExportTypeHtmlValue + cov::OptionsParser::ExportSeparator + __FILE__;
+		auto options = TestTools::Parse(parser, { TestTools::OptionPrefix + cov::ProgramOptions::ExportTypeOption, 
+								exportStr });
+		ASSERT_FALSE(options);		
 	}
 
 	//-------------------------------------------------------------------------

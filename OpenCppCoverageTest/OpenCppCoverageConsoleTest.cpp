@@ -53,7 +53,7 @@ namespace OpenCppCoverageTest
 				{ cov::ProgramOptions::SelectedModulesOption, programToRun.string() },
 				{ cov::ProgramOptions::SelectedSourcesOption, GetSolutionFolderName() } };
 
-			int exitCode = RunCoverageOn(coverageArguments, tempFolder, programToRun, arguments);
+			int exitCode = RunCoverageHtmlOn(coverageArguments, tempFolder, programToRun, arguments);
 			
 			CheckOutputDirectory(tempFolder);
 			return exitCode;

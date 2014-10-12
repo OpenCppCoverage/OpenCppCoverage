@@ -76,16 +76,16 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserConfigTest, ConfigurationFileCmdLineOverride)
 	{
-		const std::wstring source1 = L"s1";
-		const std::wstring source2 = L"s2";
-
+		Tools::TemporaryPath directory1{true};
+		Tools::TemporaryPath directory2{true};
+		
 		auto options = MutipleSourceParse(
-		{ { cov::ProgramOptions::OutputDirectoryOption, source1 } },
-		{ { cov::ProgramOptions::OutputDirectoryOption, source2 } });
+		{ { cov::ProgramOptions::WorkingDirectoryOption, directory1.GetPath().wstring() } },
+		{ { cov::ProgramOptions::WorkingDirectoryOption, directory2.GetPath().wstring() } });
 		ASSERT_TRUE(options);
-		auto outputDirectory = options->GetOutputDirectoryOption();
-		ASSERT_TRUE(outputDirectory);
-		ASSERT_EQ(source2, outputDirectory->wstring());
+		auto workingDirectory = options->GetStartInfo().GetWorkingDirectory();
+		ASSERT_NE(nullptr, workingDirectory);
+		ASSERT_EQ(directory2.GetPath(), *workingDirectory);
 	}
 
 	//-------------------------------------------------------------------------

@@ -24,9 +24,12 @@ namespace fs = boost::filesystem;
 namespace Tools
 {
 	//-------------------------------------------------------------------------	
-	TemporaryPath::TemporaryPath()
+	TemporaryPath::TemporaryPath(bool createPath)
 	{
 		path_ = fs::absolute(fs::temp_directory_path() / fs::unique_path());
+
+		if (createPath)
+			fs::create_directories(path_);
 	}
 
 	//-------------------------------------------------------------------------

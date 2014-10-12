@@ -58,10 +58,13 @@ namespace CppCoverage
 		//---------------------------------------------------------------------
 		std::string GetExportTypeText(const std::vector<std::string>& exportTypes)
 		{
-			std::string exportTypeText{ "The export type. Possible values are: " };
-
-			exportTypeText += GetExportTypesAsString(exportTypes);
-			exportTypeText += ". Can have multiple occurrences.";
+			std::string exportTypeText{ "Format: <exportType>:<outputPath>.\n" };
+			
+			exportTypeText += "<exportType> can be: ";
+			exportTypeText += GetExportTypesAsString(exportTypes) + "\n";
+			exportTypeText += "<outputPath> (optional) output file or directory for the export.\n";
+			exportTypeText += "Example: html:MyFolder\\MySubFolder\n";
+			exportTypeText += "This flag can have multiple occurrences.";
 
 			return exportTypeText;
 		}
@@ -89,8 +92,7 @@ namespace CppCoverage
 				(ProgramOptions::ExportTypeOption.c_str(),
 				po::value<T_Strings>()->default_value({ ProgramOptions::ExportTypeHtmlValue }, ProgramOptions::ExportTypeHtmlValue),
 				GetExportTypeText(exportTypes).c_str())
-				(ProgramOptions::WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")
-				(ProgramOptions::OutputDirectoryOption.c_str(), po::value<std::string>(), "The coverage report directory.");
+				(ProgramOptions::WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.");
 		}
 
 		//-------------------------------------------------------------------------
@@ -113,7 +115,6 @@ namespace CppCoverage
 	const std::string ProgramOptions::HelpShortOption = "h";
 	const std::string ProgramOptions::ConfigFileOption = "config_file";	
 	const std::string ProgramOptions::WorkingDirectoryOption = "working_dir";
-	const std::string ProgramOptions::OutputDirectoryOption = "output";
 	const std::string ProgramOptions::ProgramToRunOption = "programToRun";
 	const std::string ProgramOptions::ProgramToRunArgOption = "programToRunArg";
 	const std::string ProgramOptions::ExportTypeOption = "export_type";

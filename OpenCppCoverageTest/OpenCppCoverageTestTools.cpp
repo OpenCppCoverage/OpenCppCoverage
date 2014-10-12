@@ -26,22 +26,25 @@
 
 #include "OpenCppCoverage/main.hpp"
 
+namespace cov = CppCoverage;
+
 namespace OpenCppCoverageTest
 {
 	//---------------------------------------------------------------------
-	int RunCoverageOn(
+	int RunCoverageHtmlOn(
 		std::vector<std::pair<std::string, std::string>>& coverageArguments,
 		const boost::filesystem::path& outputFolder,
 		const boost::filesystem::path& programToRun,
 		const std::vector<std::wstring>& arguments)
 	{		
-		coverageArguments.push_back({ CppCoverage::ProgramOptions::OutputDirectoryOption, outputFolder.string() });		
+		coverageArguments.push_back(
+		{ cov::ProgramOptions::ExportTypeOption, cov::ProgramOptions::ExportTypeHtmlValue + cov::OptionsParser::ExportSeparator + outputFolder.string() });
 		
-		return RunCoverageOn(coverageArguments, programToRun, arguments);
+		return RunCoverageHtmlOn(coverageArguments, programToRun, arguments);
 	}
 
 	//-------------------------------------------------------------------------
-	int RunCoverageOn(
+	int RunCoverageHtmlOn(
 		const std::vector<std::pair<std::string, std::string>>& coverageArguments,
 		const boost::filesystem::path& programToRun,
 		const std::vector<std::wstring>& arguments)

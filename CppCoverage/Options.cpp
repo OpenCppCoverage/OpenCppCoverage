@@ -62,30 +62,17 @@ namespace CppCoverage
 	{
 		return verboseModeSelected_;
 	}
-
+	
 	//-------------------------------------------------------------------------
-	void Options::SetOutputDirectoryOption(const boost::filesystem::path& outputDirectoryOption)
+	void Options::AddExport(const OptionsExport& optionExport)
 	{
-		outputDirectoryOption_ = outputDirectoryOption;
-	}
-
-	//-------------------------------------------------------------------------
-	const boost::optional<boost::filesystem::path>& 
-		Options::GetOutputDirectoryOption() const
-	{
-		return outputDirectoryOption_;
-	}
-
-	//-------------------------------------------------------------------------
-	void Options::AddExportType(OptionsExportType type)
-	{
-		exportTypes_.push_back(type);
+		exports_.push_back(optionExport);
 	}
 	
 	//-------------------------------------------------------------------------
-	const std::vector<OptionsExportType>& Options::GetExportTypes() const
+	const std::vector<OptionsExport>& Options::GetExports() const
 	{
-		return exportTypes_;
+		return exports_;
 	}
 
 	//-------------------------------------------------------------------------
@@ -95,7 +82,11 @@ namespace CppCoverage
 		ostr << L"Modules: " << options.modules_ << std::endl;
 		ostr << L"Sources: " << options.sources_ << std::endl;
 		ostr << L"Verbose mode: " << options.verboseModeSelected_ << std::endl;
+		ostr << L"Export: ";
 
+		for (const auto& optionExport : options.exports_)
+			ostr << optionExport << " ";
+		ostr << std::endl;
 		return ostr;
 	}
 }

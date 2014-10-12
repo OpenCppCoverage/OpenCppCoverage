@@ -36,10 +36,13 @@ namespace CppCoverage
 	class Options;
 	class ProgramOptions;
 	enum class OptionsExportType;
+	class OptionsExport;
 
 	class CPPCOVERAGE_DLL OptionsParser
 	{
 	public:
+		static const char ExportSeparator;
+
 		OptionsParser();
 		~OptionsParser();
 
@@ -57,7 +60,7 @@ namespace CppCoverage
 			const ProgramOptions& programOptions,
 			Options& options) const;
 
-		OptionsExportType GetExportType(const std::string&) const;
+		OptionsExport CreateExport(const std::string&) const;
 
 		std::map<std::string, OptionsExportType> exportTypes_;
 		std::unique_ptr<ProgramOptions> programOptions_;		

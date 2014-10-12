@@ -82,23 +82,7 @@ namespace CppCoverageTest
 		ASSERT_NE(nullptr, workingDirectory);
 		ASSERT_EQ(Tools::ToWString(folder), *workingDirectory);
 	}
-
-	//-------------------------------------------------------------------------
-	TEST(OptionsParserTest, OutputDirectory)
-	{
-		cov::OptionsParser parser;
-		const std::string folder = "Output";
-
-		auto options = TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::OutputDirectoryOption, folder });
-		ASSERT_TRUE(options);
-
-		auto outputDirectoryOption = options->GetOutputDirectoryOption();
 		
-		ASSERT_TRUE(outputDirectoryOption);
-		ASSERT_EQ(folder, outputDirectoryOption->string());		
-	}
-	
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, Program)
 	{

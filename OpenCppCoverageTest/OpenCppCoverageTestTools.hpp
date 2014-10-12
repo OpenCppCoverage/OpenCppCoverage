@@ -29,13 +29,13 @@ namespace boost
 
 namespace OpenCppCoverageTest
 {
-	int RunCoverageOn(
+	int RunCoverageHtmlOn(
 		std::vector<std::pair<std::string, std::string>>& coverageArguments,
 		const boost::filesystem::path& outputFolder,
 		const boost::filesystem::path& programToRun,
 		const std::vector<std::wstring>& arguments);
 
-	int RunCoverageOn(
+	int RunCoverageHtmlOn(
 		const std::vector<std::pair<std::string, std::string>>& coverageArguments,
 		const boost::filesystem::path& programToRun,
 		const std::vector<std::wstring>& arguments);

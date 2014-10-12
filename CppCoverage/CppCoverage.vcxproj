@@ -174,6 +174,7 @@
     <ClInclude Include="LineCoverage.hpp" />
     <ClInclude Include="ModuleCoverage.hpp" />
     <ClInclude Include="Options.hpp" />
+    <ClInclude Include="OptionsExport.hpp" />
     <ClInclude Include="OptionsParser.hpp" />
     <ClInclude Include="Patterns.hpp" />
     <ClInclude Include="Process.hpp" />
@@ -201,6 +202,7 @@
     <ClCompile Include="LineCoverage.cpp" />
     <ClCompile Include="ModuleCoverage.cpp" />
     <ClCompile Include="Options.cpp" />
+    <ClCompile Include="OptionsExport.cpp" />
     <ClCompile Include="OptionsParser.cpp" />
     <ClCompile Include="Patterns.cpp" />
     <ClCompile Include="Process.cpp" />

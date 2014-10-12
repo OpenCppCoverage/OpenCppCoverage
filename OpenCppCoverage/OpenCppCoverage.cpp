@@ -47,12 +47,10 @@ namespace OpenCppCoverage
 	namespace
 	{
 		//-----------------------------------------------------------------------------
-		fs::path GetOutputPath(const cov::Options& options)
+		fs::path GetHtmlOutputPath(const boost::optional<fs::path>& outputPath)
 		{
-			auto outputDirectoryOption = options.GetOutputDirectoryOption();
-
-			if (outputDirectoryOption)
-				return *outputDirectoryOption;
+			if (outputPath)
+				return *outputPath;
 
 			auto now = std::time(nullptr);
 			auto localNow = std::localtime(&now);
@@ -64,8 +62,13 @@ namespace OpenCppCoverage
 		}
 
 		//-----------------------------------------------------------------------------
-		fs::path GetCoverageOutput(const cov::Options& options)
+		fs::path GetCoberturaOutput(
+			const cov::Options& options,
+			const boost::optional<fs::path>& outputPath)
 		{
+			if (outputPath)
+				return *outputPath;
+
 			auto path = options.GetStartInfo().GetPath();
 
 			path = path.filename().replace_extension("");
@@ -75,27 +78,51 @@ namespace OpenCppCoverage
 		}
 
 		//-----------------------------------------------------------------------------
+		void ExportHtml(
+			const cov::Options& options,
+			const cov::CoverageData& coverage,
+			const boost::optional<fs::path>& outputPath)
+		{
+			fs::path templateFolder = Tools::GetTemplateFolder();
+			Exporter::HtmlExporter htmlExporter{ templateFolder };
+
+			boost::filesystem::path output = GetHtmlOutputPath(outputPath);
+			htmlExporter.Export(coverage, output);			
+		}
+
+		//-----------------------------------------------------------------------------
+		void ExportCovertura(
+			const cov::Options& options, 
+			const cov::CoverageData& coverage,
+			const boost::optional<fs::path>& outputPath)
+		{
+			Exporter::CoberturaExporter coberturaExporter;
+			auto coverageOutput = GetCoberturaOutput(options, outputPath);
+			coberturaExporter.Export(coverage, coverageOutput);
+		}
+
+		//-----------------------------------------------------------------------------
 		void Export(
 			const cov::Options& options, 
 			const cov::CoverageData& coverage)
 		{
-			const auto& exportTypes = options.GetExportTypes();
-			std::set<cov::OptionsExportType> exportTypesSet{ exportTypes.begin(), exportTypes.end()};
-
-			if (exportTypesSet.find(cov::OptionsExportType::Html) != exportTypesSet.end())
+			const auto& exports = options.GetExports();
+			const static std::map<
+				cov::OptionsExportType, 
+				std::function<void(
+						const cov::Options&, 
+						const cov::CoverageData&, 
+						const boost::optional<fs::path>&) >> exporters =
 			{
-				fs::path templateFolder = Tools::GetTemplateFolder();
-				Exporter::HtmlExporter htmlExporter{ templateFolder };
+				{ cov::OptionsExportType::Html, ExportHtml },
+				{ cov::OptionsExportType::Cobertura, ExportCovertura },
+			};
 
-				boost::filesystem::path output = GetOutputPath(options);
-				htmlExporter.Export(coverage, output);
-			}
-
-			if (exportTypesSet.find(cov::OptionsExportType::Cobertura) != exportTypesSet.end())
+			for (const auto& singleExport : exports)
 			{
-				Exporter::CoberturaExporter coberturaExporter;
-				auto coverageOutput = GetCoverageOutput(options);
-				coberturaExporter.Export(coverage, coverageOutput);
+				const auto& exporter = exporters.at(singleExport.GetType());
+
+				exporter(options, coverage, singleExport.GetOutputPath());
 			}
 		}
 
