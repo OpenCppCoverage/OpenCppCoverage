@@ -17,14 +17,8 @@
 #include "stdafx.h"
 #include "OpenCppCoverage.hpp"
 
-namespace OpenCppCoverage
-{
-}
-
 #include "stdafx.h"
 #include "OpenCppCoverage.hpp"
-
-#include <iomanip>
 
 #include "CppCoverage/CodeCoverageRunner.hpp"
 #include "CppCoverage/CoverageSettings.hpp"
@@ -43,86 +37,32 @@ namespace logging = boost::log;
 
 namespace OpenCppCoverage
 {
-	
 	namespace
 	{
-		//-----------------------------------------------------------------------------
-		fs::path GetHtmlOutputPath(const boost::optional<fs::path>& outputPath)
-		{
-			if (outputPath)
-				return *outputPath;
-
-			auto now = std::time(nullptr);
-			auto localNow = std::localtime(&now);
-			std::ostringstream ostr;
-
-			ostr << "CoverageReport-" << std::put_time(localNow, "%Y-%m-%d-%Hh%Mm%Ss");
-
-			return ostr.str();
-		}
-
-		//-----------------------------------------------------------------------------
-		fs::path GetCoberturaOutput(
-			const cov::Options& options,
-			const boost::optional<fs::path>& outputPath)
-		{
-			if (outputPath)
-				return *outputPath;
-
-			auto path = options.GetStartInfo().GetPath();
-
-			path = path.filename().replace_extension("");
-			path += "Coverage.xml";
-			
-			return path;
-		}
-
-		//-----------------------------------------------------------------------------
-		void ExportHtml(
-			const cov::Options& options,
-			const cov::CoverageData& coverage,
-			const boost::optional<fs::path>& outputPath)
-		{
-			fs::path templateFolder = Tools::GetTemplateFolder();
-			Exporter::HtmlExporter htmlExporter{ templateFolder };
-
-			boost::filesystem::path output = GetHtmlOutputPath(outputPath);
-			htmlExporter.Export(coverage, output);			
-		}
-
-		//-----------------------------------------------------------------------------
-		void ExportCovertura(
-			const cov::Options& options, 
-			const cov::CoverageData& coverage,
-			const boost::optional<fs::path>& outputPath)
-		{
-			Exporter::CoberturaExporter coberturaExporter;
-			auto coverageOutput = GetCoberturaOutput(options, outputPath);
-			coberturaExporter.Export(coverage, coverageOutput);
-		}
-
 		//-----------------------------------------------------------------------------
 		void Export(
 			const cov::Options& options, 
 			const cov::CoverageData& coverage)
 		{
 			const auto& exports = options.GetExports();
-			const static std::map<
-				cov::OptionsExportType, 
-				std::function<void(
-						const cov::Options&, 
-						const cov::CoverageData&, 
-						const boost::optional<fs::path>&) >> exporters =
-			{
-				{ cov::OptionsExportType::Html, ExportHtml },
-				{ cov::OptionsExportType::Cobertura, ExportCovertura },
-			};
+			std::map<cov::OptionsExportType, std::unique_ptr<Exporter::IExporter>> exporters;
+			
+			exporters.emplace(cov::OptionsExportType::Html, 
+				std::unique_ptr<Exporter::IExporter>(new Exporter::HtmlExporter{ Tools::GetTemplateFolder() }));
+			exporters.emplace(cov::OptionsExportType::Cobertura, 
+				std::unique_ptr<Exporter::IExporter>(new Exporter::CoberturaExporter{}));
+			
+			auto path = options.GetStartInfo().GetPath();
+			fs::path runningCommandFilenamePath = path.filename().replace_extension("");
+			auto runningCommandFilename = runningCommandFilenamePath.wstring();
 
 			for (const auto& singleExport : exports)
 			{
 				const auto& exporter = exporters.at(singleExport.GetType());
+				auto optionalOutputPath = singleExport.GetOutputPath();
+				auto output = (optionalOutputPath) ? *optionalOutputPath : exporter->GetDefaultPath(runningCommandFilename);
 
-				exporter(options, coverage, singleExport.GetOutputPath());
+				exporter->Export(coverage, output);
 			}
 		}
 
@@ -153,7 +93,8 @@ namespace OpenCppCoverage
 	}
 
 	//-----------------------------------------------------------------------------
-	int OpenCppCoverage::Run(int argc,
+	int OpenCppCoverage::Run(
+		int argc,
 		const char** argv,
 		std::wostream* emptyOptionsExplanation) const
 	{

@@ -16,38 +16,34 @@
 
 #pragma once
 
-#include <iosfwd>
-
-#include "ExporterExport.hpp"
-#include "IExporter.hpp"
-
-namespace CppCoverage
-{
-	class CoverageData;
-}
+#include <string>
 
 namespace boost
-{	
+{
 	namespace filesystem
 	{
 		class path;
 	}
 }
 
+namespace CppCoverage
+{
+	class CoverageData;
+}
+
 namespace Exporter
 {
-	class EXPORTER_DLL CoberturaExporter: public IExporter
+	class EXPORTER_DLL IExporter
 	{
 	public:
-		CoberturaExporter() ;
+		IExporter() = default;
 
-		boost::filesystem::path GetDefaultPath(const std::wstring& runningCommandFilename) const override;
-		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& output) const override;
-		void Export(const CppCoverage::CoverageData&, std::wostream&) const;
+		virtual boost::filesystem::path GetDefaultPath(const std::wstring& runningCommandFilename) const = 0;
+		virtual void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& outputFolder) const = 0;
 
 	private:
-		CoberturaExporter(const CoberturaExporter&) = delete;
-		CoberturaExporter& operator=(const CoberturaExporter&) = delete;
+		IExporter(const IExporter&) = delete;
+		IExporter& operator=(const IExporter&) = delete;
 	};
 }
 

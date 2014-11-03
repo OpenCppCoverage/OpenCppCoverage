@@ -112,6 +112,16 @@ namespace Exporter
 	CoberturaExporter::CoberturaExporter() = default;
 
 	//-------------------------------------------------------------------------
+	boost::filesystem::path CoberturaExporter::GetDefaultPath(const std::wstring& runningCommandFilename) const
+	{
+		boost::filesystem::path path{ runningCommandFilename };
+		
+		path += "Coverage.xml";
+
+		return path;		
+	}
+
+	//-------------------------------------------------------------------------
 	void CoberturaExporter::Export(
 		const CppCoverage::CoverageData& coverageData, 
 		const boost::filesystem::path& output) const

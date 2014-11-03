@@ -18,6 +18,7 @@
 #include "HtmlExporter.hpp"
 
 #include <sstream>
+#include <iomanip>
 #include "CTemplate.hpp"
 
 #include "CppCoverage/CoverageData.hpp"
@@ -57,6 +58,18 @@ namespace Exporter
 		, fileCoverageExporter_()
 		, templateFolder_(templateFolder)
 	{
+	}
+
+	//-------------------------------------------------------------------------
+	boost::filesystem::path HtmlExporter::GetDefaultPath(const std::wstring& runningCommandFilename) const
+	{
+		auto now = std::time(nullptr);
+		auto localNow = std::localtime(&now);
+		std::ostringstream ostr;
+
+		ostr << "CoverageReport-" << std::put_time(localNow, "%Y-%m-%d-%Hh%Mm%Ss");
+
+		return ostr.str();
 	}
 
 	//-------------------------------------------------------------------------

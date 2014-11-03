@@ -20,6 +20,7 @@
 
 #include "TemplateHtmlExporter.hpp"
 #include "HtmlFileCoverageExporter.hpp"
+#include "../IExporter.hpp"
 
 namespace CppCoverage
 {
@@ -42,7 +43,7 @@ namespace Exporter
 {
 	class HtmlFolderStructure;
 
-	class EXPORTER_DLL HtmlExporter
+	class EXPORTER_DLL HtmlExporter: public IExporter
 	{
 	public:
 		static const std::wstring WarningExitCodeMessage;
@@ -50,7 +51,8 @@ namespace Exporter
 	public:
 		explicit HtmlExporter(const boost::filesystem::path& templateFolder);
 
-		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& outputFolder) const;
+		boost::filesystem::path GetDefaultPath(const std::wstring& runningCommandFilename) const override;
+		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& outputFolder) const override;
 
 	private:
 		HtmlExporter(const HtmlExporter&) = delete;

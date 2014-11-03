@@ -166,6 +166,7 @@
     <ClInclude Include="Html\HtmlFileCoverageExporter.hpp" />
     <ClInclude Include="Html\HtmlFolderStructure.hpp" />
     <ClInclude Include="Html\TemplateHtmlExporter.hpp" />
+    <ClInclude Include="IExporter.hpp" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
