@@ -22,6 +22,8 @@
 
 #include "CppCoverageTest/TestTools.hpp"
 
+#include "tools/TemporaryPath.hpp"
+
 namespace cov = CppCoverage;
 
 namespace CppCoverageTest
@@ -104,7 +106,10 @@ namespace CppCoverageTest
 	TEST(OptionsParserExportTest, InvalidOutputPath)
 	{	
 		cov::OptionsParser parser;
-		std::string exportStr = cov::ProgramOptions::ExportTypeHtmlValue + cov::OptionsParser::ExportSeparator + __FILE__;
+		Tools::TemporaryPath temporaryPath{ true };
+
+		std::string exportStr = cov::ProgramOptions::ExportTypeHtmlValue + 
+			cov::OptionsParser::ExportSeparator + temporaryPath.GetPath().string();
 		auto options = TestTools::Parse(parser, { TestTools::OptionPrefix + cov::ProgramOptions::ExportTypeOption, 
 								exportStr });
 		ASSERT_FALSE(options);		
