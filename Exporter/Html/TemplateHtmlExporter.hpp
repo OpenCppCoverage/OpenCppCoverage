@@ -26,6 +26,7 @@ namespace CppCoverage
 	class CoverageData;
 	class ModuleCoverage;
 	class FileCoverage;
+	class CoverageRate;
 }
 
 namespace ctemplate
@@ -59,12 +60,14 @@ namespace Exporter
 		CreateTemplateDictionary(const std::wstring& title, const std::wstring& message) const;
 
 		void AddFileSectionToDictionary(
-			const CppCoverage::FileCoverage& fileCoverage,
+			const fs::path& originalFilename,
+			const CppCoverage::CoverageRate& coverageRate,
 			const fs::path* fileOutput,
 			ctemplate::TemplateDictionary& moduleTemplateDictionary) const;
 
 		void AddModuleSectionToDictionary(
-			const CppCoverage::ModuleCoverage& moduleCoverage,
+			const fs::path& originalFilename,
+			const CppCoverage::CoverageRate& coverageRate,
 			const fs::path& moduleOutput,
 			ctemplate::TemplateDictionary& projectDictionary) const;
 

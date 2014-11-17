@@ -21,7 +21,6 @@
 #include <memory>
 
 #include "CppCoverageExport.hpp"
-#include "CoverageRate.hpp"
 
 namespace CppCoverage
 {
@@ -39,9 +38,7 @@ namespace CppCoverage
 		CoverageData(CoverageData&&);
 
 		ModuleCoverage& AddModule(const std::wstring& name);
-		void ComputeCoverageRate();
-		const CoverageRate& GetCoverageRate() const;
-
+		
 		const T_ModuleCoverageCollection& GetModules() const;
 		const std::wstring& GetName() const;
 
@@ -55,7 +52,6 @@ namespace CppCoverage
 		T_ModuleCoverageCollection modules_;
 		std::wstring name_;
 		int exitCode_;
-		CoverageRate coverageRate_;
 	};
 }
 

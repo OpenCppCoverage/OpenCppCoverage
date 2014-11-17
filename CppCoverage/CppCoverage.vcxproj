@@ -159,6 +159,7 @@
     <ClInclude Include="CoverageData.hpp" />
     <ClInclude Include="CoverageFilter.hpp" />
     <ClInclude Include="CoverageRate.hpp" />
+    <ClInclude Include="CoverageRateComputer.hpp" />
     <ClInclude Include="CoverageSettings.hpp" />
     <ClInclude Include="CppCoverageException.hpp" />
     <ClInclude Include="Debugger.hpp" />
@@ -189,6 +190,7 @@
     <ClCompile Include="CoverageData.cpp" />
     <ClCompile Include="CoverageFilter.cpp" />
     <ClCompile Include="CoverageRate.cpp" />
+    <ClCompile Include="CoverageRateComputer.cpp" />
     <ClCompile Include="CoverageSettings.cpp" />
     <ClCompile Include="CppCoverageException.cpp" />
     <ClCompile Include="Debugger.cpp" />

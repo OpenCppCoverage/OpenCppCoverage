@@ -63,37 +63,6 @@ namespace CppCoverageTest
 			ASSERT_NE(nullptr, line2);
 			ASSERT_FALSE(line2->HasBeenExecuted());
 		}
-
-		//---------------------------------------------------------------------
-		void CreateNewFileCoverage(
-			cov::ModuleCoverage& moduleCoverage,
-			const std::wstring& fileName,
-			int executedLine,
-			int nonExecutedLine)
-		{
-			auto& file = moduleCoverage.AddFile(fileName);
-			int line = 0;
-
-			for (int i = 0; i < executedLine; ++i, ++line)
-				file.AddLine(line, true);
-
-			for (int i = 0; i < nonExecutedLine; ++i, ++line)
-				file.AddLine(line, false);
-			file.ComputeCoverageRate();
-		}
-
-		//---------------------------------------------------------------------
-		template<typename T>
-		void CheckCoverageRate(
-			const T& value,
-			int executedExpectedCount,
-			int totalLineCount)
-		{
-			const auto& coverageRate = value.GetCoverageRate();
-
-			ASSERT_EQ(executedExpectedCount, coverageRate.GetExecutedLinesCount());
-			ASSERT_EQ(totalLineCount, coverageRate.GetTotalLinesCount());
-		}
 	}
 
 	//---------------------------------------------------------------------
@@ -114,24 +83,5 @@ namespace CppCoverageTest
 
 		cov::CoverageData movedCoverageData = { std::move(data) };
 		CheckCoverageData(movedCoverageData);
-	}
-		
-	//---------------------------------------------------------------------
-	TEST(CoverageDataTest, CoverageRate)
-	{
-		cov::CoverageData data{ L"", 0};
-
-		auto& module1 = data.AddModule(L"module1");
-		CreateNewFileCoverage(module1, L"filename1", 1, 2);			
-				
-		auto& module2 = data.AddModule(L"module1");
-		CreateNewFileCoverage(module2, L"filename2", 3, 0);
-		CreateNewFileCoverage(module2, L"filename3", 1, 1);		
-		
-		data.ComputeCoverageRate();
-
-		CheckCoverageRate(module1, 1, 3); 
-		CheckCoverageRate(module2, 4, 5);		
-		CheckCoverageRate(data, 5, 8);
-	}
+	}			
 }

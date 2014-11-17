@@ -26,6 +26,7 @@ namespace CppCoverage
 {
 	class CoverageData;
 	class FileCoverage;
+	class CoverageRateComputer;
 }
 
 namespace boost
@@ -63,6 +64,7 @@ namespace Exporter
 			const CppCoverage::FileCoverage& fileCoverage) const;
 
 		void ExportFiles(
+			CppCoverage::CoverageRateComputer&,
 			const CppCoverage::ModuleCoverage& module,
 			const HtmlFolderStructure& htmlFolderStructure,
 			ctemplate::TemplateDictionary& moduleTemplateDictionary) const;

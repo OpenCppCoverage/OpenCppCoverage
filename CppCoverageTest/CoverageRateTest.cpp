@@ -15,40 +15,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
-#include "ModuleCoverage.hpp"
 
-#include "FileCoverage.hpp"
+#include "CppCoverage/CoverageRate.hpp"
 
-namespace CppCoverage
+namespace cov = CppCoverage;
+
+namespace CppCoverageTest
 {
 	//-------------------------------------------------------------------------
-	ModuleCoverage::ModuleCoverage(const boost::filesystem::path& path)
-		: path_(path)
+	TEST(CoverageRateTest, BasicAccessors)
 	{
+		const int executedLinesCount = 42;
+		const int unexecutedLinesCount = 10;
+
+		cov::CoverageRate rate{ executedLinesCount, unexecutedLinesCount };
+
+		ASSERT_EQ(executedLinesCount + unexecutedLinesCount, rate.GetTotalLinesCount());
+		ASSERT_EQ((100 * executedLinesCount) / (executedLinesCount + unexecutedLinesCount), rate.GetPercentRate());
 	}
 
 	//-------------------------------------------------------------------------
-	ModuleCoverage::~ModuleCoverage()
-	{
-	}
+	TEST(CoverageRateTest, Add)
+	{		
+		cov::CoverageRate rate1{ 42, 10 };
+		cov::CoverageRate rate2{ 12, 53 };
 
-	//-------------------------------------------------------------------------
-	FileCoverage& ModuleCoverage::AddFile(const boost::filesystem::path& filePath)
-	{
-		files_.push_back(std::unique_ptr<FileCoverage>(new FileCoverage(filePath)));
+		cov::CoverageRate sum{ rate1 };
 
-		return *files_.back();
-	}
+		sum += rate2;
 
-	//-------------------------------------------------------------------------
-	const boost::filesystem::path& ModuleCoverage::GetPath() const
-	{
-		return path_;
-	}
-
-	//-------------------------------------------------------------------------
-	const ModuleCoverage::T_FileCoverageCollection& ModuleCoverage::GetFiles() const
-	{
-		return files_;
+		ASSERT_EQ(rate1.GetExecutedLinesCount() + rate2.GetExecutedLinesCount(), sum.GetExecutedLinesCount());
+		ASSERT_EQ(rate1.GetUnExecutedLinesCount() + rate2.GetUnExecutedLinesCount(), sum.GetUnExecutedLinesCount());
 	}
 }

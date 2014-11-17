@@ -24,6 +24,8 @@
 #include "CppCoverage/CoverageData.hpp"
 #include "CppCoverage/ModuleCoverage.hpp"
 #include "CppCoverage/FileCoverage.hpp"
+#include "CppCoverage/CoverageRateComputer.hpp"
+#include "CppCoverage/CoverageRate.hpp"
 
 #include "Tools/Log.hpp"
 #include "Tools/Tool.hpp"
@@ -78,24 +80,28 @@ namespace Exporter
 		const boost::filesystem::path& outputFolderPrefix) const
 	{	
 		HtmlFolderStructure htmlFolderStructure{templateFolder_};
+		cov::CoverageRateComputer coverageRateComputer{ coverageData };
+
 		auto mainMessage = GetMainMessage(coverageData);
 
 		auto projectDictionary = exporter_.CreateTemplateDictionary(coverageData.GetName(), mainMessage);
 		auto outputFolder = htmlFolderStructure.CreateCurrentRoot(outputFolderPrefix);
 
-		for (const auto& module : coverageData.GetModules())
+		for (const auto& module : coverageRateComputer.SortModulesByCoverageRate())
 		{			
-			if (module->GetCoverageRate().GetTotalLinesCount())
+			const auto& moduleCoverageRate = coverageRateComputer.GetCoverageRate(*module);
+
+			if (moduleCoverageRate.GetTotalLinesCount())
 			{
 				const auto& modulePath = module->GetPath();
 				auto moduleFilename = module->GetPath().filename();
 				auto moduleTemplateDictionary = exporter_.CreateTemplateDictionary(moduleFilename.wstring(), L"");
 
 				auto htmlModulePath = htmlFolderStructure.CreateCurrentModule(modulePath);
-				ExportFiles(*module, htmlFolderStructure, *moduleTemplateDictionary);
+				ExportFiles(coverageRateComputer, *module, htmlFolderStructure, *moduleTemplateDictionary);
 
 				exporter_.GenerateModuleTemplate(*moduleTemplateDictionary, htmlModulePath.GetAbsolutePath());				
-				exporter_.AddModuleSectionToDictionary(*module, htmlModulePath.GetRelativeLinkPath(), *projectDictionary);
+				exporter_.AddModuleSectionToDictionary(module->GetPath(), moduleCoverageRate, htmlModulePath.GetRelativeLinkPath(), *projectDictionary);
 			}
 		}
 
@@ -105,14 +111,16 @@ namespace Exporter
 
 	//---------------------------------------------------------------------
 	void HtmlExporter::ExportFiles(
+		cov::CoverageRateComputer& coverageRateComputer,
 		const cov::ModuleCoverage& module,
 		const HtmlFolderStructure& htmlFolderStructure, 
 		ctemplate::TemplateDictionary& moduleTemplateDictionary) const
 	{
-		for (const auto& file : module.GetFiles())
+		for (const auto& file : coverageRateComputer.SortFilesByCoverageRate(module))
 		{
+			const auto& fileCoverageRate = coverageRateComputer.GetCoverageRate(*file);
 			boost::optional<fs::path> generatedOutput = ExportFile(htmlFolderStructure, *file);
-			exporter_.AddFileSectionToDictionary(*file, generatedOutput.get_ptr(), moduleTemplateDictionary);
+			exporter_.AddFileSectionToDictionary(file->GetPath(), fileCoverageRate, generatedOutput.get_ptr(), moduleTemplateDictionary);
 		}
 	}
 

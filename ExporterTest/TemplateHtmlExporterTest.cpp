@@ -21,8 +21,7 @@
 #include "Exporter/ExporterException.hpp"
 
 #include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/FileCoverage.hpp"
-#include "CppCoverage/ModuleCoverage.hpp"
+#include "CppCoverage/CoverageRate.hpp"
 #include "Tools/Tool.hpp"
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
@@ -92,6 +91,7 @@ namespace ExporterTest
 		Exporter::TemplateHtmlExporter templateHtmlExporter_;	
 		Tools::TemporaryPath fileOutput_;
 		fs::path filePath_;
+		cov::CoverageRate coverageRate_;
 	};
 
 	//-------------------------------------------------------------------------
@@ -103,25 +103,25 @@ namespace ExporterTest
 
 	//-------------------------------------------------------------------------
 	TEST_F(TemplateHtmlExporterTest, AddFileSectionToDictionary)
-	{			
-		CppCoverage::FileCoverage fileCoverage{filePath_};
-		templateHtmlExporter_.AddFileSectionToDictionary(fileCoverage, &fileOutput_.GetPath(), *templateDictionary_);
+	{					
+		templateHtmlExporter_.AddFileSectionToDictionary(filePath_, coverageRate_, 
+			&fileOutput_.GetPath(), *templateDictionary_);
 		CheckItems();
 	}
 
 	//-------------------------------------------------------------------------
 	TEST_F(TemplateHtmlExporterTest, AddModuleSectionToDictionary)
-	{
-		CppCoverage::ModuleCoverage moduleCoverage{ filePath_ };
-		templateHtmlExporter_.AddModuleSectionToDictionary(moduleCoverage, fileOutput_.GetPath(), *templateDictionary_);
+	{	
+		templateHtmlExporter_.AddModuleSectionToDictionary(filePath_, coverageRate_, 
+			fileOutput_.GetPath(), *templateDictionary_);
 		CheckItems();
 	}
 
 	//-------------------------------------------------------------------------
 	TEST_F(TemplateHtmlExporterTest, AddFileSectionToDictionaryNoLink)
-	{
-		CppCoverage::FileCoverage fileCoverage{ filePath_ };
-		templateHtmlExporter_.AddFileSectionToDictionary(fileCoverage, nullptr, *templateDictionary_);
+	{		
+		templateHtmlExporter_.AddFileSectionToDictionary(filePath_, coverageRate_,
+			nullptr, *templateDictionary_);
 		auto itemSection = GetSection(*peer_, Exporter::TemplateHtmlExporter::MainTemplateItemSection);
 
 		ASSERT_EQ(0, GetSectionDictionaries(*itemSection, 
@@ -133,8 +133,8 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST_F(TemplateHtmlExporterTest, FileExists)
 	{		
-		CppCoverage::ModuleCoverage moduleCoverage{ filePath_ };
-		templateHtmlExporter_.AddModuleSectionToDictionary(moduleCoverage, ".", *templateDictionary_);			
+		templateHtmlExporter_.AddModuleSectionToDictionary(filePath_, coverageRate_,
+			".", *templateDictionary_);
 		templateHtmlExporter_.GenerateModuleTemplate(*templateDictionary_, fileOutput_.GetPath());
 
 		ASSERT_TRUE(fs::exists(fileOutput_.GetPath()));
@@ -143,8 +143,8 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST_F(TemplateHtmlExporterTest, FileNotExists)
 	{
-		CppCoverage::ModuleCoverage moduleCoverage{ filePath_ };
-		templateHtmlExporter_.AddModuleSectionToDictionary(moduleCoverage, "MissingFile", *templateDictionary_);
+		templateHtmlExporter_.AddModuleSectionToDictionary(filePath_, coverageRate_,
+			"MissingFile", *templateDictionary_);
 
 		ASSERT_THROW(templateHtmlExporter_.GenerateModuleTemplate(*templateDictionary_, fileOutput_.GetPath()), Exporter::ExporterException);
 	}

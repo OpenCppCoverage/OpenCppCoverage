@@ -21,26 +21,17 @@ namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
 	CoverageRate::CoverageRate()
-		: executedLinesCount_{ 0 }
-	, unexecutedLinesCount_{ 0 }
+		: CoverageRate{ 0, 0}
 	{
 	}
 
 	//-------------------------------------------------------------------------
-	CoverageRate& CoverageRate::operator=(const CoverageRate&) = default;
+	CoverageRate::CoverageRate(int executedLinesCount, int unexecutedLinesCount)
+		: executedLinesCount_{ executedLinesCount }
+		, unexecutedLinesCount_{ unexecutedLinesCount }
+	{
+	}
 		
-	//-------------------------------------------------------------------------
-	void CoverageRate::SetExecutedLinesCount(int executedLinesCount)
-	{
-		executedLinesCount_ = executedLinesCount;
-	}
-
-	//-------------------------------------------------------------------------
-	void CoverageRate::SetUnexecutedLinesCount(int unexecutedLinesCount)
-	{
-		unexecutedLinesCount_ = unexecutedLinesCount;
-	}
-
 	//-------------------------------------------------------------------------
 	int CoverageRate::GetExecutedLinesCount() const
 	{
@@ -68,4 +59,14 @@ namespace CppCoverage
 			return 100;
 		return (executedLinesCount_ * 100) / (executedLinesCount_ + unexecutedLinesCount_);
 	}
+
+	//-------------------------------------------------------------------------
+	CoverageRate& CoverageRate::operator+=(const CoverageRate& coverageRate)
+	{
+		executedLinesCount_ += coverageRate.executedLinesCount_;
+		unexecutedLinesCount_ += coverageRate.unexecutedLinesCount_;
+
+		return *this;
+	}
+
 }

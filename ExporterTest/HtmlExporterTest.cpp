@@ -86,7 +86,6 @@ namespace ExporterTest
 		file2.AddLine(0, true);
 		
 		data.AddModule(L"Module2.exe");		
-		data.ComputeCoverageRate();
 
 		htmlExporter_.Export(data, output_);
 

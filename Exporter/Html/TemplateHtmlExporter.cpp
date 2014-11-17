@@ -30,6 +30,7 @@
 #include "CppCoverage/CoverageData.hpp"
 #include "CppCoverage/ModuleCoverage.hpp"
 #include "CppCoverage/FileCoverage.hpp"
+#include "CppCoverage/CoverageRate.hpp"
 
 #include "../ExporterException.hpp"
 
@@ -197,28 +198,28 @@ namespace Exporter
 
 	//-------------------------------------------------------------------------
 	void TemplateHtmlExporter::AddFileSectionToDictionary(
-		const cov::FileCoverage& fileCoverage,
+		const fs::path& originalFilename,
+		const cov::CoverageRate& coverageRate,
 		const fs::path* fileOutput,		
 		ctemplate::TemplateDictionary& moduleTemplateDictionary) const
 	{
 		auto sectionDictionary = moduleTemplateDictionary.AddSectionDictionary(MainTemplateItemSection);
-		auto filePath = fileCoverage.GetPath();
-
+		
 		moduleTemplateDictionary.SetValue(thirdPartyPathTemplate, "../third-party");
-		FillSection(*sectionDictionary, fileOutput, fileCoverage.GetCoverageRate(), filePath.string());
+		FillSection(*sectionDictionary, fileOutput, coverageRate, originalFilename.string());
 	}
 	
 	//-------------------------------------------------------------------------
 	void TemplateHtmlExporter::AddModuleSectionToDictionary(			
-		const cov::ModuleCoverage& moduleCoverage,
+		const fs::path& originalFilename,
+		const cov::CoverageRate& coverageRate,
 		const fs::path& moduleOutput,
 		ctemplate::TemplateDictionary& projectDictionary) const
 	{
-		auto sectionDictionary = projectDictionary.AddSectionDictionary(MainTemplateItemSection);
-		auto path = moduleCoverage.GetPath();									
+		auto sectionDictionary = projectDictionary.AddSectionDictionary(MainTemplateItemSection);			
 			
 		projectDictionary.SetValue(thirdPartyPathTemplate, "third-party");
-		FillSection(*sectionDictionary, &moduleOutput, moduleCoverage.GetCoverageRate(), path.string());
+		FillSection(*sectionDictionary, &moduleOutput, coverageRate, originalFilename.string());
 	}				
 	
 	//-------------------------------------------------------------------------

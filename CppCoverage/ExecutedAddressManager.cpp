@@ -179,7 +179,6 @@ namespace CppCoverage
 			}			
 		}
 
-		coverageData.ComputeCoverageRate();
 		return coverageData;
 	}
 }
