@@ -28,6 +28,7 @@
 
 #include "Exporter/Html/HtmlExporter.hpp"
 #include "Exporter/CoberturaExporter.hpp"
+#include "Exporter/Binary/BinaryExporter.hpp"
 
 #include "Tools/Tool.hpp"
 #include "Tools/Log.hpp"
@@ -51,6 +52,8 @@ namespace OpenCppCoverage
 				std::unique_ptr<Exporter::IExporter>(new Exporter::HtmlExporter{ Tools::GetTemplateFolder() }));
 			exporters.emplace(cov::OptionsExportType::Cobertura, 
 				std::unique_ptr<Exporter::IExporter>(new Exporter::CoberturaExporter{}));
+			exporters.emplace(cov::OptionsExportType::Binary,
+				std::unique_ptr<Exporter::IExporter>(new Exporter::BinaryExporter{}));
 			
 			auto path = options.GetStartInfo().GetPath();
 			fs::path runningCommandFilenamePath = path.filename().replace_extension("");

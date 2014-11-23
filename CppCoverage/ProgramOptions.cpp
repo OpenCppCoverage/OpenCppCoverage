@@ -120,6 +120,7 @@ namespace CppCoverage
 	const std::string ProgramOptions::ExportTypeOption = "export_type";
 	const std::string ProgramOptions::ExportTypeHtmlValue = "html";
 	const std::string ProgramOptions::ExportTypeCoberturaValue = "cobertura";
+	const std::string ProgramOptions::ExportTypeBinaryValue = "binary";
 
 	//-------------------------------------------------------------------------
 	ProgramOptions::ProgramOptions(const std::vector<std::string>& exportTypes)

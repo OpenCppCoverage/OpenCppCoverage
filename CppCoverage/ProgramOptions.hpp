@@ -39,7 +39,8 @@ namespace CppCoverage
 		static const std::string ProgramToRunArgOption;
 		static const std::string ExportTypeOption;
 		static const std::string ExportTypeHtmlValue;
-		static const std::string ExportTypeCoberturaValue;		
+		static const std::string ExportTypeCoberturaValue;	
+		static const std::string ExportTypeBinaryValue;
 
 		ProgramOptions(const std::vector<std::string>& optionsExportTypes);
 

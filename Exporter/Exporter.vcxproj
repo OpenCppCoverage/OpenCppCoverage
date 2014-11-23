@@ -173,6 +173,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Binary\BinaryExporter.hpp" />
     <ClInclude Include="Binary\CoverageData.pb.h" />
     <ClInclude Include="Binary\ProtoBuff.hpp" />
     <ClInclude Include="CoberturaExporter.hpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Binary\BinaryExporter.cpp" />
     <ClCompile Include="Binary\CoverageData.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

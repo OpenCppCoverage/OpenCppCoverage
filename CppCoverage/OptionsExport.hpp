@@ -26,7 +26,8 @@ namespace CppCoverage
 	enum class OptionsExportType
 	{
 		Html,
-		Cobertura
+		Cobertura,
+		Binary
 	};
 
 	class CPPCOVERAGE_DLL OptionsExport

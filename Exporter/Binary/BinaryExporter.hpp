@@ -16,34 +16,22 @@
 
 #pragma once
 
-#include <string>
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
-
-namespace CppCoverage
-{
-	class CoverageData;
-}
+#include "../ExporterExport.hpp"
+#include "../IExporter.hpp"
 
 namespace Exporter
 {
-	class EXPORTER_DLL IExporter
+	class EXPORTER_DLL BinaryExporter : public IExporter
 	{
 	public:
-		IExporter() = default;
+		BinaryExporter() = default;
 
-		virtual boost::filesystem::path GetDefaultPath(const std::wstring& runningCommandFilename) const = 0;
-		virtual void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& output) const = 0;
+		boost::filesystem::path GetDefaultPath(const std::wstring& runningCommandFilename) const override;
+		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& output) const override;
 
 	private:
-		IExporter(const IExporter&) = delete;
-		IExporter& operator=(const IExporter&) = delete;
+		BinaryExporter(const BinaryExporter&) = delete;
+		BinaryExporter& operator=(const BinaryExporter&) = delete;
 	};
 }
 

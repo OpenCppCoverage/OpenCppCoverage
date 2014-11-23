@@ -47,7 +47,8 @@ namespace CppCoverage
 	{
 		static const std::map<OptionsExportType, std::wstring> optionsExportTypeTexts =
 		{ { OptionsExportType::Html, L"Html" },
-		  { OptionsExportType::Cobertura, L"Cobertura" } };
+		{ OptionsExportType::Cobertura, L"Cobertura" },
+		{ OptionsExportType::Binary, L"Binary" } };
 
 		return optionsExportTypeTexts.at(type_);
 	}

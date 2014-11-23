@@ -176,6 +176,7 @@ namespace CppCoverage
 	{
 		exportTypes_.emplace(ProgramOptions::ExportTypeHtmlValue, OptionsExportType::Html);
 		exportTypes_.emplace(ProgramOptions::ExportTypeCoberturaValue, OptionsExportType::Cobertura);
+		exportTypes_.emplace(ProgramOptions::ExportTypeBinaryValue, OptionsExportType::Binary);
 
 		std::vector<std::string> optionsExportTypes;
 
