@@ -1,0 +1,26 @@
+package ProtoBuff;
+
+message LineCoverage
+{	
+	required uint32 lineNumber = 1;
+	required bool hasBeenExecuted = 2;
+}
+
+message FileCoverage
+{	
+	required string path = 1;									
+	repeated LineCoverage lines = 2;
+}
+
+message ModuleCoverage
+{	
+	required string path = 1;			
+	repeated FileCoverage files = 2;
+}
+
+message CoverageData
+{
+	required string name = 1;
+	required int32 exitCode = 2;	
+	required uint64 moduleCount = 3;	
+}

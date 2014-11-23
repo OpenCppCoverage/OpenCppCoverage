@@ -55,6 +55,7 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\CTemplate.Debug.props" />
+    <Import Project="..\PropertySheets\ProtoBuff.Debug.props" />
     <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\Default.props" />
   </ImportGroup>
@@ -62,16 +63,19 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\CTemplate.Debug.x64.props" />
     <Import Project="..\PropertySheets\Boost.64.props" />
+    <Import Project="..\PropertySheets\ProtoBuff.Debug.X64.props" />
     <Import Project="..\PropertySheets\Default.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
+    <Import Project="..\PropertySheets\ProtoBuff.Release.props" />
     <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\CTemplate.Release.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\PropertySheets\ProtoBuff.Release.x64.props" />
     <Import Project="..\PropertySheets\Default.props" />
     <Import Project="..\PropertySheets\Boost.64.props" />
     <Import Project="..\PropertySheets\CTemplate.Release.x64.props" />
@@ -95,6 +99,9 @@
     <PostBuildEvent>
       <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>"$(PROTOC_PATH)" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -113,6 +120,9 @@
     <PostBuildEvent>
       <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>"$(PROTOC_PATH)" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -134,6 +144,9 @@
     <PostBuildEvent>
       <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>"$(PROTOC_PATH)" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -155,9 +168,16 @@
     <PostBuildEvent>
       <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>"$(PROTOC_PATH)" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Binary\CoverageData.pb.h" />
+    <ClInclude Include="Binary\ProtoBuff.hpp" />
     <ClInclude Include="CoberturaExporter.hpp" />
+    <ClInclude Include="Binary\CoverageDataSerializer.hpp" />
+    <ClInclude Include="Binary\CoverageDataDeserializer.hpp" />
     <ClInclude Include="ExporterException.hpp" />
     <ClInclude Include="ExporterExport.hpp" />
     <ClInclude Include="Html\CTemplate.hpp" />
@@ -170,7 +190,17 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Binary\CoverageData.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
     <ClCompile Include="CoberturaExporter.cpp" />
+    <ClCompile Include="Binary\CoverageDataSerializer.cpp" />
+    <ClCompile Include="Binary\CoverageDataDeserializer.cpp" />
     <ClCompile Include="ExporterException.cpp" />
     <ClCompile Include="Html\HtmlExporter.cpp" />
     <ClCompile Include="Html\HtmlFile.cpp" />
@@ -191,6 +221,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Binary\CoverageData.proto" />
     <None Include="Html\Template\MainTemplate.html">
       <SubType>Designer</SubType>
     </None>

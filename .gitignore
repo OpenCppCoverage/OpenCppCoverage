@@ -11,3 +11,6 @@ ipch/*
 *.user
 CoverageReport-*
 NewRelease
+
+# ProtoBuff files
+*.pb.*
