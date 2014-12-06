@@ -173,6 +173,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CodeCoverageRunnerTest.cpp" />
+    <ClCompile Include="CoverageDataMergerRandomTest.cpp" />
+    <ClCompile Include="CoverageDataMergerTest.cpp" />
     <ClCompile Include="CoverageDataTest.cpp" />
     <ClCompile Include="CoverageFilterTest.cpp" />
     <ClCompile Include="CoverageRateComputerTest.cpp" />
@@ -183,6 +185,7 @@
     <ClCompile Include="DebugInformationTest.cpp" />
     <ClCompile Include="ExceptionHandlerTest.cpp" />
     <ClCompile Include="ExecutedAddressManagerTest.cpp" />
+    <ClCompile Include="FileCoverageTest.cpp" />
     <ClCompile Include="HandleInformationTest.cpp" />
     <ClCompile Include="OptionsParserConfigTest.cpp" />
     <ClCompile Include="OptionsParserExportTest.cpp" />

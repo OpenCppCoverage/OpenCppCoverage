@@ -157,6 +157,7 @@
     <ClInclude Include="BreakPoint.hpp" />
     <ClInclude Include="CodeCoverageRunner.hpp" />
     <ClInclude Include="CoverageData.hpp" />
+    <ClInclude Include="CoverageDataMerger.hpp" />
     <ClInclude Include="CoverageFilter.hpp" />
     <ClInclude Include="CoverageRate.hpp" />
     <ClInclude Include="CoverageRateComputer.hpp" />
@@ -188,6 +189,7 @@
     <ClCompile Include="BreakPoint.cpp" />
     <ClCompile Include="CodeCoverageRunner.cpp" />
     <ClCompile Include="CoverageData.cpp" />
+    <ClCompile Include="CoverageDataMerger.cpp" />
     <ClCompile Include="CoverageFilter.cpp" />
     <ClCompile Include="CoverageRate.cpp" />
     <ClCompile Include="CoverageRateComputer.cpp" />

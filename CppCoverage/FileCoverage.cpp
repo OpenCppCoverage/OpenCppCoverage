@@ -30,10 +30,19 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	void FileCoverage::AddLine(unsigned int lineNumber, bool hasBeenExecuted)
 	{
-		LineCoverage line{lineNumber, hasBeenExecuted};
+		LineCoverage line{ lineNumber, hasBeenExecuted };
 
 		if (!lines_.emplace(lineNumber, line).second)
 			THROW(L"Line " << lineNumber << L" already exists for " << path_.wstring());
+	}
+
+	//-------------------------------------------------------------------------
+	void FileCoverage::UpdateLine(unsigned int lineNumber, bool hasBeenExecuted)
+	{
+		if (!lines_.erase(lineNumber))
+			THROW(L"Line " << lineNumber << L" does not exists and cannot be updated for " << path_.wstring());
+
+		AddLine(lineNumber, hasBeenExecuted);
 	}
 
 	//-------------------------------------------------------------------------
@@ -62,5 +71,5 @@ namespace CppCoverage
 			lines.push_back(pair.second);
 		
 		return lines;
-	}
+	}	
 }

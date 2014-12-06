@@ -31,7 +31,8 @@ namespace CppCoverage
 		explicit FileCoverage(const boost::filesystem::path& path);
 
 		void AddLine(unsigned int lineNumber, bool hasBeenExecuted);
-				
+		void UpdateLine(unsigned int lineNumber, bool hasBeenExecuted);
+
 		const boost::filesystem::path& GetPath() const;
 		const LineCoverage* operator[](unsigned int line) const;
 		std::vector<LineCoverage> GetLines() const;
