@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppCoverage", "CppCoverage\CppCoverage.vcxproj", "{A50DD5A6-E85A-4E0B-9CC6-90D32503CE62}"
 EndProject
@@ -33,6 +33,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenCppCoverageTest", "Open
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tools", "Tools\Tools.vcxproj", "{7F6D05EF-DEB0-4C64-BD13-A85F46314B91}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestHelper", "TestHelper\TestHelper.vcxproj", "{120D7BDF-3B21-48B7-8EB7-DAD94F863026}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,6 +116,14 @@ Global
 		{7F6D05EF-DEB0-4C64-BD13-A85F46314B91}.Release|Win32.Build.0 = Release|Win32
 		{7F6D05EF-DEB0-4C64-BD13-A85F46314B91}.Release|x64.ActiveCfg = Release|x64
 		{7F6D05EF-DEB0-4C64-BD13-A85F46314B91}.Release|x64.Build.0 = Release|x64
+		{120D7BDF-3B21-48B7-8EB7-DAD94F863026}.Debug|Win32.ActiveCfg = Debug|Win32
+		{120D7BDF-3B21-48B7-8EB7-DAD94F863026}.Debug|Win32.Build.0 = Debug|Win32
+		{120D7BDF-3B21-48B7-8EB7-DAD94F863026}.Debug|x64.ActiveCfg = Debug|x64
+		{120D7BDF-3B21-48B7-8EB7-DAD94F863026}.Debug|x64.Build.0 = Debug|x64
+		{120D7BDF-3B21-48B7-8EB7-DAD94F863026}.Release|Win32.ActiveCfg = Release|Win32
+		{120D7BDF-3B21-48B7-8EB7-DAD94F863026}.Release|Win32.Build.0 = Release|Win32
+		{120D7BDF-3B21-48B7-8EB7-DAD94F863026}.Release|x64.ActiveCfg = Release|x64
+		{120D7BDF-3B21-48B7-8EB7-DAD94F863026}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

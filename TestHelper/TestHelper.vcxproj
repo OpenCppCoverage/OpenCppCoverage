@@ -19,32 +19,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{4360D299-2F7D-462E-B7EF-0670FD06F478}</ProjectGuid>
+    <ProjectGuid>{120D7BDF-3B21-48B7-8EB7-DAD94F863026}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>CppCoverageTest</RootNamespace>
+    <RootNamespace>TestHelper</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -55,31 +55,23 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\PropertySheets\GMock.Debug.props" />
-    <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\Default.props" />
-    <Import Project="..\PropertySheets\TestCoverageConsole.props" />
+    <Import Project="..\PropertySheets\Boost.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
-    <Import Project="..\PropertySheets\TestCoverageConsole.props" />
     <Import Project="..\PropertySheets\Boost.64.props" />
-    <Import Project="..\PropertySheets\GMock.Debug.x64.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\PropertySheets\GMock.Release.props" />
-    <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\Default.props" />
-    <Import Project="..\PropertySheets\TestCoverageConsole.props" />
+    <Import Project="..\PropertySheets\Boost.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
-    <Import Project="..\PropertySheets\TestCoverageConsole.props" />
     <Import Project="..\PropertySheets\Boost.64.props" />
-    <Import Project="..\PropertySheets\GMock.Release.x64.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -99,14 +91,12 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_USRDLL;TEST_HELPER_EXPORTS;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -114,14 +104,12 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_USRDLL;TEST_HELPER_EXPORTS;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -131,16 +119,14 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions);SOLUTION_DIR=$(SolutionDir);SOLUTION_DIR="$(SolutionDir)";SOLUTION_DIR=#"$(SolutionDir)"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_USRDLL;TEST_HELPER_EXPORTS;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -150,71 +136,30 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions);SOLUTION_DIR=$(SolutionDir);SOLUTION_DIR="$(SolutionDir)";SOLUTION_DIR=#"$(SolutionDir)"</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_USRDLL;TEST_HELPER_EXPORTS;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DebugEventsMock.hpp" />
-    <ClInclude Include="DebugInformationEventHandlerMock.hpp" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TestTools.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="CodeCoverageRunnerTest.cpp" />
-    <ClCompile Include="CoverageDataMergerRandomTest.cpp" />
-    <ClCompile Include="CoverageDataMergerTest.cpp" />
-    <ClCompile Include="CoverageDataTest.cpp" />
-    <ClCompile Include="CoverageFilterTest.cpp" />
-    <ClCompile Include="CoverageRateComputerTest.cpp" />
-    <ClCompile Include="CoverageRateTest.cpp" />
-    <ClCompile Include="CppCoverageExceptionTest.cpp" />
-    <ClCompile Include="CppCoverageTest.cpp" />
-    <ClCompile Include="DebuggerTest.cpp" />
-    <ClCompile Include="DebugInformationTest.cpp" />
-    <ClCompile Include="ExceptionHandlerTest.cpp" />
-    <ClCompile Include="ExecutedAddressManagerTest.cpp" />
-    <ClCompile Include="FileCoverageTest.cpp" />
-    <ClCompile Include="HandleInformationTest.cpp" />
-    <ClCompile Include="OptionsParserConfigTest.cpp" />
-    <ClCompile Include="OptionsParserExportTest.cpp" />
-    <ClCompile Include="OptionsParserPatternTest.cpp" />
-    <ClCompile Include="OptionsParserTest.cpp" />
-    <ClCompile Include="ProcessTest.cpp" />
-    <ClCompile Include="StartInfoTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TestTools.cpp" />
-    <ClCompile Include="WildcardsTest.cpp" />
+    <ClCompile Include="TemporaryPath.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CppCoverage\CppCoverage.vcxproj">
-      <Project>{a50dd5a6-e85a-4e0b-9cc6-90d32503ce62}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\TestCoverageSharedLib\TestCoverageSharedLib.vcxproj">
-      <Project>{0481b51c-98f1-4e92-a51e-162b77ecd939}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\TestHelper\TestHelper.vcxproj">
-      <Project>{120d7bdf-3b21-48b7-8eb7-dad94f863026}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Tools\Tools.vcxproj">
-      <Project>{7f6d05ef-deb0-4c64-bd13-a85f46314b91}</Project>
-    </ProjectReference>
+    <ClInclude Include="TemporaryPath.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

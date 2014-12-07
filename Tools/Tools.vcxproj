@@ -157,7 +157,6 @@
     <ClInclude Include="ExceptionBase.hpp" />
     <ClInclude Include="Log.hpp" />
     <ClInclude Include="ScopedAction.hpp" />
-    <ClInclude Include="TemporaryPath.hpp" />
     <ClInclude Include="ToolsExport.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tool.hpp" />
@@ -186,7 +185,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TemporaryPath.cpp" />
     <ClCompile Include="Tool.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

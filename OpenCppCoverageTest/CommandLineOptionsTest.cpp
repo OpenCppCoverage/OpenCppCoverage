@@ -18,7 +18,7 @@
 
 #include <boost/filesystem.hpp>
 
-#include "tools/TemporaryPath.hpp"
+#include "TestHelper/TemporaryPath.hpp"
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
 #include "OpenCppCoverage/OpenCppCoverage.hpp"
@@ -92,7 +92,7 @@ namespace OpenCppCoverageTest
 			}
 
 		private:
-			Tools::TemporaryPath tempFolder_;
+			TestHelper::TemporaryPath tempFolder_;
 		};
 	}
 	

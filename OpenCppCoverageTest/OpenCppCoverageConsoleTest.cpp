@@ -25,7 +25,7 @@
 
 #include "Tools/ScopedAction.hpp"
 #include "Tools/Tool.hpp"
-#include "Tools/TemporaryPath.hpp"
+#include "TestHelper/TemporaryPath.hpp"
 
 #include "OpenCppCoverageTestTools.hpp"
 
@@ -37,7 +37,7 @@ namespace OpenCppCoverageTest
 	namespace
 	{
 		//---------------------------------------------------------------------
-		void CheckOutputDirectory(const Tools::TemporaryPath& tempFolder)
+		void CheckOutputDirectory(const TestHelper::TemporaryPath& tempFolder)
 		{			
 			ASSERT_FALSE(fs::is_empty(tempFolder.GetPath()));
 		}
@@ -47,7 +47,7 @@ namespace OpenCppCoverageTest
 			const fs::path& programToRun,
 			const std::vector<std::wstring>& arguments)
 		{
-			Tools::TemporaryPath tempFolder;
+			TestHelper::TemporaryPath tempFolder;
 			
 			std::vector<std::pair<std::string, std::string>> coverageArguments{
 				{ cov::ProgramOptions::SelectedModulesOption, programToRun.string() },

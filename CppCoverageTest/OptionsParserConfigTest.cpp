@@ -24,7 +24,7 @@
 
 #include "CppCoverageTest/TestTools.hpp"
 
-#include "Tools/TemporaryPath.hpp"
+#include "TestHelper/TemporaryPath.hpp"
 #include "Tools/Tool.hpp"
 
 namespace cov = CppCoverage;
@@ -39,7 +39,7 @@ namespace CppCoverageTest
 			const std::vector<std::pair<std::string, std::wstring>>& commandLineArguments)
 		{
 			cov::OptionsParser parser;
-			Tools::TemporaryPath path;
+			TestHelper::TemporaryPath path;
 			std::wofstream ofs(path.GetPath().string().c_str());
 
 			for (const auto& argument : configArguments)
@@ -76,8 +76,8 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserConfigTest, ConfigurationFileCmdLineOverride)
 	{
-		Tools::TemporaryPath directory1{true};
-		Tools::TemporaryPath directory2{true};
+		TestHelper::TemporaryPath directory1{true};
+		TestHelper::TemporaryPath directory2{true};
 		
 		auto options = MutipleSourceParse(
 		{ { cov::ProgramOptions::WorkingDirectoryOption, directory1.GetPath().wstring() } },

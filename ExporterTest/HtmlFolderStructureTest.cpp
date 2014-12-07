@@ -18,7 +18,7 @@
 
 #include "Exporter/Html/HtmlFolderStructure.hpp"
 
-#include "Tools/TemporaryPath.hpp"
+#include "TestHelper/TemporaryPath.hpp"
 
 namespace fs = boost::filesystem;
 
@@ -46,8 +46,8 @@ namespace ExporterTest
 
 			std::unique_ptr<Exporter::HtmlFolderStructure> htmlFolderStructure_;
 
-			Tools::TemporaryPath templateFolder_;
-			Tools::TemporaryPath outputFolder_;
+			TestHelper::TemporaryPath templateFolder_;
+			TestHelper::TemporaryPath outputFolder_;
 		};
 		
 		//-------------------------------------------------------------------------

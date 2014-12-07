@@ -23,7 +23,7 @@
 #include "CppCoverageTest/TestTools.hpp"
 
 #include "Tools/Tool.hpp"
-#include "Tools/TemporaryPath.hpp"
+#include "TestHelper/TemporaryPath.hpp"
 
 namespace cov = CppCoverage;
 namespace fs = boost::filesystem;
@@ -129,7 +129,7 @@ namespace CppCoverageTest
 	TEST(OptionsParserTest, InputCoverage)
 	{
 		cov::OptionsParser parser;		
-		Tools::TemporaryPath temporaryPath{ true };
+		TestHelper::TemporaryPath temporaryPath{ true };
 		auto pathStr = temporaryPath.GetPath().string();
 
 		auto options = TestTools::Parse(parser, 

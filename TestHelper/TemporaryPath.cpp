@@ -17,11 +17,11 @@
 #include "stdafx.h"
 #include "TemporaryPath.hpp"
 
-#include "Log.hpp"
+#include "Tools/Log.hpp"
 
 namespace fs = boost::filesystem;
 
-namespace Tools
+namespace TestHelper
 {
 	//-------------------------------------------------------------------------	
 	TemporaryPath::TemporaryPath(bool createPath)

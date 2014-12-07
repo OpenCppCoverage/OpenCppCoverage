@@ -16,26 +16,10 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
+#ifdef TEST_HELPER_EXPORTS
+#define TEST_HELPER_DLL __declspec(dllexport)
+#else
+#define TEST_HELPER_DLL _declspec(dllimport)
+#endif
 
-#include "ToolsExport.hpp"
-
-namespace Tools
-{
-	class TOOLS_DLL TemporaryPath
-	{
-	public:
-		explicit TemporaryPath(bool createPath = false);
-		~TemporaryPath();
-
-		operator const boost::filesystem::path& () const;
-		const boost::filesystem::path& GetPath() const;
-
-	private:
-		TemporaryPath(const TemporaryPath&) = delete;
-		TemporaryPath& operator=(const TemporaryPath&) = delete;
-
-	private:
-		boost::filesystem::path path_;
-	};
-}
+#pragma warning (disable: 4251)

@@ -22,7 +22,7 @@
 
 #include "CppCoverageTest/TestTools.hpp"
 
-#include "tools/TemporaryPath.hpp"
+#include "TestHelper/TemporaryPath.hpp"
 
 namespace cov = CppCoverage;
 
@@ -106,7 +106,7 @@ namespace CppCoverageTest
 	TEST(OptionsParserExportTest, InvalidOutputPath)
 	{	
 		cov::OptionsParser parser;
-		Tools::TemporaryPath temporaryPath{ true };
+		TestHelper::TemporaryPath temporaryPath{ true };
 
 		std::string exportStr = cov::ProgramOptions::ExportTypeHtmlValue + 
 			cov::OptionsParser::ExportSeparator + temporaryPath.GetPath().string();
