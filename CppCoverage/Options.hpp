@@ -48,6 +48,9 @@ namespace CppCoverage
 		void AddExport(const OptionsExport&);
 		const std::vector<OptionsExport>& GetExports() const;
 		
+		void AddInputCoveragePath(const boost::filesystem::path&);
+		const std::vector<boost::filesystem::path>& GetInputCoveragePaths() const;
+
 		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream&, const Options&);
 
 	private:
@@ -59,6 +62,7 @@ namespace CppCoverage
 		CppCoverage::Patterns modules_;
 		CppCoverage::Patterns sources_;
 		bool verboseModeSelected_;
-		std::vector<OptionsExport> exports_;		
+		std::vector<OptionsExport> exports_;
+		std::vector<boost::filesystem::path> inputCoveragePaths_;
 	};
 }

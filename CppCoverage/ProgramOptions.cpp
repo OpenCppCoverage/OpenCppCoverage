@@ -89,6 +89,9 @@ namespace CppCoverage
 				(ProgramOptions::ExcludedSourcesOption.c_str(),
 				po::value<T_Strings>()->composing(),
 				"The pattern that source's paths should NOT match. Can have multiple occurrences.")
+				(ProgramOptions::InputCoverageValue.c_str(), po::value<T_Strings>()->composing(),
+				("A output path of " + ProgramOptions::ExportTypeOption + "=" + ProgramOptions::ExportTypeBinaryValue +
+				". This coverage data will be merged with the current one. Can have multiple occurrences.").c_str())
 				(ProgramOptions::ExportTypeOption.c_str(),
 				po::value<T_Strings>()->default_value({ ProgramOptions::ExportTypeHtmlValue }, ProgramOptions::ExportTypeHtmlValue),
 				GetExportTypeText(exportTypes).c_str())
@@ -121,7 +124,8 @@ namespace CppCoverage
 	const std::string ProgramOptions::ExportTypeHtmlValue = "html";
 	const std::string ProgramOptions::ExportTypeCoberturaValue = "cobertura";
 	const std::string ProgramOptions::ExportTypeBinaryValue = "binary";
-
+	const std::string ProgramOptions::InputCoverageValue = "input_coverage";
+	
 	//-------------------------------------------------------------------------
 	ProgramOptions::ProgramOptions(const std::vector<std::string>& exportTypes)
 		: visibleOptions_{ "Usage: [options] -- program_to_run optional_arguments" }

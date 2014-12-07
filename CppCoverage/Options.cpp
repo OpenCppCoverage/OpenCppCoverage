@@ -76,16 +76,32 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	void Options::AddInputCoveragePath(const boost::filesystem::path& path)
+	{
+		inputCoveragePaths_.push_back(path);
+	}
+
+	//-------------------------------------------------------------------------
+	const std::vector<boost::filesystem::path>& Options::GetInputCoveragePaths() const
+	{
+		return inputCoveragePaths_;
+	}
+
+	//-------------------------------------------------------------------------
 	std::wostream& operator<<(std::wostream& ostr, const Options& options)
 	{
 		ostr << options.startInfo_ << std::endl;
 		ostr << L"Modules: " << options.modules_ << std::endl;
 		ostr << L"Sources: " << options.sources_ << std::endl;
 		ostr << L"Verbose mode: " << options.verboseModeSelected_ << std::endl;
-		ostr << L"Export: ";
 
+		ostr << L"Export: ";
 		for (const auto& optionExport : options.exports_)
-			ostr << optionExport << " ";
+			ostr << optionExport << L" ";
+
+		ostr << L"Input coverage: ";
+		for (const auto& path : options.inputCoveragePaths_)
+			ostr << path.wstring() << L" ";
 		ostr << std::endl;
 		return ostr;
 	}

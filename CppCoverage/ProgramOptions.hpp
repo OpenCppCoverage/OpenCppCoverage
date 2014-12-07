@@ -41,6 +41,7 @@ namespace CppCoverage
 		static const std::string ExportTypeHtmlValue;
 		static const std::string ExportTypeCoberturaValue;	
 		static const std::string ExportTypeBinaryValue;
+		static const std::string InputCoverageValue;
 
 		ProgramOptions(const std::vector<std::string>& optionsExportTypes);
 

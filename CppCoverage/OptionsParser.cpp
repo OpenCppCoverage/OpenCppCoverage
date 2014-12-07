@@ -31,6 +31,7 @@
 
 namespace po = boost::program_options;
 namespace cov = CppCoverage;
+namespace fs = boost::filesystem;
 
 namespace CppCoverage
 {
@@ -166,6 +167,30 @@ namespace CppCoverage
 
 			return exportString;
 		}
+
+
+		//---------------------------------------------------------------------
+		void AddInputCoverages(
+			const po::variables_map& variables,
+			Options& options)
+		{
+			auto inputCoveragePaths =
+				GetOptionalValue<std::vector<std::string>>(variables, ProgramOptions::InputCoverageValue);
+
+			if (inputCoveragePaths)
+			{
+				for (const auto& path : *inputCoveragePaths)
+				{
+					if (!fs::exists(path))
+					{
+						throw OptionsParserException("Argument of " + 
+							ProgramOptions::InputCoverageValue + " <" + path + "> does not exist.");
+					}
+
+					options.AddInputCoveragePath(path);
+				}
+			}
+		}
 	}
 		
 	//-------------------------------------------------------------------------
@@ -253,15 +278,15 @@ namespace CppCoverage
 		if (IsOptionSelected(variables, ProgramOptions::VerboseOption))
 			options.SetVerboseModeSelected();
 
-		AddExporTypes(variables, *programOptions_, options);
-		
+		AddExporTypes(variables, options);
+		AddInputCoverages(variables, options);
+
 		return options;
 	}
 
 	//----------------------------------------------------------------------------
 	void OptionsParser::AddExporTypes(
 		const po::variables_map& variables,
-		const ProgramOptions& programOptions,
 		Options& options) const
 	{
 		auto exportTypeStrCollection = GetValue<std::vector<std::string>>(variables, ProgramOptions::ExportTypeOption);

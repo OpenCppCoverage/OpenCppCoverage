@@ -16,14 +16,17 @@
 
 #include "stdafx.h"
 
+#include <boost/filesystem.hpp>
 #include "CppCoverage/Options.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
 
 #include "CppCoverageTest/TestTools.hpp"
 
 #include "Tools/Tool.hpp"
+#include "Tools/TemporaryPath.hpp"
 
 namespace cov = CppCoverage;
+namespace fs = boost::filesystem;
 
 namespace CppCoverageTest
 {
@@ -120,5 +123,28 @@ namespace CppCoverageTest
 		ASSERT_TRUE(options);
 		ostr << *options;
 		ASSERT_LT(L"", ostr.str());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, InputCoverage)
+	{
+		cov::OptionsParser parser;		
+		Tools::TemporaryPath temporaryPath{ true };
+		auto pathStr = temporaryPath.GetPath().string();
+
+		auto options = TestTools::Parse(parser, 
+			{ TestTools::OptionPrefix + cov::ProgramOptions::InputCoverageValue, pathStr });
+		ASSERT_TRUE(options);		
+		ASSERT_EQ(pathStr, options->GetInputCoveragePaths().at(0).string());		
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, InvalidInputCoverage)
+	{
+		cov::OptionsParser parser;
+		std::wostringstream ostr;
+		ASSERT_FALSE(TestTools::Parse(parser, 
+		{ TestTools::OptionPrefix + cov::ProgramOptions::InputCoverageValue, "invalidPath" }, true, &ostr));
+		ASSERT_NE(L"", ostr.str());		
 	}
 }

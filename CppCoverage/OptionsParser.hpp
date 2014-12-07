@@ -57,7 +57,6 @@ namespace CppCoverage
 		
 		void AddExporTypes(
 			const boost::program_options::variables_map& variables,
-			const ProgramOptions& programOptions,
 			Options& options) const;
 
 		OptionsExport CreateExport(const std::string&) const;
