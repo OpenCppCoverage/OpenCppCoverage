@@ -26,7 +26,7 @@
 #include "Exporter/Binary/CoverageDataSerializer.hpp"
 #include "Exporter/Binary/CoverageDataDeserializer.hpp"
 
-#include "Helpers.hpp"
+#include "TestHelper/CoverageDataComparer.hpp"
 
 namespace cov = CppCoverage;
 using namespace testing;
@@ -34,48 +34,7 @@ using namespace testing;
 namespace ExporterTest
 {
 	namespace
-	{			
-		//---------------------------------------------------------------------
-		void CompareLine(
-			const cov::LineCoverage& line1,
-			const cov::LineCoverage& line2)
-		{
-			ASSERT_EQ(line1.GetLineNumber(), line2.GetLineNumber());
-			ASSERT_EQ(line1.HasBeenExecuted(), line2.HasBeenExecuted());
-		}
-
-		//---------------------------------------------------------------------
-		void CompareFile(
-			const cov::FileCoverage& file1,
-			const cov::FileCoverage& file2)
-		{
-			ASSERT_EQ(file1.GetPath(), file2.GetPath());
-			AssertContainerEqual(file1.GetLines(), file2.GetLines(), CompareLine);
-		}
-
-		//---------------------------------------------------------------------
-		void CompareModule(
-			const cov::ModuleCoverage& module1,
-			const cov::ModuleCoverage& module2)
-		{
-			ASSERT_EQ(module1.GetPath(), module2.GetPath());
-			AssertContainerUniquePtrEqual(module1.GetFiles(), module2.GetFiles(), CompareFile);
-		}
-
-		//---------------------------------------------------------------------
-		void Compare(
-			const CppCoverage::CoverageData& coverageData,
-			const CppCoverage::CoverageData& coverageDataRestored)
-		{
-			ASSERT_EQ(coverageData.GetName(), coverageDataRestored.GetName());
-			ASSERT_EQ(coverageData.GetExitCode(), coverageDataRestored.GetExitCode());
-
-			AssertContainerUniquePtrEqual(
-				coverageData.GetModules(), 
-				coverageDataRestored.GetModules(), 
-				CompareModule);
-		}
-
+	{					
 		//---------------------------------------------------------------------
 		struct CoverageDataSerializerTest : testing::Test
 		{
@@ -105,8 +64,8 @@ namespace ExporterTest
 
 		Exporter::CoverageDataDeserializer deserializer;		
 		auto coverageDataRestored = deserializer.Deserialize(sstream, "");
-		
-		Compare(mCoverageData, coverageDataRestored);
+
+		TestHelper::CoverageDataComparer().AssertEquals(mCoverageData, coverageDataRestored);
 	}
 
 	//-------------------------------------------------------------------------

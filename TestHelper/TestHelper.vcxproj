@@ -55,11 +55,13 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\PropertySheets\GMock.Debug.props" />
     <Import Project="..\PropertySheets\Default.props" />
     <Import Project="..\PropertySheets\Boost.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\PropertySheets\GMock.Debug.x64.props" />
     <Import Project="..\PropertySheets\Default.props" />
     <Import Project="..\PropertySheets\Boost.64.props" />
   </ImportGroup>
@@ -67,11 +69,13 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
     <Import Project="..\PropertySheets\Boost.props" />
+    <Import Project="..\PropertySheets\GMock.Release.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
     <Import Project="..\PropertySheets\Boost.64.props" />
+    <Import Project="..\PropertySheets\GMock.Release.x64.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -150,6 +154,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CoverageDataComparer.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -159,7 +164,17 @@
     <ClCompile Include="TemporaryPath.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Container.hpp" />
+    <ClInclude Include="CoverageDataComparer.hpp" />
     <ClInclude Include="TemporaryPath.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Container.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CppCoverage\CppCoverage.vcxproj">
+      <Project>{a50dd5a6-e85a-4e0b-9cc6-90d32503ce62}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
