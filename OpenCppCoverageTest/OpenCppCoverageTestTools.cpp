@@ -31,20 +31,36 @@ namespace cov = CppCoverage;
 namespace OpenCppCoverageTest
 {
 	//---------------------------------------------------------------------
-	int RunCoverageHtmlOn(
-		std::vector<std::pair<std::string, std::string>>& coverageArguments,
-		const boost::filesystem::path& outputFolder,
-		const boost::filesystem::path& programToRun,
-		const std::vector<std::wstring>& arguments)
-	{		
-		coverageArguments.push_back(
-		{ cov::ProgramOptions::ExportTypeOption, cov::ProgramOptions::ExportTypeHtmlValue + cov::OptionsParser::ExportSeparator + outputFolder.string() });
-		
-		return RunCoverageHtmlOn(coverageArguments, programToRun, arguments);
+	void AddDefaultFilters(
+		std::vector<std::pair<std::string, std::string>>& coverageArguments,	
+		const boost::filesystem::path& programToRun)
+	{
+		coverageArguments.push_back({ cov::ProgramOptions::SelectedModulesOption, programToRun.string() });
+		coverageArguments.push_back({ cov::ProgramOptions::SelectedSourcesOption, GetSolutionFolderName() });
 	}
 
 	//-------------------------------------------------------------------------
-	int RunCoverageHtmlOn(
+	void AddDefaultHtmlExport(
+		std::vector<std::pair<std::string, std::string>>& coverageArguments,
+		const boost::filesystem::path& outputFolder)
+	{
+		coverageArguments.push_back(
+		{ cov::ProgramOptions::ExportTypeOption, cov::ProgramOptions::ExportTypeHtmlValue
+		+ cov::OptionsParser::ExportSeparator + outputFolder.string() });		
+	}
+
+	//---------------------------------------------------------------------
+	std::pair<std::string, std::string> BuildExportTypeString(
+		const std::string& exportType,
+		const boost::filesystem::path& output)
+	{
+		return{
+			cov::ProgramOptions::ExportTypeOption,
+			exportType + cov::OptionsParser::ExportSeparator + output.string() };
+	}
+
+	//-------------------------------------------------------------------------
+	int RunCoverageFor(
 		const std::vector<std::pair<std::string, std::string>>& coverageArguments,
 		const boost::filesystem::path& programToRun,
 		const std::vector<std::wstring>& arguments)
@@ -64,7 +80,7 @@ namespace OpenCppCoverageTest
 		for (auto& argument : allCoverageArguments)
 			argument = "\"" + argument + "\"";
 
-		boost::filesystem::path openCppCoverage = OpenCppCoverage::GetOutputBinaryPath();
+		boost::filesystem::path openCppCoverage = OpenCppCoverage::GetOutputBinaryPath();				
 		auto handle = Poco::Process::launch(openCppCoverage.string(), allCoverageArguments, ".", nullptr, nullptr, nullptr);
 		int exitCode = handle.wait();
 

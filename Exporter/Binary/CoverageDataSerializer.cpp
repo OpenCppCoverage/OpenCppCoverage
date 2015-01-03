@@ -94,15 +94,16 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	void CoverageDataSerializer::Serialize(
 		const cov::CoverageData& coverageData,
-		std::ostream& ostr) const
+		const boost::filesystem::path& output) const
 	{		
 		pb::CoverageData coverageDataProtoBuff;
-		google::protobuf::io::OstreamOutputStream outputStream(&ostr);
+		std::ofstream ofs(output.string(), std::ios::binary);		
+		google::protobuf::io::OstreamOutputStream outputStream(&ofs);
 		google::protobuf::io::CodedOutputStream codedOutputStream(&outputStream);
 
 		codedOutputStream.WriteVarint32(CoverageDataSerializer::FileTypeId);
 
-		FillCoverageDataProtoBuffFrom(coverageData, coverageDataProtoBuff);				
+		FillCoverageDataProtoBuffFrom(coverageData, coverageDataProtoBuff);
 		WriteMessage(coverageDataProtoBuff, codedOutputStream);
 				 			
 		// Here we serialize manually modules because protobuff's limit.

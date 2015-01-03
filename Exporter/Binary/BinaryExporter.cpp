@@ -43,9 +43,8 @@ namespace Exporter
 		const boost::filesystem::path& output) const
 	{
 		CoverageDataSerializer coverageDataSerializer;
-		std::ofstream ofs(output.string());
 
-		coverageDataSerializer.Serialize(coverageData, ofs);
+		coverageDataSerializer.Serialize(coverageData, output);
 		Tools::ShowOutputMessage(L"Coverage binary generated in file: ", output);
 	}
 }

@@ -18,6 +18,14 @@
 
 #include "../ExporterExport.hpp"
 
+namespace boost
+{
+	namespace filesystem
+	{
+		class path;
+	}
+}
+
 namespace CppCoverage
 {
 	class CoverageData;
@@ -30,10 +38,8 @@ namespace Exporter
 	public:		
 		CoverageDataDeserializer() = default;
 
-		CppCoverage::CoverageData Deserialize(
-			std::istream&,
-			const std::string& errorIfNotCorrectFormat) const;
-
+		CppCoverage::CoverageData Deserialize(const boost::filesystem::path&, const std::string& errorIfNotCorrectFormat) const;
+		
 	private:
 		CoverageDataDeserializer(const CoverageDataDeserializer&) = delete;
 		CoverageDataDeserializer& operator=(const CoverageDataDeserializer&) = delete;

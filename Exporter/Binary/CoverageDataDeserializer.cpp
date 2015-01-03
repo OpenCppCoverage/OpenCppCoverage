@@ -78,30 +78,42 @@ namespace Exporter
 				}
 			}
 		}		
-	}
-	
-	//-------------------------------------------------------------------------
-	cov::CoverageData CoverageDataDeserializer::Deserialize(
-		std::istream& istr,
-		const std::string& errorIfNotCorrectFormat) const
-	{			
-		google::protobuf::io::IstreamInputStream outputStream(&istr);
-		google::protobuf::io::CodedInputStream  codedInputStream(&outputStream);
 
-		unsigned int fileTypeId;
-		if (!codedInputStream.ReadVarint32(&fileTypeId) || fileTypeId != CoverageDataSerializer::FileTypeId)
-			throw std::runtime_error(errorIfNotCorrectFormat);
+		//-------------------------------------------------------------------------
+		cov::CoverageData DeserializeFromStream(
+			std::istream& istr,
+			const std::string& errorIfNotCorrectFormat)
+		{
+			google::protobuf::io::IstreamInputStream outputStream(&istr);
+			google::protobuf::io::CodedInputStream  codedInputStream(&outputStream);
 
-		pb::CoverageData coverageDataProtoBuff;
+			unsigned int fileTypeId;
+			if (!codedInputStream.ReadVarint32(&fileTypeId) || fileTypeId != CoverageDataSerializer::FileTypeId)
+				throw std::runtime_error(errorIfNotCorrectFormat);
 
-		ReadMessage(codedInputStream, coverageDataProtoBuff);
-		
-		cov::CoverageData coverageData{			
+			pb::CoverageData coverageDataProtoBuff;
+
+			ReadMessage(codedInputStream, coverageDataProtoBuff);
+
+			cov::CoverageData coverageData{
 				Tools::ToWString(coverageDataProtoBuff.name()),
 				coverageDataProtoBuff.exitcode() };
 
-		InitCoverageDataFrom(codedInputStream, coverageDataProtoBuff, coverageData);
+			InitCoverageDataFrom(codedInputStream, coverageDataProtoBuff, coverageData);
+
+			return coverageData;
+		}
+	}
 		
-		return coverageData;		
+	//-------------------------------------------------------------------------
+	CppCoverage::CoverageData CoverageDataDeserializer::Deserialize(
+		const boost::filesystem::path& path, 
+		const std::string& errorIfNotCorrectFormat) const
+	{
+		std::ifstream ifs(path.string(), std::ios::binary);
+
+		if (!ifs)
+			THROW(L"Cannot open file " + path.wstring());
+		return DeserializeFromStream(ifs, errorIfNotCorrectFormat);
 	}
 }

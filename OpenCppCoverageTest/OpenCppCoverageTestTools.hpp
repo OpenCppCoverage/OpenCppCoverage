@@ -28,14 +28,20 @@ namespace boost
 }
 
 namespace OpenCppCoverageTest
-{
-	int RunCoverageHtmlOn(
+{	
+	void AddDefaultFilters(
 		std::vector<std::pair<std::string, std::string>>& coverageArguments,
-		const boost::filesystem::path& outputFolder,
-		const boost::filesystem::path& programToRun,
-		const std::vector<std::wstring>& arguments);
+		const boost::filesystem::path& programToRun);
 
-	int RunCoverageHtmlOn(
+	void AddDefaultHtmlExport(
+		std::vector<std::pair<std::string, std::string>>& coverageArguments,
+		const boost::filesystem::path& outputFolder);
+	
+	std::pair<std::string, std::string> BuildExportTypeString(
+		const std::string& exportType,
+		const boost::filesystem::path& output);
+	
+	int RunCoverageFor(
 		const std::vector<std::pair<std::string, std::string>>& coverageArguments,
 		const boost::filesystem::path& programToRun,
 		const std::vector<std::wstring>& arguments);

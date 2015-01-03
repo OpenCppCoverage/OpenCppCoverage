@@ -178,6 +178,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CommandLineOptionsTest.cpp" />
+    <ClCompile Include="ImportExportTests.cpp" />
     <ClCompile Include="OpenCppCoverageConsoleTest.cpp" />
     <ClCompile Include="OpenCppCoverageTest.cpp" />
     <ClCompile Include="OpenCppCoverageTestTools.cpp" />
@@ -193,6 +194,9 @@
   <ItemGroup>
     <ProjectReference Include="..\CppCoverage\CppCoverage.vcxproj">
       <Project>{a50dd5a6-e85a-4e0b-9cc6-90d32503ce62}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Exporter\Exporter.vcxproj">
+      <Project>{865b72e7-da46-4392-a1b3-e5bd752c7041}</Project>
     </ProjectReference>
     <ProjectReference Include="..\TestCoverageConsole\TestCoverageConsole.vcxproj">
       <Project>{0dd16edf-bd43-4d7b-b357-931f48f2fcc6}</Project>

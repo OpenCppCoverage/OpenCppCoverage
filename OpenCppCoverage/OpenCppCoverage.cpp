@@ -25,10 +25,12 @@
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/Options.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
+#include "CppCoverage/CoverageDataMerger.hpp"
 
 #include "Exporter/Html/HtmlExporter.hpp"
 #include "Exporter/CoberturaExporter.hpp"
 #include "Exporter/Binary/BinaryExporter.hpp"
+#include "Exporter/Binary/CoverageDataDeserializer.hpp"
 
 #include "Tools/Tool.hpp"
 #include "Tools/Log.hpp"
@@ -70,24 +72,50 @@ namespace OpenCppCoverage
 		}
 
 		//-----------------------------------------------------------------------------
-		int Run(const cov::Options& options)
+		std::vector<cov::CoverageData> LoadInputCoverageDatas(const cov::Options& options)
+		{
+			std::vector<cov::CoverageData> coverageDatas;
+			Exporter::CoverageDataDeserializer coverageDataDeserializer;
+
+			for (const auto& path : options.GetInputCoveragePaths())
+			{				
+				auto errorMsg = "Cannot extract coverage data from " + path.string();
+
+				coverageDatas.push_back(coverageDataDeserializer.Deserialize(path, errorMsg));
+			}
+			return coverageDatas;
+		}
+
+		//-----------------------------------------------------------------------------
+		void InitLogger(const cov::Options& options)
 		{
 			auto logLevel = (options.IsVerboseModeSelected()) ? logging::trivial::debug : logging::trivial::info;
 			Tools::InitConsoleAndFileLog(L"LastCoverageResults.log");
 			Tools::SetLoggerMinSeverity(logLevel);
+		}
 
+		//-----------------------------------------------------------------------------
+		int Run(const cov::Options& options)
+		{
+			InitLogger(options);
+
+			auto coveraDatas = LoadInputCoverageDatas(options);
 			const auto& startInfo = options.GetStartInfo();
-			cov::CodeCoverageRunner codeCoverageRunner;
-			cov::CoverageSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
-
+			
 			std::wostringstream ostr;
 			ostr << std::endl << options;
 			LOG_INFO << L"Start Program:" << ostr.str();
 
-			cov::CoverageData coverage = codeCoverageRunner.RunCoverage(startInfo, settings);
-			Export(options, coverage);
+			cov::CodeCoverageRunner codeCoverageRunner;
+			cov::CoverageSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
+			
+			coveraDatas.push_back(codeCoverageRunner.RunCoverage(startInfo, settings));
+			cov::CoverageDataMerger	coverageDataMerger;
 
-			auto exitCode = coverage.GetExitCode();
+			auto coverageData = coverageDataMerger.Merge(coveraDatas);
+			Export(options, coverageData);
+
+			auto exitCode = coverageData.GetExitCode();
 
 			if (exitCode)
 				LOG_ERROR << L"Your program stop with error code: " << exitCode;

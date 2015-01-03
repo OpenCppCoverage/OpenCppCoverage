@@ -23,6 +23,14 @@ namespace CppCoverage
 	class CoverageData;
 }
 
+namespace boost
+{
+	namespace filesystem
+	{
+		class path;
+	}
+}
+
 namespace Exporter
 {
 	class EXPORTER_DLL CoverageDataSerializer
@@ -32,7 +40,7 @@ namespace Exporter
 
 		CoverageDataSerializer() = default;
 
-		void Serialize(const CppCoverage::CoverageData&, std::ostream&) const;
+		void Serialize(const CppCoverage::CoverageData&, const boost::filesystem::path&) const;
 
 	private:
 		CoverageDataSerializer(const CoverageDataSerializer&) = delete;

@@ -43,17 +43,17 @@ namespace OpenCppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		int RunCoverageOnProgram(
+		int RunCoverageForProgram(
 			const fs::path& programToRun,
 			const std::vector<std::wstring>& arguments)
 		{
 			TestHelper::TemporaryPath tempFolder;
 			
-			std::vector<std::pair<std::string, std::string>> coverageArguments{
-				{ cov::ProgramOptions::SelectedModulesOption, programToRun.string() },
-				{ cov::ProgramOptions::SelectedSourcesOption, GetSolutionFolderName() } };
+			std::vector<std::pair<std::string, std::string>> coverageArguments;
+			AddDefaultFilters(coverageArguments, programToRun);			
+			coverageArguments.push_back(BuildExportTypeString(cov::ProgramOptions::ExportTypeHtmlValue, tempFolder.GetPath()));
 
-			int exitCode = RunCoverageHtmlOn(coverageArguments, tempFolder, programToRun, arguments);
+			int exitCode = RunCoverageFor(coverageArguments, programToRun, arguments);
 			
 			CheckOutputDirectory(tempFolder);
 			return exitCode;
@@ -65,7 +65,7 @@ namespace OpenCppCoverageTest
 	{		
 		fs::path testCoverageConsole = TestCoverageConsole::GetOutputBinaryPath();
 							
-		ASSERT_EQ(0, RunCoverageOnProgram(testCoverageConsole, {}));
+		ASSERT_EQ(0, RunCoverageForProgram(testCoverageConsole, {}));
 	}	
 
 	//-------------------------------------------------------------------------
@@ -73,7 +73,7 @@ namespace OpenCppCoverageTest
 	{
 		fs::path testCoverageConsole = TestCoverageConsole::GetOutputBinaryPath();
 
-		ASSERT_NE(0, RunCoverageOnProgram(testCoverageConsole, { TestCoverageConsole::TestThrowUnHandledSEHException }));
+		ASSERT_NE(0, RunCoverageForProgram(testCoverageConsole, { TestCoverageConsole::TestThrowUnHandledSEHException }));
 	}
 	
 	//-------------------------------------------------------------------------
@@ -82,6 +82,6 @@ namespace OpenCppCoverageTest
 		fs::path exporterTest{ OUT_DIR };
 		
 		exporterTest /= "ExporterTest.exe";
-		ASSERT_EQ(0, RunCoverageOnProgram(exporterTest, {}));
+		ASSERT_EQ(0, RunCoverageForProgram(exporterTest, {}));
 	}	
 }
