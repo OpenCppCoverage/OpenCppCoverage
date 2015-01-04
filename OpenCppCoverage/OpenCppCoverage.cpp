@@ -95,6 +95,7 @@ namespace OpenCppCoverage
 			{				
 				auto errorMsg = "Cannot extract coverage data from " + path.string();
 
+				LOG_INFO << L"Load coverage file: " << path.wstring();
 				coverageDatas.push_back(coverageDataDeserializer.Deserialize(path, errorMsg));
 			}
 			return coverageDatas;
