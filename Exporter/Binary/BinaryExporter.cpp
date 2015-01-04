@@ -32,7 +32,7 @@ namespace Exporter
 	{
 		boost::filesystem::path path{ prefix };
 
-		path += "Binary.data";
+		path += ".cov";
 
 		return path;
 	}
