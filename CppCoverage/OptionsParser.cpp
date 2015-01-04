@@ -98,12 +98,12 @@ namespace CppCoverage
 		};
 
 		//---------------------------------------------------------------------
-		cov::StartInfo GetStartInfo(const po::variables_map& variables)
+		boost::optional<cov::StartInfo> GetStartInfo(const po::variables_map& variables)
 		{
 			const auto* programToRun = GetOptionalValue<std::string>(variables, ProgramOptions::ProgramToRunOption);
 
 			if (!programToRun)
-				throw OptionsParserException("No program specified.");
+				return boost::none;				
 
 			cov::StartInfo startInfo{ *programToRun };
 
@@ -272,14 +272,16 @@ namespace CppCoverage
 		auto modulePatterns = GetPatterns(variables, ProgramOptions::SelectedModulesOption, ProgramOptions::ExcludedModulesOption);
 		auto sourcePatterns = GetPatterns(variables, ProgramOptions::SelectedSourcesOption, ProgramOptions::ExcludedSourcesOption);
 
-		auto startInfo = GetStartInfo(variables);
-		Options options{ startInfo, modulePatterns, sourcePatterns };
+		auto optionalStartInfo = GetStartInfo(variables);
+		Options options{ modulePatterns, sourcePatterns, optionalStartInfo.get_ptr() };
 		
 		if (IsOptionSelected(variables, ProgramOptions::VerboseOption))
 			options.SetVerboseModeSelected();
 
 		AddExporTypes(variables, options);
 		AddInputCoverages(variables, options);
+		if (!options.GetStartInfo() && options.GetInputCoveragePaths().empty())
+			throw OptionsParserException("You must specify a program to execute or use --" + ProgramOptions::InputCoverageValue);
 
 		return options;
 	}

@@ -83,7 +83,9 @@ namespace CppCoverageTest
 		{ { cov::ProgramOptions::WorkingDirectoryOption, directory1.GetPath().wstring() } },
 		{ { cov::ProgramOptions::WorkingDirectoryOption, directory2.GetPath().wstring() } });
 		ASSERT_TRUE(options);
-		auto workingDirectory = options->GetStartInfo().GetWorkingDirectory();
+		ASSERT_NE(nullptr, options->GetStartInfo());
+
+		auto workingDirectory = options->GetStartInfo()->GetWorkingDirectory();
 		ASSERT_NE(nullptr, workingDirectory);
 		ASSERT_EQ(directory2.GetPath(), *workingDirectory);
 	}

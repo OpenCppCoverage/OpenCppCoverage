@@ -43,6 +43,22 @@ namespace OpenCppCoverage
 	namespace
 	{
 		//-----------------------------------------------------------------------------
+		std::wstring GetDefaultPathPrefix(const cov::Options& options)
+		{
+			const auto* startInfo = options.GetStartInfo();
+
+			if (startInfo)
+			{
+				auto path = startInfo->GetPath();
+				fs::path runningCommandFilenamePath = path.filename().replace_extension("");
+				
+				return runningCommandFilenamePath.wstring();
+			}
+
+			return L"CoverageOutput";
+		}
+
+		//-----------------------------------------------------------------------------
 		void Export(
 			const cov::Options& options, 
 			const cov::CoverageData& coverage)
@@ -57,15 +73,13 @@ namespace OpenCppCoverage
 			exporters.emplace(cov::OptionsExportType::Binary,
 				std::unique_ptr<Exporter::IExporter>(new Exporter::BinaryExporter{}));
 			
-			auto path = options.GetStartInfo().GetPath();
-			fs::path runningCommandFilenamePath = path.filename().replace_extension("");
-			auto runningCommandFilename = runningCommandFilenamePath.wstring();
+			auto defaultPathPrefix = GetDefaultPathPrefix(options);
 
 			for (const auto& singleExport : exports)
 			{
 				const auto& exporter = exporters.at(singleExport.GetType());
 				auto optionalOutputPath = singleExport.GetOutputPath();
-				auto output = (optionalOutputPath) ? *optionalOutputPath : exporter->GetDefaultPath(runningCommandFilename);
+				auto output = (optionalOutputPath) ? *optionalOutputPath : exporter->GetDefaultPath(defaultPathPrefix);
 
 				exporter->Export(coverage, output);
 			}
@@ -100,7 +114,7 @@ namespace OpenCppCoverage
 			InitLogger(options);
 
 			auto coveraDatas = LoadInputCoverageDatas(options);
-			const auto& startInfo = options.GetStartInfo();
+			const auto* startInfo = options.GetStartInfo();
 			
 			std::wostringstream ostr;
 			ostr << std::endl << options;
@@ -109,7 +123,8 @@ namespace OpenCppCoverage
 			cov::CodeCoverageRunner codeCoverageRunner;
 			cov::CoverageSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
 			
-			coveraDatas.push_back(codeCoverageRunner.RunCoverage(startInfo, settings));
+			if (startInfo)
+				coveraDatas.push_back(codeCoverageRunner.RunCoverage(*startInfo, settings));
 			cov::CoverageDataMerger	coverageDataMerger;
 
 			auto coverageData = coverageDataMerger.Merge(coveraDatas);
@@ -124,8 +139,7 @@ namespace OpenCppCoverage
 	}
 
 	//-----------------------------------------------------------------------------
-	int OpenCppCoverage::Run(
-		int argc,
+	int OpenCppCoverage::Run(int argc,
 		const char** argv,
 		std::wostream* emptyOptionsExplanation) const
 	{

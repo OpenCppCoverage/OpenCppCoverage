@@ -28,9 +28,9 @@
 namespace Exporter
 {
 	//-------------------------------------------------------------------------
-	boost::filesystem::path BinaryExporter::GetDefaultPath(const std::wstring& runningCommandFilename) const
+	boost::filesystem::path BinaryExporter::GetDefaultPath(const std::wstring& prefix) const
 	{
-		boost::filesystem::path path{ runningCommandFilename };
+		boost::filesystem::path path{ prefix };
 
 		path += "Binary.data";
 

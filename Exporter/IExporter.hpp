@@ -38,7 +38,7 @@ namespace Exporter
 	public:
 		IExporter() = default;
 
-		virtual boost::filesystem::path GetDefaultPath(const std::wstring& runningCommandFilename) const = 0;
+		virtual boost::filesystem::path GetDefaultPath(const std::wstring& prefix) const = 0;
 		virtual void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& output) const = 0;
 
 	private:

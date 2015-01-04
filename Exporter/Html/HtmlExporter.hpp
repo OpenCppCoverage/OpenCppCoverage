@@ -52,7 +52,7 @@ namespace Exporter
 	public:
 		explicit HtmlExporter(const boost::filesystem::path& templateFolder);
 
-		boost::filesystem::path GetDefaultPath(const std::wstring& runningCommandFilename) const override;
+		boost::filesystem::path GetDefaultPath(const std::wstring& prefix) const override;
 		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& outputFolder) const override;
 
 	private:

@@ -32,15 +32,15 @@ namespace CppCoverage
 	{
 	public:
 		Options(
-			const CppCoverage::StartInfo& startInfo,
 			const CppCoverage::Patterns& modulePatterns,
-			const CppCoverage::Patterns& sourcePatterns);
+			const CppCoverage::Patterns& sourcePatterns,
+			const CppCoverage::StartInfo*);
 
 		Options(const Options&) = default;
 		
 		const CppCoverage::Patterns& GetModulePatterns() const;
 		const CppCoverage::Patterns& GetSourcePatterns() const;
-		const CppCoverage::StartInfo& GetStartInfo() const;
+		const CppCoverage::StartInfo* GetStartInfo() const;
 
 		void SetVerboseModeSelected();
 		bool IsVerboseModeSelected() const;
@@ -58,9 +58,10 @@ namespace CppCoverage
 		Options& operator=(Options&&) = delete;
 
 	private:
-		CppCoverage::StartInfo startInfo_;
 		CppCoverage::Patterns modules_;
 		CppCoverage::Patterns sources_;
+		boost::optional<CppCoverage::StartInfo> optionalStartInfo_;
+
 		bool verboseModeSelected_;
 		std::vector<OptionsExport> exports_;
 		std::vector<boost::filesystem::path> inputCoveragePaths_;

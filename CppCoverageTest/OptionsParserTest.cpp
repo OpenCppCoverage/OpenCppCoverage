@@ -79,8 +79,9 @@ namespace CppCoverageTest
 		auto options = TestTools::Parse(parser,
 		{ TestTools::OptionPrefix + cov::ProgramOptions::WorkingDirectoryOption, folder });
 		ASSERT_TRUE(options);
+		ASSERT_NE(nullptr, options->GetStartInfo());
 
-		const auto* workingDirectory = options->GetStartInfo().GetWorkingDirectory();
+		const auto* workingDirectory = options->GetStartInfo()->GetWorkingDirectory();
 
 		ASSERT_NE(nullptr, workingDirectory);
 		ASSERT_EQ(Tools::ToWString(folder), *workingDirectory);
@@ -98,9 +99,10 @@ namespace CppCoverageTest
 		auto options = TestTools::Parse(parser, { TestTools::ProgramToRun, arg1, arg2 }, false);
 		ASSERT_TRUE(options);
 
-		const auto& startInfo = options->GetStartInfo();		
-		ASSERT_EQ(TestTools::ProgramToRun, startInfo.GetPath().string());
-		ASSERT_EQ(expectedArgs, startInfo.GetArguments());
+		const auto* startInfo = options->GetStartInfo();		
+		ASSERT_NE(nullptr, startInfo);
+		ASSERT_EQ(TestTools::ProgramToRun, startInfo->GetPath().string());
+		ASSERT_EQ(expectedArgs, startInfo->GetArguments());
 	}
 
 	//-------------------------------------------------------------------------

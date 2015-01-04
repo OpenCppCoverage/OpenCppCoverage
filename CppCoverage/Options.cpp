@@ -23,14 +23,15 @@ namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
 	Options::Options(
-		const cov::StartInfo& startInfo,
 		const cov::Patterns& modulePatterns,
-		const cov::Patterns& sourcePatterns)
-		: startInfo_{startInfo}
-		, modules_{modulePatterns}
-		, sources_{sourcePatterns}
+		const cov::Patterns& sourcePatterns,
+		const cov::StartInfo* startInfo)
+		: modules_{modulePatterns}
+		, sources_{sourcePatterns}		
 		, verboseModeSelected_{false}
 	{
+		if (startInfo)
+			optionalStartInfo_ = *startInfo;
 	}	
 
 	//-------------------------------------------------------------------------
@@ -46,9 +47,9 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
-	const cov::StartInfo& Options::GetStartInfo() const
+	const cov::StartInfo* Options::GetStartInfo() const
 	{
-		return startInfo_;
+		return optionalStartInfo_.get_ptr();
 	}
 
 	//-------------------------------------------------------------------------
@@ -90,7 +91,8 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	std::wostream& operator<<(std::wostream& ostr, const Options& options)
 	{
-		ostr << options.startInfo_ << std::endl;
+		if (options.optionalStartInfo_)
+			ostr << *options.optionalStartInfo_ << std::endl;
 		ostr << L"Modules: " << options.modules_ << std::endl;
 		ostr << L"Sources: " << options.sources_ << std::endl;
 		ostr << L"Verbose mode: " << options.verboseModeSelected_ << std::endl;

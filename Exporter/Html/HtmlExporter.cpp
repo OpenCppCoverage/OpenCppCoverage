@@ -63,7 +63,7 @@ namespace Exporter
 	}
 
 	//-------------------------------------------------------------------------
-	boost::filesystem::path HtmlExporter::GetDefaultPath(const std::wstring& runningCommandFilename) const
+	boost::filesystem::path HtmlExporter::GetDefaultPath(const std::wstring&) const
 	{
 		auto now = std::time(nullptr);
 		auto localNow = std::localtime(&now);
