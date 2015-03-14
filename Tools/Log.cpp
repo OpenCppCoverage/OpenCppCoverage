@@ -79,9 +79,15 @@ namespace Tools
 		typedef sinks::synchronous_sink<sinks::text_ostream_backend> text_sink;
 		auto sink = boost::make_shared<text_sink>();
 		auto& backend = sink->locked_backend();
-		
+
 		backend->add_stream(ostr);
 		backend->auto_flush(true);
+		SetLogSink(sink);
+	}
+
+	//-------------------------------------------------------------------------
+	void SetLogSink(boost::shared_ptr<logging::sinks::sink> sink)
+	{
 		logging::core::get()->remove_all_sinks();
 		logging::core::get()->add_sink(sink);
 	}

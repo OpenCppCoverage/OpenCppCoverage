@@ -12,5 +12,8 @@ ipch/*
 CoverageReport-*
 NewRelease
 
+# Template file for the plugin
+VSPackage/Template
+
 # ProtoBuff files
 *.pb.*
