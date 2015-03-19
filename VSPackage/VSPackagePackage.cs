@@ -79,8 +79,9 @@ namespace OpenCppCoverage.VSPackage
         private void MenuItemCallback(object sender, EventArgs e)
         {
             IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-            var errorHandler = new ErrorHandler(uiShell);
+            SetDllDirectoryForUnmanagedCode();
 
+            var errorHandler = new ErrorHandler(uiShell);                      
             errorHandler.Execute(() =>
             {
                 var dte = (EnvDTE.DTE)GetService(typeof(EnvDTE.DTE));
@@ -95,6 +96,24 @@ namespace OpenCppCoverage.VSPackage
 
                 openCppCoverageRunner.RunCoverageOnStartupProject();
             });                                             
+        }
+
+        //---------------------------------------------------------------------
+        static void SetDllDirectoryForUnmanagedCode()
+        {
+            var assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var assemblyFolder = System.IO.Path.GetDirectoryName(assemblyLocation);
+            var unManagedDllFolder = assemblyFolder + @"\UnManagedDll";
+
+            if (Microsoft.VisualStudio.ErrorHandler.Failed(NativeMethods.SetDllDirectory(unManagedDllFolder)))
+                throw new Exception("Cannot set dll directory.");
+        }
+
+        //---------------------------------------------------------------------
+        class NativeMethods
+        {
+            [DllImport("Kernel32.dll", EntryPoint = "SetDllDirectory", CharSet = CharSet.Unicode)]
+            public extern static Int32 SetDllDirectory(String lpPathName);
         }
     }
 }

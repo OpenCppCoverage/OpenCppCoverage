@@ -218,6 +218,48 @@
     <Content Include="Template\third-party\RGraph\license.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="UnmanagedDll\boost_chrono-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\boost_date_time-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\boost_filesystem-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\boost_locale-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\boost_log-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\boost_program_options-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\boost_regex-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\boost_system-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\boost_thread-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\CppCoverage.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\Exporter.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\libctemplate.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\template_test_util_test.exe">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="UnmanagedDll\Tools.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VSPackageUnManagedWrapper\VSPackageUnManagedWrapper.vcxproj">
@@ -232,7 +274,14 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup>
-    <PreBuildEvent>if not exist "$(ProjectDir)Template" mkdir "$(ProjectDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)\..\Exporter\Html\Template" "$(ProjectDir)Template"</PreBuildEvent>
+    <PreBuildEvent>echo "Copy Template files"
+if not exist "$(ProjectDir)Template" mkdir "$(ProjectDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)\..\Exporter\Html\Template" "$(ProjectDir)Template"
+
+echo "Update UnmanagedDll" 
+xcopy /y /F "$(SolutionDir)Release\CppCoverage.dll" "$(ProjectDir)\UnmanagedDll"
+xcopy /y /F "$(SolutionDir)Release\Exporter.dll" "$(ProjectDir)\UnmanagedDll"
+xcopy /y /F "$(SolutionDir)Release\Tools.dll" "$(ProjectDir)\UnmanagedDll"
+xcopy /y /F "$(ProjectDir)\UnmanagedDll" "$(ProjectDir)"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

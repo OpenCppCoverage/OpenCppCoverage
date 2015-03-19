@@ -12,8 +12,11 @@ ipch/*
 CoverageReport-*
 NewRelease
 
-# Template file for the plugin
+# Template file / unmanaged dll for the plugin
 VSPackage/Template
+VSPackage/UnmanagedDll
+VSPackage/*.dll
+VSPackage/template_test_util_test.exe
 
 # ProtoBuff files
 *.pb.*
