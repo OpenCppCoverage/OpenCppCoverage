@@ -62,6 +62,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			throw 42;
 		else if (type == TestCoverageConsole::TestThrowUnHandledSEHException)
 			*reinterpret_cast<int*>(0) = 42;
+		else if (type == TestCoverageConsole::TestBreakPoint)
+			DebugBreak();
 		else
 			std::wcerr << L"Unsupported type:" << type << std::endl;
 	}

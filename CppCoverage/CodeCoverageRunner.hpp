@@ -56,13 +56,15 @@ namespace CppCoverage
 		CodeCoverageRunner& operator=(const CodeCoverageRunner&) = delete;
 
 		void LoadModule(HANDLE hFile, void* baseOfImage);
-		
+		void OnBreakPoint(const EXCEPTION_DEBUG_INFO&, HANDLE hThread);
+
 	private:
 		std::unique_ptr<DebugInformation> debugInformation_;		
 		std::unique_ptr<BreakPoint> breakpoint_;
 		std::unique_ptr<ExecutedAddressManager> executedAddressManager_;
 		std::unique_ptr<CoverageFilter> coverageFilter_;
-		std::unique_ptr<ExceptionHandler> exceptionHandler_;		
+		std::unique_ptr<ExceptionHandler> exceptionHandler_;
+		bool unhandledBreakPoint_;
 	};
 }
 

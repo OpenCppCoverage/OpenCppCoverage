@@ -136,12 +136,12 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	unsigned char ExecutedAddressManager::MarkAddressAsExecuted(void* address)
+	boost::optional<unsigned char> ExecutedAddressManager::MarkAddressAsExecuted(void* address)
 	{
 		auto it = addressLineMap_.find(address);
 
 		if (it == addressLineMap_.end())
-			THROW("Address should be register first");
+			return boost::none;
 
 		Instruction& instruction = it->second;
 				

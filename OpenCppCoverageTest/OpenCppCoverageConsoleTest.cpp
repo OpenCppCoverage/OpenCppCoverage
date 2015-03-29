@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 
+#include <Windows.h>
 #include <boost/filesystem.hpp>
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
@@ -76,6 +77,14 @@ namespace OpenCppCoverageTest
 		ASSERT_NE(0, RunCoverageForProgram(testCoverageConsole, { TestCoverageConsole::TestThrowUnHandledSEHException }));
 	}
 	
+	//-------------------------------------------------------------------------
+	TEST(OpenCppCoverageConsoleTest, Breakpoint)
+	{
+		fs::path testCoverageConsole = TestCoverageConsole::GetOutputBinaryPath();
+
+		ASSERT_EQ(EXCEPTION_BREAKPOINT, RunCoverageForProgram(testCoverageConsole, { TestCoverageConsole::TestBreakPoint }));
+	}
+
 	//-------------------------------------------------------------------------
 	TEST(OpenCppCoverageConsoleTest, ExporterTest)
 	{

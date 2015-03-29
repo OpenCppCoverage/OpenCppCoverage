@@ -39,6 +39,7 @@ namespace CppCoverage
 {			
 	//-------------------------------------------------------------------------
 	CodeCoverageRunner::CodeCoverageRunner()
+		: unhandledBreakPoint_{ false }
 	{ 
 		executedAddressManager_.reset(new ExecutedAddressManager());
 		exceptionHandler_.reset(new ExceptionHandler());
@@ -56,6 +57,9 @@ namespace CppCoverage
 
 		coverageFilter_.reset(new CoverageFilter(coverageSettings));
 		int exitCode = debugger.Debug(startInfo, *this);
+
+		if (exitCode == 0 && unhandledBreakPoint_)
+			exitCode = EXCEPTION_BREAKPOINT;
 
 		const auto& path = startInfo.GetPath();
 
@@ -96,12 +100,7 @@ namespace CppCoverage
 		{
 			case CppCoverage::ExceptionHandlerStatus::BreakPoint:
 			{
-				const auto& exceptionRecord = exceptionDebugInfo.ExceptionRecord;
-				auto address = exceptionRecord.ExceptionAddress;
-				auto oldInstruction = executedAddressManager_->MarkAddressAsExecuted(address);
-
-				breakpoint_->RemoveBreakPoint(address, oldInstruction);
-				breakpoint_->AdjustEipAfterBreakPointRemoval(hThread);
+				OnBreakPoint(exceptionDebugInfo, hThread);
 				return DBG_CONTINUE;
 			}
 			case CppCoverage::ExceptionHandlerStatus::FirstChanceException:
@@ -119,6 +118,29 @@ namespace CppCoverage
 		return DBG_EXCEPTION_NOT_HANDLED;
 	}
 	
+	//-------------------------------------------------------------------------
+	void CodeCoverageRunner::OnBreakPoint(
+		const EXCEPTION_DEBUG_INFO& exceptionDebugInfo,
+		HANDLE hThread)
+	{
+		const auto& exceptionRecord = exceptionDebugInfo.ExceptionRecord;
+		auto address = exceptionRecord.ExceptionAddress;
+		auto oldInstruction = executedAddressManager_->MarkAddressAsExecuted(address);
+
+		if (oldInstruction)
+		{
+			breakpoint_->RemoveBreakPoint(address, *oldInstruction);
+			breakpoint_->AdjustEipAfterBreakPointRemoval(hThread);
+		}
+		else
+		{
+			LOG_WARNING << "--------------------------------------------------------------------------------";
+			LOG_WARNING << "It seems there is an assertion failure or you call DebugBreak() in your program.";
+			LOG_WARNING << "--------------------------------------------------------------------------------";
+			unhandledBreakPoint_ = true;
+		}
+	}
+
 	//-------------------------------------------------------------------------
 	void CodeCoverageRunner::LoadModule(HANDLE hFile, void* baseOfImage)
 	{
