@@ -21,6 +21,7 @@
 
 #include <memory>
 #include <map>
+#include <boost/optional.hpp>
 
 #include "CoverageData.hpp"
 #include "CppCoverageExport.hpp"
@@ -37,7 +38,7 @@ namespace CppCoverage
 
 		void SetCurrentModule(const std::wstring& moduleName);
 		bool RegisterAddress(void* address, const std::wstring& filename, unsigned int line, unsigned char instruction);
-		unsigned  char MarkAddressAsExecuted(void* address);
+		boost::optional<unsigned char> MarkAddressAsExecuted(void* address);
 
 		CoverageData CreateCoverageData(const std::wstring& name, int exitCode) const;
 

@@ -45,7 +45,7 @@ namespace CppCoverageTest
 
 		manager.SetCurrentModule(L"");
 
-		ASSERT_THROW(manager.MarkAddressAsExecuted(0), cov::CppCoverageException);
+		ASSERT_EQ(boost::none, manager.MarkAddressAsExecuted(0));
 
 		manager.RegisterAddress(0, L"", 0, 0);
 		ASSERT_NO_THROW(manager.MarkAddressAsExecuted(0));
