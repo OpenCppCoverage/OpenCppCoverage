@@ -39,6 +39,7 @@
   <ItemGroup>
     <Reference Include="envdte" />
     <Reference Include="envdte80" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0" />
@@ -49,6 +50,9 @@
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.12.0" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+    <Reference Include="Microsoft.VisualStudio.VCProjectEngine, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.VSSDK.TestHostFramework" />
@@ -56,20 +60,29 @@
   <ItemGroup>
     <!--<Compile Include="Properties\AssemblyInfo.cs" />-->
     <!---->
-    <Compile Include="MenuItemTest.cs" />
     <!---->
     <!---->
     <!---->
-    <Compile Include="PackageTest.cs" />
-    <Compile Include="IntegrationTest Library\DialogboxPurger.cs" />
-    <Compile Include="IntegrationTest Library\NativeMethods.cs" />
-    <Compile Include="IntegrationTest Library\Utils.cs" />
-    <Compile Include="SignOff-Tests\CPPProjectTests.cs" />
-    <Compile Include="SignOff-Tests\CSharpProjectTests.cs" />
-    <Compile Include="SignOff-Tests\SolutionTests.cs" />
-    <Compile Include="SignOff-Tests\VBProjectTests.cs" />
+    <Compile Include="DialogBoxMessageRetriever.cs" />
+    <Content Include="IntegrationTestsSolution\CSharpConsoleApplication\Program.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IntegrationTestsSolution\CSharpConsoleApplication\Properties\AssemblyInfo.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="TestHelpers.cs" />
+    <Compile Include="VSPackageIntegrationTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="IntegrationTestsSolution\CppConsoleApplication2\CppConsoleApplication2.vcxproj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IntegrationTestsSolution\CppConsoleApplication\CppConsoleApplication.vcxproj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IntegrationTestsSolution\CSharpConsoleApplication\App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
@@ -78,7 +91,26 @@
       <Name>VSPackage</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="IntegrationTestsSolution\CppConsoleApplication2\CppConsoleApplication2.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IntegrationTestsSolution\CppConsoleApplication\CppConsoleApplication.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IntegrationTestsSolution\CSharpConsoleApplication\CSharpConsoleApplication.csproj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IntegrationTestsSolution\IntegrationTestsSolution.sln">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>echo "Update UnmanagedDll" 
+if not exist "$(TargetDir)\UnmanagedDll" mkdir "$(TargetDir)\UnmanagedDll" &amp;&amp; xcopy /y /s "$(SolutionDir)\VSPackage\UnmanagedDll" "$(TargetDir)\UnmanagedDll"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

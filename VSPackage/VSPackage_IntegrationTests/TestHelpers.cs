@@ -1,0 +1,127 @@
+﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.VCProjectEngine;
+using Microsoft.VSSDK.Tools.VsIdeTesting;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace VSPackage_IntegrationTests
+{
+    class TestHelpers
+    {
+        static public readonly string CppConsoleApplication = @"CppConsoleApplication\CppConsoleApplication.vcxproj";
+        static public readonly string CppConsoleApplication2 = @"CppConsoleApplication2\CppConsoleApplication2.vcxproj";
+        static public readonly string CSharpConsoleApplication = @"CSharpConsoleApplication\CSharpConsoleApplication.csproj";
+
+        //---------------------------------------------------------------------
+        static public string GetOpenCppCoverageMessage()
+        {                        
+            var uiShell = GetService<IVsUIShell>();
+
+            using (var dialogBoxMessageRetriever = new DialogBoxMessageRetriever(uiShell, TimeSpan.FromSeconds(10)))
+            {
+                ExecuteOpenCppCoverage();
+                return dialogBoxMessageRetriever.GetMessage();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        static public void OpenDefaultSolution(params string[] startupProjects)
+        {
+            OpenDefaultSolution();
+            var startupProjectObjects = new object[startupProjects.Length];
+            Array.Copy(startupProjects, startupProjectObjects, startupProjectObjects.Length);
+            VsIdeTestHostContext.Dte.Solution.SolutionBuild.StartupProjects = startupProjectObjects;
+        }
+
+        //---------------------------------------------------------------------
+        static public VCDebugSettings GetCppConsoleApplicationDebugSettings()
+        {
+            var projects = VsIdeTestHostContext.Dte.Solution.Projects.Cast<EnvDTE.Project>();
+            var cppConsoleApplication = projects.First(p => p.UniqueName == CppConsoleApplication);
+            var vcCppConsoleApplication = (VCProject)cppConsoleApplication.Object;
+            var configurations = (IEnumerable)vcCppConsoleApplication.Configurations;
+            var configuration = configurations.Cast<VCConfiguration>().First();
+
+            return (VCDebugSettings)configuration.DebugSettings;
+        }
+
+        //---------------------------------------------------------------------
+        static public void SetActiveSolutionConfiguration(string configurationName)
+        {
+            var dte = VsIdeTestHostContext.Dte;
+            var configurations = new List<SolutionConfiguration>();
+            foreach (SolutionConfiguration configuration in dte.Solution.SolutionBuild.SolutionConfigurations)
+                configurations.Add(configuration);
+            
+            var configurationToActivate = configurations.First(c => c.Name == configurationName);
+            configurationToActivate.Activate();
+        }
+
+        //---------------------------------------------------------------------
+        static public T GetService<T>() where T : class
+        {
+            var service = VsIdeTestHostContext.ServiceProvider.GetService(typeof(T)) as T;
+            if (service == null)
+                throw new Exception("Service is null");
+
+            return service;
+        }
+
+        //---------------------------------------------------------------------
+        static void OpenDefaultSolution()
+        {
+            var solutionService = GetService<IVsSolution>();
+            var currentLocation = typeof(TestHelpers).Assembly.Location;
+            var currentDirectory = Path.GetDirectoryName(currentLocation);
+            var solutionPath = Path.Combine(currentDirectory, "IntegrationTestsSolution", "IntegrationTestsSolution.sln");
+            
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(
+                solutionService.OpenSolutionFile((uint)__VSSLNOPENOPTIONS.SLNOPENOPT_Silent, solutionPath));
+            WaitForSolutionLoading(TimeSpan.FromSeconds(10));
+        }
+
+        //---------------------------------------------------------------------
+        static void WaitForSolutionLoading(TimeSpan timeout)
+        {
+            const int partCount = 50;
+            var smallTimeout = new TimeSpan(timeout.Ticks / partCount);
+                
+            for (int nbTry = 0; nbTry < partCount; ++nbTry)
+            {
+                bool solutionReady = true;
+                foreach (Project p in VsIdeTestHostContext.Dte.Solution.Projects)
+                {
+                    if (p.Object == null)
+                    {
+                        solutionReady = false;
+                        break;
+                    }
+                }
+
+                if (solutionReady)
+                    return;
+
+                System.Threading.Thread.Sleep(smallTimeout);
+            }
+
+            throw new Exception("Solution is not loaded.");
+        }
+
+        //---------------------------------------------------------------------
+        static void ExecuteOpenCppCoverage()
+        {
+            object Customin = null;
+            object Customout = null;
+            var commandGuid = OpenCppCoverage.VSPackage.GuidList.guidVSPackageCmdSet;
+            string guidString = commandGuid.ToString("B").ToUpper();
+            int cmdId = (int)OpenCppCoverage.VSPackage.PkgCmdIDList.RunOpenCppCoverageCommand;
+            DTE dte = VsIdeTestHostContext.Dte;
+
+            dte.Commands.Raise(guidString, cmdId, ref Customin, ref Customout);
+        }        
+    }
+}

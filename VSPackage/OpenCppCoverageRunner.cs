@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using VSPackageUnManagedWrapper;
 
 namespace OpenCppCoverage.VSPackage
@@ -66,6 +67,7 @@ namespace OpenCppCoverage.VSPackage
                     var codeCoverageRunner = new VSPackageUnManagedWrapper.CodeCoverageRunner();
                     var settings = buildContext.Settings;
 
+                    CheckSettings(settings);
                     var outputPath = codeCoverageRunner.Run(
                         settings.Command,
                         settings.Arguments,
@@ -77,6 +79,22 @@ namespace OpenCppCoverage.VSPackage
                     outputWindowWriter_.WriteLine("Report was generating at " + outputPath);
                     ShowCoverage(outputPath);
                 });
+        }
+
+        //---------------------------------------------------------------------        
+        void CheckSettings(Settings settings)
+        {
+            if (!File.Exists(settings.Command))
+            {
+                throw new VSPackageException(
+                    string.Format(@"Debug command ""{0}"" does not exit.", settings.Command));
+            }
+
+            if (!string.IsNullOrEmpty(settings.WorkingDir) && !Directory.Exists(settings.WorkingDir))
+            {
+                throw new VSPackageException(
+                    string.Format(@"Debug working directory ""{0}"" does not exit.", settings.WorkingDir));
+            }
         }
 
         //---------------------------------------------------------------------

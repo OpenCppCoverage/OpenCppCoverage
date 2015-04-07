@@ -38,7 +38,6 @@ namespace OpenCppCoverage.VSPackage
             };
 
             SetFilters(projects, solutionActiveConfigurationName, settings);
-            CheckSettings(startupProject, settings);
             
             return settings;                                                 
         }
@@ -73,7 +72,7 @@ namespace OpenCppCoverage.VSPackage
 
                 error.Append("You cannot run OpenCppCoverage for several projects:\n");
                 foreach (var project in startupProjects)
-                    error.Append(" - " + project.Name + "\n");
+                    error.Append(" - " + project.UniqueName + "\n");
                 throw new VSPackageException(error.ToString());
             }
 
@@ -103,13 +102,13 @@ namespace OpenCppCoverage.VSPackage
             if (configuration == null)
             {
                 var error = new StringBuilder();
-                error.Append("Cannot find configuration for your project");
-                error.Append("Solution configuration: " + solutionActiveConfigurationName);
+                error.AppendLine("Cannot find configuration for your project.");
+                error.AppendLine(" - Solution configuration: " + solutionActiveConfigurationName);
 
                 var configurations = project.Configurations;
                 var configurationNames = configurations.Select(p => p.ConfigurationName);
-                error.Append(project.Name + ": " + string.Join(",", configurationNames));
-                error.Append("Please check configuration manager.");
+                error.AppendLine(" - " + project.Name + " configuration: " + string.Join(",", configurationNames));
+                error.AppendLine("Please check configuration manager.");
 
                 throw new VSPackageException(error.ToString());
             }
@@ -149,27 +148,7 @@ namespace OpenCppCoverage.VSPackage
             settings.SourcePaths = sourcePaths;
             settings.ModulePaths = modulePaths;
         }
-
-        //---------------------------------------------------------------------
-        void CheckSettings(ExtendedProject project, Settings settings)
-        {
-            if (!File.Exists(settings.Command))
-                throw new VSPackageException(GetInvalidPathMessage(project, settings.Command, "command"));
-            if (!Directory.Exists(settings.WorkingDir))
-                throw new VSPackageException(GetInvalidPathMessage(project, settings.WorkingDir, "working directory"));
-        }
-
-        //---------------------------------------------------------------------
-        string GetInvalidPathMessage(ExtendedProject project, string path, string pathKind)
-        {
-            var error = new StringBuilder();
-
-            error.Append(string.Format("Invalid {0} for {1}/n", pathKind, project.Name));
-            error.Append(path + " does not exists.");
-
-            return error.ToString();
-        }
-        
+               
         Solution solution_;
     }
 }

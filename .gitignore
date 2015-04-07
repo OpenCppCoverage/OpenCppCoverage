@@ -9,8 +9,10 @@ ipch/*
 *.suo
 *.filters
 *.user
+*.ipch
 CoverageReport-*
 NewRelease
+TestResults/
 
 # Template file / unmanaged dll for the plugin
 VSPackage/Template
