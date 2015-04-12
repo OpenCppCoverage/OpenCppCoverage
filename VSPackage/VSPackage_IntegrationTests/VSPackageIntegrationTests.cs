@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.VCProjectEngine;
 using Microsoft.VSSDK.Tools.VsIdeTesting;
 using System;
+using System.IO;
 using System.Text;
 
 namespace VSPackage_IntegrationTests
@@ -92,6 +93,54 @@ namespace VSPackage_IntegrationTests
                 (debugSettings, v) => debugSettings.Command = v,
                 debugSettings => debugSettings.Command,
                 "OpenCppCoverage\n\nDebug command \"{0}\" does not exit.");
+        }
+
+        //---------------------------------------------------------------------
+        [TestMethod]
+        [HostType("VS IDE")]
+        public void CheckOutput()
+        {        
+            TestHelpers.OpenDefaultSolution(TestHelpers.CppConsoleApplication);
+            var debugSettings = TestHelpers.GetCppConsoleApplicationDebugSettings();
+            debugSettings.CommandArguments = "Test";
+
+            TestHelpers.ExecuteOpenCppCoverage();
+            TestHelpers.WaitForActiveDocument(TestHelpers.ApplicationName, TimeSpan.FromSeconds(10));
+            var output = TestHelpers.GetOpenCppCoverageOutput();
+            CheckOutput(output, " - Project Name: ", TestHelpers.CppConsoleApplication);
+            CheckOutput(output, " - Command: ", TestHelpers.ApplicationName);
+            CheckOutput(output, " - Arguments:", debugSettings.CommandArguments);            
+            CheckOutput(output, " - WorkingDir: ", GetProjectFolder(TestHelpers.CppConsoleApplication));
+            CheckOutput(output, "	", GetProjectFolder(TestHelpers.CppConsoleApplication));
+            CheckOutput(output, "	", TestHelpers.ApplicationName);
+            CheckOutput(output, "Report was generating at ", "index.html");
+        }
+        
+        //---------------------------------------------------------------------
+        static string GetProjectFolder(string projectName)
+        {
+            var rootFolder = TestHelpers.GetIntegrationTestsSolutionFolder();
+
+            return Path.GetDirectoryName(Path.Combine(rootFolder, projectName));
+        }
+
+        //---------------------------------------------------------------------
+        static void CheckOutput(string output, string lineStartsWith, string textToFound)
+        {
+            using (var reader = new StringReader(output))
+            {
+                var line = reader.ReadLine();
+
+                while (line != null)
+                {
+                    if (line.StartsWith(lineStartsWith) && line.Contains(textToFound))
+                        return;
+                    line = reader.ReadLine();
+                }
+            }
+
+            Assert.Fail(string.Format("Cannot found {0} with a starting line :{1}",
+                textToFound, lineStartsWith));
         }
 
         //---------------------------------------------------------------------

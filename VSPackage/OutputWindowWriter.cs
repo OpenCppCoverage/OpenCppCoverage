@@ -39,6 +39,6 @@ namespace OpenCppCoverage.VSPackage
         }
         
         readonly IVsOutputWindowPane outputWindowPane_;
-        readonly static Guid OpenCppCoverageOutputPaneGuid = new Guid("CB47C727-5E45-467B-A4CD-4A025986A8A0");
+        public readonly static Guid OpenCppCoverageOutputPaneGuid = new Guid("CB47C727-5E45-467B-A4CD-4A025986A8A0");
     }
 }
