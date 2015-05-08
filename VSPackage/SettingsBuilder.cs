@@ -19,10 +19,10 @@ namespace OpenCppCoverage.VSPackage
         //---------------------------------------------------------------------
         public Settings ComputeSettings()
         {
-            var projects = GetProjects();            
+            var projects = GetProjects();
             var startupProject = GetStartupProject(projects);
-            var solutionActiveConfigurationName = GetActiveSolutionName();
-            var startupConfiguration = GetStartupConfiguration(solutionActiveConfigurationName, startupProject);
+            var configurationManager = new ConfigurationManager(solution_.SolutionBuild.ActiveConfiguration);
+            var startupConfiguration = configurationManager.GetConfiguration(startupProject);
             var debugSettings = startupConfiguration.DebugSettings as VCDebugSettings;
 
             if (debugSettings == null)
@@ -36,7 +36,7 @@ namespace OpenCppCoverage.VSPackage
                 ProjectName = startupProject.UniqueName,                
             };
 
-            SetFilters(projects, solutionActiveConfigurationName, settings);
+            SetFilters(configurationManager, projects, settings);
             
             return settings;                                                 
         }
@@ -94,42 +94,9 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        VCConfiguration GetStartupConfiguration(string solutionActiveConfigurationName, ExtendedProject project)
-        {
-            var configuration = project.FindConfiguration(solutionActiveConfigurationName);
-
-            if (configuration == null)
-            {
-                var error = new StringBuilder();
-                error.AppendLine("Cannot find configuration for your project.");
-                error.AppendLine(" - Solution configuration: " + solutionActiveConfigurationName);
-
-                var configurations = project.Configurations;
-                var configurationNames = configurations.Select(p => p.ConfigurationName);
-                error.AppendLine(" - " + project.Name + " configuration: " + string.Join(",", configurationNames));
-                error.AppendLine("Please check configuration manager.");
-
-                throw new VSPackageException(error.ToString());
-            }
-
-            return configuration;
-        }
-
-        //---------------------------------------------------------------------
-        string GetActiveSolutionName()
-        {            
-            var solutionActiveConfiguration = solution_.SolutionBuild.ActiveConfiguration;
-
-            if (solutionActiveConfiguration == null)
-                throw new Exception("Cannot get active configuration for the solution.");
-
-            return solutionActiveConfiguration.Name;
-        }
-
-        //---------------------------------------------------------------------
         void SetFilters(
-            List<ExtendedProject> projects, 
-            string solutionActiveConfigurationName, 
+            ConfigurationManager configurationManager,
+            List<ExtendedProject> projects,             
             Settings settings)
         {
             var sourcePaths = new List<string>();
@@ -138,7 +105,7 @@ namespace OpenCppCoverage.VSPackage
             foreach (var project in projects)
             {
                 sourcePaths.Add(project.ProjectDirectory);
-                var configuration = project.FindConfiguration(solutionActiveConfigurationName);
+                var configuration = configurationManager.GetConfiguration(project);
 
                 if (configuration != null)
                     modulePaths.Add(configuration.PrimaryOutput);

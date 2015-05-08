@@ -124,6 +124,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationManager.cs" />
     <Compile Include="ErrorHandler.cs" />
     <Compile Include="ExtendedProject.cs" />
     <Compile Include="Guids.cs" />

@@ -1,7 +1,6 @@
 ﻿using EnvDTE;
 using Microsoft.VisualStudio.VCProjectEngine;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenCppCoverage.VSPackage
 {
@@ -10,8 +9,8 @@ namespace OpenCppCoverage.VSPackage
         //---------------------------------------------------------------------
         public ExtendedProject(Project project, VCProject vcProject)
         {
-            this.project = project;
-            this.vcProject = vcProject;            
+            this.project_ = project;
+            this.vcProject_ = vcProject;
         }
 
         //---------------------------------------------------------------------
@@ -19,7 +18,7 @@ namespace OpenCppCoverage.VSPackage
         { 
             get
             {
-                return project.Name;
+                return project_.Name;
             }
         }
 
@@ -28,7 +27,7 @@ namespace OpenCppCoverage.VSPackage
         {
             get
             {
-                return project.UniqueName;
+                return project_.UniqueName;
             }
         }
 
@@ -37,31 +36,24 @@ namespace OpenCppCoverage.VSPackage
         {
             get
             {
-                return vcProject.ProjectDirectory;
+                return vcProject_.ProjectDirectory;
             }
         }
-
-        //---------------------------------------------------------------------
-        public VCConfiguration FindConfiguration(string configurationName)
-        {
-            return this.Configurations.FirstOrDefault(
-                c => c.ConfigurationName == configurationName);            
-        }
-
+        
         //---------------------------------------------------------------------
         public List<VCConfiguration> Configurations
         {
             get
             {
                 var configurations = new List<VCConfiguration>();
-                foreach (VCConfiguration configuration in vcProject.Configurations)
+                foreach (VCConfiguration configuration in vcProject_.Configurations)
                     configurations.Add(configuration);
-                
+
                 return configurations;
             }
         }
         
-        readonly Project project;
-        readonly VCProject vcProject;
+        readonly Project project_;
+        readonly VCProject vcProject_;        
     }
 }
