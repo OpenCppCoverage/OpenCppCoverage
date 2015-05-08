@@ -99,7 +99,7 @@ namespace VSPackage_IntegrationTests
         [TestMethod]
         [HostType("VS IDE")]
         public void CheckOutput()
-        {        
+        {
             TestHelpers.OpenDefaultSolution(TestHelpers.CppConsoleApplication);
             var debugSettings = TestHelpers.GetCppConsoleApplicationDebugSettings();
             debugSettings.CommandArguments = "Test";
@@ -112,8 +112,7 @@ namespace VSPackage_IntegrationTests
             CheckOutput(output, " - Arguments:", debugSettings.CommandArguments);            
             CheckOutput(output, " - WorkingDir: ", GetProjectFolder(TestHelpers.CppConsoleApplication));
             CheckOutput(output, "	", GetProjectFolder(TestHelpers.CppConsoleApplication));
-            CheckOutput(output, "	", TestHelpers.ApplicationName);
-            CheckOutput(output, "Report was generating at ", "index.html");
+            CheckOutput(output, "	", TestHelpers.ApplicationName);           
         }
         
         //---------------------------------------------------------------------

@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using VSPackageUnManagedWrapper;
 
 namespace OpenCppCoverage.VSPackage
 {

@@ -29,10 +29,10 @@ namespace CppCoverage
 	namespace
 	{
 		//-------------------------------------------------------------------------
-		void CheckPathExists(const fs::path& path)
+		void CheckPathExists(const std::string& context, const fs::path& path)
 		{
 			if (!fs::exists(path))
-				throw std::runtime_error(path.string() + " does not exist");
+				throw std::runtime_error(context + " \"" + path.string() + "\" does not exist");
 		}
 	}
 
@@ -40,7 +40,7 @@ namespace CppCoverage
 	StartInfo::StartInfo(const fs::path& path)
 		: path_(path)
 	{
-		CheckPathExists(path);
+		CheckPathExists("Program to run", path);
 		AddArguments(path.wstring());
 	}
 
@@ -55,7 +55,7 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	void StartInfo::SetWorkingDirectory(const fs::path& workingDirectory)
 	{
-		CheckPathExists(workingDirectory);
+		CheckPathExists("Working directory", workingDirectory);
 		workingDirectory_ = workingDirectory;					
 	}
 

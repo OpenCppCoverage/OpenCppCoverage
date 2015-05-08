@@ -47,5 +47,4 @@ namespace Tools
 	void TOOLS_DLL SetLoggerMinSeverity(boost::log::trivial::severity_level minSeverity);
 	void TOOLS_DLL EnableLogger(bool isEnabled);
 	void TOOLS_DLL InitLoggerOstream(const boost::shared_ptr<std::ostringstream>& ostr);
-	void TOOLS_DLL SetLogSink(boost::shared_ptr<boost::log::sinks::sink> sink);
 }

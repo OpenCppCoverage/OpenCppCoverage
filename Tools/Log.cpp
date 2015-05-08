@@ -34,6 +34,16 @@ namespace expr = boost::log::expressions;
 
 namespace Tools
 {
+	namespace
+	{
+		//-------------------------------------------------------------------------
+		void SetLogSink(boost::shared_ptr<logging::sinks::sink> sink)
+		{
+			logging::core::get()->remove_all_sinks();
+			logging::core::get()->add_sink(sink);
+		}
+	}
+
 	//-------------------------------------------------------------------------
 	void InitConsoleAndFileLog(const boost::filesystem::path& logPath)
 	{		
@@ -83,12 +93,5 @@ namespace Tools
 		backend->add_stream(ostr);
 		backend->auto_flush(true);
 		SetLogSink(sink);
-	}
-
-	//-------------------------------------------------------------------------
-	void SetLogSink(boost::shared_ptr<logging::sinks::sink> sink)
-	{
-		logging::core::get()->remove_all_sinks();
-		logging::core::get()->add_sink(sink);
-	}
+	}	
 }

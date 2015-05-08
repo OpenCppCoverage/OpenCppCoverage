@@ -2,8 +2,8 @@
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using VSPackageUnManagedWrapper;
 
 namespace OpenCppCoverage.VSPackage
 {
@@ -64,20 +64,15 @@ namespace OpenCppCoverage.VSPackage
                         throw new VSPackageException("Build failed.");
                     
                     outputWindowWriter_.WriteLine("Start code coverage...");
-                    var codeCoverageRunner = new VSPackageUnManagedWrapper.CodeCoverageRunner();
+
                     var settings = buildContext.Settings;
-
                     CheckSettings(settings);
-                    var outputPath = codeCoverageRunner.Run(
-                        settings.Command,
-                        settings.Arguments,
-                        settings.WorkingDir,
-                        settings.ModulePaths,
-                        settings.SourcePaths,
-			            outputWindowWriter_);
 
-                    outputWindowWriter_.WriteLine("Report was generating at " + outputPath);
-                    ShowCoverage(outputPath);
+                    var openCppCoverage = new OpenCppCoverage(outputWindowWriter_);
+                    var indexPath = openCppCoverage.RunCodeCoverage(settings);
+                    
+                    outputWindowWriter_.WriteLine("Report was generating at " + indexPath.DirectoryName);
+                    ShowCoverage(indexPath.ToString());
                 });
         }
 

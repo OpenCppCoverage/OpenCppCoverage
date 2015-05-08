@@ -86,10 +86,6 @@
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\VSPackageUnManagedWrapper\VSPackageUnManagedWrapper.vcxproj">
-      <Project>{0b5286fa-71e6-47c3-aed4-064210e29560}</Project>
-      <Name>VSPackageUnManagedWrapper</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VSPackage.csproj">
       <Project>{DF742CAB-0446-4867-A437-719390CC028A}</Project>
       <Name>VSPackage</Name>
@@ -112,13 +108,20 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo "Copy Template files"
-if not exist "$(TargetDir)\Template" mkdir "$(TargetDir)\Template" 
-xcopy /s /y "$(SolutionDir)\Exporter\Html\Template" "$(TargetDir)\Template"
+    <PostBuildEvent>Echo Update "$(TargetDir)"
 
-echo "Update UnmanagedDll" 
-if not exist "$(TargetDir)\UnmanagedDll" mkdir "$(TargetDir)\UnmanagedDll" 
-xcopy /y /s "$(SolutionDir)\VSPackage\UnmanagedDll" "$(TargetDir)\UnmanagedDll"</PostBuildEvent>
+set OpenCppCoverageOutput="$(TargetDir)\OpenCppCoverage-x86"
+if not exist "%25OpenCppCoverageOutput%25" mkdir "%25OpenCppCoverageOutput%25" 
+xcopy /s /y "$(SolutionDir)\VSPackage\OpenCppCoverage-x86" "%25OpenCppCoverageOutput%25"
+
+set OpenCppCoverageOutput="$(TargetDir)\OpenCppCoverage-x64"
+if not exist "%25OpenCppCoverageOutput%25" mkdir "%25OpenCppCoverageOutput%25" 
+xcopy /s /y "$(SolutionDir)\VSPackage\OpenCppCoverage-x64" "%25OpenCppCoverageOutput%25"
+</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

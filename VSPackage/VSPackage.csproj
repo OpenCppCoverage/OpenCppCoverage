@@ -127,6 +127,7 @@
     <Compile Include="ErrorHandler.cs" />
     <Compile Include="ExtendedProject.cs" />
     <Compile Include="Guids.cs" />
+    <Compile Include="OpenCppCoverage.cs" />
     <Compile Include="OpenCppCoverageRunner.cs" />
     <Compile Include="OutputWindowWriter.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -137,6 +138,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsBuilder.cs" />
+    <Compile Include="VSPackageException.cs" />
     <Compile Include="VSPackagePackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
@@ -169,103 +171,131 @@
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="OpenCppCoverage-x64\boost_chrono-vc120-mt-1_55.dll" />
+    <Content Include="OpenCppCoverage-x64\boost_date_time-vc120-mt-1_55.dll" />
+    <Content Include="OpenCppCoverage-x64\boost_filesystem-vc120-mt-1_55.dll" />
+    <Content Include="OpenCppCoverage-x64\boost_locale-vc120-mt-1_55.dll" />
+    <Content Include="OpenCppCoverage-x64\boost_log-vc120-mt-1_55.dll" />
+    <Content Include="OpenCppCoverage-x64\boost_program_options-vc120-mt-1_55.dll" />
+    <Content Include="OpenCppCoverage-x64\boost_regex-vc120-mt-1_55.dll" />
+    <Content Include="OpenCppCoverage-x64\boost_system-vc120-mt-1_55.dll" />
+    <Content Include="OpenCppCoverage-x64\boost_thread-vc120-mt-1_55.dll" />
+    <Content Include="OpenCppCoverage-x64\CppCoverage.dll" />
+    <Content Include="OpenCppCoverage-x64\Exporter.dll" />
+    <Content Include="OpenCppCoverage-x64\libctemplate.dll" />
+    <Content Include="OpenCppCoverage-x64\OpenCppCoverage.exe" />
+    <Content Include="OpenCppCoverage-x64\Template\MainTemplate.html" />
+    <Content Include="OpenCppCoverage-x64\Template\SourceTemplate.html" />
+    <Content Include="OpenCppCoverage-x64\Template\third-party\css\style.css" />
+    <Resource Include="OpenCppCoverage-x64\Template\third-party\css\table-images\botleft.png" />
+    <Resource Include="OpenCppCoverage-x64\Template\third-party\css\table-images\botright.png" />
+    <Resource Include="OpenCppCoverage-x64\Template\third-party\css\table-images\left.png" />
+    <Resource Include="OpenCppCoverage-x64\Template\third-party\css\table-images\right.png" />
+    <Content Include="OpenCppCoverage-x64\Template\third-party\google-code-prettify\prettify-CppCoverage.css" />
+    <Content Include="OpenCppCoverage-x64\Template\third-party\google-code-prettify\prettify.js" />
+    <Content Include="OpenCppCoverage-x64\Template\third-party\google-code-prettify\run_prettify.js" />
+    <Content Include="OpenCppCoverage-x64\Template\third-party\JQuery\jquery-1.11.1.min.js" />
+    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\libraries\RGraph.common.core.js" />
+    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\libraries\RGraph.common.dynamic.js" />
+    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\libraries\RGraph.common.tooltips.js" />
+    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\libraries\RGraph.pie.js" />
+    <Resource Include="OpenCppCoverage-x64\Template\third-party\RGraph\license.txt" />
+    <Content Include="OpenCppCoverage-x64\template_test_util_test.exe" />
+    <Content Include="OpenCppCoverage-x64\Tools.dll" />
+    <Content Include="OpenCppCoverage-x86\OpenCppCoverage.exe">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Package.ico" />
-    <Content Include="Template\MainTemplate.html">
+    <Content Include="OpenCppCoverage-x86\Template\MainTemplate.html">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\SourceTemplate.html">
+    <Content Include="OpenCppCoverage-x86\Template\SourceTemplate.html">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\css\style.css">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\css\style.css">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\css\table-images\botleft.png">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\css\table-images\botleft.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\css\table-images\botright.png">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\css\table-images\botright.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\css\table-images\left.png">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\css\table-images\left.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\css\table-images\right.png">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\css\table-images\right.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\google-code-prettify\prettify-CppCoverage.css">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\google-code-prettify\prettify-CppCoverage.css">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\google-code-prettify\prettify.js">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\google-code-prettify\prettify.js">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\google-code-prettify\run_prettify.js">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\google-code-prettify\run_prettify.js">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\JQuery\jquery-1.11.1.min.js">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\JQuery\jquery-1.11.1.min.js">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\RGraph\libraries\RGraph.common.core.js">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\RGraph\libraries\RGraph.common.core.js">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\RGraph\libraries\RGraph.common.dynamic.js">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\RGraph\libraries\RGraph.common.dynamic.js">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\RGraph\libraries\RGraph.common.tooltips.js">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\RGraph\libraries\RGraph.common.tooltips.js">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\RGraph\libraries\RGraph.pie.js">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\RGraph\libraries\RGraph.pie.js">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Template\third-party\RGraph\license.txt">
+    <Content Include="OpenCppCoverage-x86\Template\third-party\RGraph\license.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\boost_chrono-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_chrono-vc120-mt-1_55.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\boost_date_time-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_date_time-vc120-mt-1_55.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\boost_filesystem-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_filesystem-vc120-mt-1_55.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\boost_locale-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_locale-vc120-mt-1_55.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\boost_log-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_log-vc120-mt-1_55.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\boost_program_options-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_program_options-vc120-mt-1_55.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\boost_regex-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_regex-vc120-mt-1_55.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\boost_system-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_system-vc120-mt-1_55.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\boost_thread-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_thread-vc120-mt-1_55.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\CppCoverage.dll">
+    <Content Include="OpenCppCoverage-x86\CppCoverage.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\Exporter.dll">
+    <Content Include="OpenCppCoverage-x86\Exporter.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\libctemplate.dll">
+    <Content Include="OpenCppCoverage-x86\libctemplate.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\template_test_util_test.exe">
+    <Content Include="OpenCppCoverage-x86\template_test_util_test.exe">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="UnmanagedDll\Tools.dll">
+    <Content Include="OpenCppCoverage-x86\Tools.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\VSPackageUnManagedWrapper\VSPackageUnManagedWrapper.vcxproj">
-      <Project>{0b5286fa-71e6-47c3-aed4-064210e29560}</Project>
-      <Name>VSPackageUnManagedWrapper</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
@@ -274,14 +304,25 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup>
-    <PreBuildEvent>echo "Copy Template files"
-if not exist "$(ProjectDir)Template" mkdir "$(ProjectDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)\..\Exporter\Html\Template" "$(ProjectDir)Template"
+    <PreBuildEvent>echo "Copy Template files x64"
+set OpenCppCoverage="$(ProjectDir)OpenCppCoverage-x64"
+if not exist "%25OpenCppCoverage%25\Template" mkdir "%25OpenCppCoverage%25\Template" &amp;&amp; xcopy /s /y "$(ProjectDir)\..\Exporter\Html\Template" "%25OpenCppCoverage%25\Template"
 
-echo "Update UnmanagedDll" 
-xcopy /y /F "$(SolutionDir)Release\CppCoverage.dll" "$(ProjectDir)\UnmanagedDll"
-xcopy /y /F "$(SolutionDir)Release\Exporter.dll" "$(ProjectDir)\UnmanagedDll"
-xcopy /y /F "$(SolutionDir)Release\Tools.dll" "$(ProjectDir)\UnmanagedDll"
-xcopy /y /F "$(ProjectDir)\UnmanagedDll" "$(ProjectDir)"</PreBuildEvent>
+echo "Update UnmanagedDll x64" 
+xcopy /y /F "$(SolutionDir)x64\Release\CppCoverage.dll" "%25OpenCppCoverage%25"
+xcopy /y /F "$(SolutionDir)x64\Release\Exporter.dll" "%25OpenCppCoverage%25"
+xcopy /y /F "$(SolutionDir)x64\Release\Tools.dll" "%25OpenCppCoverage%25"
+xcopy /y /F "$(SolutionDir)x64\Release\OpenCppCoverage.exe" "%25OpenCppCoverage%25"
+
+echo "Copy Template files x86"
+set OpenCppCoverage="$(ProjectDir)OpenCppCoverage-x86"
+if not exist "%25OpenCppCoverage%25\Template" mkdir "%25OpenCppCoverage%25\Template" &amp;&amp; xcopy /s /y "$(ProjectDir)\..\Exporter\Html\Template" "%25OpenCppCoverage%25\Template"
+
+echo "Update UnmanagedDll x86" 
+xcopy /y /F "$(SolutionDir)\Release\CppCoverage.dll" "%25OpenCppCoverage%25"
+xcopy /y /F "$(SolutionDir)\Release\Exporter.dll" "%25OpenCppCoverage%25"
+xcopy /y /F "$(SolutionDir)\Release\Tools.dll" "%25OpenCppCoverage%25"
+xcopy /y /F "$(SolutionDir)\Release\OpenCppCoverage.exe" "%25OpenCppCoverage%25"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

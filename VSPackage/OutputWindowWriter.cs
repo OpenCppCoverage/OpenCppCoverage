@@ -4,7 +4,7 @@ using System;
 
 namespace OpenCppCoverage.VSPackage
 {
-    class OutputWindowWriter : VSPackageUnManagedWrapper.ILogger
+    class OutputWindowWriter
     {
         //---------------------------------------------------------------------
         public OutputWindowWriter(EnvDTE.DTE dte, IVsOutputWindow outputWindow)
