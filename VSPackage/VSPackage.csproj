@@ -172,37 +172,99 @@
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="OpenCppCoverage-x64\boost_chrono-vc120-mt-1_55.dll" />
-    <Content Include="OpenCppCoverage-x64\boost_date_time-vc120-mt-1_55.dll" />
-    <Content Include="OpenCppCoverage-x64\boost_filesystem-vc120-mt-1_55.dll" />
-    <Content Include="OpenCppCoverage-x64\boost_locale-vc120-mt-1_55.dll" />
-    <Content Include="OpenCppCoverage-x64\boost_log-vc120-mt-1_55.dll" />
-    <Content Include="OpenCppCoverage-x64\boost_program_options-vc120-mt-1_55.dll" />
-    <Content Include="OpenCppCoverage-x64\boost_regex-vc120-mt-1_55.dll" />
-    <Content Include="OpenCppCoverage-x64\boost_system-vc120-mt-1_55.dll" />
-    <Content Include="OpenCppCoverage-x64\boost_thread-vc120-mt-1_55.dll" />
-    <Content Include="OpenCppCoverage-x64\CppCoverage.dll" />
-    <Content Include="OpenCppCoverage-x64\Exporter.dll" />
-    <Content Include="OpenCppCoverage-x64\libctemplate.dll" />
-    <Content Include="OpenCppCoverage-x64\OpenCppCoverage.exe" />
-    <Content Include="OpenCppCoverage-x64\Template\MainTemplate.html" />
-    <Content Include="OpenCppCoverage-x64\Template\SourceTemplate.html" />
-    <Content Include="OpenCppCoverage-x64\Template\third-party\css\style.css" />
-    <Resource Include="OpenCppCoverage-x64\Template\third-party\css\table-images\botleft.png" />
-    <Resource Include="OpenCppCoverage-x64\Template\third-party\css\table-images\botright.png" />
-    <Resource Include="OpenCppCoverage-x64\Template\third-party\css\table-images\left.png" />
-    <Resource Include="OpenCppCoverage-x64\Template\third-party\css\table-images\right.png" />
-    <Content Include="OpenCppCoverage-x64\Template\third-party\google-code-prettify\prettify-CppCoverage.css" />
-    <Content Include="OpenCppCoverage-x64\Template\third-party\google-code-prettify\prettify.js" />
-    <Content Include="OpenCppCoverage-x64\Template\third-party\google-code-prettify\run_prettify.js" />
-    <Content Include="OpenCppCoverage-x64\Template\third-party\JQuery\jquery-1.11.1.min.js" />
-    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\libraries\RGraph.common.core.js" />
-    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\libraries\RGraph.common.dynamic.js" />
-    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\libraries\RGraph.common.tooltips.js" />
-    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\libraries\RGraph.pie.js" />
-    <Resource Include="OpenCppCoverage-x64\Template\third-party\RGraph\license.txt" />
-    <Content Include="OpenCppCoverage-x64\template_test_util_test.exe" />
-    <Content Include="OpenCppCoverage-x64\Tools.dll" />
+    <Content Include="OpenCppCoverage-x64\boost_chrono-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\boost_date_time-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\boost_filesystem-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\boost_locale-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\boost_log-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\boost_program_options-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\boost_regex-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\boost_system-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\boost_thread-vc120-mt-1_55.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\CppCoverage.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Exporter.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\libctemplate.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\OpenCppCoverage.exe">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\MainTemplate.html">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\SourceTemplate.html">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\css\style.css">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\css\table-images\botleft.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\css\table-images\botright.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\css\table-images\left.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\css\table-images\right.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\google-code-prettify\prettify-CppCoverage.css">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\google-code-prettify\prettify.js">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\google-code-prettify\run_prettify.js">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\JQuery\jquery-1.11.1.min.js">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\libraries\RGraph.common.core.js">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\libraries\RGraph.common.dynamic.js">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\libraries\RGraph.common.tooltips.js">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\libraries\RGraph.pie.js">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Template\third-party\RGraph\license.txt">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\template_test_util_test.exe">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="OpenCppCoverage-x64\Tools.dll">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="OpenCppCoverage-x86\OpenCppCoverage.exe">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

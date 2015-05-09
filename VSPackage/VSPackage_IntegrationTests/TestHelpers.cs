@@ -5,7 +5,6 @@ using Microsoft.VSSDK.Tools.VsIdeTesting;
 using OpenCppCoverage.VSPackage;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -37,31 +36,7 @@ namespace VSPackage_IntegrationTests
             var startupProjectObjects = new object[startupProjects.Length];
             Array.Copy(startupProjects, startupProjectObjects, startupProjectObjects.Length);
             VsIdeTestHostContext.Dte.Solution.SolutionBuild.StartupProjects = startupProjectObjects;
-        }
-
-        //---------------------------------------------------------------------
-        static public VCDebugSettings GetCppConsoleApplicationDebugSettings()
-        {
-            var projects = VsIdeTestHostContext.Dte.Solution.Projects.Cast<EnvDTE.Project>();
-            var cppConsoleApplication = projects.First(p => p.UniqueName == CppConsoleApplication);
-            var vcCppConsoleApplication = (VCProject)cppConsoleApplication.Object;
-            var configurations = (IEnumerable)vcCppConsoleApplication.Configurations;
-            var configuration = configurations.Cast<VCConfiguration>().First();
-
-            return (VCDebugSettings)configuration.DebugSettings;
-        }
-
-        //---------------------------------------------------------------------
-        static public void SetActiveSolutionConfiguration(string configurationName)
-        {
-            var dte = VsIdeTestHostContext.Dte;
-            var configurations = new List<SolutionConfiguration>();
-            foreach (SolutionConfiguration configuration in dte.Solution.SolutionBuild.SolutionConfigurations)
-                configurations.Add(configuration);
-            
-            var configurationToActivate = configurations.First(c => c.Name == configurationName);
-            configurationToActivate.Activate();
-        }
+        }                      
 
         //---------------------------------------------------------------------
         static public T GetService<T>() where T : class
@@ -132,7 +107,7 @@ namespace VSPackage_IntegrationTests
             var currentDirectory = Path.GetDirectoryName(currentLocation);
             return Path.Combine(currentDirectory, "IntegrationTestsSolution");
         }
-
+        
         //---------------------------------------------------------------------
         static void OpenDefaultSolution()
         {

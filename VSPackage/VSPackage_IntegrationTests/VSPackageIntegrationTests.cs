@@ -99,21 +99,43 @@ namespace VSPackage_IntegrationTests
         //---------------------------------------------------------------------
         [TestMethod]
         [HostType("VS IDE")]
-        public void CheckOutput()
+        public void CheckCoverageX86()
         {
             TestHelpers.OpenDefaultSolution(TestHelpers.CppConsoleApplication);
-            var debugSettings = TestHelpers.GetCppConsoleApplicationDebugSettings();
-            debugSettings.CommandArguments = "Test";
+            CheckCoverage(SolutionConfiguration.Configuration.Debug, SolutionConfiguration.PlatForm.Win32);
+        }
 
-            TestHelpers.ExecuteOpenCppCoverage();
-            TestHelpers.WaitForActiveDocument(TestHelpers.ApplicationName, TimeSpan.FromSeconds(10));
-            var output = TestHelpers.GetOpenCppCoverageOutput();
-            CheckOutput(output, " - Project Name: ", TestHelpers.CppConsoleApplication);
-            CheckOutput(output, " - Command: ", TestHelpers.ApplicationName);
-            CheckOutput(output, " - Arguments:", debugSettings.CommandArguments);            
-            CheckOutput(output, " - WorkingDir: ", GetProjectFolder(TestHelpers.CppConsoleApplication));
-            CheckOutput(output, "	", GetProjectFolder(TestHelpers.CppConsoleApplication));
-            CheckOutput(output, "	", TestHelpers.ApplicationName);           
+        //---------------------------------------------------------------------
+        [TestMethod]
+        [HostType("VS IDE")]
+        public void CheckCoverageX64()
+        {
+            TestHelpers.OpenDefaultSolution(TestHelpers.CppConsoleApplication);
+            CheckCoverage(SolutionConfiguration.Configuration.Debug, SolutionConfiguration.PlatForm.x64);
+        }
+
+        //---------------------------------------------------------------------
+        void CheckCoverage(
+            SolutionConfiguration.Configuration configuration, 
+            SolutionConfiguration.PlatForm platform)
+        {
+            SolutionConfiguration.ExecuteUnderConfiguration(
+                configuration, platform, () =>
+                {
+                    var debugSettings = SolutionConfiguration.GetCurrentDebugSettings(TestHelpers.CppConsoleApplication);
+                    SolutionConfiguration.CleanSolution();
+                    debugSettings.CommandArguments = "Test";
+
+                    TestHelpers.ExecuteOpenCppCoverage();
+                    TestHelpers.WaitForActiveDocument(TestHelpers.ApplicationName, TimeSpan.FromSeconds(10));
+                    var output = TestHelpers.GetOpenCppCoverageOutput();
+                    CheckOutput(output, " - Project Name: ", TestHelpers.CppConsoleApplication);
+                    CheckOutput(output, " - Command: ", TestHelpers.ApplicationName);
+                    CheckOutput(output, " - Arguments:", debugSettings.CommandArguments);
+                    CheckOutput(output, " - WorkingDir: ", GetProjectFolder(TestHelpers.CppConsoleApplication));
+                    CheckOutput(output, "	", GetProjectFolder(TestHelpers.CppConsoleApplication));
+                    CheckOutput(output, "	", TestHelpers.ApplicationName);
+                });
         }
         
         //---------------------------------------------------------------------
@@ -150,7 +172,7 @@ namespace VSPackage_IntegrationTests
             string expectedMessage)
         {
             TestHelpers.OpenDefaultSolution(TestHelpers.CppConsoleApplication);
-            var debugSettings = TestHelpers.GetCppConsoleApplicationDebugSettings();
+            var debugSettings = SolutionConfiguration.GetCurrentDebugSettings(TestHelpers.CppConsoleApplication);
             const string InvalidValue = "InvalidValue";
             var oldValue = getter(debugSettings);
             try

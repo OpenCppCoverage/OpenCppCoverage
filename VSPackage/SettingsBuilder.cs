@@ -32,7 +32,7 @@ namespace OpenCppCoverage.VSPackage
                 WorkingDir = startupConfiguration.Evaluate(debugSettings.WorkingDirectory),
                 Arguments = startupConfiguration.Evaluate(debugSettings.CommandArguments),
                 Command = startupConfiguration.Evaluate(debugSettings.Command),
-                ConfigurationName = startupConfiguration.ConfigurationName,
+                ConfigurationName = startupConfiguration.Name,
                 ProjectName = startupProject.UniqueName,                
             };
 
@@ -94,7 +94,7 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        void SetFilters(
+        static void SetFilters(
             ConfigurationManager configurationManager,
             List<ExtendedProject> projects,             
             Settings settings)

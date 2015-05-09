@@ -70,6 +70,7 @@
     <Content Include="IntegrationTestsSolution\CSharpConsoleApplication\Properties\AssemblyInfo.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Compile Include="SolutionConfiguration.cs" />
     <Compile Include="TestHelpers.cs" />
     <Compile Include="VSPackageIntegrationTests.cs" />
   </ItemGroup>
