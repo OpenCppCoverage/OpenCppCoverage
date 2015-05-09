@@ -12,16 +12,7 @@ namespace OpenCppCoverage.VSPackage
             this.project_ = project;
             this.vcProject_ = vcProject;
         }
-
-        //---------------------------------------------------------------------
-        public string Name 
-        { 
-            get
-            {
-                return project_.Name;
-            }
-        }
-
+        
         //---------------------------------------------------------------------
         public string UniqueName
         {

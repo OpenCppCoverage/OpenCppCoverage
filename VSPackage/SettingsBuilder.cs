@@ -105,7 +105,7 @@ namespace OpenCppCoverage.VSPackage
             foreach (var project in projects)
             {
                 sourcePaths.Add(project.ProjectDirectory);
-                var configuration = configurationManager.GetConfiguration(project);
+                var configuration = configurationManager.FindConfiguration(project);
 
                 if (configuration != null)
                     modulePaths.Add(configuration.PrimaryOutput);
