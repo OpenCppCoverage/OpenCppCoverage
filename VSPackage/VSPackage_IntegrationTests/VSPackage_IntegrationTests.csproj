@@ -63,6 +63,7 @@
     <!---->
     <!---->
     <!---->
+    <Compile Include="ConfigurationManagerTest.cs" />
     <Compile Include="DialogBoxMessageRetriever.cs" />
     <Content Include="IntegrationTestsSolution\CSharpConsoleApplication\Program.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -70,7 +71,7 @@
     <Content Include="IntegrationTestsSolution\CSharpConsoleApplication\Properties\AssemblyInfo.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="SolutionConfiguration.cs" />
+    <Compile Include="SolutionConfigurationHelpers.cs" />
     <Compile Include="TestHelpers.cs" />
     <Compile Include="VSPackageIntegrationTests.cs" />
   </ItemGroup>

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.VCProjectEngine;
 using Microsoft.VSSDK.Tools.VsIdeTesting;
+using OpenCppCoverage.VSPackage;
 using System;
 using System.IO;
 using System.Text;
@@ -42,29 +43,7 @@ namespace VSPackage_IntegrationTests
 
             Assert.AreEqual(message.ToString(), TestHelpers.GetOpenCppCoverageMessage());
         }
-
-        //---------------------------------------------------------------------
-        [TestMethod]
-        [HostType("VS IDE")]
-        public void WrongConfiguration()
-        {
-            // FIX ME
-            //TestHelpers.OpenDefaultSolution(TestHelpers.CppConsoleApplication);
-            //var solutionActiveConfiguration = VsIdeTestHostContext.Dte.Solution.SolutionBuild.ActiveConfiguration;
-
-            //try
-            //{
-            //    TestHelpers.SetActiveSolutionConfiguration("Release");
-            //    Assert.AreEqual("OpenCppCoverage\n\nCannot find configuration for your project.\r\n"
-            //        + " - Solution configuration: Release\r\n - CppConsoleApplication configuration: Debug\r\n"
-            //        + "Please check configuration manager.", TestHelpers.GetOpenCppCoverageMessage());
-            //}
-            //finally
-            //{
-            //    solutionActiveConfiguration.Activate();
-            //}
-        }
-
+       
         //---------------------------------------------------------------------
         [TestMethod]
         [HostType("VS IDE")]
@@ -78,11 +57,11 @@ namespace VSPackage_IntegrationTests
         [TestMethod]
         [HostType("VS IDE")]
         public void InvalidWorkingDirectory()
-        {
+        {            
             CheckInvalidSettings(
                 (debugSettings, v) => debugSettings.WorkingDirectory = v, 
                 debugSettings => debugSettings.WorkingDirectory, 
-                "OpenCppCoverage\n\nDebug working directory \"{0}\" does not exit.");
+                "OpenCppCoverage\n\nDebug working directory \"{0}\" does not exist.");
         }
 
         //---------------------------------------------------------------------
@@ -93,7 +72,7 @@ namespace VSPackage_IntegrationTests
             CheckInvalidSettings(
                 (debugSettings, v) => debugSettings.Command = v,
                 debugSettings => debugSettings.Command,
-                "OpenCppCoverage\n\nDebug command \"{0}\" does not exit.");
+                "OpenCppCoverage\n\nDebug command \"{0}\" does not exist.");
         }
 
         //---------------------------------------------------------------------
@@ -102,7 +81,7 @@ namespace VSPackage_IntegrationTests
         public void CheckCoverageX86()
         {
             TestHelpers.OpenDefaultSolution(TestHelpers.CppConsoleApplication);
-            CheckCoverage(SolutionConfiguration.Configuration.Debug, SolutionConfiguration.PlatForm.Win32);
+            CheckCoverage(ConfigurationName.Debug, PlatFormName.Win32);
         }
 
         //---------------------------------------------------------------------
@@ -110,32 +89,33 @@ namespace VSPackage_IntegrationTests
         [HostType("VS IDE")]
         public void CheckCoverageX64()
         {
-            TestHelpers.OpenDefaultSolution(TestHelpers.CppConsoleApplication);
-            CheckCoverage(SolutionConfiguration.Configuration.Debug, SolutionConfiguration.PlatForm.x64);
+            
+            CheckCoverage(ConfigurationName.Debug, PlatFormName.x64);
         }
 
         //---------------------------------------------------------------------
         void CheckCoverage(
-            SolutionConfiguration.Configuration configuration, 
-            SolutionConfiguration.PlatForm platform)
-        {
-            SolutionConfiguration.ExecuteUnderConfiguration(
-                configuration, platform, () =>
-                {
-                    var debugSettings = SolutionConfiguration.GetCurrentDebugSettings(TestHelpers.CppConsoleApplication);
-                    SolutionConfiguration.CleanSolution();
-                    debugSettings.CommandArguments = "Test";
+            ConfigurationName configurationName, 
+            PlatFormName platformName)
+        {            
+            var configuration = TestHelpers.OpenDefaultSolution(TestHelpers.CppConsoleApplication, configurationName, platformName);
+            
+            var debugSettings = SolutionConfigurationHelpers.GetCurrentDebugSettings(TestHelpers.CppConsoleApplication);
+            SolutionConfigurationHelpers.CleanSolution();
+            debugSettings.CommandArguments = "Test";
 
-                    TestHelpers.ExecuteOpenCppCoverage();
-                    TestHelpers.WaitForActiveDocument(TestHelpers.ApplicationName, TimeSpan.FromSeconds(10));
-                    var output = TestHelpers.GetOpenCppCoverageOutput();
-                    CheckOutput(output, " - Project Name: ", TestHelpers.CppConsoleApplication);
-                    CheckOutput(output, " - Command: ", TestHelpers.ApplicationName);
-                    CheckOutput(output, " - Arguments:", debugSettings.CommandArguments);
-                    CheckOutput(output, " - WorkingDir: ", GetProjectFolder(TestHelpers.CppConsoleApplication));
-                    CheckOutput(output, "	", GetProjectFolder(TestHelpers.CppConsoleApplication));
-                    CheckOutput(output, "	", TestHelpers.ApplicationName);
-                });
+            TestHelpers.ExecuteOpenCppCoverage();
+            TestHelpers.WaitForActiveDocument(TestHelpers.ApplicationName, TimeSpan.FromSeconds(10));
+            var output = TestHelpers.GetOpenCppCoverageOutput();
+            CheckOutput(output, OpenCppCoverageRunner.ProjectNameTag, TestHelpers.CppConsoleApplication);
+            CheckOutput(output, OpenCppCoverageRunner.CommandTag, TestHelpers.ApplicationName);
+            CheckOutput(output, OpenCppCoverageRunner.ArgumentTag, debugSettings.CommandArguments);
+            CheckOutput(output, OpenCppCoverageRunner.WorkingDirTag, GetProjectFolder(TestHelpers.CppConsoleApplication));
+            CheckOutput(output, OpenCppCoverageRunner.SelectedFolderTag, GetProjectFolder(TestHelpers.CppConsoleApplication));
+            CheckOutput(output, OpenCppCoverageRunner.SelectedFolderTag, GetProjectFolder(TestHelpers.CppConsoleApplication2));
+            CheckOutput(output, OpenCppCoverageRunner.SelectedModuleTag, TestHelpers.ApplicationName);
+            CheckOutput(output, OpenCppCoverageRunner.SelectedModuleTag, TestHelpers.ApplicationName2);
+            CheckOutput(output, "Report was generating at", "");
         }
         
         //---------------------------------------------------------------------
@@ -172,7 +152,7 @@ namespace VSPackage_IntegrationTests
             string expectedMessage)
         {
             TestHelpers.OpenDefaultSolution(TestHelpers.CppConsoleApplication);
-            var debugSettings = SolutionConfiguration.GetCurrentDebugSettings(TestHelpers.CppConsoleApplication);
+            var debugSettings = SolutionConfigurationHelpers.GetCurrentDebugSettings(TestHelpers.CppConsoleApplication);
             const string InvalidValue = "InvalidValue";
             var oldValue = getter(debugSettings);
             try

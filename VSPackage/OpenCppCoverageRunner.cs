@@ -9,6 +9,13 @@ namespace OpenCppCoverage.VSPackage
 {
     class OpenCppCoverageRunner
     {
+        public static readonly string ProjectNameTag = " - Project Name: ";
+        public static readonly string CommandTag = " - Command: ";
+        public static readonly string ArgumentTag = " - Arguments: ";
+        public static readonly string WorkingDirTag = " - WorkingDir: ";
+        public static readonly string SelectedFolderTag = " - Selected folders: ";
+        public static readonly string SelectedModuleTag = " - Selected modules: ";
+
         //---------------------------------------------------------------------
         public OpenCppCoverageRunner(
             EnvDTE.DTE dte, 
@@ -82,13 +89,13 @@ namespace OpenCppCoverage.VSPackage
             if (!File.Exists(settings.Command))
             {
                 throw new VSPackageException(
-                    string.Format(@"Debug command ""{0}"" does not exit.", settings.Command));
+                    string.Format(@"Debug command ""{0}"" does not exist.", settings.Command));
             }
 
             if (!string.IsNullOrEmpty(settings.WorkingDir) && !Directory.Exists(settings.WorkingDir))
             {
                 throw new VSPackageException(
-                    string.Format(@"Debug working directory ""{0}"" does not exit.", settings.WorkingDir));
+                    string.Format(@"Debug working directory ""{0}"" does not exist.", settings.WorkingDir));
             }
         }
 
@@ -115,20 +122,19 @@ namespace OpenCppCoverage.VSPackage
         void LogSettings(Settings settings)
         {                     
             outputWindowWriter_.WriteLine("Current Configuration: ");
-            outputWindowWriter_.WriteLine(" - Project Name: " + settings.ProjectName);
-            outputWindowWriter_.WriteLine(" - Command: " + settings.Command);
-            outputWindowWriter_.WriteLine(" - Arguments: " + settings.Arguments);
-            outputWindowWriter_.WriteLine(" - WorkingDir: " + settings.WorkingDir);
-            LogCollection(" - Selected folders: ", settings.SourcePaths);
-            LogCollection(" - Selected modules: ", settings.ModulePaths);
+            outputWindowWriter_.WriteLine( ProjectNameTag + settings.ProjectName);
+            outputWindowWriter_.WriteLine(CommandTag + settings.Command);
+            outputWindowWriter_.WriteLine(ArgumentTag + settings.Arguments);
+            outputWindowWriter_.WriteLine(WorkingDirTag + settings.WorkingDir);
+            LogCollection(SelectedFolderTag, settings.SourcePaths);
+            LogCollection(SelectedModuleTag, settings.ModulePaths);
         }
 
         //---------------------------------------------------------------------
         void LogCollection(string name, IEnumerable<string> values)
-        {
-            outputWindowWriter_.WriteLine(name);
+        {            
             foreach (var v in values)
-                outputWindowWriter_.WriteLine("\t" + v); 
+                outputWindowWriter_.WriteLine(name + v); 
         }
 
         readonly SettingsBuilder settingsBuilder_;

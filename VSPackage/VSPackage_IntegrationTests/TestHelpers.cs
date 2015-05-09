@@ -16,6 +16,7 @@ namespace VSPackage_IntegrationTests
         static public readonly string CppConsoleApplication2 = @"CppConsoleApplication2\CppConsoleApplication2.vcxproj";
         static public readonly string CSharpConsoleApplication = @"CSharpConsoleApplication\CSharpConsoleApplication.csproj";
         static public readonly string ApplicationName = "CppConsoleApplication.exe";
+        static public readonly string ApplicationName2 = "CppConsoleApplication2.exe";
         
         //---------------------------------------------------------------------
         static public string GetOpenCppCoverageMessage()
@@ -32,11 +33,17 @@ namespace VSPackage_IntegrationTests
         //---------------------------------------------------------------------
         static public void OpenDefaultSolution(params string[] startupProjects)
         {
-            OpenDefaultSolution();
-            var startupProjectObjects = new object[startupProjects.Length];
-            Array.Copy(startupProjects, startupProjectObjects, startupProjectObjects.Length);
-            VsIdeTestHostContext.Dte.Solution.SolutionBuild.StartupProjects = startupProjectObjects;
-        }                      
+            OpenDefaultSolution(startupProjects, ConfigurationName.Debug, PlatFormName.Win32);
+        }
+
+        //---------------------------------------------------------------------
+        static public EnvDTE80.SolutionConfiguration2 OpenDefaultSolution(
+            string startupProjects,
+            ConfigurationName configurationName,
+            PlatFormName platformName)
+        {
+            return OpenDefaultSolution(new string[] { startupProjects }, configurationName, platformName);            
+        }
 
         //---------------------------------------------------------------------
         static public T GetService<T>() where T : class
@@ -107,7 +114,20 @@ namespace VSPackage_IntegrationTests
             var currentDirectory = Path.GetDirectoryName(currentLocation);
             return Path.Combine(currentDirectory, "IntegrationTestsSolution");
         }
-        
+
+        //---------------------------------------------------------------------
+        static EnvDTE80.SolutionConfiguration2 OpenDefaultSolution(
+            string[] startupProjects,
+            ConfigurationName configurationName,
+            PlatFormName platformName)
+        {
+            OpenDefaultSolution();
+            var startupProjectObjects = new object[startupProjects.Length];
+            Array.Copy(startupProjects, startupProjectObjects, startupProjectObjects.Length);
+            VsIdeTestHostContext.Dte.Solution.SolutionBuild.StartupProjects = startupProjectObjects;
+            return SolutionConfigurationHelpers.SetActiveSolutionConfiguration(configurationName, platformName);
+        }
+
         //---------------------------------------------------------------------
         static void OpenDefaultSolution()
         {
