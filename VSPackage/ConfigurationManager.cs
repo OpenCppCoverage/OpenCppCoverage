@@ -41,7 +41,10 @@ namespace OpenCppCoverage.VSPackage
         {
             error = null;
             var context = ComputeContext(project, ref error);
-            
+
+            if (context == null)
+                return null;
+
             if (!context.ShouldBuild)
             {
                 error = string.Format("The project {0} is marked as not build for the active solution configuration. "
@@ -67,10 +70,10 @@ namespace OpenCppCoverage.VSPackage
             {
                 var builder = new StringBuilder();
 
-                builder.AppendLine(string.Format("Cannot find a configuration for project: {0}", project.UniqueName));
-                builder.AppendLine(string.Format("Solution: configuration: {0} platform: {1}", context.ConfigurationName, context.PlatformName));
+                builder.AppendLine(string.Format("Cannot find a configuration for the project {0}", project.UniqueName));
+                builder.AppendLine(string.Format(" - Solution: configuration: {0} platform: {1}", context.ConfigurationName, context.PlatformName));
                 foreach (var config in configurations)
-                    builder.AppendLine(string.Format("Project: configuration: {0} platform: {1}", config.ConfigurationName, config.Platform.Name));
+                    builder.AppendLine(string.Format(" - Project: configuration: {0} platform: {1}", config.ConfigurationName, config.Platform.Name));
                 error = builder.ToString();
                 return null;
             }
@@ -87,7 +90,7 @@ namespace OpenCppCoverage.VSPackage
             if (context == null)
             {
                 error = string.Format("Cannot find {0} in project contexts. "
-                        + "Please check your solution Configuration Manager",
+                        + "Please check your solution Configuration Manager.",
                         project.UniqueName);
                 return null;
             }
