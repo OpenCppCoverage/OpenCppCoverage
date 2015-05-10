@@ -87,7 +87,9 @@
   </Commands>
 
 
-
+  <KeyBindings>
+    <KeyBinding guid="guidVSPackageCmdSet" id="RunOpenCppCoverageCommand" editor="guidVSStd97" key1="R" mod1="CONTROL" key2="C" mod2="CONTROL"/>
+  </KeyBindings>
 
 
   <Symbols>
