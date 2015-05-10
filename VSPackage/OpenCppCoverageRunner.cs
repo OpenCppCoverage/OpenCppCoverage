@@ -79,23 +79,26 @@ namespace OpenCppCoverage.VSPackage
         {
             // This method is executed asynchronously and so we need to catch errors.
             errorHandler_.Execute(() =>
-                {                    
-                    dte_.Events.BuildEvents.OnBuildProjConfigDone -= buildContext.OnBuildDone;
-                    outputWindowWriter_.ActivatePane();
+                {
+                    if (project == buildContext.Settings.ProjectName)
+                    {
+                        dte_.Events.BuildEvents.OnBuildProjConfigDone -= buildContext.OnBuildDone;
+                        outputWindowWriter_.ActivatePane();
 
-                    if (!success)
-                        throw new VSPackageException("Build failed.");
-                    
-                    outputWindowWriter_.WriteLine("Start code coverage...");
+                        if (!success)
+                            throw new VSPackageException("Build failed.");
 
-                    var settings = buildContext.Settings;
-                    CheckSettings(settings);
+                        outputWindowWriter_.WriteLine("Start code coverage...");
 
-                    var openCppCoverage = new OpenCppCoverage(outputWindowWriter_);
-                    var indexPath = openCppCoverage.RunCodeCoverage(settings);
-                    
-                    outputWindowWriter_.WriteLine("Report was generating at " + indexPath.DirectoryName);
-                    ShowCoverage(indexPath.ToString());
+                        var settings = buildContext.Settings;
+                        CheckSettings(settings);
+
+                        var openCppCoverage = new OpenCppCoverage(outputWindowWriter_);
+                        var indexPath = openCppCoverage.RunCodeCoverage(settings);
+
+                        outputWindowWriter_.WriteLine("Report was generating at " + indexPath.DirectoryName);
+                        ShowCoverage(indexPath.ToString());
+                    }
                 });
         }
 

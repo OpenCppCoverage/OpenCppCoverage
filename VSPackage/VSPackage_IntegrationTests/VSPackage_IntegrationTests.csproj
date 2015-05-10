@@ -65,6 +65,18 @@
     <!---->
     <Compile Include="ConfigurationManagerTest.cs" />
     <Compile Include="DialogBoxMessageRetriever.cs" />
+    <Content Include="IntegrationTestsSolution\CppConsoleApplicationDll\CppConsoleApplicationDll.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IntegrationTestsSolution\CppConsoleApplicationDll\CppConsoleApplicationDll.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IntegrationTestsSolution\CppConsoleApplicationDll\stdafx.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IntegrationTestsSolution\CppConsoleApplicationDll\stdafx.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="IntegrationTestsSolution\CSharpConsoleApplication\Program.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -83,6 +95,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="IntegrationTestsSolution\CSharpConsoleApplication\App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IntegrationTestsSolution\CppConsoleApplicationDll\CppConsoleApplicationDll.vcxproj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Key.snk" />
