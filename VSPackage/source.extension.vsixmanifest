@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="c6a77aca-f53c-4cd1-97d7-0ed595751347" Version="0.9.3" Language="en-US" Publisher="OpenCppCoverage" />
-    <DisplayName>VSPackage</DisplayName>
+    <Identity Id="c6a77aca-f53c-4cd1-97d7-0ed595751347" Version="0.9.0" Language="en-US" Publisher="OpenCppCoverage" />
+    <DisplayName>OpenCppCoverage Plugin</DisplayName>
     <Description>See https://opencppcoverage.codeplex.com/ for more details</Description>
+    <MoreInfo>https://opencppcoverage.codeplex.com/</MoreInfo>
+    <License>http://www.gnu.org/licenses/gpl-3.0.html</License>
+    <Tags>C++, Code Coverage</Tags>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0]" />
