@@ -102,6 +102,7 @@ namespace CppCoverage
 		void FillHiddenOptions(po::options_description& options)
 		{						
 			options.add_options()
+				((ProgramOptions::PluginOption).c_str(), "Plugin mode.")
 				(ProgramOptions::ProgramToRunOption.c_str(), po::value<std::string>())
 				(ProgramOptions::ProgramToRunArgOption.c_str(), po::value<T_Strings>());
 		}
@@ -114,6 +115,7 @@ namespace CppCoverage
 	const std::string ProgramOptions::ExcludedSourcesOption = "excluded_sources";
 	const std::string ProgramOptions::VerboseOption = "verbose";
 	const std::string ProgramOptions::VerboseShortOption = "v";
+	const std::string ProgramOptions::PluginOption = "plugin";
 	const std::string ProgramOptions::HelpOption = "help";
 	const std::string ProgramOptions::HelpShortOption = "h";
 	const std::string ProgramOptions::ConfigFileOption = "config_file";	

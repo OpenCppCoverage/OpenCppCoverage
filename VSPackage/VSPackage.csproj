@@ -99,11 +99,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigurationManager.cs" />
+    <Compile Include="CoverageRunner.cs" />
     <Compile Include="ErrorHandler.cs" />
     <Compile Include="ExtendedProject.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="OpenCppCoverage.cs" />
-    <Compile Include="OpenCppCoverageRunner.cs" />
     <Compile Include="OutputWindowWriter.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>

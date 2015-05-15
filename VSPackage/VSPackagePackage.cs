@@ -88,7 +88,7 @@ namespace OpenCppCoverage.VSPackage
                 var webBrowsingService = (IVsWebBrowsingService)GetService(typeof(IVsWebBrowsingService));
                 var settingsBuilder = new SettingsBuilder(dte);
 
-                var openCppCoverageRunner = new OpenCppCoverageRunner(dte, webBrowsingService, settingsBuilder, errorHandler, outputWriter);
+                var openCppCoverageRunner = new CoverageRunner(dte, webBrowsingService, settingsBuilder, errorHandler, outputWriter);
 
                 openCppCoverageRunner.RunCoverageOnStartupProject();
             });                                             

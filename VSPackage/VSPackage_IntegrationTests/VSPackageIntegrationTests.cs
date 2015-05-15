@@ -123,14 +123,14 @@ namespace VSPackage_IntegrationTests
             TestHelpers.ExecuteOpenCppCoverage();
             TestHelpers.WaitForActiveDocument(TestHelpers.ApplicationName, TimeSpan.FromSeconds(10));
             var output = TestHelpers.GetOpenCppCoverageOutput();
-            CheckOutput(output, OpenCppCoverageRunner.ProjectNameTag, TestHelpers.CppConsoleApplication);
-            CheckOutput(output, OpenCppCoverageRunner.CommandTag, TestHelpers.ApplicationName);
-            CheckOutput(output, OpenCppCoverageRunner.ArgumentTag, debugSettings.CommandArguments);
-            CheckOutput(output, OpenCppCoverageRunner.WorkingDirTag, GetProjectFolder(TestHelpers.CppConsoleApplication));
-            CheckOutput(output, OpenCppCoverageRunner.SelectedFolderTag, GetProjectFolder(TestHelpers.CppConsoleApplication));
-            CheckOutput(output, OpenCppCoverageRunner.SelectedFolderTag, GetProjectFolder(TestHelpers.CppConsoleApplication2));
-            CheckOutput(output, OpenCppCoverageRunner.SelectedModuleTag, TestHelpers.ApplicationName);
-            CheckOutput(output, OpenCppCoverageRunner.SelectedModuleTag, TestHelpers.ApplicationName2);
+            CheckOutput(output, CoverageRunner.ProjectNameTag, TestHelpers.CppConsoleApplication);
+            CheckOutput(output, CoverageRunner.CommandTag, TestHelpers.ApplicationName);
+            CheckOutput(output, CoverageRunner.ArgumentTag, debugSettings.CommandArguments);
+            CheckOutput(output, CoverageRunner.WorkingDirTag, GetProjectFolder(TestHelpers.CppConsoleApplication));
+            CheckOutput(output, CoverageRunner.SelectedFolderTag, GetProjectFolder(TestHelpers.CppConsoleApplication));
+            CheckOutput(output, CoverageRunner.SelectedFolderTag, GetProjectFolder(TestHelpers.CppConsoleApplication2));
+            CheckOutput(output, CoverageRunner.SelectedModuleTag, TestHelpers.ApplicationName);
+            CheckOutput(output, CoverageRunner.SelectedModuleTag, TestHelpers.ApplicationName2);
             CheckOutput(output, "Report was generating at", "");
         }
         

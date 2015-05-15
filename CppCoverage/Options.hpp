@@ -45,6 +45,9 @@ namespace CppCoverage
 		void SetVerboseModeSelected();
 		bool IsVerboseModeSelected() const;
 		
+		void SetPlugingModeSelected();
+		bool IsPlugingModeSelected() const;
+
 		void AddExport(const OptionsExport&);
 		const std::vector<OptionsExport>& GetExports() const;
 		
@@ -63,6 +66,7 @@ namespace CppCoverage
 		boost::optional<CppCoverage::StartInfo> optionalStartInfo_;
 
 		bool verboseModeSelected_;
+		bool pluginModeSelected_;
 		std::vector<OptionsExport> exports_;
 		std::vector<boost::filesystem::path> inputCoveragePaths_;
 	};

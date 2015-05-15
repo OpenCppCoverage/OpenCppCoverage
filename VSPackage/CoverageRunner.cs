@@ -23,7 +23,7 @@ using System.IO;
 
 namespace OpenCppCoverage.VSPackage
 {
-    class OpenCppCoverageRunner
+    class CoverageRunner
     {
         public static readonly string ProjectNameTag = " - Project Name: ";
         public static readonly string CommandTag = " - Command: ";
@@ -33,7 +33,7 @@ namespace OpenCppCoverage.VSPackage
         public static readonly string SelectedModuleTag = " - Selected modules: ";
 
         //---------------------------------------------------------------------
-        public OpenCppCoverageRunner(
+        public CoverageRunner(
             EnvDTE.DTE dte, 
             IVsWebBrowsingService webBrowsingService,
             SettingsBuilder settingsBuilder,

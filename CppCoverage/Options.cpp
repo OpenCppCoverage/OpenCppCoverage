@@ -29,6 +29,7 @@ namespace CppCoverage
 		: modules_{modulePatterns}
 		, sources_{sourcePatterns}		
 		, verboseModeSelected_{false}
+		, pluginModeSelected_{false}
 	{
 		if (startInfo)
 			optionalStartInfo_ = *startInfo;
@@ -64,6 +65,18 @@ namespace CppCoverage
 		return verboseModeSelected_;
 	}
 	
+	//-------------------------------------------------------------------------
+	void Options::SetPlugingModeSelected()
+	{
+		pluginModeSelected_ = true;
+	}
+
+	//-------------------------------------------------------------------------
+	bool Options::IsPlugingModeSelected() const
+	{
+		return pluginModeSelected_;
+	}
+
 	//-------------------------------------------------------------------------
 	void Options::AddExport(const OptionsExport& optionExport)
 	{

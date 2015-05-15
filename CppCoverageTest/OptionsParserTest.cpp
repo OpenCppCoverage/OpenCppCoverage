@@ -69,7 +69,16 @@ namespace CppCoverageTest
 		ASSERT_TRUE(TestTools::Parse(parser,
 		{ TestTools::OptionPrefix + cov::ProgramOptions::VerboseOption })->IsVerboseModeSelected());
 	}
-		
+	
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, Plugin)
+	{
+		cov::OptionsParser parser;
+
+		ASSERT_TRUE(TestTools::Parse(parser,
+		{ TestTools::OptionPrefix + cov::ProgramOptions::PluginOption })->IsPlugingModeSelected());
+	}
+
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, WorkingDirectory)
 	{

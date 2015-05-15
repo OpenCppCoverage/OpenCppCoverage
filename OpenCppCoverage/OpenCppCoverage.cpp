@@ -17,8 +17,7 @@
 #include "stdafx.h"
 #include "OpenCppCoverage.hpp"
 
-#include "stdafx.h"
-#include "OpenCppCoverage.hpp"
+#include <iostream>
 
 #include "CppCoverage/CodeCoverageRunner.hpp"
 #include "CppCoverage/CoverageSettings.hpp"
@@ -34,6 +33,7 @@
 
 #include "Tools/Tool.hpp"
 #include "Tools/Log.hpp"
+#include "Tools/ScopedAction.hpp"
 
 namespace cov = CppCoverage;
 namespace logging = boost::log;
@@ -149,7 +149,18 @@ namespace OpenCppCoverage
 		auto options = optionsParser.Parse(argc, argv, emptyOptionsExplanation);
 
 		if (options)
+		{
+			Tools::ScopedAction scopedAction([&]()
+			{
+				if (options->IsPlugingModeSelected())
+				{
+					std::cout << "Press any key to continue... ";
+					std::cout.flush();
+					std::cin.get();
+				}
+			});
 			return ::OpenCppCoverage::Run(*options);
+		}
 		return 1;
 	}
 }

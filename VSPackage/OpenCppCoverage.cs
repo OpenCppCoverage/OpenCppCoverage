@@ -40,21 +40,16 @@ namespace OpenCppCoverage.VSPackage
                 process.StartInfo.FileName = GetOpenCppCoveragePath(settings.Command);
                 process.StartInfo.Arguments = BuildArguments(settings, outputFolder);
                 process.StartInfo.UseShellExecute = false;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.CreateNoWindow = false;
 
                 if (!String.IsNullOrEmpty(settings.WorkingDir))
                     process.StartInfo.WorkingDirectory = settings.WorkingDir;
-                process.OutputDataReceived += OnDataReceived;
-                process.ErrorDataReceived += OnDataReceived;
 
                 this.outputWindowWriter_.WriteLine("Run " + process.StartInfo.FileName + " " + process.StartInfo.Arguments);
                 process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-                process.WaitForExit();                           
+                process.WaitForExit();
             }
-            
+
             var expectedPath = new FileInfo(Path.Combine(outputFolder, "index.html"));
 
             if (!expectedPath.Exists)
@@ -82,7 +77,8 @@ namespace OpenCppCoverage.VSPackage
                 AppendArgument(builder, "--module", modulePath);
             foreach (var sourcePath in settings.SourcePaths)
                 AppendArgument(builder, "--sources", sourcePath);
-                        
+
+            builder.Append(" --plugin ");
             AppendArgument(builder, "--", settings.Command);
             builder.Append(' ').Append(settings.Arguments);
             return builder.ToString();
@@ -127,12 +123,6 @@ namespace OpenCppCoverage.VSPackage
             }
 
             return binaryType == NativeMethods.BinaryType.SCS_64BIT_BINARY;
-        }
-
-        //---------------------------------------------------------------------
-        void OnDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            outputWindowWriter_.WriteLine(e.Data);
         }
 
         //---------------------------------------------------------------------

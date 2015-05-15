@@ -277,6 +277,8 @@ namespace CppCoverage
 		
 		if (IsOptionSelected(variables, ProgramOptions::VerboseOption))
 			options.SetVerboseModeSelected();
+		if (IsOptionSelected(variables, ProgramOptions::PluginOption))
+			options.SetPlugingModeSelected();
 
 		AddExporTypes(variables, options);
 		AddInputCoverages(variables, options);
