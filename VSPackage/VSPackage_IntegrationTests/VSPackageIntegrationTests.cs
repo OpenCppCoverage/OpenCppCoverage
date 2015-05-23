@@ -121,6 +121,8 @@ namespace VSPackage_IntegrationTests
             debugSettings.CommandArguments = "Test";
 
             TestHelpers.ExecuteOpenCppCoverage();
+
+            TestHelpers.CloseOpenCppCoverageConsole(TimeSpan.FromSeconds(10));
             TestHelpers.WaitForActiveDocument(TestHelpers.ApplicationName, TimeSpan.FromSeconds(10));
             var output = TestHelpers.GetOpenCppCoverageOutput();
             CheckOutput(output, CoverageRunner.ProjectNameTag, TestHelpers.CppConsoleApplication);

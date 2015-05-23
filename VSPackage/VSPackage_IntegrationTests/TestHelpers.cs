@@ -87,7 +87,7 @@ namespace VSPackage_IntegrationTests
         //---------------------------------------------------------------------
         public static void WaitForActiveDocument(string documentCaption, TimeSpan timeout)
         {                     
-            Wait(timeout, "Cannot get html coverage", () =>
+            Wait(timeout, "Cannot get document:" + documentCaption, () =>
                 {
                     var actionWindows = VsIdeTestHostContext.Dte.ActiveWindow;
 
@@ -129,6 +129,13 @@ namespace VSPackage_IntegrationTests
             var currentLocation = typeof(TestHelpers).Assembly.Location;
             var currentDirectory = Path.GetDirectoryName(currentLocation);
             return Path.Combine(currentDirectory, "IntegrationTestsSolution");
+        }
+
+        //---------------------------------------------------------------------
+        public static void CloseOpenCppCoverageConsole(TimeSpan waitDuration)
+        {
+            System.Threading.Thread.Sleep(waitDuration);
+            System.Windows.Forms.SendKeys.SendWait("{ENTER}");
         }
 
         //---------------------------------------------------------------------
