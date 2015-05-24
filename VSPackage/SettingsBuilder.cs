@@ -100,7 +100,7 @@ namespace OpenCppCoverage.VSPackage
             var startupProjectsNames = solution_.SolutionBuild.StartupProjects as object[];
 
             if (startupProjectsNames == null)
-                throw new VSPackageException("Cannot get startup projects");
+                throw new VSPackageException("Cannot get startup projects.");
 
             var startupProjectsSet = new HashSet<String>();
             foreach (String projectName in startupProjectsNames)

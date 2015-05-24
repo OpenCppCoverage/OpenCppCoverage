@@ -25,7 +25,7 @@ namespace OpenCppCoverage.VSPackage
         //---------------------------------------------------------------------
         public OutputWindowWriter(EnvDTE.DTE dte, IVsOutputWindow outputWindow)
         {
-            // These line show the output windows
+            // These lines show the output windows
             Window output = dte.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
             output.Activate();
 

@@ -108,13 +108,13 @@ namespace OpenCppCoverage.VSPackage
             if (!File.Exists(settings.Command))
             {
                 throw new VSPackageException(
-                    string.Format(@"Debug command ""{0}"" does not exist.", settings.Command));
+                    string.Format(@"Debugging command ""{0}"" does not exist.", settings.Command));
             }
 
             if (!string.IsNullOrEmpty(settings.WorkingDir) && !Directory.Exists(settings.WorkingDir))
             {
                 throw new VSPackageException(
-                    string.Format(@"Debug working directory ""{0}"" does not exist.", settings.WorkingDir));
+                    string.Format(@"Debugging working directory ""{0}"" does not exist.", settings.WorkingDir));
             }
         }
 
@@ -141,7 +141,7 @@ namespace OpenCppCoverage.VSPackage
         void LogSettings(Settings settings)
         {                     
             outputWindowWriter_.WriteLine("Current Configuration: ");
-            outputWindowWriter_.WriteLine( ProjectNameTag + settings.ProjectName);
+            outputWindowWriter_.WriteLine(ProjectNameTag + settings.ProjectName);
             outputWindowWriter_.WriteLine(CommandTag + settings.Command);
             outputWindowWriter_.WriteLine(ArgumentTag + settings.Arguments);
             outputWindowWriter_.WriteLine(WorkingDirTag + settings.WorkingDir);
