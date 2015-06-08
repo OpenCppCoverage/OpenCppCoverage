@@ -146,6 +146,10 @@
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="gpl-3.0.txt">
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="OpenCppCoverage-x64\boost_chrono-vc120-mt-1_55.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

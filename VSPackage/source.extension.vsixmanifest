@@ -5,7 +5,7 @@
     <DisplayName>OpenCppCoverage Plugin</DisplayName>
     <Description>See https://opencppcoverage.codeplex.com/ for more details</Description>
     <MoreInfo>https://opencppcoverage.codeplex.com/</MoreInfo>
-    <License>http://www.gnu.org/licenses/gpl-3.0.html</License>
+    <License>gpl-3.0.txt</License>
     <Tags>C++, Code Coverage</Tags>
   </Metadata>
   <Installation InstalledByMsi="false">
