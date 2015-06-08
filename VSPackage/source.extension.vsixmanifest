@@ -3,7 +3,7 @@
   <Metadata>
     <Identity Id="c6a77aca-f53c-4cd1-97d7-0ed595751347" Version="0.9.0" Language="en-US" Publisher="OpenCppCoverage" />
     <DisplayName>OpenCppCoverage Plugin</DisplayName>
-    <Description>See https://opencppcoverage.codeplex.com/ for more details</Description>
+    <Description xml:space="preserve">Visual Studio plugin for OpenCppCoverage to compute code coverage for C++ application.</Description>
     <MoreInfo>https://opencppcoverage.codeplex.com/</MoreInfo>
     <License>gpl-3.0.txt</License>
     <Tags>C++, Code Coverage</Tags>
