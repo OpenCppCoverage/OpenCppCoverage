@@ -59,8 +59,20 @@ namespace OpenCppCoverage.VSPackage
                 return configurations;
             }
         }
-        
+
+        //---------------------------------------------------------------------
+        public List<VCFile> Files
+        {
+            get
+            {
+                var files = new List<VCFile>();
+                foreach (VCFile file in vcProject_.Files)
+                    files.Add(file);
+                return files;
+            }
+        }
+
         readonly Project project_;
-        readonly VCProject vcProject_;        
+        readonly VCProject vcProject_;
     }
 }

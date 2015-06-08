@@ -115,22 +115,50 @@ namespace OpenCppCoverage.VSPackage
             List<ExtendedProject> projects,             
             Settings settings)
         {
-            var sourcePaths = new List<string>();
+            var projectFilePaths = new List<string>();
             var modulePaths = new List<string>();
 
             foreach (var project in projects)
-            {
-                sourcePaths.Add(project.ProjectDirectory);
+            {                
+                foreach (var file in project.Files)
+                    projectFilePaths.Add(file.FullPath);
                 var configuration = configurationManager.FindConfiguration(project);
 
                 if (configuration != null)
                     modulePaths.Add(configuration.PrimaryOutput);
             }
 
-            settings.SourcePaths = sourcePaths;
             settings.ModulePaths = modulePaths;
+            settings.SourcePaths = ComputeCommonFolders(projectFilePaths);
         }
-               
+
+        //---------------------------------------------------------------------       
+        static IEnumerable<string> ComputeCommonFolders(List<string> projectFilePaths)
+        {
+            var commonFolders = new List<string>();
+
+            foreach (var path in projectFilePaths)
+                commonFolders.Add(Path.GetDirectoryName(path));
+            commonFolders.Sort();
+            int index = 0;
+            string previousFolder = null;
+
+            while (index < commonFolders.Count)
+            {
+                string folder = commonFolders[index];
+
+                if (previousFolder != null && folder.StartsWith(previousFolder))
+                    commonFolders.RemoveAt(index);
+                else
+                {
+                    previousFolder = folder;
+                    ++index;
+                }
+            }
+
+            return commonFolders;
+        }
+
         Solution solution_;
     }
 }

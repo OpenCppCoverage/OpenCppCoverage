@@ -13,6 +13,7 @@ ipch/*
 CoverageReport-*
 NewRelease
 TestResults/
+packages/*
 
 # Template file / unmanaged dll for the plugin
 VSPackage/OpenCppCoverage-x64
