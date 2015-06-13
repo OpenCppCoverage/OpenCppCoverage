@@ -106,11 +106,8 @@ namespace OpenCppCoverage.VSPackage
         {
             NativeMethods.BinaryType binaryType;
 
-            if (Microsoft.VisualStudio.ErrorHandler.Failed(
-                NativeMethods.GetBinaryType(commandPath, out binaryType)))
-            {
-                throw new VSPackageException("Cannot find the binary type of " + commandPath);                
-            }
+            if (NativeMethods.GetBinaryType(commandPath, out binaryType) == 0)
+                throw new VSPackageException("Invalid executable: " + commandPath);
 
             outputWindowWriter_.WriteLine(
                 string.Format("{0} has binary type: {1}", commandPath, binaryType.ToString()));
