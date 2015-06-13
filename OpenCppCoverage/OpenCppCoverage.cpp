@@ -163,7 +163,7 @@ namespace OpenCppCoverage
 
 		if (options->IsPlugingModeSelected())
 		{
-			LOG_ERROR << "Press any key to continue... ";
+			std::cout << "Press any key to continue... ";
 			std::cin.get();
 		}
 
