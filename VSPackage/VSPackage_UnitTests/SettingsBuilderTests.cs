@@ -59,7 +59,9 @@ namespace VSPackage_IntegrationTests
             var settingsBuilder = new SettingsBuilder(dte.Object);
             var settings = settingsBuilder.ComputeSettings();
 
-            var expectedFolders = new List<string>{ Path.GetDirectoryName(file4), Path.GetDirectoryName(file2) };
+            var expectedFolders = new List<string> { 
+                Path.GetDirectoryName(file4) + Path.DirectorySeparatorChar, 
+                Path.GetDirectoryName(file2) + Path.DirectorySeparatorChar };
             CollectionAssert.AreEqual(expectedFolders, settings.SourcePaths.ToList());
         }
     }

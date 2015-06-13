@@ -138,7 +138,7 @@ namespace OpenCppCoverage.VSPackage
             var commonFolders = new List<string>();
 
             foreach (var path in projectFilePaths)
-                commonFolders.Add(Path.GetDirectoryName(path));
+                commonFolders.Add(Path.GetDirectoryName(path) + Path.DirectorySeparatorChar);
             commonFolders.Sort();
             int index = 0;
             string previousFolder = null;
