@@ -35,7 +35,7 @@ namespace VSPackage_IntegrationTests
         {
             var solutionService = TestHelpers.GetService<IVsSolution>();
             solutionService.CloseSolutionElement((uint)__VSSLNSAVEOPTIONS.SLNSAVEOPT_NoSave, null, 0);
-            Assert.AreEqual("OpenCppCoverage\n\nCannot get startup projects", TestHelpers.GetOpenCppCoverageMessage());
+            Assert.AreEqual("OpenCppCoverage\n\nCannot get startup projects.", TestHelpers.GetOpenCppCoverageMessage());
         }
 
         //---------------------------------------------------------------------
@@ -77,7 +77,7 @@ namespace VSPackage_IntegrationTests
             CheckInvalidSettings(
                 (debugSettings, v) => debugSettings.WorkingDirectory = v, 
                 debugSettings => debugSettings.WorkingDirectory, 
-                "OpenCppCoverage\n\nDebug working directory \"{0}\" does not exist.");
+                "OpenCppCoverage\n\nDebugging working directory \"{0}\" does not exist.");
         }
 
         //---------------------------------------------------------------------
@@ -88,7 +88,7 @@ namespace VSPackage_IntegrationTests
             CheckInvalidSettings(
                 (debugSettings, v) => debugSettings.Command = v,
                 debugSettings => debugSettings.Command,
-                "OpenCppCoverage\n\nDebug command \"{0}\" does not exist.");
+                "OpenCppCoverage\n\nDebugging command \"{0}\" does not exist.");
         }
 
         //---------------------------------------------------------------------
