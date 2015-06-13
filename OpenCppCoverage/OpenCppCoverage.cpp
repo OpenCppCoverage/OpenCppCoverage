@@ -33,7 +33,6 @@
 
 #include "Tools/Tool.hpp"
 #include "Tools/Log.hpp"
-#include "Tools/ScopedAction.hpp"
 
 namespace cov = CppCoverage;
 namespace logging = boost::log;
@@ -148,19 +147,26 @@ namespace OpenCppCoverage
 
 		auto options = optionsParser.Parse(argc, argv, emptyOptionsExplanation);
 
-		if (options)
+		if (!options)
+			return 1;
+		
+		auto status = 0;
+		try
 		{
-			Tools::ScopedAction scopedAction([&]()
-			{
-				if (options->IsPlugingModeSelected())
-				{
-					std::cout << "Press any key to continue... ";
-					std::cout.flush();
-					std::cin.get();
-				}
-			});
-			return ::OpenCppCoverage::Run(*options);
+			status = ::OpenCppCoverage::Run(*options);
 		}
-		return 1;
+		catch (const std::exception& e)
+		{
+			std::cerr << "Error: " << e.what() << std::endl;
+			status = 1;
+		}
+
+		if (options->IsPlugingModeSelected())
+		{
+			LOG_ERROR << "Press any key to continue... ";
+			std::cin.get();
+		}
+
+		return status;		
 	}
 }
