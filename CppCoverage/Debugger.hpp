@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include <boost/optional/optional.hpp>
+
 #include <unordered_map>
 #include <Windows.h>
 #include "CppCoverageExport.hpp"
@@ -57,7 +59,10 @@ namespace CppCoverage
 		HANDLE GetThreadHandle(DWORD dwThreadId) const;
 
 		struct ProcessStatus;
-		ProcessStatus HandleNotCreateEvent(
+
+		ProcessStatus HandleDebugEvent(const DEBUG_EVENT&, IDebugEventsHandler&);
+
+		ProcessStatus HandleNotCreationalEvent(
 			const DEBUG_EVENT& debugEvent,
 			IDebugEventsHandler& debugEventsHandler,
 			HANDLE hProcess,
@@ -67,6 +72,7 @@ namespace CppCoverage
 	private:
 		std::unordered_map<DWORD, HANDLE> processHandles_;
 		std::unordered_map<DWORD, HANDLE> threadHandles_;
+		boost::optional<DWORD> rootProcessId_;
 	};
 }
 
