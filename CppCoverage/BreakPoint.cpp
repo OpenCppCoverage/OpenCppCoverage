@@ -18,17 +18,46 @@
 #include "BreakPoint.hpp"
 
 #include "CppCoverageException.hpp"
+#include "Address.hpp"
 
 namespace CppCoverage
 {
-	//-------------------------------------------------------------------------
-	BreakPoint::BreakPoint(HANDLE hProcess)
-		: hProcess_(hProcess)
+	namespace
 	{
+		//-------------------------------------------------------------------------
+		unsigned char ReadProcessMemory(const Address& address)
+		{
+			unsigned char instruction = 0;
+			SIZE_T written = 0;
+
+			if (!::ReadProcessMemory(
+				address.GetProcessHandle(), address.GetValue(),
+				&instruction, sizeof(instruction), &written))
+			{
+				THROW_LAST_ERROR("Cannot read memory:" << address, GetLastError());
+			}
+
+			return instruction;
+		}
+
+		//-------------------------------------------------------------------------
+		void WriteProcessMemory(const Address& address, unsigned char instruction)
+		{
+			SIZE_T written = 0;
+			if (!::WriteProcessMemory(
+				address.GetProcessHandle(), address.GetValue(),
+				&instruction, sizeof(instruction), &written))
+			{
+				THROW_LAST_ERROR("Cannot write memory:" << address, GetLastError());
+			}
+
+			if (!FlushInstructionCache(address.GetProcessHandle(), address.GetValue(), sizeof(instruction)))
+				THROW_LAST_ERROR("Cannot flush memory:" << address, GetLastError());
+		}
 	}
 
 	//-------------------------------------------------------------------------
-	unsigned char BreakPoint::SetBreakPointAt(void* address) const
+	unsigned char BreakPoint::SetBreakPointAt(const Address& address) const
 	{
 		auto instruction = ReadProcessMemory(address);
 		unsigned char breakPointInstruction = 0xCC;
@@ -39,7 +68,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void BreakPoint::RemoveBreakPoint(void* address, unsigned char oldInstruction) const
+	void BreakPoint::RemoveBreakPoint(const Address& address, unsigned char oldInstruction) const
 	{
 		WriteProcessMemory(address, oldInstruction);		
 	}
@@ -59,28 +88,5 @@ namespace CppCoverage
 		#endif
 		if (!SetThreadContext(hThread, &lcContext))
 			THROW_LAST_ERROR("Error in SetThreadContext", GetLastError());
-	}
-
-	//-------------------------------------------------------------------------
-	unsigned char BreakPoint::ReadProcessMemory(void* address) const
-	{
-		unsigned char instruction = 0;
-		SIZE_T written = 0;
-
-		if (!::ReadProcessMemory(hProcess_, address, &instruction, sizeof(instruction), &written))
-			THROW_LAST_ERROR("Cannot read memory:" << address, GetLastError());
-
-		return instruction;
-	}
-
-	//-------------------------------------------------------------------------
-	void BreakPoint::WriteProcessMemory(void* address, unsigned char instruction) const
-	{	
-		SIZE_T written = 0;
-		if (!::WriteProcessMemory(hProcess_, address, &instruction, sizeof(instruction), &written))
-			THROW_LAST_ERROR("Cannot write memory:" << address, GetLastError());			
-
-		if (!FlushInstructionCache(hProcess_, address, sizeof(instruction)))
-			THROW_LAST_ERROR("Cannot flush memory:" << address, GetLastError());
 	}
 }

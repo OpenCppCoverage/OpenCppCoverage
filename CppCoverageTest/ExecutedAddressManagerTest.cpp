@@ -22,33 +22,45 @@
 #include "CppCoverage/ModuleCoverage.hpp"
 #include "CppCoverage/FileCoverage.hpp"
 #include "CppCoverage/LineCoverage.hpp"
+#include "CppCoverage/Address.hpp"
 
 namespace cov = CppCoverage;
 
 namespace CppCoverageTest
 {
+	namespace
+	{
+		//-------------------------------------------------------------------------
+		cov::Address CreateAddress(int addressValue)
+		{
+			return cov::Address{ nullptr, reinterpret_cast<void*>(addressValue) };
+		}
+	}
+
 	//-------------------------------------------------------------------------
 	TEST(ExecutedAddressManagerTest, RegisterAddress)
 	{		
 		cov::ExecutedAddressManager manager;
-		
-		ASSERT_THROW(manager.RegisterAddress(0, L"", 0, 0), cov::CppCoverageException);
+		cov::Address address = CreateAddress(0);
+
+		ASSERT_THROW(manager.RegisterAddress(address, L"", 0, 0), cov::CppCoverageException);
 
 		manager.SetCurrentModule(L"");
-		manager.RegisterAddress(0, L"", 0, 0);
+		manager.RegisterAddress(address, L"", 0, 0);
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(ExecutedAddressManagerTest, MarkAddressAsExecuted)
 	{
 		cov::ExecutedAddressManager manager;
+		cov::Address address = CreateAddress(0);
 
 		manager.SetCurrentModule(L"");
 
-		ASSERT_EQ(boost::none, manager.MarkAddressAsExecuted(0));
+		ASSERT_EQ(boost::none, manager.MarkAddressAsExecuted(address));
 
-		manager.RegisterAddress(0, L"", 0, 0);
-		ASSERT_NO_THROW(manager.MarkAddressAsExecuted(0));
+		manager.RegisterAddress(address, L"", 0, 0);
+		ASSERT_NO_THROW(manager.MarkAddressAsExecuted(address));
 	}	
 
 	//-------------------------------------------------------------------------
@@ -60,8 +72,8 @@ namespace CppCoverageTest
 		const std::wstring filename = L"filename";
 		const char instructionLine42 = 10;
 		const char instructionLine43 = 11;
-		auto address1 = reinterpret_cast<void*>(1);
-		auto address2 = reinterpret_cast<void*>(2);
+		cov::Address address1 = CreateAddress(1);
+		cov::Address address2 = CreateAddress(2); 
 
 		manager.SetCurrentModule(moduleName);
 		manager.RegisterAddress(address1, filename, 42, instructionLine42);

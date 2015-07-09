@@ -19,6 +19,8 @@
 #include "DebugInformationEventHandlerMock.hpp"
 
 #include "CppCoverage/DebugInformation.hpp"
+#include "CppCoverage/Address.hpp"
+
 #include "Tools/Tool.hpp"
 #include "TestTools.hpp"
 

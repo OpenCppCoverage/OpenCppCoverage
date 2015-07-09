@@ -29,6 +29,7 @@
 namespace CppCoverage
 {
 	class FileCoverage;
+	class Address;
 
 	class CPPCOVERAGE_DLL ExecutedAddressManager
 	{
@@ -37,8 +38,13 @@ namespace CppCoverage
 		~ExecutedAddressManager();
 
 		void SetCurrentModule(const std::wstring& moduleName);
-		bool RegisterAddress(void* address, const std::wstring& filename, unsigned int line, unsigned char instruction);
-		boost::optional<unsigned char> MarkAddressAsExecuted(void* address);
+		bool RegisterAddress(
+			const Address&,
+			const std::wstring& filename,
+			unsigned int line,
+			unsigned char instruction);
+
+		boost::optional<unsigned char> MarkAddressAsExecuted(const Address&);
 
 		CoverageData CreateCoverageData(const std::wstring& name, int exitCode) const;
 
@@ -58,7 +64,7 @@ namespace CppCoverage
 	
 	private:
 		std::vector<std::unique_ptr<Module>> modules_;
-		std::map<void*, Instruction> addressLineMap_;
+		std::map<Address, Instruction> addressLineMap_;
 	};
 }
 

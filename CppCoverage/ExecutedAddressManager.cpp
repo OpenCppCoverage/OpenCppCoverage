@@ -25,6 +25,7 @@
 #include "CppCoverageException.hpp"
 #include "ModuleCoverage.hpp"
 #include "FileCoverage.hpp"
+#include "Address.hpp"
 
 namespace CppCoverage
 {
@@ -97,8 +98,8 @@ namespace CppCoverage
 	
 	//-------------------------------------------------------------------------
 	bool ExecutedAddressManager::RegisterAddress(
-		void* address, 
-		const std::wstring& filename, 
+		const Address& address,
+		const std::wstring& filename,
 		unsigned int lineNumber, 
 		unsigned char instructionValue)
 	{
@@ -136,7 +137,8 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	boost::optional<unsigned char> ExecutedAddressManager::MarkAddressAsExecuted(void* address)
+	boost::optional<unsigned char> ExecutedAddressManager::MarkAddressAsExecuted(
+		const Address& address)
 	{
 		auto it = addressLineMap_.find(address);
 

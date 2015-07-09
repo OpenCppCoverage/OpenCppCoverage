@@ -16,26 +16,29 @@
 
 #pragma once
 
-#include <string>
 #include <Windows.h>
 #include "CppCoverageExport.hpp"
 
 namespace CppCoverage
 {
-	class Address;
-
-	class CPPCOVERAGE_DLL IDebugInformationEventHandler
+	class CPPCOVERAGE_DLL Address
 	{
-	public:
-		IDebugInformationEventHandler() = default;
-		virtual ~IDebugInformationEventHandler() = default;
-								
-		virtual bool IsSourceFileSelected(const std::wstring& filename) const = 0;
-		virtual void OnNewLine(const std::wstring& fileName, int lineNumber, const Address&) = 0;
-		
+	public:				
+		Address(HANDLE hProcess, void* value);
+		Address(const Address&) = default;
+
+		HANDLE GetProcessHandle() const;
+		void* GetValue() const;
+
+		bool operator<(const Address& other) const;
+		friend std::wostream& operator<<(std::wostream&, const Address&);
+
+	private:		
+		Address& operator=(const Address&) = delete;
+
 	private:
-		IDebugInformationEventHandler(const IDebugInformationEventHandler&) = delete;
-		IDebugInformationEventHandler& operator=(const IDebugInformationEventHandler&) = delete;
+		HANDLE hProcess_;
+		void* value_;
 	};
 }
 

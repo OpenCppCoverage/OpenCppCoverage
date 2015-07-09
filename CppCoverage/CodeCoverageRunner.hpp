@@ -17,6 +17,7 @@
 #pragma once
 
 #include <memory>
+#include <unordered_map>
 
 #include "CoverageData.hpp"
 #include "IDebugEventsHandler.hpp"
@@ -49,17 +50,17 @@ namespace CppCoverage
 
 	private:
 		virtual bool IsSourceFileSelected(const std::wstring& filename) const override;
-		virtual void OnNewLine(const std::wstring& fileName, int lineNumber, DWORD64 address) override;
+		virtual void OnNewLine(const std::wstring& fileName, int lineNumber, const Address&) override;
 
 	private:
 		CodeCoverageRunner(const CodeCoverageRunner&) = delete;
 		CodeCoverageRunner& operator=(const CodeCoverageRunner&) = delete;
 
-		void LoadModule(HANDLE hFile, void* baseOfImage);
-		void OnBreakPoint(const EXCEPTION_DEBUG_INFO&, HANDLE hThread);
+		void LoadModule(HANDLE hProcess, HANDLE hFile, void* baseOfImage);
+		void OnBreakPoint(const EXCEPTION_DEBUG_INFO&, HANDLE hProcess, HANDLE hThread);
 
 	private:
-		std::unique_ptr<DebugInformation> debugInformation_;		
+		std::unordered_map<HANDLE, std::unique_ptr<DebugInformation>> debugInformation_;
 		std::unique_ptr<BreakPoint> breakpoint_;
 		std::unique_ptr<ExecutedAddressManager> executedAddressManager_;
 		std::unique_ptr<CoverageFilter> coverageFilter_;

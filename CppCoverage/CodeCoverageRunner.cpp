@@ -32,6 +32,8 @@
 #include "CoverageFilter.hpp"
 #include "StartInfo.hpp"
 #include "ExceptionHandler.hpp"
+#include "CppCoverageException.hpp"
+#include "Address.hpp"
 
 #include "tools/Tool.hpp"
 
@@ -43,6 +45,7 @@ namespace CppCoverage
 	{ 
 		executedAddressManager_.reset(new ExecutedAddressManager());
 		exceptionHandler_.reset(new ExceptionHandler());
+		breakpoint_.reset(new BreakPoint());
 	}
 	
 	//-------------------------------------------------------------------------
@@ -72,9 +75,8 @@ namespace CppCoverage
 		auto hProcess = processDebugInfo.hProcess;
 		auto lpBaseOfImage = processDebugInfo.lpBaseOfImage;
 
-		debugInformation_.reset(new DebugInformation(hProcess));
-		breakpoint_.reset(new BreakPoint(hProcess));
-		LoadModule(processDebugInfo.hFile, lpBaseOfImage);
+		debugInformation_.emplace(hProcess, std::make_unique<DebugInformation>(hProcess));
+		LoadModule(hProcess, processDebugInfo.hFile, lpBaseOfImage);
 	}
 	
 	//-------------------------------------------------------------------------
@@ -83,7 +85,7 @@ namespace CppCoverage
 		HANDLE hThread, 
 		const LOAD_DLL_DEBUG_INFO& dllDebugInfo)
 	{
-		LoadModule(dllDebugInfo.hFile, dllDebugInfo.lpBaseOfDll);
+		LoadModule(hProcess, dllDebugInfo.hFile, dllDebugInfo.lpBaseOfDll);
 	}
 	
 	//-------------------------------------------------------------------------
@@ -100,7 +102,7 @@ namespace CppCoverage
 		{
 			case CppCoverage::ExceptionHandlerStatus::BreakPoint:
 			{
-				OnBreakPoint(exceptionDebugInfo, hThread);
+				OnBreakPoint(exceptionDebugInfo, hProcess, hThread);
 				return DBG_CONTINUE;
 			}
 			case CppCoverage::ExceptionHandlerStatus::FirstChanceException:
@@ -121,10 +123,12 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	void CodeCoverageRunner::OnBreakPoint(
 		const EXCEPTION_DEBUG_INFO& exceptionDebugInfo,
+		HANDLE hProcess,
 		HANDLE hThread)
 	{
 		const auto& exceptionRecord = exceptionDebugInfo.ExceptionRecord;
-		auto address = exceptionRecord.ExceptionAddress;
+		auto addressValue = exceptionRecord.ExceptionAddress;
+		Address address{ hProcess, addressValue };
 		auto oldInstruction = executedAddressManager_->MarkAddressAsExecuted(address);
 
 		if (oldInstruction)
@@ -142,7 +146,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::LoadModule(HANDLE hFile, void* baseOfImage)
+	void CodeCoverageRunner::LoadModule(HANDLE hProcess, HANDLE hFile, void* baseOfImage)
 	{
 		HandleInformation handleInformation;
 
@@ -150,8 +154,14 @@ namespace CppCoverage
 		
 		if (coverageFilter_->IsModuleSelected(filename))
 		{
-			executedAddressManager_->SetCurrentModule(filename);
-			debugInformation_->LoadModule(filename, hFile, baseOfImage, *this);
+			executedAddressManager_->SetCurrentModule(filename);			
+			auto it = debugInformation_.find(hProcess);
+
+			if (it == debugInformation_.end())
+				THROW("Cannot find debug information.");
+			const auto& debugInformation = it->second;
+
+			debugInformation->LoadModule(filename, hFile, baseOfImage, *this);
 		}
 	}
 
@@ -165,12 +175,11 @@ namespace CppCoverage
 	void CodeCoverageRunner::OnNewLine(
 		const std::wstring& filename, 
 		int lineNumber, 
-		DWORD64 address)
-	{
-		auto addressPtr = reinterpret_cast<void*>(address);
-		auto oldInstruction = breakpoint_->SetBreakPointAt(addressPtr);
+		const Address& address)
+	{		
+		auto oldInstruction = breakpoint_->SetBreakPointAt(address);
 
-		if (!executedAddressManager_->RegisterAddress(addressPtr, filename, lineNumber, oldInstruction))
-			breakpoint_->RemoveBreakPoint(addressPtr, oldInstruction);
+		if (!executedAddressManager_->RegisterAddress(address, filename, lineNumber, oldInstruction))
+			breakpoint_->RemoveBreakPoint(address, oldInstruction);
 	}
 }

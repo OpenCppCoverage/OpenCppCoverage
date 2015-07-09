@@ -154,6 +154,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Address.hpp" />
     <ClInclude Include="BreakPoint.hpp" />
     <ClInclude Include="CodeCoverageRunner.hpp" />
     <ClInclude Include="CoverageData.hpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="Wildcards.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Address.cpp" />
     <ClCompile Include="BreakPoint.cpp" />
     <ClCompile Include="CodeCoverageRunner.cpp" />
     <ClCompile Include="CoverageData.cpp" />

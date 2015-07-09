@@ -27,6 +27,7 @@
 
 #include "CppCoverageException.hpp"
 #include "IDebugInformationEventHandler.hpp"
+#include "Address.hpp"
 
 namespace CppCoverage
 {
@@ -58,13 +59,15 @@ namespace CppCoverage
 		{
 			auto context = static_cast<Context*>(userContext);
 
-			if (!userContext)
+			if (!context)
 				THROW("Invalid user context.");
 						
-			DWORD64 address = lineInfo->Address - lineInfo->ModBase + reinterpret_cast<DWORD64>(context->processBaseOfImage_);
+			DWORD64 addressValue = lineInfo->Address - lineInfo->ModBase + reinterpret_cast<DWORD64>(context->processBaseOfImage_);
 			std::wstring filename = Tools::ToWString(lineInfo->FileName);
 						
-			context->debugInformationEventHandler_.OnNewLine(filename, lineInfo->LineNumber, address);
+			context->debugInformationEventHandler_.OnNewLine(
+				filename, lineInfo->LineNumber,
+				Address{ context->hProcess_, reinterpret_cast<void*>(addressValue) });
 
 			return TRUE;
 		}		
