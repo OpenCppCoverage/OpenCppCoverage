@@ -74,9 +74,11 @@ namespace TestHelper
 
 	//---------------------------------------------------------------------
 	void CoverageDataComparer::AssertEquals(
-		const cov::ModuleCoverage& module1,
-		const cov::ModuleCoverage& module2) const
+		const cov::ModuleCoverage* module1,
+		const cov::ModuleCoverage* module2) const
 	{
-		AssertModulesEquals(module1, module2);
+		ASSERT_NE(nullptr, module1);
+		ASSERT_NE(nullptr, module2);
+		AssertModulesEquals(*module1, *module2);
 	}
 }
