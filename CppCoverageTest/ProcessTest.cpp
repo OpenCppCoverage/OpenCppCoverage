@@ -29,7 +29,7 @@ namespace CppCoverageTest
 	TEST(Process, StartWithArgument)
 	{
 		cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath() };
-		startInfo.AddArguments(TestCoverageConsole::TestThrowHandledException);
+		startInfo.AddArgument(TestCoverageConsole::TestThrowHandledException);
 		
 		cov::Process process{ startInfo };
 		ASSERT_NO_THROW(process.Start(0));

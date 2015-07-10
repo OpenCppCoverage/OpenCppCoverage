@@ -38,7 +38,7 @@ namespace CppCoverageTest
 				cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath() };
 				cov::Debugger debugger;
 
-				startInfo.AddArguments(commandLineArgument);
+				startInfo.AddArgument(commandLineArgument);
 				debugger.Debug(startInfo, *this);
 			}
 

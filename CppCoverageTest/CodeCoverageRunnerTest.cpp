@@ -98,7 +98,7 @@ namespace CppCoverageTest
 
 			
 			cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath().wstring() };
-			startInfo.AddArguments(programArg);
+			startInfo.AddArgument(programArg);
 
 			return codeCoverageRunner.RunCoverage(startInfo, coverageSettings);
 		}

@@ -111,7 +111,7 @@ namespace CppCoverage
 			if (arguments)
 			{
 				for (const auto& arg : *arguments)
-					startInfo.AddArguments(Tools::ToWString(arg));
+					startInfo.AddArgument(Tools::ToWString(arg));
 			}
 
 			const auto* workingDirectory = GetOptionalValue<std::string>(variables, 

@@ -41,7 +41,7 @@ namespace CppCoverage
 		: path_(path)
 	{
 		CheckPathExists("Program to run", path);
-		AddArguments(path.wstring());
+		AddArgument(path.wstring());
 	}
 
 	//-------------------------------------------------------------------------
@@ -60,7 +60,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void StartInfo::AddArguments(const std::wstring& argument)
+	void StartInfo::AddArgument(const std::wstring& argument)
 	{
 		arguments_.push_back(argument);
 	}

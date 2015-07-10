@@ -37,7 +37,7 @@ namespace CppCoverage
 		StartInfo& operator=(const StartInfo&) = default;
 
 		void SetWorkingDirectory(const boost::filesystem::path&);
-		void AddArguments(const std::wstring&);
+		void AddArgument(const std::wstring&);
 
 		const boost::filesystem::path& GetPath() const;
 		const std::vector<std::wstring>& GetArguments() const;
