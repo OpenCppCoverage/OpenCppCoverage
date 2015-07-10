@@ -21,6 +21,7 @@
 namespace CppCoverage
 {
 	class CoverageData;
+	class ModuleCoverage;
 }
 
 namespace TestHelper
@@ -31,6 +32,7 @@ namespace TestHelper
 		CoverageDataComparer() = default;
 
 		void AssertEquals(const CppCoverage::CoverageData&, const CppCoverage::CoverageData&) const;
+		void AssertEquals(const CppCoverage::ModuleCoverage&, const CppCoverage::ModuleCoverage&) const;
 
 	private:
 		CoverageDataComparer(const CoverageDataComparer&) = delete;

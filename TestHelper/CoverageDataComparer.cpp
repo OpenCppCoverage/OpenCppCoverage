@@ -56,27 +56,27 @@ namespace TestHelper
 			ASSERT_EQ(module1.GetPath(), module2.GetPath());
 			AssertContainerUniquePtrEqual(module1.GetFiles(), module2.GetFiles(), AssertFilesEquals);
 		}
-
-		//---------------------------------------------------------------------
-		void AssertEquals(
-			const CppCoverage::CoverageData& coverageData,
-			const CppCoverage::CoverageData& coverageDataRestored)
-		{
-			ASSERT_EQ(coverageData.GetName(), coverageDataRestored.GetName());
-			ASSERT_EQ(coverageData.GetExitCode(), coverageDataRestored.GetExitCode());
-
-			AssertContainerUniquePtrEqual(
-				coverageData.GetModules(),
-				coverageDataRestored.GetModules(),
-				AssertModulesEquals);
-		}
 	}
 
 	//-------------------------------------------------------------------------
 	void CoverageDataComparer::AssertEquals(
-		const CppCoverage::CoverageData&, 
-		const CppCoverage::CoverageData&) const
+		const CppCoverage::CoverageData& coverageData,
+		const CppCoverage::CoverageData& coverageDataRestored) const
 	{
+		ASSERT_EQ(coverageData.GetName(), coverageDataRestored.GetName());
+		ASSERT_EQ(coverageData.GetExitCode(), coverageDataRestored.GetExitCode());
 
+		AssertContainerUniquePtrEqual(
+			coverageData.GetModules(),
+			coverageDataRestored.GetModules(),
+			AssertModulesEquals);
+	}
+
+	//---------------------------------------------------------------------
+	void CoverageDataComparer::AssertEquals(
+		const cov::ModuleCoverage& module1,
+		const cov::ModuleCoverage& module2) const
+	{
+		AssertModulesEquals(module1, module2);
 	}
 }
