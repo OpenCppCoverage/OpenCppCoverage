@@ -44,8 +44,8 @@ namespace
 //-----------------------------------------------------------------------------
 int _tmain(int argc, _TCHAR* argv[])
 {	
-	if (argc != 2)
-		std::wcout << L"Invalid number of argument. Expect 2 instead of " << argc << std::endl;
+	if (argc < 2)
+		std::wcout << L"Invalid number of argument:  " << argc << std::endl;
 	else
 	{
 		std::wstring type = argv[1];
@@ -64,6 +64,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			*reinterpret_cast<int*>(0) = 42;
 		else if (type == TestCoverageConsole::TestBreakPoint)
 			DebugBreak();
+		else if (type == TestCoverageConsole::TestChildProcess)
+			return TestCoverageConsole::RunAsChild(argc, argv);
 		else
 			std::wcerr << L"Unsupported type:" << type << std::endl;
 	}

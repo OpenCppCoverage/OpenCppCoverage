@@ -17,10 +17,13 @@
 #pragma once
 
 #include <boost/filesystem.hpp>
+#include <tchar.h>
 
 namespace TestCoverageConsole
 {
 	void TestBasic();
-	
+	int RunAsChild(int argc, _TCHAR* argv[]);
+
+	__declspec(dllexport) int GetTestBasicLine();
 	__declspec(dllexport) boost::filesystem::path GetTestBasicPath();
 }

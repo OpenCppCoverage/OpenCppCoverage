@@ -35,4 +35,5 @@ namespace TestCoverageConsole
 	const std::wstring TestThrowUnHandledCppException = L"TestThrowUnHandledCppException";
 	const std::wstring TestThrowUnHandledSEHException = L"TestThrowUnHandledSEHException";	
 	const std::wstring TestBreakPoint = L"TestBreakPoint";
+	const std::wstring TestChildProcess = L"ChildProcess";
 }
