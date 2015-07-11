@@ -31,8 +31,8 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	ExceptionHandler::ExceptionHandler()
 	{
-		breakPointExceptionCode_.emplace(EXCEPTION_BREAKPOINT, true);
-		breakPointExceptionCode_.emplace(ExceptionEmulationX86ErroCode, true);
+		breakPointExceptionCode_.emplace(EXCEPTION_BREAKPOINT, std::vector<HANDLE>{});
+		breakPointExceptionCode_.emplace(ExceptionEmulationX86ErroCode, std::vector<HANDLE>{});
 		InitExceptionCode();
 	}
 
@@ -65,7 +65,10 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
-	ExceptionHandlerStatus ExceptionHandler::HandleException(const EXCEPTION_DEBUG_INFO& exceptionDebugInfo, std::wostream& message)
+	ExceptionHandlerStatus ExceptionHandler::HandleException(
+		HANDLE hProcess,
+		const EXCEPTION_DEBUG_INFO& exceptionDebugInfo,
+		std::wostream& message)
 	{
 		const auto& exceptionRecord = exceptionDebugInfo.ExceptionRecord;
 				
@@ -75,9 +78,10 @@ namespace CppCoverage
 			
 			if (it != breakPointExceptionCode_.end())
 			{
-				// Breakpoint exception need to be ignore the first time
-				if (it->second)
-					it->second = false; // Mark exception as not first time
+				auto& processHandles = it->second;
+				// Breakpoint exception need to be ignore the first time by process.
+				if (std::find(processHandles.begin(), processHandles.end(), hProcess) == processHandles.end())
+					processHandles.push_back(hProcess);
 				else
 					return ExceptionHandlerStatus::BreakPoint;
 			}

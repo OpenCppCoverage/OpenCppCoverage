@@ -46,7 +46,7 @@ namespace CppCoverageTest
 			{							
 				std::wostringstream ostr;
 
-				exceptionHandlerStatus_ = handler_.HandleException(exceptionDebugInfo, ostr);
+				exceptionHandlerStatus_ = handler_.HandleException(hProcess, exceptionDebugInfo, ostr);
 				message_ = ostr.str();
 
 				return DBG_EXCEPTION_NOT_HANDLED;
@@ -66,8 +66,8 @@ namespace CppCoverageTest
 
 			exceptionDebugInfo.dwFirstChance = 0;
 			exceptionDebugInfo.ExceptionRecord.ExceptionCode = errorCode;
-			handler.HandleException(exceptionDebugInfo, ostr); // skip first exception
-			handler.HandleException(exceptionDebugInfo, ostr);
+			handler.HandleException(nullptr, exceptionDebugInfo, ostr); // skip first exception
+			handler.HandleException(nullptr, exceptionDebugInfo, ostr);
 
 			return ostr.str();
 		};

@@ -96,7 +96,7 @@ namespace CppCoverage
 	{
 		std::wostringstream ostr;
 		
-		auto status = exceptionHandler_->HandleException(exceptionDebugInfo, ostr);
+		auto status = exceptionHandler_->HandleException(hProcess, exceptionDebugInfo, ostr);
 
 		switch (status)
 		{

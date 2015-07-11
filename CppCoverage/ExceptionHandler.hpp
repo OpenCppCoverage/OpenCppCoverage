@@ -19,6 +19,7 @@
 #include <Windows.h>
 #include <iosfwd>
 #include <unordered_map>
+#include <map>
 
 #include "CppCoverageExport.hpp"
 
@@ -42,7 +43,7 @@ namespace CppCoverage
 
 		ExceptionHandler();
 
-		ExceptionHandlerStatus HandleException(const EXCEPTION_DEBUG_INFO& exceptionDebugInfo, std::wostream&);
+		ExceptionHandlerStatus HandleException(HANDLE hProcess, const EXCEPTION_DEBUG_INFO&, std::wostream&);
 
 	private:
 		ExceptionHandler(const ExceptionHandler&) = delete;
@@ -52,7 +53,7 @@ namespace CppCoverage
 		std::wstring GetExceptionStrFromCode(DWORD) const;
 
 		std::unordered_map<DWORD, std::wstring> exceptionCode_;
-		std::unordered_map<DWORD, bool> breakPointExceptionCode_;
+		std::map<DWORD, std::vector<HANDLE>> breakPointExceptionCode_;
 	};
 }
 
