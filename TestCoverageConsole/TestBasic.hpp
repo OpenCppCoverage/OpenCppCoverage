@@ -22,7 +22,7 @@
 namespace TestCoverageConsole
 {
 	void TestBasic();
-	int RunAsChild(int argc, _TCHAR* argv[]);
+	int RunChildProcesses(int argc, _TCHAR* argv[]);
 
 	__declspec(dllexport) int GetTestBasicLine();
 	__declspec(dllexport) boost::filesystem::path GetTestBasicPath();

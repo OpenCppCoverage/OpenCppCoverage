@@ -30,6 +30,7 @@ namespace TestCoverageConsole
 {
 	__declspec(dllexport) boost::filesystem::path GetMainCppPath();	
 	__declspec(dllexport) boost::filesystem::path GetOutputBinaryPath();
+	__declspec(dllexport) int GetTestCoverageConsoleCppMainLine();
 
 	const std::wstring TestThrowHandledException = L"TestThrowHandledException";
 	const std::wstring TestThrowUnHandledCppException = L"TestThrowUnHandledCppException";

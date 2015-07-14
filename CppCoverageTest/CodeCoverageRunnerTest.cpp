@@ -31,6 +31,7 @@
 #include "CppCoverage/LineCoverage.hpp"
 #include "CppCoverage/Patterns.hpp"
 #include "CppCoverage/ExceptionHandler.hpp"
+#include "CppCoverage/CoverageDataMerger.hpp"
 
 #include "Tools/Log.hpp"
 #include "Tools/Tool.hpp"
@@ -115,6 +116,7 @@ namespace CppCoverageTest
 
 			auto coverageData = ComputeCoverageData(arguments, modulePattern, sourcePattern);
 
+			// Run child child process.
 			arguments.insert(arguments.begin(), TestCoverageConsole::TestChildProcess);
 			auto coverageDataChildProcess = ComputeCoverageData(arguments, modulePattern, sourcePattern);
 
@@ -228,5 +230,29 @@ namespace CppCoverageTest
 		ASSERT_NE(std::string::npos, 
 			GetError().find(cov::ExceptionHandler::UnhandledExceptionErrorMessage));
 		ASSERT_NE(0, coverageData.GetExitCode());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, SeveralChildProcess)
+	{
+		auto coverageData = ComputeCoverageData(
+			{	TestCoverageConsole::TestChildProcess,
+				TestCoverageConsole::TestThrowUnHandledCppException,
+				TestCoverageConsole::TestThrowUnHandledSEHException },
+			TestCoverageConsole::GetOutputBinaryPath().wstring(),
+			TestCoverageConsole::GetMainCppPath().wstring());
+
+		std::vector<cov::CoverageData> coverageDataCollection;
+		coverageDataCollection.push_back(std::move(coverageData));
+		auto mergedCoverageData = cov::CoverageDataMerger().Merge(coverageDataCollection);
+
+		auto& file = GetFirstFileCoverage(mergedCoverageData);
+
+		int mainLine = TestCoverageConsole::GetTestCoverageConsoleCppMainLine();
+		TestLine(file, mainLine + 15, false); // TestThrowHandledException
+		TestLine(file, mainLine + 17, true); // TestThrowUnHandledCppException
+		TestLine(file, mainLine + 19, true); // TestThrowUnHandledSEHException
+		TestLine(file, mainLine + 21, false); // TestBreakPoint
+		TestLine(file, mainLine + 23, true); // TestChildProcess
 	}
 }

@@ -47,7 +47,7 @@ namespace TestCoverageConsole
 	}
 
 	//-------------------------------------------------------------------------
-	int RunAsChild(int argc, _TCHAR* argv[])
+	int RunChildProcesses(int argc, _TCHAR* argv[])
 	{
 		auto outputBinaryPath = TestCoverageConsole::GetOutputBinaryPath();
 
@@ -56,15 +56,14 @@ namespace TestCoverageConsole
 		if (argv[1] != TestCoverageConsole::TestChildProcess)
 			throw std::runtime_error("Invalid argument.");
 
-		std::vector<std::string> arguments;
+		int exitCode = 0;
 
 		for (int i = 2; i < argc; ++i)
 		{
-			std::wstring argument = argv[i];
-			arguments.push_back(Tools::ToString(argument));
+			auto argument = Tools::ToString(argv[i]);
+			auto handle = Poco::Process::launch(outputBinaryPath.string(), std::vector<std::string>{argument});
+			exitCode = handle.wait();
 		}
-
-		auto handle = Poco::Process::launch(outputBinaryPath.string(), arguments);
-		return handle.wait();
+		return exitCode;
 	}
 }
