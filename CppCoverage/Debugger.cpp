@@ -75,7 +75,8 @@ namespace CppCoverage
 			ProcessStatus processStatus = HandleDebugEvent(debugEvent, debugEventsHandler);
 			
 			// Get the exit code of the root process
-			if (processStatus.exitCode_ && rootProcessId_ == debugEvent.dwProcessId)
+			// Set once as we do not want EXCEPTION_BREAKPOINT to be override
+			if (processStatus.exitCode_ && rootProcessId_ == debugEvent.dwProcessId && !exitCode)
 				exitCode = processStatus.exitCode_;
 
 			auto continueStatus = boost::get_optional_value_or(processStatus.continueStatus_, DBG_CONTINUE);
@@ -110,7 +111,6 @@ namespace CppCoverage
 		return{};
 	}
 
-
 	//-------------------------------------------------------------------------
 	Debugger::ProcessStatus
 		Debugger::HandleNotCreationalEvent(
@@ -135,11 +135,7 @@ namespace CppCoverage
 				debugEventsHandler.OnLoadDll(hProcess, hThread, loadDll);
 				break;
 			}
-			case EXCEPTION_DEBUG_EVENT:
-			{
-				auto continueStatus = debugEventsHandler.OnException(hProcess, hThread, debugEvent.u.Exception);
-				return ProcessStatus{ boost::none, continueStatus };
-			}
+			case EXCEPTION_DEBUG_EVENT: return OnException(debugEvent, debugEventsHandler, hProcess, hThread);
 			case RIP_EVENT: OnRip(debugEvent.u.RipInfo); break;
 			default: LOG_DEBUG << "Debug event:" << debugEvent.dwDebugEventCode; break;
 		}
@@ -147,6 +143,38 @@ namespace CppCoverage
 		return ProcessStatus{};
 	}
 	
+	//-------------------------------------------------------------------------
+	Debugger::ProcessStatus
+		Debugger::OnException(
+		const DEBUG_EVENT& debugEvent,
+		IDebugEventsHandler& debugEventsHandler,
+		HANDLE hProcess,
+		HANDLE hThread) const
+	{
+		auto exceptionType = debugEventsHandler.OnException(hProcess, hThread, debugEvent.u.Exception);
+
+		switch (exceptionType)
+		{
+			case IDebugEventsHandler::ExceptionType::BreakPoint:
+			{
+				return ProcessStatus{ boost::none, DBG_CONTINUE };
+			}
+			case IDebugEventsHandler::ExceptionType::InvalidBreakPoint:
+			{
+				LOG_WARNING << "--------------------------------------------------------------------------------";
+				LOG_WARNING << "It seems there is an assertion failure or you call DebugBreak() in your program.";
+				LOG_WARNING << "--------------------------------------------------------------------------------";
+
+				return ProcessStatus( EXCEPTION_BREAKPOINT, DBG_CONTINUE );
+			}
+			case IDebugEventsHandler::ExceptionType::NotHandled:
+			{
+				return ProcessStatus{ boost::none, DBG_EXCEPTION_NOT_HANDLED };
+			}
+		}
+		THROW("Invalid exception Type.");
+	}
+
 	//-------------------------------------------------------------------------
 	void Debugger::OnCreateProcess(
 		const DEBUG_EVENT& debugEvent,

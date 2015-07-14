@@ -46,7 +46,7 @@ namespace CppCoverage
 	private:
 		virtual void OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO&) override;
 		virtual void OnLoadDll(HANDLE hProcess, HANDLE hThread, const LOAD_DLL_DEBUG_INFO&) override;
-		virtual DWORD OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&) override;
+		virtual ExceptionType OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&) override;
 
 	private:
 		virtual bool IsSourceFileSelected(const std::wstring& filename) const override;
@@ -57,7 +57,7 @@ namespace CppCoverage
 		CodeCoverageRunner& operator=(const CodeCoverageRunner&) = delete;
 
 		void LoadModule(HANDLE hProcess, HANDLE hFile, void* baseOfImage);
-		void OnBreakPoint(const EXCEPTION_DEBUG_INFO&, HANDLE hProcess, HANDLE hThread);
+		bool OnBreakPoint(const EXCEPTION_DEBUG_INFO&, HANDLE hProcess, HANDLE hThread);
 
 	private:
 		std::unordered_map<HANDLE, std::unique_ptr<DebugInformation>> debugInformation_;
@@ -65,7 +65,6 @@ namespace CppCoverage
 		std::unique_ptr<ExecutedAddressManager> executedAddressManager_;
 		std::unique_ptr<CoverageFilter> coverageFilter_;
 		std::unique_ptr<ExceptionHandler> exceptionHandler_;
-		bool unhandledBreakPoint_;
 	};
 }
 

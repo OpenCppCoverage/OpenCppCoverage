@@ -69,6 +69,8 @@ namespace CppCoverage
 			HANDLE hThread,
 			DWORD dwThreadId);
 
+		ProcessStatus OnException(const DEBUG_EVENT&, IDebugEventsHandler&, HANDLE hProcess, HANDLE hThread) const;
+
 	private:
 		std::unordered_map<DWORD, HANDLE> processHandles_;
 		std::unordered_map<DWORD, HANDLE> threadHandles_;

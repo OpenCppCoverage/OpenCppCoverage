@@ -35,8 +35,8 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	DWORD IDebugEventsHandler::OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&)
+	IDebugEventsHandler::ExceptionType IDebugEventsHandler::OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&)
 	{ 
-		return DBG_EXCEPTION_NOT_HANDLED; 
+		return IDebugEventsHandler::ExceptionType::NotHandled;
 	}
 }

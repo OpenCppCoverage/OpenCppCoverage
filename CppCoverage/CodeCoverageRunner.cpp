@@ -41,7 +41,6 @@ namespace CppCoverage
 {			
 	//-------------------------------------------------------------------------
 	CodeCoverageRunner::CodeCoverageRunner()
-		: unhandledBreakPoint_{ false }
 	{ 
 		executedAddressManager_.reset(new ExecutedAddressManager());
 		exceptionHandler_.reset(new ExceptionHandler());
@@ -60,10 +59,6 @@ namespace CppCoverage
 
 		coverageFilter_.reset(new CoverageFilter(coverageSettings));
 		int exitCode = debugger.Debug(startInfo, *this);
-
-		if (exitCode == 0 && unhandledBreakPoint_)
-			exitCode = EXCEPTION_BREAKPOINT;
-
 		const auto& path = startInfo.GetPath();
 
 		return executedAddressManager_->CreateCoverageData(path.filename().wstring(), exitCode);
@@ -89,7 +84,7 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
-	DWORD CodeCoverageRunner::OnException(
+	IDebugEventsHandler::ExceptionType CodeCoverageRunner::OnException(
 		HANDLE hProcess, 
 		HANDLE hThread, 
 		const EXCEPTION_DEBUG_INFO& exceptionDebugInfo)
@@ -102,26 +97,27 @@ namespace CppCoverage
 		{
 			case CppCoverage::ExceptionHandlerStatus::BreakPoint:
 			{
-				OnBreakPoint(exceptionDebugInfo, hProcess, hThread);
-				return DBG_CONTINUE;
+				if (OnBreakPoint(exceptionDebugInfo, hProcess, hThread))
+					return IDebugEventsHandler::ExceptionType::BreakPoint;
+				return IDebugEventsHandler::ExceptionType::InvalidBreakPoint;
 			}
 			case CppCoverage::ExceptionHandlerStatus::FirstChanceException:
 			{
-				return DBG_EXCEPTION_NOT_HANDLED;
+				return IDebugEventsHandler::ExceptionType::NotHandled;
 			}
 			case CppCoverage::ExceptionHandlerStatus::Fatal:
 			{
 				LOG_ERROR << ostr.str();
 				
-				return DBG_EXCEPTION_NOT_HANDLED;
+				return IDebugEventsHandler::ExceptionType::NotHandled;
 			}			
 		}
 
-		return DBG_EXCEPTION_NOT_HANDLED;
+		return IDebugEventsHandler::ExceptionType::NotHandled;
 	}
 	
 	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::OnBreakPoint(
+	bool CodeCoverageRunner::OnBreakPoint(
 		const EXCEPTION_DEBUG_INFO& exceptionDebugInfo,
 		HANDLE hProcess,
 		HANDLE hThread)
@@ -135,14 +131,10 @@ namespace CppCoverage
 		{
 			breakpoint_->RemoveBreakPoint(address, *oldInstruction);
 			breakpoint_->AdjustEipAfterBreakPointRemoval(hThread);
+			return true;
 		}
-		else
-		{
-			LOG_WARNING << "--------------------------------------------------------------------------------";
-			LOG_WARNING << "It seems there is an assertion failure or you call DebugBreak() in your program.";
-			LOG_WARNING << "--------------------------------------------------------------------------------";
-			unhandledBreakPoint_ = true;
-		}
+
+		return false;
 	}
 
 	//-------------------------------------------------------------------------

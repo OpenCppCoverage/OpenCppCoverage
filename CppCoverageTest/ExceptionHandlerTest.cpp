@@ -30,6 +30,7 @@ namespace CppCoverageTest
 
 	namespace
 	{
+		//---------------------------------------------------------------------
 		class ExceptionHandlerTest : public ::testing::Test, private CppCoverage::IDebugEventsHandler
 		{
 		public:								
@@ -42,14 +43,14 @@ namespace CppCoverageTest
 				debugger.Debug(startInfo, *this);
 			}
 
-			virtual DWORD OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO& exceptionDebugInfo) override			
+			virtual ExceptionType OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO& exceptionDebugInfo) override
 			{							
 				std::wostringstream ostr;
 
 				exceptionHandlerStatus_ = handler_.HandleException(hProcess, exceptionDebugInfo, ostr);
 				message_ = ostr.str();
 
-				return DBG_EXCEPTION_NOT_HANDLED;
+				return IDebugEventsHandler::ExceptionType::NotHandled;;
 			}
 			
 			CppCoverage::ExceptionHandlerStatus exceptionHandlerStatus_;

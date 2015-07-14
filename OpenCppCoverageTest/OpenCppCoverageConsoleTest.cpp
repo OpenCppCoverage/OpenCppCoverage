@@ -86,6 +86,15 @@ namespace OpenCppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
+	TEST(OpenCppCoverageConsoleTest, BreakpointChildProcess)
+	{
+		fs::path testCoverageConsole = TestCoverageConsole::GetOutputBinaryPath();
+
+		ASSERT_EQ(0, RunCoverageForProgram(testCoverageConsole,
+			{ TestCoverageConsole::TestChildProcess, TestCoverageConsole::TestBreakPoint }));
+	}
+
+	//-------------------------------------------------------------------------
 	TEST(OpenCppCoverageConsoleTest, ExporterTest)
 	{
 		fs::path exporterTest{ OUT_DIR };
