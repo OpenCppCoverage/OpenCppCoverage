@@ -40,7 +40,7 @@ namespace CppCoverageTest
 				cov::Debugger debugger;
 
 				startInfo.AddArgument(commandLineArgument);
-				debugger.Debug(startInfo, *this);
+				debugger.Debug(startInfo, *this, false);
 			}
 
 			virtual ExceptionType OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO& exceptionDebugInfo) override

@@ -60,7 +60,7 @@ namespace CppCoverageTest
 		cov::Debugger debugger;
 		DebugEventsHandler debugEventsHandler{ action };
 
-		debugger.Debug(startInfo, debugEventsHandler);
+		debugger.Debug(startInfo, debugEventsHandler, false);
 	}				
 
 	//---------------------------------------------------------------------

@@ -39,6 +39,6 @@ namespace CppCoverageTest
 		EXPECT_CALL(debugEventsHandlerMock, OnException(testing::_, testing::_, testing::_))
 			.WillRepeatedly(testing::Return(cov::IDebugEventsHandler::ExceptionType::NotHandled));
 
-		debugger.Debug(startInfo, debugEventsHandlerMock);
+		debugger.Debug(startInfo, debugEventsHandlerMock, false);
 	}	
 }

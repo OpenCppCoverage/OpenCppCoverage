@@ -124,7 +124,11 @@ namespace OpenCppCoverage
 			cov::CoverageSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
 			
 			if (startInfo)
-				coveraDatas.push_back(codeCoverageRunner.RunCoverage(*startInfo, settings));
+			{
+				coveraDatas.push_back(
+					codeCoverageRunner.RunCoverage(
+						*startInfo, settings, options.IsCoverChildrenModeSelected()));
+			}
 			cov::CoverageDataMerger	coverageDataMerger;
 
 			auto coverageData = coverageDataMerger.Merge(coveraDatas);

@@ -42,7 +42,9 @@ namespace CppCoverageTest
 
 		auto options = TestTools::Parse(parser, {});
 		ASSERT_TRUE(options);
-		ASSERT_FALSE(options->IsVerboseModeSelected());			
+		ASSERT_FALSE(options->IsVerboseModeSelected());
+		ASSERT_FALSE(options->IsPlugingModeSelected());
+		ASSERT_FALSE(options->IsCoverChildrenModeSelected());
 	}
 
 	//-------------------------------------------------------------------------
@@ -77,6 +79,15 @@ namespace CppCoverageTest
 
 		ASSERT_TRUE(TestTools::Parse(parser,
 		{ TestTools::OptionPrefix + cov::ProgramOptions::PluginOption })->IsPlugingModeSelected());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, CoverChildren)
+	{
+		cov::OptionsParser parser;
+
+		ASSERT_TRUE(TestTools::Parse(parser,
+		{ TestTools::OptionPrefix + cov::ProgramOptions::CoverChildrenOption })->IsCoverChildrenModeSelected());
 	}
 
 	//-------------------------------------------------------------------------

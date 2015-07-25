@@ -86,7 +86,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		else if (type == TestCoverageConsole::TestBreakPoint)
 			DebugBreak();
 		else if (type == TestCoverageConsole::TestChildProcess)
-			return TestCoverageConsole::RunChildProcesses(argc, argv);
+			TestCoverageConsole::RunChildProcesses(argc, argv);
 		else
 			std::wcerr << L"Unsupported type:" << type << std::endl;
 	}

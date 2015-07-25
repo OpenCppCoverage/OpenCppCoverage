@@ -95,7 +95,8 @@ namespace CppCoverage
 				(ProgramOptions::ExportTypeOption.c_str(),
 				po::value<T_Strings>()->default_value({ ProgramOptions::ExportTypeHtmlValue }, ProgramOptions::ExportTypeHtmlValue),
 				GetExportTypeText(exportTypes).c_str())
-				(ProgramOptions::WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.");
+				(ProgramOptions::WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")
+				(ProgramOptions::CoverChildrenOption.c_str(), "Enable code coverage for children processes.");
 		}
 
 		//-------------------------------------------------------------------------
@@ -120,6 +121,7 @@ namespace CppCoverage
 	const std::string ProgramOptions::HelpShortOption = "h";
 	const std::string ProgramOptions::ConfigFileOption = "config_file";	
 	const std::string ProgramOptions::WorkingDirectoryOption = "working_dir";
+	const std::string ProgramOptions::CoverChildrenOption = "cover_children";
 	const std::string ProgramOptions::ProgramToRunOption = "programToRun";
 	const std::string ProgramOptions::ProgramToRunArgOption = "programToRunArg";
 	const std::string ProgramOptions::ExportTypeOption = "export_type";

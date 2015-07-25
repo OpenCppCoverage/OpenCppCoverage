@@ -53,12 +53,15 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	CoverageData CodeCoverageRunner::RunCoverage(const StartInfo& startInfo, const CoverageSettings& coverageSettings)
+	CoverageData CodeCoverageRunner::RunCoverage(
+		const StartInfo& startInfo,
+		const CoverageSettings& coverageSettings,
+		bool coverChildren)
 	{
 		Debugger debugger;
 
 		coverageFilter_.reset(new CoverageFilter(coverageSettings));
-		int exitCode = debugger.Debug(startInfo, *this);
+		int exitCode = debugger.Debug(startInfo, *this, coverChildren);
 		const auto& path = startInfo.GetPath();
 
 		return executedAddressManager_->CreateCoverageData(path.filename().wstring(), exitCode);

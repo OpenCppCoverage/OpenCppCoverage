@@ -48,6 +48,9 @@ namespace CppCoverage
 		void SetPlugingModeSelected();
 		bool IsPlugingModeSelected() const;
 
+		void SetCoverChildrenModeSelected();
+		bool IsCoverChildrenModeSelected() const;
+
 		void AddExport(const OptionsExport&);
 		const std::vector<OptionsExport>& GetExports() const;
 		
@@ -67,6 +70,7 @@ namespace CppCoverage
 
 		bool verboseModeSelected_;
 		bool pluginModeSelected_;
+		bool coverChildrenModeSelected_;
 		std::vector<OptionsExport> exports_;
 		std::vector<boost::filesystem::path> inputCoveragePaths_;
 	};

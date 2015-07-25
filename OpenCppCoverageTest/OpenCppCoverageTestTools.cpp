@@ -70,7 +70,10 @@ namespace OpenCppCoverageTest
 		for (const auto& keyValue : coverageArguments)
 		{
 			allCoverageArguments.push_back("--" + keyValue.first);
-			allCoverageArguments.push_back(keyValue.second);
+			const auto& value = keyValue.second;
+
+			if (!value.empty())
+				allCoverageArguments.push_back(value);
 		}
 				
 		allCoverageArguments.push_back(programToRun.string());

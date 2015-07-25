@@ -85,7 +85,8 @@ namespace CppCoverageTest
 		cov::CoverageData ComputeCoverageData(
 			const std::vector<std::wstring>& arguments,
 			std::wstring modulePattern,
-			std::wstring sourcePattern)
+			std::wstring sourcePattern,
+			bool coverChildren = true)
 		{
 			cov::CodeCoverageRunner codeCoverageRunner;
 			cov::Patterns modulePatterns{false};
@@ -103,7 +104,7 @@ namespace CppCoverageTest
 			for (const auto& argument: arguments)
 				startInfo.AddArgument(argument);
 
-			return codeCoverageRunner.RunCoverage(startInfo, coverageSettings);
+			return codeCoverageRunner.RunCoverage(startInfo, coverageSettings, coverChildren);
 		}
 
 		//---------------------------------------------------------------------
@@ -230,6 +231,21 @@ namespace CppCoverageTest
 		ASSERT_NE(std::string::npos, 
 			GetError().find(cov::ExceptionHandler::UnhandledExceptionErrorMessage));
 		ASSERT_NE(0, coverageData.GetExitCode());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, ChildProcess)
+	{
+		std::vector<std::wstring> arguments = {
+			TestCoverageConsole::TestChildProcess,
+			TestCoverageConsole::TestThrowHandledException };
+		const auto modulePattern = TestCoverageConsole::GetOutputBinaryPath().wstring();
+		const auto sourcePattern = TestCoverageConsole::GetMainCppPath().wstring();
+
+		auto rootAndChildProcess = ComputeCoverageData(arguments, modulePattern, sourcePattern, true);
+		auto rootProcessOnly = ComputeCoverageData(arguments, modulePattern, sourcePattern, false);
+
+		ASSERT_GT(rootAndChildProcess.GetModules().size(), rootProcessOnly.GetModules().size());
 	}
 
 	//-------------------------------------------------------------------------

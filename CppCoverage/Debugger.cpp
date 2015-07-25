@@ -55,10 +55,13 @@ namespace CppCoverage
 	};
 
 	//-------------------------------------------------------------------------
-	int Debugger::Debug(const StartInfo& startInfo, IDebugEventsHandler& debugEventsHandler)
+	int Debugger::Debug(
+		const StartInfo& startInfo,
+		IDebugEventsHandler& debugEventsHandler,
+		bool coverChildren)
 	{
 		Process process(startInfo);
-		process.Start(DEBUG_PROCESS);
+		process.Start((coverChildren) ? DEBUG_PROCESS: DEBUG_ONLY_THIS_PROCESS);
 		
 		DEBUG_EVENT debugEvent;
 		boost::optional<int> exitCode;

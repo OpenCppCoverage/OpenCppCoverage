@@ -33,7 +33,7 @@ namespace CppCoverage
 	public:
 		Debugger() = default;
 
-		int Debug(const StartInfo&, IDebugEventsHandler&);
+		int Debug(const StartInfo&, IDebugEventsHandler&, bool coverChildren);
 
 	private:
 		Debugger(const Debugger&) = delete;

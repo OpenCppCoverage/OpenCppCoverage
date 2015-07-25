@@ -41,7 +41,7 @@ namespace CppCoverage
 		CodeCoverageRunner();
 		~CodeCoverageRunner();
 
-		CoverageData RunCoverage(const StartInfo&, const CoverageSettings&);
+		CoverageData RunCoverage(const StartInfo&, const CoverageSettings&, bool coverChildren);
 
 	private:
 		virtual void OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO&) override;

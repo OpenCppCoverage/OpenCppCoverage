@@ -35,7 +35,8 @@ namespace CppCoverage
 		static const std::string HelpOption;
 		static const std::string HelpShortOption;
 		static const std::string ConfigFileOption;
-		static const std::string WorkingDirectoryOption;		
+		static const std::string WorkingDirectoryOption;
+		static const std::string CoverChildrenOption;
 		static const std::string ProgramToRunOption;
 		static const std::string ProgramToRunArgOption;
 		static const std::string ExportTypeOption;

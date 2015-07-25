@@ -30,6 +30,7 @@ namespace CppCoverage
 		, sources_{sourcePatterns}		
 		, verboseModeSelected_{false}
 		, pluginModeSelected_{false}
+		, coverChildrenModeSelected_{false}
 	{
 		if (startInfo)
 			optionalStartInfo_ = *startInfo;
@@ -78,6 +79,18 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	void Options::SetCoverChildrenModeSelected()
+	{
+		coverChildrenModeSelected_ = true;
+	}
+
+	//-------------------------------------------------------------------------
+	bool Options::IsCoverChildrenModeSelected() const
+	{
+		return coverChildrenModeSelected_;
+	}
+
+	//-------------------------------------------------------------------------
 	void Options::AddExport(const OptionsExport& optionExport)
 	{
 		exports_.push_back(optionExport);
@@ -109,6 +122,7 @@ namespace CppCoverage
 		ostr << L"Modules: " << options.modules_ << std::endl;
 		ostr << L"Sources: " << options.sources_ << std::endl;
 		ostr << L"Verbose mode: " << options.verboseModeSelected_ << std::endl;
+		ostr << L"Cover Children: " << options.coverChildrenModeSelected_ << std::endl;
 
 		ostr << L"Export: ";
 		for (const auto& optionExport : options.exports_)
