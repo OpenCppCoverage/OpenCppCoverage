@@ -16,6 +16,7 @@
 
 #include "TestBasic.hpp"
 #include <Poco/Process.h>
+#include <iostream>
 
 #include "Tools/Tool.hpp"
 
