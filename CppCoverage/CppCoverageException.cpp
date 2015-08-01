@@ -26,16 +26,16 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	std::wstring GetErrorMessage(int lastErrorCode)
 	{			
-		wchar_t sysMsg[64 * 1024];
+		std::vector<wchar_t> sysMsg(64 * 1024);
 		std::wostringstream ostr;
 			
 		if (FormatMessage(
 				FORMAT_MESSAGE_FROM_SYSTEM,
 				NULL, lastErrorCode,
 				MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL),
-				sysMsg, sizeof(sysMsg), NULL))
+				&sysMsg[0], sysMsg.size(), NULL))
 		{
-			ostr << sysMsg;
+			ostr << &sysMsg[0];
 		}
 		else
 		{

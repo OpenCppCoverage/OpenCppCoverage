@@ -29,11 +29,10 @@ namespace CppCoverage
 		//-------------------------------------------------------------------------
 		std::vector<std::wstring> GetLogicalDrives()
 		{
-			wchar_t logicalDriveStrings[4096];
+			std::vector<wchar_t> logicalDriveStrings(PathBufferSize);
 			std::vector<std::wstring> logicalDrives;
 
-			auto size = GetLogicalDriveStrings(
-				sizeof(logicalDriveStrings) / sizeof(logicalDriveStrings[0]), logicalDriveStrings);
+			auto size = GetLogicalDriveStrings(logicalDriveStrings.size(), &logicalDriveStrings[0]);
 
 			if (!size)
 				THROW(L"Cannot GetLogicalDriveStrings");
@@ -56,7 +55,7 @@ namespace CppCoverage
 		//-------------------------------------------------------------------------
 		std::vector<std::pair<std::wstring, std::wstring>> GetQueryDosDevicesMapping()
 		{
-			wchar_t dosDevice[4096];
+			std::vector<wchar_t> dosDevice(PathBufferSize);
 			std::vector<std::pair<std::wstring, std::wstring>> queryDosDevicesMapping;
 
 			for (const auto& logicalDrive : GetLogicalDrives())
@@ -64,8 +63,11 @@ namespace CppCoverage
 				auto pos = logicalDrive.find('\\');
 				std::wstring drive = (pos != std::string::npos) ? logicalDrive.substr(0, pos) : logicalDrive;
 
-				if (QueryDosDevice(drive.c_str(), dosDevice, sizeof(dosDevice) / sizeof(dosDevice[0])))
-					queryDosDevicesMapping.emplace_back(dosDevice, drive);
+				if (QueryDosDevice(drive.c_str(), &dosDevice[0], dosDevice.size()))
+				{
+					std::wstring dosDeviceName{ &dosDevice[0] };
+					queryDosDevicesMapping.emplace_back(dosDeviceName, drive);
+				}
 			}
 
 			// Handle network drive. We just remove prefix.
@@ -76,12 +78,12 @@ namespace CppCoverage
 		//-------------------------------------------------------------------------
 		std::wstring GetFinalPathName(HANDLE hfile)
 		{
-			wchar_t buffer[(2 * MAX_PATH) + 1];
+			std::vector<wchar_t> buffer(PathBufferSize);
 
-			if (!GetFinalPathNameByHandle(hfile, buffer, (sizeof(buffer) / sizeof(buffer[0])) - 1, VOLUME_NAME_NT))
+			if (!GetFinalPathNameByHandle(hfile, &buffer[0], buffer.size() - 1, VOLUME_NAME_NT))
 				THROW_LAST_ERROR(L"Cannot find path for the handle.", GetLastError());
 
-			return buffer;
+			return &buffer[0];
 		}
 
 		//---------------------------------------------------------------------------

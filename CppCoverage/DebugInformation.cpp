@@ -138,10 +138,10 @@ namespace CppCoverage
 		if (!SymRegisterCallback64(hProcess_, SymRegisterCallbackProc64, 0))
 			THROW("Error when calling SymRegisterCallback64");
 
-		wchar_t searchPath[8192];
-		if (!SymGetSearchPath(hProcess_, searchPath, sizeof(searchPath) / sizeof(searchPath[0])))
+		std::vector<wchar_t> searchPath(PathBufferSize);
+		if (!SymGetSearchPath(hProcess_, &searchPath[0], searchPath.size()))
 			THROW_LAST_ERROR("Error when calling SymGetSearchPath", GetLastError());
-		defaultSearchPath_ = searchPath;
+		defaultSearchPath_ = &searchPath[0];
 	}
 	
 	//-------------------------------------------------------------------------

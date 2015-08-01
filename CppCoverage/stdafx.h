@@ -23,3 +23,4 @@
 #include <string>
 #include <vector>
 
+const int PathBufferSize = 40 * 1000;
