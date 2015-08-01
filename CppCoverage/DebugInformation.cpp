@@ -17,9 +17,11 @@
 #include "stdafx.h"
 #include "DebugInformation.hpp"
 
+#define DBGHELP_TRANSLATE_TCHAR
 #include <dbghelp.h>
 
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include "Tools/Tool.hpp"
 #include "Tools/Log.hpp"
@@ -63,10 +65,9 @@ namespace CppCoverage
 				THROW("Invalid user context.");
 						
 			DWORD64 addressValue = lineInfo->Address - lineInfo->ModBase + reinterpret_cast<DWORD64>(context->processBaseOfImage_);
-			std::wstring filename = Tools::ToWString(lineInfo->FileName);
-						
+
 			context->debugInformationEventHandler_.OnNewLine(
-				filename, lineInfo->LineNumber,
+				lineInfo->FileName, lineInfo->LineNumber,
 				Address{ context->hProcess_, reinterpret_cast<void*>(addressValue) });
 
 			return TRUE;
@@ -82,7 +83,7 @@ namespace CppCoverage
 			if (!pSourceFile)
 				THROW("Source File is null");
 			
-			std::wstring filename = Tools::ToWString(pSourceFile->FileName);
+			std::wstring filename = pSourceFile->FileName;
 			
 			if (context->debugInformationEventHandler_.IsSourceFileSelected(filename))
 			{				
@@ -136,6 +137,11 @@ namespace CppCoverage
 		
 		if (!SymRegisterCallback64(hProcess_, SymRegisterCallbackProc64, 0))
 			THROW("Error when calling SymRegisterCallback64");
+
+		wchar_t searchPath[8192];
+		if (!SymGetSearchPath(hProcess_, searchPath, sizeof(searchPath) / sizeof(searchPath[0])))
+			THROW_LAST_ERROR("Error when calling SymGetSearchPath", GetLastError());
+		defaultSearchPath_ = searchPath;
 	}
 	
 	//-------------------------------------------------------------------------
@@ -154,6 +160,7 @@ namespace CppCoverage
 		void* baseOfImage,
 		IDebugInformationEventHandler& debugInformationEventHandler) const
 	{		
+		UpdateSearchPath(filename);
 		auto baseAddress = SymLoadModuleEx(hProcess_, hFile, nullptr, nullptr, 0, 0, nullptr, 0);
 
 		if (!baseAddress)
@@ -165,6 +172,16 @@ namespace CppCoverage
 			
 		if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
 			LOG_WARNING << L"Cannot find pdb for " << filename;
+	}
+
+	//-------------------------------------------------------------------------
+	void DebugInformation::UpdateSearchPath(const std::wstring& moduleFilename) const
+	{
+		auto parentPath = boost::filesystem::path(moduleFilename).parent_path();
+
+		auto searchPath = defaultSearchPath_ + L';' + parentPath.wstring();
+		if (!SymSetSearchPath(hProcess_, searchPath.c_str()))
+			THROW_LAST_ERROR("Error when calling SymSetSearchPath", GetLastError());
 	}
 
 	//-------------------------------------------------------------------------
