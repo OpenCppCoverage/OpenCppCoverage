@@ -276,11 +276,11 @@ namespace CppCoverage
 		Options options{ modulePatterns, sourcePatterns, optionalStartInfo.get_ptr() };
 		
 		if (IsOptionSelected(variables, ProgramOptions::VerboseOption))
-			options.SetVerboseModeSelected();
+			options.EnableVerboseMode();
 		if (IsOptionSelected(variables, ProgramOptions::CoverChildrenOption))
-			options.SetCoverChildrenModeSelected();
+			options.EnableCoverChildrenMode();
 		if (IsOptionSelected(variables, ProgramOptions::PluginOption))
-			options.SetPlugingModeSelected();
+			options.EnablePlugingMode();
 
 		AddExporTypes(variables, options);
 		AddInputCoverages(variables, options);

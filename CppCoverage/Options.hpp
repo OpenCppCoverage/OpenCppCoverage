@@ -42,14 +42,14 @@ namespace CppCoverage
 		const CppCoverage::Patterns& GetSourcePatterns() const;
 		const CppCoverage::StartInfo* GetStartInfo() const;
 
-		void SetVerboseModeSelected();
-		bool IsVerboseModeSelected() const;
+		void EnableVerboseMode();
+		bool IsVerboseModeEnabled() const;
 		
-		void SetPlugingModeSelected();
-		bool IsPlugingModeSelected() const;
+		void EnablePlugingMode();
+		bool IsPlugingModeEnabled() const;
 
-		void SetCoverChildrenModeSelected();
-		bool IsCoverChildrenModeSelected() const;
+		void EnableCoverChildrenMode();
+		bool IsCoverChildrenModeEnabled() const;
 
 		void AddExport(const OptionsExport&);
 		const std::vector<OptionsExport>& GetExports() const;
@@ -68,9 +68,9 @@ namespace CppCoverage
 		CppCoverage::Patterns sources_;
 		boost::optional<CppCoverage::StartInfo> optionalStartInfo_;
 
-		bool verboseModeSelected_;
-		bool pluginModeSelected_;
-		bool coverChildrenModeSelected_;
+		bool isVerboseModeEnabled_;
+		bool isPluginModeEnabled_;
+		bool isCoverChildrenModeEnabled;
 		std::vector<OptionsExport> exports_;
 		std::vector<boost::filesystem::path> inputCoveragePaths_;
 	};

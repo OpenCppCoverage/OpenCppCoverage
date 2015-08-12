@@ -103,7 +103,7 @@ namespace OpenCppCoverage
 		//-----------------------------------------------------------------------------
 		void InitLogger(const cov::Options& options)
 		{
-			auto logLevel = (options.IsVerboseModeSelected()) ? logging::trivial::debug : logging::trivial::info;
+			auto logLevel = (options.IsVerboseModeEnabled()) ? logging::trivial::debug : logging::trivial::info;
 			Tools::InitConsoleAndFileLog(L"LastCoverageResults.log");
 			Tools::SetLoggerMinSeverity(logLevel);
 		}
@@ -127,7 +127,7 @@ namespace OpenCppCoverage
 			{
 				coveraDatas.push_back(
 					codeCoverageRunner.RunCoverage(
-						*startInfo, settings, options.IsCoverChildrenModeSelected()));
+						*startInfo, settings, options.IsCoverChildrenModeEnabled()));
 			}
 			cov::CoverageDataMerger	coverageDataMerger;
 
@@ -165,7 +165,7 @@ namespace OpenCppCoverage
 			status = 1;
 		}
 
-		if (options->IsPlugingModeSelected())
+		if (options->IsPlugingModeEnabled())
 		{
 			std::cout << "Press any key to continue... ";
 			std::cin.get();

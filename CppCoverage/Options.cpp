@@ -28,9 +28,9 @@ namespace CppCoverage
 		const cov::StartInfo* startInfo)
 		: modules_{modulePatterns}
 		, sources_{sourcePatterns}		
-		, verboseModeSelected_{false}
-		, pluginModeSelected_{false}
-		, coverChildrenModeSelected_{false}
+		, isVerboseModeEnabled_{false}
+		, isPluginModeEnabled_{false}
+		, isCoverChildrenModeEnabled{false}
 	{
 		if (startInfo)
 			optionalStartInfo_ = *startInfo;
@@ -55,39 +55,39 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void Options::SetVerboseModeSelected()
+	void Options::EnableVerboseMode()
 	{
-		verboseModeSelected_ = true;
+		isVerboseModeEnabled_ = true;
 	}
 
 	//-------------------------------------------------------------------------
-	bool Options::IsVerboseModeSelected() const
+	bool Options::IsVerboseModeEnabled() const
 	{
-		return verboseModeSelected_;
+		return isVerboseModeEnabled_;
 	}
 	
 	//-------------------------------------------------------------------------
-	void Options::SetPlugingModeSelected()
+	void Options::EnablePlugingMode()
 	{
-		pluginModeSelected_ = true;
+		isPluginModeEnabled_ = true;
 	}
 
 	//-------------------------------------------------------------------------
-	bool Options::IsPlugingModeSelected() const
+	bool Options::IsPlugingModeEnabled() const
 	{
-		return pluginModeSelected_;
+		return isPluginModeEnabled_;
 	}
 
 	//-------------------------------------------------------------------------
-	void Options::SetCoverChildrenModeSelected()
+	void Options::EnableCoverChildrenMode()
 	{
-		coverChildrenModeSelected_ = true;
+		isCoverChildrenModeEnabled = true;
 	}
 
 	//-------------------------------------------------------------------------
-	bool Options::IsCoverChildrenModeSelected() const
+	bool Options::IsCoverChildrenModeEnabled() const
 	{
-		return coverChildrenModeSelected_;
+		return isCoverChildrenModeEnabled;
 	}
 
 	//-------------------------------------------------------------------------
@@ -121,8 +121,8 @@ namespace CppCoverage
 			ostr << *options.optionalStartInfo_ << std::endl;
 		ostr << L"Modules: " << options.modules_ << std::endl;
 		ostr << L"Sources: " << options.sources_ << std::endl;
-		ostr << L"Verbose mode: " << options.verboseModeSelected_ << std::endl;
-		ostr << L"Cover Children: " << options.coverChildrenModeSelected_ << std::endl;
+		ostr << L"Verbose mode: " << options.isVerboseModeEnabled_ << std::endl;
+		ostr << L"Cover Children: " << options.isCoverChildrenModeEnabled << std::endl;
 
 		ostr << L"Export: ";
 		for (const auto& optionExport : options.exports_)

@@ -42,9 +42,9 @@ namespace CppCoverageTest
 
 		auto options = TestTools::Parse(parser, {});
 		ASSERT_TRUE(options);
-		ASSERT_FALSE(options->IsVerboseModeSelected());
-		ASSERT_FALSE(options->IsPlugingModeSelected());
-		ASSERT_FALSE(options->IsCoverChildrenModeSelected());
+		ASSERT_FALSE(options->IsVerboseModeEnabled());
+		ASSERT_FALSE(options->IsPlugingModeEnabled());
+		ASSERT_FALSE(options->IsCoverChildrenModeEnabled());
 	}
 
 	//-------------------------------------------------------------------------
@@ -67,9 +67,9 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 
 		ASSERT_TRUE(TestTools::Parse(parser,
-		{ optionShortPrefix + cov::ProgramOptions::VerboseShortOption })->IsVerboseModeSelected());
+		{ optionShortPrefix + cov::ProgramOptions::VerboseShortOption })->IsVerboseModeEnabled());
 		ASSERT_TRUE(TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::VerboseOption })->IsVerboseModeSelected());
+		{ TestTools::OptionPrefix + cov::ProgramOptions::VerboseOption })->IsVerboseModeEnabled());
 	}
 	
 	//-------------------------------------------------------------------------
@@ -78,7 +78,7 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 
 		ASSERT_TRUE(TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::PluginOption })->IsPlugingModeSelected());
+		{ TestTools::OptionPrefix + cov::ProgramOptions::PluginOption })->IsPlugingModeEnabled());
 	}
 
 	//-------------------------------------------------------------------------
@@ -87,7 +87,7 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 
 		ASSERT_TRUE(TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::CoverChildrenOption })->IsCoverChildrenModeSelected());
+		{ TestTools::OptionPrefix + cov::ProgramOptions::CoverChildrenOption })->IsCoverChildrenModeEnabled());
 	}
 
 	//-------------------------------------------------------------------------
