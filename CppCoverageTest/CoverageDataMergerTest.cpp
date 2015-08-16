@@ -60,6 +60,15 @@ namespace CppCoverageTest
 		}
 
 		//-------------------------------------------------------------------------
+		void AddLinesToFileCoverage(
+			cov::FileCoverage& fileCoverage,
+			const std::initializer_list<std::pair<int, bool>>& lineArgCollection)
+		{
+			for (const auto& lineArg : lineArgCollection)
+				fileCoverage.AddLine(lineArg.first, lineArg.second);
+		}
+
+		//-------------------------------------------------------------------------
 		void AddLine(
 			cov::CoverageData& coverageData,
 			const fs::path& modulePath,
@@ -68,8 +77,7 @@ namespace CppCoverageTest
 		{
 			auto& file = coverageData.AddModule(modulePath).AddFile(filePath);
 
-			for (const auto& lineArg : lineArgCollection)
-				file.AddLine(lineArg.first, lineArg.second);
+			AddLinesToFileCoverage(file, lineArgCollection);
 		}
 
 		//-------------------------------------------------------------------------
@@ -151,5 +159,45 @@ namespace CppCoverageTest
 		CheckLineHasBeenExecuted(mergedFile, 1, true);
 		CheckLineHasBeenExecuted(mergedFile, 2, true);
 		CheckLineHasBeenExecuted(mergedFile, 3, true);
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(CoverageDataMergerTest, MergeFileCoverageEmpty)
+	{
+		cov::CoverageData coverageData{L"test", 0};
+
+		AddLine(coverageData, modulePath, filePath, { { 0, false }, { 1, false }, { 2, true } });
+		cov::CoverageDataMerger{}.MergeFileCoverage(coverageData);
+
+		auto& mergedFile = coverageData.GetModules().at(0)->GetFiles().at(0);
+		ASSERT_EQ(3, mergedFile->GetLines().size());
+		CheckLineHasBeenExecuted(mergedFile, 0, false);
+		CheckLineHasBeenExecuted(mergedFile, 1, false);
+		CheckLineHasBeenExecuted(mergedFile, 2, true);
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(CoverageDataMergerTest, MergeFileCoverageMultipleFiles)
+	{
+		cov::CoverageData coverageData{ L"test", 0 };
+
+		auto& fileCoverage1 = coverageData.AddModule(modulePath).AddFile(filePath);
+		auto& fileCoverage2 = coverageData.AddModule(L"otherModule").AddFile(filePath);
+
+		AddLinesToFileCoverage(fileCoverage1, { { 0, false }, { 1, false }, { 2, true } });
+		AddLinesToFileCoverage(fileCoverage2, { { 1, true }, { 2, false }, { 3, true } });
+		cov::CoverageDataMerger{}.MergeFileCoverage(coverageData);
+
+		const auto& modules = coverageData.GetModules();
+		ASSERT_EQ(2, modules.size());
+		for (const auto& module : modules)
+		{
+			auto& mergedFile = module->GetFiles().at(0);
+			ASSERT_EQ(4, mergedFile->GetLines().size());
+			CheckLineHasBeenExecuted(mergedFile, 0, false);
+			CheckLineHasBeenExecuted(mergedFile, 1, true);
+			CheckLineHasBeenExecuted(mergedFile, 2, true);
+			CheckLineHasBeenExecuted(mergedFile, 3, true);
+		}
 	}
 }

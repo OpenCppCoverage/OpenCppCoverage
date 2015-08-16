@@ -46,4 +46,10 @@ namespace TestCoverageSharedLib
 	{		
 		return TARGET_FILE_NAME;
 	}
+
+	//-------------------------------------------------------------------------
+	void CallSharedFunctionFromSharedLib()
+	{
+		SharedFunction(true);
+	}
 }

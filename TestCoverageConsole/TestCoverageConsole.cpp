@@ -39,6 +39,13 @@ namespace
 		{
 		}
 	}	
+
+	//-----------------------------------------------------------------------------
+	void TestFileInSeveralModules()
+	{
+		TestCoverageSharedLib::CallSharedFunctionFromSharedLib();
+		TestCoverageSharedLib::SharedFunction(false);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -66,6 +73,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			DebugBreak();
 		else if (type == TestCoverageConsole::TestChildProcess)
 			TestCoverageConsole::RunChildProcesses(argc, argv);
+		else if (type == TestCoverageConsole::TestFileInSeveralModules)
+			TestFileInSeveralModules();
 		else
 			std::wcerr << L"Unsupported type:" << type << std::endl;
 	}

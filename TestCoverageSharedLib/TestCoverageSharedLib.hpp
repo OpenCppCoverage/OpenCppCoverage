@@ -23,4 +23,26 @@ namespace TestCoverageSharedLib
 	__declspec(dllexport) boost::filesystem::path GetMainCppPath();
 	__declspec(dllexport) boost::filesystem::path GetOutputBinaryPath();
 	__declspec(dllexport) bool IsOdd(int n);
+
+	__declspec(dllexport) void CallSharedFunctionFromSharedLib();
+
+	//-------------------------------------------------------------------------
+	inline boost::filesystem::path GetSharedFunctionFilename()
+	{
+		return boost::filesystem::path(__FILE__).filename();
+	}
+
+	//-------------------------------------------------------------------------
+	inline int GetSharedFunctionLine()
+	{
+		return __LINE__ + 4;
+	}
+
+	//-------------------------------------------------------------------------
+	inline bool SharedFunction(bool calledFromSharedLib)
+	{
+		if (calledFromSharedLib)
+			return true;
+		return false;
+	}
 }

@@ -82,10 +82,10 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		cov::CoverageData ComputeCoverageData(
+		cov::CoverageData ComputeCoverageDataPatterns(
 			const std::vector<std::wstring>& arguments,
-			std::wstring modulePattern,
-			std::wstring sourcePattern,
+			const std::vector<std::wstring>& modulePatternCollection,
+			const std::vector<std::wstring>& sourcePatternCollection,
 			bool coverChildren = true)
 		{
 			cov::CodeCoverageRunner codeCoverageRunner;
@@ -94,17 +94,33 @@ namespace CppCoverageTest
 			
 			cov::CoverageSettings coverageSettings{modulePatterns, sourcePatterns};
 
-			boost::to_lower(modulePattern);
-			boost::to_lower(sourcePattern);
+			for (auto modulePattern : modulePatternCollection)
+			{
+				boost::to_lower(modulePattern);
+				modulePatterns.AddSelectedPatterns(modulePattern);
+			}
 
-			modulePatterns.AddSelectedPatterns(modulePattern);
-			sourcePatterns.AddSelectedPatterns(sourcePattern);
+			for (auto sourcePattern : sourcePatternCollection)
+			{
+				boost::to_lower(sourcePattern);
+				sourcePatterns.AddSelectedPatterns(sourcePattern);
+			}
 			
 			cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath().wstring() };
 			for (const auto& argument: arguments)
 				startInfo.AddArgument(argument);
 
 			return codeCoverageRunner.RunCoverage(startInfo, coverageSettings, coverChildren);
+		}
+
+		//---------------------------------------------------------------------
+		cov::CoverageData ComputeCoverageData(
+			const std::vector<std::wstring>& arguments,
+			const std::wstring& modulePattern,
+			const std::wstring& sourcePattern,
+			bool coverChildren = true)
+		{
+			return ComputeCoverageDataPatterns(arguments, { modulePattern }, { sourcePattern }, coverChildren);
 		}
 
 		//---------------------------------------------------------------------
@@ -152,7 +168,7 @@ namespace CppCoverageTest
 			const auto& module = *modules.at(0);
 			const auto& files = module.GetFiles();
 
-			return *files.at(0).get();
+			return *files.at(0);
 		}
 
 		//---------------------------------------------------------------------
@@ -270,5 +286,31 @@ namespace CppCoverageTest
 		TestLine(file, mainLine + 19, true); // TestThrowUnHandledSEHException
 		TestLine(file, mainLine + 21, false); // TestBreakPoint
 		TestLine(file, mainLine + 23, true); // TestChildProcess
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, TestFileInSeveralModules)
+	{
+		auto coverageData = ComputeCoverageDataPatterns(
+			{ TestCoverageConsole::TestFileInSeveralModules },
+			{ TestCoverageSharedLib::GetOutputBinaryPath().wstring(), TestCoverageConsole::GetOutputBinaryPath().wstring()},
+			{ TestCoverageSharedLib::GetSharedFunctionFilename().wstring() });
+
+		const auto sharedFunctionLine = TestCoverageSharedLib::GetSharedFunctionLine();
+
+		const auto& fileFromFirstModule = *coverageData.GetModules().at(0)->GetFiles().at(0);
+		TestLine(fileFromFirstModule, sharedFunctionLine + 3, false);
+		TestLine(fileFromFirstModule, sharedFunctionLine + 4, true);
+
+		const auto& fileFromSecondModule = *coverageData.GetModules().at(1)->GetFiles().at(0);
+		TestLine(fileFromSecondModule, sharedFunctionLine + 3, true);
+		TestLine(fileFromSecondModule, sharedFunctionLine + 4, false);
+
+		cov::CoverageDataMerger().MergeFileCoverage(coverageData);
+		for (const auto* file : { &fileFromFirstModule, &fileFromSecondModule })
+		{
+			TestLine(*file, sharedFunctionLine + 3, true);
+			TestLine(*file, sharedFunctionLine + 4, true);
+		}
 	}
 }
