@@ -7,7 +7,7 @@ xcopy /y Release\Exporter.dll NewRelease\x86\Binaries
 xcopy /y Release\CppCoverage.dll NewRelease\x86\Binaries
 xcopy /y Release\Tools.dll NewRelease\x86\Binaries
 xcopy /y Release\libctemplate.dll NewRelease\x86\Binaries
-xcopy /y Release\template_test_util_test.exe NewRelease\x86\Binaries
+xcopy /y Release\template_test_util_test.dll NewRelease\x86\Binaries
 xcopy /y Release\boost_filesystem-vc120-mt-1_55.dll NewRelease\x86\Binaries
 xcopy /y Release\boost_program_options-vc120-mt-1_55.dll NewRelease\x86\Binaries
 xcopy /y Release\boost_system-vc120-mt-1_55.dll NewRelease\x86\Binaries
@@ -32,7 +32,7 @@ xcopy /y x64\Release\Exporter.dll NewRelease\x64\Binaries
 xcopy /y x64\Release\CppCoverage.dll NewRelease\x64\Binaries
 xcopy /y x64\Release\Tools.dll NewRelease\x64\Binaries
 xcopy /y x64\Release\libctemplate.dll NewRelease\x64\Binaries
-xcopy /y x64\Release\template_test_util_test.exe NewRelease\x64\Binaries
+xcopy /y x64\Release\template_test_util_test.dll NewRelease\x64\Binaries
 xcopy /y x64\Release\boost_filesystem-vc120-mt-1_55.dll NewRelease\x64\Binaries
 xcopy /y x64\Release\boost_program_options-vc120-mt-1_55.dll NewRelease\x64\Binaries
 xcopy /y x64\Release\boost_system-vc120-mt-1_55.dll NewRelease\x64\Binaries
@@ -48,3 +48,4 @@ xcopy /y x64\Release\OpenCppCoverage.pdb NewRelease\x64\Pdb
 xcopy /y x64\Release\Exporter.pdb NewRelease\x64\Pdb
 xcopy /y x64\Release\CppCoverage.pdb NewRelease\x64\Pdb
 xcopy /y x64\Release\Tools.pdb NewRelease\x64\Pdb
+pause
