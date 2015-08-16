@@ -16,6 +16,8 @@
 
 #include "stdafx.h"
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "DebugInformationEventHandlerMock.hpp"
 
 #include "CppCoverage/DebugInformation.hpp"
@@ -45,13 +47,14 @@ namespace CppCoverageTest
 	TEST(DebugInformationTest, LoadModule)
 	{						
 		DebugInformationEventHandlerMock mock;
+		auto mainCppPath = TestCoverageConsole::GetMainCppFilename().wstring();
 
 		EXPECT_CALL(mock, IsSourceFileSelected(testing::_))
 			.Times(testing::AnyNumber())
 			.WillRepeatedly(testing::Return(false));		
-		EXPECT_CALL(mock, IsSourceFileSelected(
-			TestCoverageConsole::GetMainCppPath().wstring()))
-			.WillOnce(testing::Return(true));				
+		EXPECT_CALL(mock, IsSourceFileSelected(testing::_))
+			.WillRepeatedly(testing::Invoke(
+			[=](const std::wstring& path){ return boost::algorithm::icontains(path, mainCppPath); }));
 		EXPECT_CALL(mock, OnNewLine(testing::_, testing::_, testing::_))
 			.Times(testing::AtLeast(1));
 

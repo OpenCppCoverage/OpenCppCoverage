@@ -21,7 +21,7 @@
 
 namespace TestCoverageConsole
 {
-	void TestBasic();
+	void RunTestBasic();
 	void RunChildProcesses(int argc, _TCHAR* argv[]);
 
 	//-------------------------------------------------------------------------
@@ -31,8 +31,8 @@ namespace TestCoverageConsole
 	}
 
 	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetTestBasicPath()
+	inline boost::filesystem::path GetTestBasicFilename()
 	{
-		return boost::filesystem::path(__FILE__).replace_extension("cpp");
+		return boost::filesystem::path(__FILE__).replace_extension("cpp").filename();
 	}
 }

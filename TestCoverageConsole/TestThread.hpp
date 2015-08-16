@@ -23,8 +23,8 @@ namespace TestCoverageConsole
 	void RunThread();	
 
 	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetTestThreadPath()
+	inline boost::filesystem::path GetTestThreadFilename()
 	{
-		return boost::filesystem::path(__FILE__).replace_extension("cpp");
+		return boost::filesystem::path(__FILE__).replace_extension("cpp").filename();
 	}
 }

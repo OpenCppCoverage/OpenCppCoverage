@@ -50,11 +50,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		std::wstring type = argv[1];
 
-		if (type == TestCoverageConsole::GetTestBasicPath())
-			TestCoverageConsole::TestBasic();
-		else if (type == TestCoverageConsole::GetTestThreadPath())
+		if (type == TestCoverageConsole::TestBasic)
+			TestCoverageConsole::RunTestBasic();
+		else if (type == TestCoverageConsole::TestThread)
 			TestCoverageConsole::RunThread();
-		else if (type == TestCoverageSharedLib::GetMainCppPath())
+		else if (type == TestCoverageConsole::TestSharedLib)
 			TestCoverageSharedLib::IsOdd(42);
 		else if (type == TestCoverageConsole::TestThrowHandledException)
 			ThrowHandledException();

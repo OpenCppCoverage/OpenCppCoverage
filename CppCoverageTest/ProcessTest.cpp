@@ -20,6 +20,7 @@
 #include "CppCoverage/Process.hpp"
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
+#include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
 namespace cov = CppCoverage;
 
@@ -38,7 +39,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(Process, InvalidProgram)
 	{		
-		cov::StartInfo startInfo{ TestCoverageConsole::GetMainCppPath() };
+		cov::StartInfo startInfo{ OUT_DIR / TestCoverageSharedLib::GetOutputBinaryPath() };
 
 		cov::Process process{ startInfo };
 		ASSERT_THROW(process.Start(0), std::runtime_error);

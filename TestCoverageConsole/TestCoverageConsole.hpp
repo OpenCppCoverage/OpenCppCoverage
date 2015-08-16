@@ -35,6 +35,12 @@ namespace TestCoverageConsole
 	}
 
 	//-------------------------------------------------------------------------
+	inline boost::filesystem::path GetMainCppFilename()
+	{
+		return GetMainCppPath().filename();
+	}
+
+	//-------------------------------------------------------------------------
 	inline boost::filesystem::path GetOutputBinaryPath()
 	{
 		return boost::filesystem::path(OUT_DIR) / "TestCoverageConsole.exe";
@@ -46,6 +52,9 @@ namespace TestCoverageConsole
 		return 45;
 	}
 
+	const std::wstring TestBasic = L"TestBasic";
+	const std::wstring TestThread = L"TestThread";
+	const std::wstring TestSharedLib = L"TestSharedLib";
 	const std::wstring TestThrowHandledException = L"TestThrowHandledException";
 	const std::wstring TestThrowUnHandledCppException = L"TestThrowUnHandledCppException";
 	const std::wstring TestThrowUnHandledSEHException = L"TestThrowUnHandledSEHException";

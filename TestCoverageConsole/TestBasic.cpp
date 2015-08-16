@@ -27,7 +27,7 @@
 namespace TestCoverageConsole
 {
 	//-------------------------------------------------------------------------
-	void TestBasic()
+	void RunTestBasic()
 	{
 		if (false)
 		{

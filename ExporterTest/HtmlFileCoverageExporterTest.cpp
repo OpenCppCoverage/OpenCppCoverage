@@ -54,14 +54,14 @@ namespace ExporterTest
 			//-----------------------------------------------------------------
 			bool HasBeenExecuted(int lineNumber)
 			{				
-				return boost::starts_with(lines_[lineNumber - 1],
+				return boost::starts_with(lines_.at(lineNumber - 1),
 					Exporter::HtmlFileCoverageExporter::StyleBackgroundColorExecuted);
 			}
 
 			//-----------------------------------------------------------------
 			bool HasBeenUnexecuted(int lineNumber)
 			{
-				return boost::starts_with(lines_[lineNumber - 1],
+				return boost::starts_with(lines_.at(lineNumber - 1),
 					Exporter::HtmlFileCoverageExporter::StyleBackgroundColorUnexecuted);
 			}
 

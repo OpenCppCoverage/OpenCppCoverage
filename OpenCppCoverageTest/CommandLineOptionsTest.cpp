@@ -17,6 +17,7 @@
 #include "stdafx.h"
 
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 #include "TestHelper/TemporaryPath.hpp"
 #include "CppCoverage/OptionsParser.hpp"
@@ -37,7 +38,6 @@ namespace OpenCppCoverageTest
 		auto testCoverageConsole = TestCoverageConsole::GetOutputBinaryPath();
 		auto testCoverageSharedLib = TestCoverageSharedLib::GetOutputBinaryPath();
 		
-		auto testCoverageConsoleMain = TestCoverageConsole::GetMainCppPath();
 		auto testCoverageSharedLibMain = TestCoverageSharedLib::GetMainCppPath();
 
 		//---------------------------------------------------------------------
@@ -116,7 +116,10 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CommandLineOptionsTest, SelectedSourcesOption)
 	{
-		RunCoverageOnProgram({ { cov::ProgramOptions::SelectedSourcesOption, testCoverageConsoleMain.string() } }, false);
+		auto testCoverageConsoleMain = TestCoverageConsole::GetMainCppFilename().string();
+
+		boost::algorithm::to_lower(testCoverageConsoleMain);
+		RunCoverageOnProgram({ { cov::ProgramOptions::SelectedSourcesOption, testCoverageConsoleMain } }, false);
 		CheckFilenameWithExtensionExistsInOutput(testCoverageConsoleMain, true);
 		CheckFilenameWithExtensionExistsInOutput(testCoverageSharedLibMain, false);
 	}
@@ -124,7 +127,10 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CommandLineOptionsTest, ExcludedSourcesOption)
 	{
-		RunCoverageOnProgram({ { cov::ProgramOptions::ExcludedSourcesOption, testCoverageConsoleMain.string() } });
+		auto testCoverageConsoleMain = TestCoverageConsole::GetMainCppFilename().string();
+
+		boost::algorithm::to_lower(testCoverageConsoleMain);
+		RunCoverageOnProgram({ { cov::ProgramOptions::ExcludedSourcesOption, testCoverageConsoleMain } });
 		CheckFilenameWithExtensionExistsInOutput(testCoverageConsoleMain, false);
 		CheckFilenameWithExtensionExistsInOutput(testCoverageSharedLibMain, true);
 	}

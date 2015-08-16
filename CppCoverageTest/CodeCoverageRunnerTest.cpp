@@ -137,11 +137,11 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		cov::CoverageData ComputeCoverageData(const std::wstring& fileArgument)
+		cov::CoverageData ComputeCoverageData(const std::wstring& programArg, const std::wstring& fileArgument)
 		{
 			return ComputeCoverageDataInBothMode(
-				fileArgument,
-				TestCoverageConsole::GetOutputBinaryPath().wstring(),
+				programArg,
+				TestCoverageConsole::GetOutputBinaryPath().filename().wstring(),
 				fileArgument);
 		}
 
@@ -168,9 +168,9 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, RunCoverage)
 	{		
-		const auto testBasic = TestCoverageConsole::GetTestBasicPath().wstring();
+		const auto testBasicFilename = TestCoverageConsole::GetTestBasicFilename().wstring();
 		
-		cov::CoverageData coverageData = ComputeCoverageData(testBasic);
+		cov::CoverageData coverageData = ComputeCoverageData(TestCoverageConsole::TestBasic, testBasicFilename);
 		auto& file = GetFirstFileCoverage(coverageData);
 
 		int line = TestCoverageConsole::GetTestBasicLine() + 1;
@@ -186,7 +186,7 @@ namespace CppCoverageTest
 	{			
 		auto mainSharedLibFile = TestCoverageSharedLib::GetMainCppPath().wstring();
 
-		cov::CoverageData coverageData = ComputeCoverageDataInBothMode(mainSharedLibFile,
+		cov::CoverageData coverageData = ComputeCoverageDataInBothMode(TestCoverageConsole::TestSharedLib,
 			TestCoverageSharedLib::GetOutputBinaryPath().wstring(), mainSharedLibFile);
 		auto& file = GetFirstFileCoverage(coverageData);
 
@@ -201,9 +201,9 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, RunThread)
 	{
-		const auto testThread = TestCoverageConsole::GetTestThreadPath().wstring();
+		const auto filter = TestCoverageConsole::GetTestThreadFilename().wstring();
 
-		cov::CoverageData coverageData = ComputeCoverageData(testThread);
+		cov::CoverageData coverageData = ComputeCoverageData(TestCoverageConsole::TestThread, filter);
 		auto& file = GetFirstFileCoverage(coverageData);
 
 		int line = 28;
@@ -240,7 +240,7 @@ namespace CppCoverageTest
 			TestCoverageConsole::TestChildProcess,
 			TestCoverageConsole::TestThrowHandledException };
 		const auto modulePattern = TestCoverageConsole::GetOutputBinaryPath().wstring();
-		const auto sourcePattern = TestCoverageConsole::GetMainCppPath().wstring();
+		const auto sourcePattern = TestCoverageConsole::GetMainCppFilename().wstring();
 
 		auto rootAndChildProcess = ComputeCoverageData(arguments, modulePattern, sourcePattern, true);
 		auto rootProcessOnly = ComputeCoverageData(arguments, modulePattern, sourcePattern, false);
@@ -256,7 +256,7 @@ namespace CppCoverageTest
 				TestCoverageConsole::TestThrowUnHandledCppException,
 				TestCoverageConsole::TestThrowUnHandledSEHException },
 			TestCoverageConsole::GetOutputBinaryPath().wstring(),
-			TestCoverageConsole::GetMainCppPath().wstring());
+			TestCoverageConsole::GetMainCppFilename().wstring());
 
 		std::vector<cov::CoverageData> coverageDataCollection;
 		coverageDataCollection.push_back(std::move(coverageData));
