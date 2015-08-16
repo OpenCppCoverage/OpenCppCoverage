@@ -132,6 +132,10 @@ namespace OpenCppCoverage
 			cov::CoverageDataMerger	coverageDataMerger;
 
 			auto coverageData = coverageDataMerger.Merge(coveraDatas);
+
+			if (options.IsAggregateByFileModeEnabled())
+				coverageDataMerger.MergeFileCoverage(coverageData);
+
 			Export(options, coverageData);
 
 			auto exitCode = coverageData.GetExitCode();

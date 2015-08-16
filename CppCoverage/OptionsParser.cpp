@@ -281,6 +281,8 @@ namespace CppCoverage
 			options.EnableCoverChildrenMode();
 		if (IsOptionSelected(variables, ProgramOptions::PluginOption))
 			options.EnablePlugingMode();
+		if (IsOptionSelected(variables, ProgramOptions::NoAggregateByFileOption))
+			options.DisableAggregateByFileMode();
 
 		AddExporTypes(variables, options);
 		AddInputCoverages(variables, options);

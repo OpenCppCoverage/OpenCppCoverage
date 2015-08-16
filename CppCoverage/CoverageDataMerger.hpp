@@ -28,6 +28,7 @@ namespace CppCoverage
 		CoverageDataMerger() = default;
 		
 		CoverageData Merge(const std::vector<CoverageData>&) const;
+		void MergeFileCoverage(CoverageData&) const;
 
 	private:
 		CoverageDataMerger(const CoverageDataMerger&) = delete;

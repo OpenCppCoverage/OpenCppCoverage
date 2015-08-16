@@ -30,7 +30,8 @@ namespace CppCoverage
 		, sources_{sourcePatterns}		
 		, isVerboseModeEnabled_{false}
 		, isPluginModeEnabled_{false}
-		, isCoverChildrenModeEnabled{false}
+		, isCoverChildrenModeEnabled_{false}
+		, isAggregateByFileModeEnabled_{true}
 	{
 		if (startInfo)
 			optionalStartInfo_ = *startInfo;
@@ -81,13 +82,25 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	void Options::EnableCoverChildrenMode()
 	{
-		isCoverChildrenModeEnabled = true;
+		isCoverChildrenModeEnabled_ = true;
 	}
 
 	//-------------------------------------------------------------------------
 	bool Options::IsCoverChildrenModeEnabled() const
 	{
-		return isCoverChildrenModeEnabled;
+		return isCoverChildrenModeEnabled_;
+	}
+
+	//-------------------------------------------------------------------------
+	void Options::DisableAggregateByFileMode()
+	{
+		isAggregateByFileModeEnabled_ = false;
+	}
+
+	//-------------------------------------------------------------------------
+	bool Options::IsAggregateByFileModeEnabled() const
+	{
+		return isAggregateByFileModeEnabled_;
 	}
 
 	//-------------------------------------------------------------------------
@@ -122,7 +135,8 @@ namespace CppCoverage
 		ostr << L"Modules: " << options.modules_ << std::endl;
 		ostr << L"Sources: " << options.sources_ << std::endl;
 		ostr << L"Verbose mode: " << options.isVerboseModeEnabled_ << std::endl;
-		ostr << L"Cover Children: " << options.isCoverChildrenModeEnabled << std::endl;
+		ostr << L"Cover Children: " << options.isCoverChildrenModeEnabled_ << std::endl;
+		ostr << L"Aggregate by file: " << options.isAggregateByFileModeEnabled_ << std::endl;
 
 		ostr << L"Export: ";
 		for (const auto& optionExport : options.exports_)

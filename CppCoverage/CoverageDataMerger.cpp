@@ -70,23 +70,32 @@ namespace CppCoverage
 		}
 		
 		//---------------------------------------------------------------------
+		void AddFileCoverageTo(
+			const FileCoverage* sourceFile,
+			FileCoverage* destinationFile)
+		{
+			if (sourceFile && destinationFile)
+			{
+				for (const auto& line : sourceFile->GetLines())
+				{
+					auto lineNumber = line.GetLineNumber();
+					auto hasBeenExecuted = line.HasBeenExecuted();
+
+					if (!(*destinationFile)[lineNumber])
+						destinationFile->AddLine(lineNumber, hasBeenExecuted);
+					else if (hasBeenExecuted)
+						destinationFile->UpdateLine(lineNumber, true);
+				}
+			}
+		}
+
+		//---------------------------------------------------------------------
 		void FillFiles(
 			FileCoverage& file,
 			const std::vector<FileCoverage*>& files)
 		{
 			for (const auto& f : files)
-			{
-				for (const auto& line : f->GetLines())
-				{
-					auto lineNumber = line.GetLineNumber();
-					auto hasBeenExecuted = line.HasBeenExecuted();
-
-					if (!file[lineNumber])
-						file.AddLine(lineNumber, hasBeenExecuted);
-					else if (hasBeenExecuted)
-						file.UpdateLine(lineNumber, true);
-				}
-			}
+				AddFileCoverageTo(f, &file);
 		}
 
 		//---------------------------------------------------------------------
@@ -104,6 +113,23 @@ namespace CppCoverage
 			{
 				auto& file = module.AddFile(pair.first);
 				FillFiles(file, pair.second);
+			}
+		}
+
+		//-------------------------------------------------------------------------
+		void MergeFileCoverages(const std::vector<FileCoverage*>& fileCoverages)
+		{
+			if (fileCoverages.size() > 1)
+			{
+				auto mutableFileCoverages = fileCoverages;
+				auto& fileCoverageSum = mutableFileCoverages.back();
+
+				mutableFileCoverages.pop_back();
+				for (const auto* fileCoverage : mutableFileCoverages)
+					AddFileCoverageTo(fileCoverage, fileCoverageSum);
+
+				for (auto* fileCoverage : mutableFileCoverages)
+					*fileCoverage = *fileCoverageSum;
 			}
 		}
 	}
@@ -127,5 +153,24 @@ namespace CppCoverage
 		}
 		
 		return coverageData;
+	}
+
+	//-------------------------------------------------------------------------
+	void CoverageDataMerger::MergeFileCoverage(CoverageData& coverageData) const
+	{
+		std::map<boost::filesystem::path, std::vector<FileCoverage*>> fileCoveragesByPath;
+
+		for (const auto& module : coverageData.GetModules())
+		{
+			for (const auto& file : module->GetFiles())
+				fileCoveragesByPath[file->GetPath()].push_back(file.get());
+		}
+
+		for (const auto& fileCoverageByPath : fileCoveragesByPath)
+		{
+			const auto& fileCoverages = fileCoverageByPath.second;
+
+			MergeFileCoverages(fileCoverages);
+		}
 	}
 }

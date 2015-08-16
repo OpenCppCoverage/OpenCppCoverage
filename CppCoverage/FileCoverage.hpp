@@ -37,9 +37,10 @@ namespace CppCoverage
 		const LineCoverage* operator[](unsigned int line) const;
 		std::vector<LineCoverage> GetLines() const;
 
+		FileCoverage& operator=(const FileCoverage&) = default;
+
 	private:
 		FileCoverage(const FileCoverage&) = delete;
-		FileCoverage& operator=(const FileCoverage&) = delete;
 			
 	private:
 		boost::filesystem::path path_;

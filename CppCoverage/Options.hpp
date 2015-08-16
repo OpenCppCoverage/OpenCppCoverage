@@ -51,6 +51,9 @@ namespace CppCoverage
 		void EnableCoverChildrenMode();
 		bool IsCoverChildrenModeEnabled() const;
 
+		void DisableAggregateByFileMode();
+		bool IsAggregateByFileModeEnabled() const;
+
 		void AddExport(const OptionsExport&);
 		const std::vector<OptionsExport>& GetExports() const;
 		
@@ -70,7 +73,8 @@ namespace CppCoverage
 
 		bool isVerboseModeEnabled_;
 		bool isPluginModeEnabled_;
-		bool isCoverChildrenModeEnabled;
+		bool isCoverChildrenModeEnabled_;
+		bool isAggregateByFileModeEnabled_;
 		std::vector<OptionsExport> exports_;
 		std::vector<boost::filesystem::path> inputCoveragePaths_;
 	};

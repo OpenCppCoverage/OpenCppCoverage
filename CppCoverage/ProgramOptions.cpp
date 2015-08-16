@@ -96,7 +96,8 @@ namespace CppCoverage
 				po::value<T_Strings>()->default_value({ ProgramOptions::ExportTypeHtmlValue }, ProgramOptions::ExportTypeHtmlValue),
 				GetExportTypeText(exportTypes).c_str())
 				(ProgramOptions::WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")
-				(ProgramOptions::CoverChildrenOption.c_str(), "Enable code coverage for children processes.");
+				(ProgramOptions::CoverChildrenOption.c_str(), "Enable code coverage for children processes.")
+				(ProgramOptions::NoAggregateByFileOption.c_str(), "Do not aggregate coverage for same file path.");
 		}
 
 		//-------------------------------------------------------------------------
@@ -122,6 +123,7 @@ namespace CppCoverage
 	const std::string ProgramOptions::ConfigFileOption = "config_file";	
 	const std::string ProgramOptions::WorkingDirectoryOption = "working_dir";
 	const std::string ProgramOptions::CoverChildrenOption = "cover_children";
+	const std::string ProgramOptions::NoAggregateByFileOption = "no_aggregate_by_file";
 	const std::string ProgramOptions::ProgramToRunOption = "programToRun";
 	const std::string ProgramOptions::ProgramToRunArgOption = "programToRunArg";
 	const std::string ProgramOptions::ExportTypeOption = "export_type";
@@ -129,7 +131,7 @@ namespace CppCoverage
 	const std::string ProgramOptions::ExportTypeCoberturaValue = "cobertura";
 	const std::string ProgramOptions::ExportTypeBinaryValue = "binary";
 	const std::string ProgramOptions::InputCoverageValue = "input_coverage";
-	
+
 	//-------------------------------------------------------------------------
 	ProgramOptions::ProgramOptions(const std::vector<std::string>& exportTypes)
 		: visibleOptions_{ "Usage: [options] -- program_to_run optional_arguments" }
