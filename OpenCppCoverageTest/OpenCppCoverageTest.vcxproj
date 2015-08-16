@@ -58,15 +58,11 @@
     <Import Project="..\PropertySheets\Default.props" />
     <Import Project="..\PropertySheets\GMock.Debug.props" />
     <Import Project="..\PropertySheets\Boost.props" />
-    <Import Project="..\PropertySheets\OpenCppCoverage.props" />
-    <Import Project="..\PropertySheets\TestCoverageConsole.props" />
     <Import Project="..\PropertySheets\Poco.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
-    <Import Project="..\PropertySheets\OpenCppCoverage.props" />
-    <Import Project="..\PropertySheets\TestCoverageConsole.props" />
     <Import Project="..\PropertySheets\Boost.64.props" />
     <Import Project="..\PropertySheets\Poco.x64.props" />
     <Import Project="..\PropertySheets\GMock.Debug.x64.props" />
@@ -76,15 +72,11 @@
     <Import Project="..\PropertySheets\Default.props" />
     <Import Project="..\PropertySheets\GMock.Release.props" />
     <Import Project="..\PropertySheets\Boost.props" />
-    <Import Project="..\PropertySheets\OpenCppCoverage.props" />
-    <Import Project="..\PropertySheets\TestCoverageConsole.props" />
     <Import Project="..\PropertySheets\Poco.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
-    <Import Project="..\PropertySheets\OpenCppCoverage.props" />
-    <Import Project="..\PropertySheets\TestCoverageConsole.props" />
     <Import Project="..\PropertySheets\Boost.64.props" />
     <Import Project="..\PropertySheets\Poco.x64.props" />
     <Import Project="..\PropertySheets\GMock.Release.x64.props" />
@@ -197,9 +189,6 @@
     </ProjectReference>
     <ProjectReference Include="..\Exporter\Exporter.vcxproj">
       <Project>{865b72e7-da46-4392-a1b3-e5bd752c7041}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\TestCoverageConsole\TestCoverageConsole.vcxproj">
-      <Project>{0dd16edf-bd43-4d7b-b357-931f48f2fcc6}</Project>
     </ProjectReference>
     <ProjectReference Include="..\TestCoverageSharedLib\TestCoverageSharedLib.vcxproj">
       <Project>{0481b51c-98f1-4e92-a51e-162b77ecd939}</Project>

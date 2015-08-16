@@ -58,12 +58,10 @@
     <Import Project="..\PropertySheets\GMock.Debug.props" />
     <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\Default.props" />
-    <Import Project="..\PropertySheets\TestCoverageConsole.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
-    <Import Project="..\PropertySheets\TestCoverageConsole.props" />
     <Import Project="..\PropertySheets\Boost.64.props" />
     <Import Project="..\PropertySheets\GMock.Debug.x64.props" />
   </ImportGroup>
@@ -72,12 +70,10 @@
     <Import Project="..\PropertySheets\GMock.Release.props" />
     <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\Default.props" />
-    <Import Project="..\PropertySheets\TestCoverageConsole.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
-    <Import Project="..\PropertySheets\TestCoverageConsole.props" />
     <Import Project="..\PropertySheets\Boost.64.props" />
     <Import Project="..\PropertySheets\GMock.Release.x64.props" />
   </ImportGroup>
