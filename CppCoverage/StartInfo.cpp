@@ -96,12 +96,12 @@ namespace CppCoverage
 		for (size_t i = 1; i < arguments.size(); ++i)
 			ostr << arguments[i] << " ";
 		ostr << std::endl;
-		ostr << L"Working directory:";
+		ostr << L"Working directory: ";
 		
 		if (startInfo.workingDirectory_)
-			ostr << startInfo.workingDirectory_;
+			ostr << *startInfo.workingDirectory_;
 		else
-			ostr << " not set.";
+			ostr << "not set.";
 
 		ostr << std::endl;
 		return ostr;
