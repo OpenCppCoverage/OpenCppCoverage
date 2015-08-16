@@ -19,23 +19,12 @@
 
 #include "stdafx.h"
 
-#include "main.hpp"
-
 #include <iostream>
 #include <boost/filesystem.hpp>
 
 #include "Tools/Tool.hpp"
 
 #include "OpenCppCoverage.hpp"
-
-namespace OpenCppCoverage
-{
-	//-------------------------------------------------------------------------
-	boost::filesystem::path GetOutputBinaryPath()
-	{
-		return TARGET_PATH;
-	}
-}
 
 //-----------------------------------------------------------------------------
 int main(int argc, const char* argv[])

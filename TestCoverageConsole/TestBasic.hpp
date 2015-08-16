@@ -24,6 +24,15 @@ namespace TestCoverageConsole
 	void TestBasic();
 	void RunChildProcesses(int argc, _TCHAR* argv[]);
 
-	__declspec(dllexport) int GetTestBasicLine();
-	__declspec(dllexport) boost::filesystem::path GetTestBasicPath();
+	//-------------------------------------------------------------------------
+	inline int GetTestBasicLine()
+	{
+		return 30;
+	}
+
+	//-------------------------------------------------------------------------
+	inline boost::filesystem::path GetTestBasicPath()
+	{
+		return boost::filesystem::path(__FILE__).replace_extension("cpp");
+	}
 }

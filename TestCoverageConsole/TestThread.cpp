@@ -31,10 +31,4 @@ namespace TestCoverageConsole
 		});
 		t.join();
 	}
-
-	//-------------------------------------------------------------------------
-	boost::filesystem::path GetTestThreadPath()
-	{
-		return __FILE__;
-	}
 }

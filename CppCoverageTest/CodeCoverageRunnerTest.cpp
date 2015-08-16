@@ -173,7 +173,7 @@ namespace CppCoverageTest
 		cov::CoverageData coverageData = ComputeCoverageData(testBasic);
 		auto& file = GetFirstFileCoverage(coverageData);
 
-		int line = TestCoverageConsole::GetTestBasicLine() + 5;
+		int line = TestCoverageConsole::GetTestBasicLine() + 1;
 		TestLine(file, line++, true);
 		TestLine(file, line++, true);
 		ASSERT_TRUE(file[line++] == nullptr);

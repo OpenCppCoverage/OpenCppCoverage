@@ -28,13 +28,27 @@ namespace boost
 
 namespace TestCoverageConsole
 {
-	__declspec(dllexport) boost::filesystem::path GetMainCppPath();	
-	__declspec(dllexport) boost::filesystem::path GetOutputBinaryPath();
-	__declspec(dllexport) int GetTestCoverageConsoleCppMainLine();
+	//-------------------------------------------------------------------------
+	inline boost::filesystem::path GetMainCppPath()
+	{
+		return boost::filesystem::path(__FILE__).replace_extension("cpp");
+	}
+
+	//-------------------------------------------------------------------------
+	inline boost::filesystem::path GetOutputBinaryPath()
+	{
+		return boost::filesystem::path(OUT_DIR) / "TestCoverageConsole.exe";
+	}
+
+	//-------------------------------------------------------------------------
+	inline int GetTestCoverageConsoleCppMainLine()
+	{
+		return 45;
+	}
 
 	const std::wstring TestThrowHandledException = L"TestThrowHandledException";
 	const std::wstring TestThrowUnHandledCppException = L"TestThrowUnHandledCppException";
-	const std::wstring TestThrowUnHandledSEHException = L"TestThrowUnHandledSEHException";	
+	const std::wstring TestThrowUnHandledSEHException = L"TestThrowUnHandledSEHException";
 	const std::wstring TestBreakPoint = L"TestBreakPoint";
 	const std::wstring TestChildProcess = L"ChildProcess";
 }

@@ -41,27 +41,6 @@ namespace
 	}	
 }
 
-namespace TestCoverageConsole
-{
-	//-----------------------------------------------------------------------------
-	boost::filesystem::path GetMainCppPath()
-	{
-		return __FILE__;
-	}
-
-	//-----------------------------------------------------------------------------
-	boost::filesystem::path GetOutputBinaryPath()
-	{
-		return TARGET_PATH;
-	}
-
-	//-----------------------------------------------------------------------------
-	int GetTestCoverageConsoleCppMainLine()
-	{
-		return __LINE__ + 5;
-	}
-}
-
 //-----------------------------------------------------------------------------
 int _tmain(int argc, _TCHAR* argv[])
 {	

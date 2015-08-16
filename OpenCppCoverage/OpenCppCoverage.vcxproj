@@ -150,7 +150,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="main.hpp" />
     <ClInclude Include="OpenCppCoverageException.hpp" />
     <ClInclude Include="OpenCppCoverage.hpp" />
     <ClInclude Include="OpenCppCoverageExport.hpp" />

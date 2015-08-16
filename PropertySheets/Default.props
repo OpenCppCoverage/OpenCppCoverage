@@ -6,7 +6,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SolutionDir);$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>OPENCPPCOVERAGE_VERSION="0.9.2";_CRT_SECURE_NO_WARNINGS;PROJECT_DIR=R"|($(ProjectDir))|";TARGET_PATH=R"|($(TargetPath))|";SOLUTION_DIR=R"|($(SolutionDir))|";TARGET_FILE_NAME=R"|($(TargetFileName))|";OUT_DIR=R"|($(OutDir))|";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OPENCPPCOVERAGE_VERSION="0.9.2";_CRT_SECURE_NO_WARNINGS;PROJECT_DIR=R"|($(ProjectDir))|";SOLUTION_DIR=R"|($(SolutionDir))|";TARGET_FILE_NAME=R"|($(TargetFileName))|";OUT_DIR=R"|($(OutDir))|";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
   </ItemDefinitionGroup>

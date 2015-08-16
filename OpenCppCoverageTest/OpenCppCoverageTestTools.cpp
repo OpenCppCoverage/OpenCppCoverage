@@ -24,8 +24,6 @@
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
 
-#include "OpenCppCoverage/main.hpp"
-
 namespace cov = CppCoverage;
 
 namespace OpenCppCoverageTest
@@ -83,7 +81,9 @@ namespace OpenCppCoverageTest
 		for (auto& argument : allCoverageArguments)
 			argument = "\"" + argument + "\"";
 
-		boost::filesystem::path openCppCoverage = OpenCppCoverage::GetOutputBinaryPath();				
+		boost::filesystem::path openCppCoverage(OUT_DIR);
+
+		openCppCoverage /= "OpenCppCoverage.exe";
 		auto handle = Poco::Process::launch(openCppCoverage.string(), allCoverageArguments, ".", nullptr, nullptr, nullptr);
 		int exitCode = handle.wait();
 

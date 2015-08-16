@@ -21,5 +21,10 @@
 namespace TestCoverageConsole
 {
 	void RunThread();	
-	__declspec(dllexport) boost::filesystem::path GetTestThreadPath();
+
+	//-------------------------------------------------------------------------
+	inline boost::filesystem::path GetTestThreadPath()
+	{
+		return boost::filesystem::path(__FILE__).replace_extension("cpp");
+	}
 }
