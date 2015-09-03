@@ -17,7 +17,6 @@
 #include "stdafx.h"
 #include "DebugInformation.hpp"
 
-#define DBGHELP_TRANSLATE_TCHAR
 #include <dbghelp.h>
 
 #include <boost/algorithm/string.hpp>
@@ -67,7 +66,7 @@ namespace CppCoverage
 			DWORD64 addressValue = lineInfo->Address - lineInfo->ModBase + reinterpret_cast<DWORD64>(context->processBaseOfImage_);
 
 			context->debugInformationEventHandler_.OnNewLine(
-				lineInfo->FileName, lineInfo->LineNumber,
+				Tools::ToWString(lineInfo->FileName), lineInfo->LineNumber,
 				Address{ context->hProcess_, reinterpret_cast<void*>(addressValue) });
 
 			return TRUE;
@@ -83,7 +82,7 @@ namespace CppCoverage
 			if (!pSourceFile)
 				THROW("Source File is null");
 			
-			std::wstring filename = pSourceFile->FileName;
+			auto filename = Tools::ToWString(pSourceFile->FileName);
 			
 			if (context->debugInformationEventHandler_.IsSourceFileSelected(filename))
 			{				
@@ -138,7 +137,7 @@ namespace CppCoverage
 		if (!SymRegisterCallback64(hProcess_, SymRegisterCallbackProc64, 0))
 			THROW("Error when calling SymRegisterCallback64");
 
-		std::vector<wchar_t> searchPath(PathBufferSize);
+		std::vector<char> searchPath(PathBufferSize);
 		if (!SymGetSearchPath(hProcess_, &searchPath[0], searchPath.size()))
 			THROW_LAST_ERROR("Error when calling SymGetSearchPath", GetLastError());
 		defaultSearchPath_ = &searchPath[0];
@@ -179,7 +178,7 @@ namespace CppCoverage
 	{
 		auto parentPath = boost::filesystem::path(moduleFilename).parent_path();
 
-		auto searchPath = defaultSearchPath_ + L';' + parentPath.wstring();
+		auto searchPath = defaultSearchPath_ + ';' + parentPath.string();
 		if (!SymSetSearchPath(hProcess_, searchPath.c_str()))
 			THROW_LAST_ERROR("Error when calling SymSetSearchPath", GetLastError());
 	}

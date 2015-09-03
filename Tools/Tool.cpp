@@ -21,7 +21,6 @@
 #include <iostream>
 #include <codecvt>
 
-#define DBGHELP_TRANSLATE_TCHAR
 #include <DbgHelp.h>
 
 #include "Log.hpp"

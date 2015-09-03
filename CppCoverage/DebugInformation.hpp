@@ -43,7 +43,7 @@ namespace CppCoverage
 
 	private:
 		HANDLE hProcess_;
-		std::wstring defaultSearchPath_;
+		std::string defaultSearchPath_;
 	};
 }
 
