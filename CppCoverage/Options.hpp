@@ -28,6 +28,13 @@ namespace CppCoverage
 {
 	class Patterns;	
 
+	enum class LogLevel
+	{
+		Quiet,
+		Normal,
+		Verbose
+	};
+
 	class CPPCOVERAGE_DLL Options
 	{
 	public:
@@ -42,8 +49,8 @@ namespace CppCoverage
 		const CppCoverage::Patterns& GetSourcePatterns() const;
 		const CppCoverage::StartInfo* GetStartInfo() const;
 
-		void EnableVerboseMode();
-		bool IsVerboseModeEnabled() const;
+		void SetLogLevel(LogLevel);
+		LogLevel GetLogLevel() const;
 		
 		void EnablePlugingMode();
 		bool IsPlugingModeEnabled() const;
@@ -71,7 +78,7 @@ namespace CppCoverage
 		CppCoverage::Patterns sources_;
 		boost::optional<CppCoverage::StartInfo> optionalStartInfo_;
 
-		bool isVerboseModeEnabled_;
+		LogLevel logLevel_;
 		bool isPluginModeEnabled_;
 		bool isCoverChildrenModeEnabled_;
 		bool isAggregateByFileModeEnabled_;

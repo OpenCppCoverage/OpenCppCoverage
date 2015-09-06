@@ -16,11 +16,26 @@
 
 #include "stdafx.h"
 #include "Options.hpp"
-
+#include "CppCoverageException.hpp"
 namespace cov = CppCoverage;
 
 namespace CppCoverage
 {
+	namespace
+	{
+		//---------------------------------------------------------------------
+		std::wstring GetLogLevelStr(LogLevel logLevel)
+		{
+			switch (logLevel)
+			{
+			case LogLevel::Normal: return L"Normal";
+			case LogLevel::Quiet: return L"Quiet";
+			case LogLevel::Verbose: return L"Verbose";
+			}
+			THROW("Invalid Log level.");
+		}
+	}
+
 	//-------------------------------------------------------------------------
 	Options::Options(
 		const cov::Patterns& modulePatterns,
@@ -28,7 +43,7 @@ namespace CppCoverage
 		const cov::StartInfo* startInfo)
 		: modules_{modulePatterns}
 		, sources_{sourcePatterns}		
-		, isVerboseModeEnabled_{false}
+		, logLevel_{ LogLevel::Normal }
 		, isPluginModeEnabled_{false}
 		, isCoverChildrenModeEnabled_{false}
 		, isAggregateByFileModeEnabled_{true}
@@ -56,17 +71,17 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void Options::EnableVerboseMode()
+	void Options::SetLogLevel(LogLevel logLevel)
 	{
-		isVerboseModeEnabled_ = true;
+		logLevel_ = logLevel;
 	}
 
 	//-------------------------------------------------------------------------
-	bool Options::IsVerboseModeEnabled() const
+	LogLevel Options::GetLogLevel() const
 	{
-		return isVerboseModeEnabled_;
+		return logLevel_;
 	}
-	
+
 	//-------------------------------------------------------------------------
 	void Options::EnablePlugingMode()
 	{
@@ -134,7 +149,7 @@ namespace CppCoverage
 			ostr << *options.optionalStartInfo_ << std::endl;
 		ostr << L"Modules: " << options.modules_ << std::endl;
 		ostr << L"Sources: " << options.sources_ << std::endl;
-		ostr << L"Verbose mode: " << options.isVerboseModeEnabled_ << std::endl;
+		ostr << L"Log Level: " << GetLogLevelStr(options.GetLogLevel()) << std::endl;
 		ostr << L"Cover Children: " << options.isCoverChildrenModeEnabled_ << std::endl;
 		ostr << L"Aggregate by file: " << options.isAggregateByFileModeEnabled_ << std::endl;
 

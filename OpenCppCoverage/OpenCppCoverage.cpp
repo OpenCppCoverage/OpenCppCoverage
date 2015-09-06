@@ -103,7 +103,14 @@ namespace OpenCppCoverage
 		//-----------------------------------------------------------------------------
 		void InitLogger(const cov::Options& options)
 		{
-			auto logLevel = (options.IsVerboseModeEnabled()) ? logging::trivial::debug : logging::trivial::info;
+			auto logLevel = logging::trivial::info;
+
+			switch (options.GetLogLevel())
+			{
+				case cov::LogLevel::Verbose: logLevel = logging::trivial::debug; break;
+				case cov::LogLevel::Quiet: logLevel = logging::trivial::error; break;
+			}
+
 			Tools::InitConsoleAndFileLog(L"LastCoverageResults.log");
 			Tools::SetLoggerMinSeverity(logLevel);
 		}

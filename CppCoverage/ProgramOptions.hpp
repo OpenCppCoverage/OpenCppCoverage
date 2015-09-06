@@ -30,8 +30,10 @@ namespace CppCoverage
 		static const std::string SelectedSourcesOption;
 		static const std::string ExcludedSourcesOption;
 		static const std::string VerboseOption;
+		static const std::string QuietOption;
 		static const std::string PluginOption;
 		static const std::string VerboseShortOption;
+		static const std::string QuietShortOption;
 		static const std::string HelpOption;
 		static const std::string HelpShortOption;
 		static const std::string ConfigFileOption;

@@ -275,8 +275,17 @@ namespace CppCoverage
 		auto optionalStartInfo = GetStartInfo(variables);
 		Options options{ modulePatterns, sourcePatterns, optionalStartInfo.get_ptr() };
 		
-		if (IsOptionSelected(variables, ProgramOptions::VerboseOption))
-			options.EnableVerboseMode();
+		bool isVerbose = IsOptionSelected(variables, ProgramOptions::VerboseOption);
+		bool isQuiet = IsOptionSelected(variables, ProgramOptions::QuietOption);
+
+		if (isVerbose && isQuiet)
+			throw OptionsParserException("--" + ProgramOptions::VerboseOption + " and --" + ProgramOptions::QuietOption + " cannot be used at the same time.");
+
+		if (isVerbose)
+			options.SetLogLevel(LogLevel::Verbose);
+		if (isQuiet)
+			options.SetLogLevel(LogLevel::Quiet);
+
 		if (IsOptionSelected(variables, ProgramOptions::CoverChildrenOption))
 			options.EnableCoverChildrenMode();
 		if (IsOptionSelected(variables, ProgramOptions::PluginOption))

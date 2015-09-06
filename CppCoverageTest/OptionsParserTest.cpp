@@ -42,7 +42,7 @@ namespace CppCoverageTest
 
 		auto options = TestTools::Parse(parser, {});
 		ASSERT_TRUE(options);
-		ASSERT_FALSE(options->IsVerboseModeEnabled());
+		ASSERT_EQ(cov::LogLevel::Normal, options->GetLogLevel());
 		ASSERT_FALSE(options->IsPlugingModeEnabled());
 		ASSERT_FALSE(options->IsCoverChildrenModeEnabled());
 		ASSERT_TRUE(options->IsAggregateByFileModeEnabled());
@@ -67,12 +67,23 @@ namespace CppCoverageTest
 	{
 		cov::OptionsParser parser;
 
-		ASSERT_TRUE(TestTools::Parse(parser,
-		{ optionShortPrefix + cov::ProgramOptions::VerboseShortOption })->IsVerboseModeEnabled());
-		ASSERT_TRUE(TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::VerboseOption })->IsVerboseModeEnabled());
+		ASSERT_EQ(cov::LogLevel::Verbose, TestTools::Parse(parser,
+			{ optionShortPrefix + cov::ProgramOptions::VerboseShortOption })->GetLogLevel());
+		ASSERT_EQ(cov::LogLevel::Verbose, TestTools::Parse(parser,
+			{ TestTools::OptionPrefix + cov::ProgramOptions::VerboseOption })->GetLogLevel());
 	}
 	
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, Quiet)
+	{
+		cov::OptionsParser parser;
+
+		ASSERT_EQ(cov::LogLevel::Quiet, TestTools::Parse(parser,
+		{ optionShortPrefix + cov::ProgramOptions::QuietShortOption })->GetLogLevel());
+		ASSERT_EQ(cov::LogLevel::Quiet, TestTools::Parse(parser,
+		{ TestTools::OptionPrefix + cov::ProgramOptions::QuietOption })->GetLogLevel());
+	}
+
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, Plugin)
 	{

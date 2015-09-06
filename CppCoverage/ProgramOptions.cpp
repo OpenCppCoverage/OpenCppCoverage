@@ -50,7 +50,8 @@ namespace CppCoverage
 		void FillGenericOptions(po::options_description& options)
 		{			
 			options.add_options()
-				((ProgramOptions::VerboseOption + "," + ProgramOptions::VerboseShortOption).c_str(), "Show verbose log.")
+				((ProgramOptions::VerboseOption + "," + ProgramOptions::VerboseShortOption).c_str(), "Verbose mode.")
+				((ProgramOptions::QuietOption + "," + ProgramOptions::QuietShortOption).c_str(), "Quiet mode.")
 				((ProgramOptions::HelpOption + "," + ProgramOptions::HelpShortOption).c_str(), "Show help message.")
 				(ProgramOptions::ConfigFileOption.c_str(), po::value<std::string>(), "Filename of a configuration file.");
 		}
@@ -117,6 +118,8 @@ namespace CppCoverage
 	const std::string ProgramOptions::ExcludedSourcesOption = "excluded_sources";
 	const std::string ProgramOptions::VerboseOption = "verbose";
 	const std::string ProgramOptions::VerboseShortOption = "v";
+	const std::string ProgramOptions::QuietOption = "quiet";
+	const std::string ProgramOptions::QuietShortOption = "q";
 	const std::string ProgramOptions::PluginOption = "plugin";
 	const std::string ProgramOptions::HelpOption = "help";
 	const std::string ProgramOptions::HelpShortOption = "h";
