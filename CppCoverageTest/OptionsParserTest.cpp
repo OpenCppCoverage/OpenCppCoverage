@@ -41,7 +41,7 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 
 		auto options = TestTools::Parse(parser, {});
-		ASSERT_TRUE(options);
+		ASSERT_TRUE(static_cast<bool>(options));
 		ASSERT_EQ(cov::LogLevel::Normal, options->GetLogLevel());
 		ASSERT_FALSE(options->IsPlugingModeEnabled());
 		ASSERT_FALSE(options->IsCoverChildrenModeEnabled());
@@ -54,12 +54,12 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 		std::wostringstream ostr;
 
-		ASSERT_FALSE(TestTools::Parse(parser,
-		{ optionShortPrefix + cov::ProgramOptions::HelpShortOption }, false, &ostr));
+		ASSERT_FALSE(static_cast<bool>(TestTools::Parse(parser,
+		{ optionShortPrefix + cov::ProgramOptions::HelpShortOption }, false, &ostr)));
 		
 		ASSERT_NE(L"", ostr.str());
-		ASSERT_FALSE(TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::HelpOption }, false));
+		ASSERT_FALSE(static_cast<bool>(TestTools::Parse(parser,
+		{ TestTools::OptionPrefix + cov::ProgramOptions::HelpOption }, false)));
 	}
 
 	//-------------------------------------------------------------------------
@@ -119,7 +119,7 @@ namespace CppCoverageTest
 
 		auto options = TestTools::Parse(parser,
 		{ TestTools::OptionPrefix + cov::ProgramOptions::WorkingDirectoryOption, folder });
-		ASSERT_TRUE(options);
+		ASSERT_TRUE(static_cast<bool>(options));
 		ASSERT_NE(nullptr, options->GetStartInfo());
 
 		const auto* workingDirectory = options->GetStartInfo()->GetWorkingDirectory();
@@ -138,7 +138,7 @@ namespace CppCoverageTest
 		{ Tools::ToWString(TestTools::ProgramToRun), Tools::ToWString(arg1), Tools::ToWString(arg2) };
 
 		auto options = TestTools::Parse(parser, { TestTools::ProgramToRun, arg1, arg2 }, false);
-		ASSERT_TRUE(options);
+		ASSERT_TRUE(static_cast<bool>(options));
 
 		const auto* startInfo = options->GetStartInfo();		
 		ASSERT_NE(nullptr, startInfo);
@@ -163,7 +163,7 @@ namespace CppCoverageTest
 		
 		std::wostringstream ostr;
 
-		ASSERT_TRUE(options);
+		ASSERT_TRUE(static_cast<bool>(options));
 		ostr << *options;
 		ASSERT_LT(L"", ostr.str());
 	}
@@ -177,7 +177,7 @@ namespace CppCoverageTest
 
 		auto options = TestTools::Parse(parser, 
 			{ TestTools::OptionPrefix + cov::ProgramOptions::InputCoverageValue, pathStr });
-		ASSERT_TRUE(options);		
+		ASSERT_TRUE(static_cast<bool>(options));
 		ASSERT_EQ(pathStr, options->GetInputCoveragePaths().at(0).string());		
 	}
 
@@ -186,8 +186,8 @@ namespace CppCoverageTest
 	{
 		cov::OptionsParser parser;
 		std::wostringstream ostr;
-		ASSERT_FALSE(TestTools::Parse(parser, 
-		{ TestTools::OptionPrefix + cov::ProgramOptions::InputCoverageValue, "invalidPath" }, true, &ostr));
+		ASSERT_FALSE(static_cast<bool>(TestTools::Parse(parser,
+		{ TestTools::OptionPrefix + cov::ProgramOptions::InputCoverageValue, "invalidPath" }, true, &ostr)));
 		ASSERT_NE(L"", ostr.str());		
 	}
 }

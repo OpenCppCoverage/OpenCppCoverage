@@ -66,7 +66,7 @@ namespace CppCoverageTest
 		auto options = MutipleSourceParse(
 		{ { cov::ProgramOptions::SelectedSourcesOption, source1 }, { cov::ProgramOptions::SelectedSourcesOption, source2 } },
 		{});
-		ASSERT_TRUE(options);
+		ASSERT_TRUE(static_cast<bool>(options));
 		const auto& sourcePatterns = options->GetSourcePatterns().GetSelectedPatterns();
 		ASSERT_EQ(2, sourcePatterns.size());
 		ASSERT_EQ(source1, sourcePatterns[0]);
@@ -82,7 +82,7 @@ namespace CppCoverageTest
 		auto options = MutipleSourceParse(
 		{ { cov::ProgramOptions::WorkingDirectoryOption, directory1.GetPath().wstring() } },
 		{ { cov::ProgramOptions::WorkingDirectoryOption, directory2.GetPath().wstring() } });
-		ASSERT_TRUE(options);
+		ASSERT_TRUE(static_cast<bool>(options));
 		ASSERT_NE(nullptr, options->GetStartInfo());
 
 		auto workingDirectory = options->GetStartInfo()->GetWorkingDirectory();
@@ -99,7 +99,7 @@ namespace CppCoverageTest
 		auto options = MutipleSourceParse(
 		{ { cov::ProgramOptions::SelectedSourcesOption, source1 } },
 		{ { cov::ProgramOptions::SelectedSourcesOption, source2 } });
-		ASSERT_TRUE(options);
+		ASSERT_TRUE(static_cast<bool>(options));
 		const auto& sourcePatterns = options->GetSourcePatterns().GetSelectedPatterns();
 		ASSERT_EQ(2, sourcePatterns.size());
 		ASSERT_EQ(source2, sourcePatterns[0]);
@@ -111,6 +111,6 @@ namespace CppCoverageTest
 	{
 		auto options = MutipleSourceParse({ { cov::ProgramOptions::ConfigFileOption, L"." } }, {});
 
-		ASSERT_FALSE(options);
+		ASSERT_FALSE(static_cast<bool>(options));
 	}
 }

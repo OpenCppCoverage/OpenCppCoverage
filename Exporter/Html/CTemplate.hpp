@@ -23,7 +23,11 @@
 #pragma warning(disable: 4273) // inconsistent dll linkage
 #pragma warning(disable: 4267) // 'initializing' : conversion from 'size_t' to 'int'
 
+#define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS
+#define __MINGW64__ // disable snprintf
 #include <ctemplate/template.h>
 #include <tests/template_test_util.h>
+#undef _SILENCE_STDEXT_HASH_DEPRECATION_WARNING
+#undef __MINGW64__
 
 #pragma warning(pop)

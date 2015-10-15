@@ -43,7 +43,7 @@ namespace CppCoverage
 			const CppCoverage::Patterns& sourcePatterns,
 			const CppCoverage::StartInfo*);
 
-		Options(const Options&) = default;
+		Options(Options&&) = default;
 		
 		const CppCoverage::Patterns& GetModulePatterns() const;
 		const CppCoverage::Patterns& GetSourcePatterns() const;
@@ -70,7 +70,7 @@ namespace CppCoverage
 		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream&, const Options&);
 
 	private:
-		Options(Options&&) = delete;
+		Options(const Options&) = delete;
 		Options& operator=(Options&&) = delete;
 
 	private:

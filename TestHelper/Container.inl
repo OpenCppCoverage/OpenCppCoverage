@@ -47,8 +47,8 @@ namespace TestHelper
 		AssertContainerEqual(container1, container2,
 			[&](const ValueType& value1, const ValueType& value2)
 		{
-			ASSERT_TRUE(value1);
-			ASSERT_TRUE(value2);
+			ASSERT_TRUE(static_cast<bool>(value1));
+			ASSERT_TRUE(static_cast<bool>(value2));
 			compareFct(*value1, *value2);
 		});
 	}

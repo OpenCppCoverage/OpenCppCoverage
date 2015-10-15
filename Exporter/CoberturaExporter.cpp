@@ -137,11 +137,12 @@ namespace Exporter
 		const CppCoverage::CoverageData& coverageData,
 		std::wostream& ostream) const
 	{
-		property_tree::wptree root;
+		using Ptree = property_tree::wptree;
+		Ptree root;
 		
 		FillCoverageTree(root, coverageData);
 
-		property_tree::xml_writer_settings<wchar_t> settings(' ', 2);
+		property_tree::xml_writer_settings<Ptree::key_type> settings(' ', 2);
 		property_tree::xml_parser::write_xml(ostream, root, settings);
 	}
 }

@@ -53,7 +53,7 @@ namespace CppCoverageTest
 
 			auto options = TestTools::Parse(parser, arguments);
 
-			ASSERT_TRUE(options);
+			ASSERT_TRUE(static_cast<bool>(options));
 			const auto& exports = options->GetExports();
 
 			ASSERT_EQ(expectedValue.size(), exports.size());
