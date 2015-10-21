@@ -4,7 +4,7 @@
   <Deployment enabled="false" />
   <Execution>
     <Hosts type="VS IDE">
-      <VSSDKTestHostRunConfig name="VS IDE" HiveKind="DevEnv" HiveName="12.0Exp" xmlns="http://microsoft.com/schemas/VisualStudio/SDK/Tools/IdeHostAdapter/2006/06" />
+      <VSSDKTestHostRunConfig name="VS IDE" HiveKind="DevEnv" HiveName="14.0Exp" xmlns="http://microsoft.com/schemas/VisualStudio/SDK/Tools/IdeHostAdapter/2006/06" />
     </Hosts>
     <TestTypeSpecific>
       <UnitTestRunConfig testTypeId="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b">
