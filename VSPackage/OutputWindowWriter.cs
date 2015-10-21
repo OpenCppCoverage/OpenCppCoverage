@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 
@@ -23,7 +24,7 @@ namespace OpenCppCoverage.VSPackage
     class OutputWindowWriter
     {
         //---------------------------------------------------------------------
-        public OutputWindowWriter(EnvDTE.DTE dte, IVsOutputWindow outputWindow)
+        public OutputWindowWriter(DTE2 dte, IVsOutputWindow outputWindow)
         {
             // These lines show the output windows
             Window output = dte.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);

@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.VCProjectEngine;
 using System;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace OpenCppCoverage.VSPackage
     class ConfigurationManager
     {
         //---------------------------------------------------------------------
-        public ConfigurationManager(SolutionConfiguration activeConfiguration)
+        public ConfigurationManager(SolutionConfiguration2 activeConfiguration)
         {
             if (activeConfiguration == null)
                 throw new Exception("SolutionConfiguration is null");
@@ -50,6 +51,13 @@ namespace OpenCppCoverage.VSPackage
             string error;
             var configuration = ComputeConfiguration(project, out error);
             return configuration;
+        }
+
+        //---------------------------------------------------------------------
+        public string GetSolutionConfigurationName()
+        {
+            return this.activeConfiguration_.Name + '|' + this.activeConfiguration_.PlatformName;
+
         }
 
         //---------------------------------------------------------------------
@@ -114,6 +122,6 @@ namespace OpenCppCoverage.VSPackage
             return context;
         }
 
-        readonly SolutionConfiguration activeConfiguration_;
+        readonly SolutionConfiguration2 activeConfiguration_;
     }
 }

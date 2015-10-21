@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.VCProjectEngine;
 using System;
 using System.Collections.Generic;
@@ -27,9 +28,9 @@ namespace OpenCppCoverage.VSPackage
     class SettingsBuilder
     {
         //---------------------------------------------------------------------
-        public SettingsBuilder(EnvDTE.DTE dte)
+        public SettingsBuilder(DTE2 dte)
         {
-            solution_ = dte.Solution;
+            solution_ = (Solution2)dte.Solution;
         }
 
         //---------------------------------------------------------------------
@@ -37,7 +38,7 @@ namespace OpenCppCoverage.VSPackage
         {
             var projects = GetProjects();
             var startupProject = GetStartupProject(projects);
-            var configurationManager = new ConfigurationManager(solution_.SolutionBuild.ActiveConfiguration);
+            var configurationManager = CreateConfigurationManager();
             var startupConfiguration = configurationManager.GetConfiguration(startupProject);
             var debugSettings = startupConfiguration.DebugSettings as VCDebugSettings;
 
@@ -48,7 +49,7 @@ namespace OpenCppCoverage.VSPackage
                 WorkingDir = startupConfiguration.Evaluate(debugSettings.WorkingDirectory),
                 Arguments = startupConfiguration.Evaluate(debugSettings.CommandArguments),
                 Command = startupConfiguration.Evaluate(debugSettings.Command),
-                ConfigurationName = startupConfiguration.Name,
+                SolutionConfigurationName = configurationManager.GetSolutionConfigurationName(),
                 ProjectName = startupProject.UniqueName,                
             };
 
@@ -110,6 +111,14 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
+        ConfigurationManager CreateConfigurationManager()
+        {
+            var solutionBuild = (SolutionBuild2)solution_.SolutionBuild;
+            var activeConfiguration = (SolutionConfiguration2)solutionBuild.ActiveConfiguration;
+            return new ConfigurationManager(activeConfiguration);
+        }
+
+        //---------------------------------------------------------------------
         static void SetFilters(
             ConfigurationManager configurationManager,
             List<ExtendedProject> projects,             
@@ -159,6 +168,6 @@ namespace OpenCppCoverage.VSPackage
             return commonFolders;
         }
 
-        Solution solution_;
+        Solution2 solution_;
     }
 }

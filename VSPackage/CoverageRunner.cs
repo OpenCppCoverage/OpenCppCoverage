@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace OpenCppCoverage.VSPackage
 
         //---------------------------------------------------------------------
         public CoverageRunner(
-            EnvDTE.DTE dte, 
+            DTE2 dte,
             IVsWebBrowsingService webBrowsingService,
             SettingsBuilder settingsBuilder,
             ErrorHandler errorHandler,
@@ -65,7 +66,7 @@ namespace OpenCppCoverage.VSPackage
             outputWindowWriter_.WriteLine("Start building " + settings.ProjectName);
 
             var solutionBuild = dte_.Solution.SolutionBuild;
-            solutionBuild.BuildProject(settings.ConfigurationName, settings.ProjectName, false);
+            solutionBuild.BuildProject(settings.SolutionConfigurationName, settings.ProjectName, false);
         }
 
         //---------------------------------------------------------------------
@@ -157,7 +158,7 @@ namespace OpenCppCoverage.VSPackage
         }
 
         readonly SettingsBuilder settingsBuilder_;
-        readonly EnvDTE.DTE dte_;
+        readonly DTE2 dte_;
         readonly OutputWindowWriter outputWindowWriter_;
         readonly ErrorHandler errorHandler_;
         readonly IVsWebBrowsingService webBrowsingService_;

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
@@ -80,7 +81,7 @@ namespace OpenCppCoverage.VSPackage
             var errorHandler = new ErrorHandler(uiShell);                      
             errorHandler.Execute(() =>
             {
-                var dte = (EnvDTE.DTE)GetService(typeof(EnvDTE.DTE));
+                var dte = (DTE2)GetService(typeof(EnvDTE.DTE));
                 var outputWindow = (IVsOutputWindow)GetService(typeof(SVsOutputWindow));
                 var outputWriter = new OutputWindowWriter(dte, outputWindow);
 
