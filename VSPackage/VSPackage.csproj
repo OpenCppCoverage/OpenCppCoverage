@@ -44,15 +44,12 @@
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop" />
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0" />
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0" />
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.10.0" />
-    <Reference Include="Microsoft.VisualStudio.TextManager.Interop" />
-    <Reference Include="Microsoft.VisualStudio.Shell.12.0" />
-    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0" />
+   <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
+    <Reference Include="Microsoft.VisualStudio.Shell.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"/>
     <Reference Include="Microsoft.VisualStudio.VCProjectEngine, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -155,31 +152,31 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="OpenCppCoverage-x64\boost_chrono-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x64\boost_chrono-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x64\boost_date_time-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x64\boost_date_time-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x64\boost_filesystem-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x64\boost_filesystem-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x64\boost_locale-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x64\boost_locale-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x64\boost_log-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x64\boost_log-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x64\boost_program_options-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x64\boost_program_options-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x64\boost_regex-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x64\boost_regex-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x64\boost_system-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x64\boost_system-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x64\boost_thread-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x64\boost_thread-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="OpenCppCoverage-x64\CppCoverage.dll">
@@ -303,31 +300,31 @@
     <Content Include="OpenCppCoverage-x86\Template\third-party\RGraph\license.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x86\boost_chrono-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_chrono-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x86\boost_date_time-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_date_time-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x86\boost_filesystem-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_filesystem-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x86\boost_locale-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_locale-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x86\boost_log-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_log-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x86\boost_program_options-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_program_options-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x86\boost_regex-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_regex-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x86\boost_system-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_system-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x86\boost_thread-vc120-mt-1_55.dll">
+    <Content Include="OpenCppCoverage-x86\boost_thread-vc140-mt-1_59.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="OpenCppCoverage-x86\CppCoverage.dll">
