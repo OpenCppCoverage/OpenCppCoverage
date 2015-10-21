@@ -53,11 +53,11 @@ Source: "{#MyAppVersion}\{#Architecture}\binaries\libctemplate.dll"; DestDir: "{
 Source: "{#MyAppVersion}\{#Architecture}\binaries\OpenCppCoverage.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyAppVersion}\{#Architecture}\binaries\template_test_util_test.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyAppVersion}\{#Architecture}\binaries\Tools.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "VCRedist\vcredist_{#Architecture}.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
+Source: "VCRedist\vc_redist.{#Architecture}.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Run]
-Filename: "{tmp}\vcredist_{#Architecture}.exe" ; Parameters: "/install /quiet /norestart"; WorkingDir: "{tmp}"; StatusMsg: Installing vcredist ...
+Filename: "{tmp}\vc_redist.{#Architecture}.exe" ; Parameters: "/install /quiet /norestart"; WorkingDir: "{tmp}"; StatusMsg: Installing vcredist ...
 
 [Code]
 const
