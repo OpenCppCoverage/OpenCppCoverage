@@ -348,7 +348,7 @@
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup>
     <PreBuildEvent>echo "Copy Template files x64"
-set OpenCppCoverage="$(ProjectDir)OpenCppCoverage-x64"
+set OpenCppCoverage=$(ProjectDir)OpenCppCoverage-x64
 if not exist "%25OpenCppCoverage%25\Template" mkdir "%25OpenCppCoverage%25\Template" &amp;&amp; xcopy /s /y "$(ProjectDir)\..\Exporter\Html\Template" "%25OpenCppCoverage%25\Template"
 
 echo "Update UnmanagedDll x64" 
@@ -358,7 +358,7 @@ xcopy /y /F "$(SolutionDir)x64\Release\Tools.dll" "%25OpenCppCoverage%25"
 xcopy /y /F "$(SolutionDir)x64\Release\OpenCppCoverage.exe" "%25OpenCppCoverage%25"
 
 echo "Copy Template files x86"
-set OpenCppCoverage="$(ProjectDir)OpenCppCoverage-x86"
+set OpenCppCoverage=$(ProjectDir)OpenCppCoverage-x86
 if not exist "%25OpenCppCoverage%25\Template" mkdir "%25OpenCppCoverage%25\Template" &amp;&amp; xcopy /s /y "$(ProjectDir)\..\Exporter\Html\Template" "%25OpenCppCoverage%25\Template"
 
 echo "Update UnmanagedDll x86" 
