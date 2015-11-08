@@ -15,6 +15,9 @@ CoverageReport-*
 NewRelease
 TestResults/
 packages/*
+Build/Installer/VCRedist/*
+Build/Dependencies/Dependencies-vs*.zip
+
 
 # Template file / unmanaged dll for the plugin
 VSPackage/OpenCppCoverage-x64
