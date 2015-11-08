@@ -16,7 +16,6 @@
 
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.VCProjectEngine;
 using System;
 using System.Linq;
 using System.Text;
@@ -34,7 +33,7 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        public VCConfiguration GetConfiguration(ExtendedProject project)
+        public DynamicVCConfiguration GetConfiguration(ExtendedProject project)
         {
             string error;
             var configuration = ComputeConfiguration(project, out error);
@@ -46,7 +45,7 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        public VCConfiguration FindConfiguration(ExtendedProject project)
+        public DynamicVCConfiguration FindConfiguration(ExtendedProject project)
         {
             string error;
             var configuration = ComputeConfiguration(project, out error);
@@ -61,7 +60,7 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        VCConfiguration ComputeConfiguration(ExtendedProject project, out string error)
+        DynamicVCConfiguration ComputeConfiguration(ExtendedProject project, out string error)
         {
             error = null;
             var context = ComputeContext(project, ref error);
@@ -81,14 +80,14 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        static VCConfiguration ComputeConfiguration(
+        static DynamicVCConfiguration ComputeConfiguration(
             ExtendedProject project, 
             SolutionContext context, 
             ref string error)
         {
             var configurations = project.Configurations;
             var configuration = configurations.FirstOrDefault(
-                c => c.ConfigurationName == context.ConfigurationName && c.Platform.Name == context.PlatformName);
+                c => c.ConfigurationName == context.ConfigurationName && c.PlatformName == context.PlatformName);
 
             if (configuration == null)
             {
@@ -97,7 +96,7 @@ namespace OpenCppCoverage.VSPackage
                 builder.AppendLine(string.Format("Cannot find a configuration for the project {0}", project.UniqueName));
                 builder.AppendLine(string.Format(" - Solution: configuration: {0} platform: {1}", context.ConfigurationName, context.PlatformName));
                 foreach (var config in configurations)
-                    builder.AppendLine(string.Format(" - Project: configuration: {0} platform: {1}", config.ConfigurationName, config.Platform.Name));
+                    builder.AppendLine(string.Format(" - Project: configuration: {0} platform: {1}", config.ConfigurationName, config.PlatformName));
                 error = builder.ToString();
                 return null;
             }

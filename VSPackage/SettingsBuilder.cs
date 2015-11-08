@@ -16,7 +16,7 @@
 
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.VCProjectEngine;
+using Microsoft.CSharp.RuntimeBinder;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -40,7 +40,7 @@ namespace OpenCppCoverage.VSPackage
             var startupProject = GetStartupProject(projects);
             var configurationManager = CreateConfigurationManager();
             var startupConfiguration = configurationManager.GetConfiguration(startupProject);
-            var debugSettings = startupConfiguration.DebugSettings as VCDebugSettings;
+            var debugSettings = new DynamicVCDebugSettings(startupConfiguration.DebugSettings);
 
             if (debugSettings == null)
                 throw new Exception("DebugSettings is null");
@@ -65,10 +65,17 @@ namespace OpenCppCoverage.VSPackage
             
             foreach (Project project in solution_.Projects)
             {
-                var vcProject = project.Object as VCProject;
+                dynamic projectObject = project.Object;
 
-                if (vcProject != null)
-                    projects.Add(new ExtendedProject(project, vcProject));
+                try
+                {
+                    if (projectObject.Kind == "VCProject")
+                        projects.Add(new ExtendedProject(project, new DynamicVCProject(projectObject)));
+                }
+                catch (RuntimeBinderException)
+                {
+                    // Nothing because not a VCProject
+                }
             }
 
             return projects;

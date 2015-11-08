@@ -15,7 +15,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EnvDTE;
-using Microsoft.VisualStudio.VCProjectEngine;
 using System.Collections.Generic;
 
 namespace OpenCppCoverage.VSPackage
@@ -23,7 +22,7 @@ namespace OpenCppCoverage.VSPackage
     class ExtendedProject
     {        
         //---------------------------------------------------------------------
-        public ExtendedProject(Project project, VCProject vcProject)
+        public ExtendedProject(Project project, DynamicVCProject vcProject)
         {
             this.project_ = project;
             this.vcProject_ = vcProject;
@@ -37,42 +36,26 @@ namespace OpenCppCoverage.VSPackage
                 return project_.UniqueName;
             }
         }
-
-        //---------------------------------------------------------------------
-        public string ProjectDirectory
-        {
-            get
-            {
-                return vcProject_.ProjectDirectory;
-            }
-        }
         
         //---------------------------------------------------------------------
-        public List<VCConfiguration> Configurations
+        public List<DynamicVCConfiguration> Configurations
         {
             get
             {
-                var configurations = new List<VCConfiguration>();
-                foreach (VCConfiguration configuration in vcProject_.Configurations)
-                    configurations.Add(configuration);
-
-                return configurations;
+                return vcProject_.Configurations;
             }
         }
 
         //---------------------------------------------------------------------
-        public List<VCFile> Files
+        public List<DynamicVCFile> Files
         {
             get
             {
-                var files = new List<VCFile>();
-                foreach (VCFile file in vcProject_.Files)
-                    files.Add(file);
-                return files;
+                return vcProject_.Files;
             }
         }
 
         readonly Project project_;
-        readonly VCProject vcProject_;
+        readonly DynamicVCProject vcProject_;
     }
 }
