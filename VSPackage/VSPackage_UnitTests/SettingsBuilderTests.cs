@@ -54,9 +54,9 @@ namespace VSPackage_IntegrationTests
                 BuildVCFile(file4)               
             };
               
-            var dte = builder.BuildMock();
+            var solution = builder.BuildSolutionMock();
 
-            var settingsBuilder = new SettingsBuilder(dte.Object);
+            var settingsBuilder = new SettingsBuilder(solution.Object);
             var settings = settingsBuilder.ComputeSettings();
 
             var expectedFolders = new List<string> { 

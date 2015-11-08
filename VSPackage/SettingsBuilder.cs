@@ -28,9 +28,9 @@ namespace OpenCppCoverage.VSPackage
     class SettingsBuilder
     {
         //---------------------------------------------------------------------
-        public SettingsBuilder(DTE2 dte)
+        public SettingsBuilder(Solution2 solution)
         {
-            solution_ = (Solution2)dte.Solution;
+            solution_ = solution;
         }
 
         //---------------------------------------------------------------------

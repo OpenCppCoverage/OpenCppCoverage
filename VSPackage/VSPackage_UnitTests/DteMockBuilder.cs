@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.VCProjectEngine;
 using Moq;
 using System.Collections.Generic;
@@ -34,17 +35,15 @@ namespace VSPackage_UnitTests
         }
 
         //---------------------------------------------------------------------
-        public Mock<DTE> BuildMock()
+        public Mock<Solution2> BuildSolutionMock()
         {
-            var dte = new Mock<DTE>();
-            var solution = new Mock<Solution>();
-            dte.Setup(d => d.Solution).Returns(solution.Object);
+            var solutionMock = new Mock<Solution2>();
             
-            solution.Setup(s => s.Projects)
+            solutionMock.Setup(s => s.Projects)
                 .Returns(BuildProjectMock());
-            solution.Setup(s => s.SolutionBuild)
+            solutionMock.Setup(s => s.SolutionBuild)
                 .Returns(BuildSolutionBuildMock());
-            return dte;
+            return solutionMock;
         }
 
         //---------------------------------------------------------------------
@@ -57,7 +56,8 @@ namespace VSPackage_UnitTests
             var configurations = new List<VCConfiguration> { BuildConfiguration() };
             vcProject.Setup(p => p.Configurations).Returns(configurations);
             vcProject.Setup(p => p.Files).Returns(this.VcFiles);
-   
+            vcProject.SetupGet(p => p.Kind).Returns("VCProject");
+
             var project = new Mock<Project>();
             project.Setup(p => p.UniqueName).Returns(projectName);
             project.Setup(p => p.Object).Returns(vcProject.Object);
@@ -107,11 +107,12 @@ namespace VSPackage_UnitTests
             var solutionContextCollectionEnumerable = solutionContexts.As<System.Collections.IEnumerable>();
             solutionContextCollectionEnumerable.Setup(s => s.GetEnumerator()).Returns(solutionContextCollection.GetEnumerator());
 
-            var solutionConfiguration = new Mock<SolutionConfiguration>();
+            var solutionConfiguration = new Mock<SolutionConfiguration2>();
             solutionConfiguration.Setup(s => s.SolutionContexts).Returns(solutionContexts.Object);
+            solutionConfiguration.SetupGet(s => s.PlatformName).Returns("x86");
 
-            var solutionBuild = new Mock<SolutionBuild>();
-            solutionBuild.Setup(s => s.StartupProjects).Returns(new object[] { projectName });                        
+            var solutionBuild = new Mock<SolutionBuild2>();
+            solutionBuild.As<SolutionBuild>().Setup(s => s.StartupProjects).Returns(new object[] { projectName });
             solutionBuild.Setup(s => s.ActiveConfiguration).Returns(solutionConfiguration.Object);
                                    
             return solutionBuild.Object;

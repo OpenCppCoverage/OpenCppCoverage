@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EnvDTE80;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VSSDK.Tools.VsIdeTesting;
 using OpenCppCoverage.VSPackage;
@@ -39,12 +40,12 @@ namespace VSPackage_IntegrationTests
         }
 
         //---------------------------------------------------------------------
-        static string GetConfigurationError(EnvDTE.SolutionConfiguration solutionConfiguration)
+        static string GetConfigurationError(SolutionConfiguration2 solutionConfiguration)
         {
             var solution = VsIdeTestHostContext.Dte.Solution;
             var configurationManager = new ConfigurationManager(solutionConfiguration);            
             var project = solution.Projects.Cast<EnvDTE.Project>().First(p => p.UniqueName == TestHelpers.CppConsoleApplication);
-            var extendedProject = new ExtendedProject(project, project.Object as Microsoft.VisualStudio.VCProjectEngine.VCProject);
+            var extendedProject = new ExtendedProject(project, new DynamicVCProject(project.Object));
 
             try
             {
