@@ -63,6 +63,9 @@
     <!---->
     <Compile Include="ConfigurationManagerTest.cs" />
     <Compile Include="DialogBoxMessageRetriever.cs" />
+    <Content Include="IntegrationTestsSolution\ConsoleApplicationInFolder\ConsoleApplicationInFolder.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="IntegrationTestsSolution\CppConsoleApplicationDll\CppConsoleApplicationDll.cpp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -96,6 +99,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="IntegrationTestsSolution\CppConsoleApplicationDll\CppConsoleApplicationDll.vcxproj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IntegrationTestsSolution\ConsoleApplicationInFolder\ConsoleApplicationInFolder.vcxproj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Key.snk" />

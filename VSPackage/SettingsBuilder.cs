@@ -64,6 +64,26 @@ namespace OpenCppCoverage.VSPackage
             var projects = new List<ExtendedProject>();
             
             foreach (Project project in solution_.Projects)
+                projects.AddRange(CreateExtendedProjectsFor(project));
+
+            return projects;
+        }
+
+        //---------------------------------------------------------------------
+        List<ExtendedProject> CreateExtendedProjectsFor(Project project)
+        {
+            var projects = new List<ExtendedProject>();
+
+            if (project.Kind == EnvDTE80.ProjectKinds.vsProjectKindSolutionFolder)
+            {
+                foreach (ProjectItem projectItem in project.ProjectItems)
+                {
+                    var subProject = projectItem.SubProject;
+                    if (subProject != null)
+                        projects.AddRange(CreateExtendedProjectsFor(subProject));
+                }
+            }
+            else
             {
                 dynamic projectObject = project.Object;
 

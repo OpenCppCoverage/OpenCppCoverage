@@ -59,7 +59,17 @@ namespace VSPackage_IntegrationTests
 
             Assert.AreEqual(message.ToString(), TestHelpers.GetOpenCppCoverageMessage());
         }
-       
+
+        //---------------------------------------------------------------------
+        [TestMethod]
+        [HostType("VS IDE")]
+        public void ProjectInFolder()
+        {
+            TestHelpers.OpenDefaultSolution(TestHelpers.ConsoleApplicationInFolder);
+            var output = TestHelpers.ExecuteOpenCppCoverageAndReturnOutput(TestHelpers.ConsoleApplicationInFolderName);
+            Assert.AreNotEqual("", output);
+        }
+
         //---------------------------------------------------------------------
         [TestMethod]
         [HostType("VS IDE")]
@@ -120,11 +130,7 @@ namespace VSPackage_IntegrationTests
             SolutionConfigurationHelpers.CleanSolution();
             debugSettings.CommandArguments = "Test";
 
-            TestHelpers.ExecuteOpenCppCoverage();
-
-            TestHelpers.CloseOpenCppCoverageConsole(TimeSpan.FromSeconds(10));
-            TestHelpers.WaitForActiveDocument(TestHelpers.ApplicationName, TimeSpan.FromSeconds(10));
-            var output = TestHelpers.GetOpenCppCoverageOutput();
+            var output = TestHelpers.ExecuteOpenCppCoverageAndReturnOutput(TestHelpers.ApplicationName);
             CheckOutput(output, CoverageRunner.ProjectNameTag, TestHelpers.CppConsoleApplication);
             CheckOutput(output, CoverageRunner.CommandTag, TestHelpers.ApplicationName);
             CheckOutput(output, CoverageRunner.ArgumentTag, debugSettings.CommandArguments);

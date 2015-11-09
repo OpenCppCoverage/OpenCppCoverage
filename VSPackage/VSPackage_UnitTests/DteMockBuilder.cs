@@ -61,6 +61,7 @@ namespace VSPackage_UnitTests
             var project = new Mock<Project>();
             project.Setup(p => p.UniqueName).Returns(projectName);
             project.Setup(p => p.Object).Returns(vcProject.Object);
+            project.SetupGet(p => p.Kind).Returns("");
 
             var projects = new Mock<Projects>();
             var projectCollection = new List<Project> { project.Object };                        

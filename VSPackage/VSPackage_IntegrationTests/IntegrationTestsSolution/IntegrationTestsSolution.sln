@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppConsoleApplication", "CppConsoleApplication\CppConsoleApplication.vcxproj", "{E3B8A773-559F-4765-A140-657856EEB7F0}"
 EndProject
@@ -10,6 +10,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpConsoleApplication", "CSharpConsoleApplication\CSharpConsoleApplication.csproj", "{36DA7242-1BE6-44ED-9496-243BC5D72E29}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppConsoleApplicationDll", "CppConsoleApplicationDll\CppConsoleApplicationDll.vcxproj", "{64E59850-55DD-496D-B9B5-D548FC75F4E2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Folder", "Folder", "{6ED66DA9-3333-411A-9FEC-1956CE286B28}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SubFolder", "SubFolder", "{911BFE19-7BC1-48AB-A125-169F787F5C60}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleApplicationInFolder", "ConsoleApplicationInFolder\ConsoleApplicationInFolder.vcxproj", "{B4A3675B-8D4F-49FD-9032-52F9C8193795}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,8 +90,26 @@ Global
 		{64E59850-55DD-496D-B9B5-D548FC75F4E2}.Release|Win32.ActiveCfg = Release|Win32
 		{64E59850-55DD-496D-B9B5-D548FC75F4E2}.Release|Win32.Build.0 = Release|Win32
 		{64E59850-55DD-496D-B9B5-D548FC75F4E2}.Release|x64.ActiveCfg = Release|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Debug|ARM.ActiveCfg = Debug|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Debug|Win32.Build.0 = Debug|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Debug|x64.ActiveCfg = Debug|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Release|Any CPU.ActiveCfg = Release|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Release|ARM.ActiveCfg = Release|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Release|Win32.ActiveCfg = Release|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Release|Win32.Build.0 = Release|Win32
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{911BFE19-7BC1-48AB-A125-169F787F5C60} = {6ED66DA9-3333-411A-9FEC-1956CE286B28}
+		{B4A3675B-8D4F-49FD-9032-52F9C8193795} = {911BFE19-7BC1-48AB-A125-169F787F5C60}
 	EndGlobalSection
 EndGlobal

@@ -31,9 +31,11 @@ namespace VSPackage_IntegrationTests
         static public readonly string CppConsoleApplication = @"CppConsoleApplication\CppConsoleApplication.vcxproj";
         static public readonly string CppConsoleApplication2 = @"CppConsoleApplication2\CppConsoleApplication2.vcxproj";
         static public readonly string CSharpConsoleApplication = @"CSharpConsoleApplication\CSharpConsoleApplication.csproj";
+        static public readonly string ConsoleApplicationInFolder = @"ConsoleApplicationInFolder\ConsoleApplicationInFolder.vcxproj";
         static public readonly string ApplicationName = "CppConsoleApplication.exe";
         static public readonly string ApplicationName2 = "CppConsoleApplication2.exe";
-        
+        static public readonly string ConsoleApplicationInFolderName = "ConsoleApplicationInFolder.exe";
+
         //---------------------------------------------------------------------
         static public string GetOpenCppCoverageMessage()
         {                        
@@ -85,13 +87,23 @@ namespace VSPackage_IntegrationTests
         }
 
         //---------------------------------------------------------------------
+        public static string ExecuteOpenCppCoverageAndReturnOutput(string applicationName)
+        {
+            TestHelpers.ExecuteOpenCppCoverage();
+            TestHelpers.CloseOpenCppCoverageConsole(TimeSpan.FromSeconds(7));
+            TestHelpers.WaitForActiveDocument(applicationName, TimeSpan.FromSeconds(10));
+
+            return TestHelpers.GetOpenCppCoverageOutput();
+        }
+
+        //---------------------------------------------------------------------
         public static void WaitForActiveDocument(string documentCaption, TimeSpan timeout)
         {                     
             Wait(timeout, "Cannot get document:" + documentCaption, () =>
                 {
                     var actionWindows = VsIdeTestHostContext.Dte.ActiveWindow;
 
-                    return actionWindows != null && actionWindows.Caption == ApplicationName;                    
+                    return actionWindows != null && actionWindows.Caption == documentCaption;
                 });
         }
 
