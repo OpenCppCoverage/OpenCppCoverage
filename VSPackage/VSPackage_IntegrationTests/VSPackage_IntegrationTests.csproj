@@ -131,11 +131,11 @@
   <PropertyGroup>
     <PostBuildEvent>Echo Update "$(TargetDir)"
 
-set OpenCppCoverageOutput="$(TargetDir)\OpenCppCoverage-x86"
+set OpenCppCoverageOutput=$(TargetDir)\OpenCppCoverage-x86
 if not exist "%25OpenCppCoverageOutput%25" mkdir "%25OpenCppCoverageOutput%25" 
 xcopy /s /y "$(SolutionDir)\VSPackage\OpenCppCoverage-x86" "%25OpenCppCoverageOutput%25"
 
-set OpenCppCoverageOutput="$(TargetDir)\OpenCppCoverage-x64"
+set OpenCppCoverageOutput=$(TargetDir)\OpenCppCoverage-x64
 if not exist "%25OpenCppCoverageOutput%25" mkdir "%25OpenCppCoverageOutput%25" 
 xcopy /s /y "$(SolutionDir)\VSPackage\OpenCppCoverage-x64" "%25OpenCppCoverageOutput%25"
 </PostBuildEvent>
