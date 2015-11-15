@@ -16,6 +16,8 @@
 
 #include "stdafx.h"
 
+#include <boost/algorithm/string.hpp>
+
 #include "Exporter/Html/CTemplate.hpp"
 #include "Exporter/Html/TemplateHtmlExporter.hpp"
 #include "Exporter/ExporterException.hpp"
@@ -72,8 +74,10 @@ namespace ExporterTest
 		{
 			auto fileTemplatePeer = GetSection(*peer_, Exporter::TemplateHtmlExporter::MainTemplateItemSection);			
 			auto itemLink = GetSection(*fileTemplatePeer, Exporter::TemplateHtmlExporter::ItemLinkSection);
-						
-			EXPECT_EQ(fileOutput_.GetPath().string(), itemLink->GetSectionValue(
+			auto htmlPath = fileOutput_.GetPath().string();
+
+			boost::algorithm::replace_all(htmlPath, "\\", "/");
+			EXPECT_EQ(htmlPath, itemLink->GetSectionValue(
 				Exporter::TemplateHtmlExporter::LinkTemplate));
 			EXPECT_EQ(std::string("0"), fileTemplatePeer->GetSectionValue(
 				Exporter::TemplateHtmlExporter::ExecutedLineTemplate));

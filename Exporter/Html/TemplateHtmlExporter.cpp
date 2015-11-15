@@ -21,6 +21,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -65,6 +66,14 @@ namespace Exporter
 		}
 
 		//-------------------------------------------------------------------------
+		std::string ToHtmlPath(const fs::path& path)
+		{
+			auto htmlPath = path.string();
+			boost::algorithm::replace_all(htmlPath, "\\", "/");
+			return htmlPath;
+		}
+
+		//-------------------------------------------------------------------------
 		void FillSection(
 			ctemplate::TemplateDictionary& sectionDictionary,
 			const fs::path* link,
@@ -72,7 +81,10 @@ namespace Exporter
 			const std::string& name)
 		{
 			if (link)
-				sectionDictionary.SetValueAndShowSection(TemplateHtmlExporter::LinkTemplate, link->string(), TemplateHtmlExporter::ItemLinkSection);
+			{
+				auto htmlPath = ToHtmlPath(link->string());
+				sectionDictionary.SetValueAndShowSection(TemplateHtmlExporter::LinkTemplate, htmlPath, TemplateHtmlExporter::ItemLinkSection);
+			}
 			else
 				sectionDictionary.ShowSection(TemplateHtmlExporter::ItemNoLinkSection);
 
