@@ -34,6 +34,8 @@ namespace CppCoverage
 		Debugger() = default;
 
 		int Debug(const StartInfo&, IDebugEventsHandler&, bool coverChildren);
+		size_t GetRunningProcesses() const;
+		size_t GetRunningThreads() const;
 
 	private:
 		Debugger(const Debugger&) = delete;

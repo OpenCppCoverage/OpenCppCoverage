@@ -35,10 +35,12 @@ namespace CppCoverageTest
 
 		EXPECT_CALL(debugEventsHandlerMock, OnCreateProcess(testing::_));
 		EXPECT_CALL(debugEventsHandlerMock, OnExitProcess(testing::_, testing::_, testing::_));
-		EXPECT_CALL(debugEventsHandlerMock, OnLoadDll(testing::_, testing::_, testing::_)).Times(testing::AnyNumber());;
+		EXPECT_CALL(debugEventsHandlerMock, OnLoadDll(testing::_, testing::_, testing::_)).Times(testing::AnyNumber());
 		EXPECT_CALL(debugEventsHandlerMock, OnException(testing::_, testing::_, testing::_))
 			.WillRepeatedly(testing::Return(cov::IDebugEventsHandler::ExceptionType::NotHandled));
 
 		debugger.Debug(startInfo, debugEventsHandlerMock, false);
+		ASSERT_EQ(0, debugger.GetRunningProcesses());
+		ASSERT_EQ(0, debugger.GetRunningThreads());
 	}	
 }

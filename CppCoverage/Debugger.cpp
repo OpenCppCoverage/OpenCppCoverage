@@ -186,7 +186,7 @@ namespace CppCoverage
 		const auto& processInfo = debugEvent.u.CreateProcessInfo;
 		Tools::ScopedAction scopedAction{ [&processInfo]{ CloseHandle(processInfo.hFile); } };
 
-		LOG_DEBUG << "Create new Process:" << debugEvent.dwProcessId;
+		LOG_DEBUG << "Create Process:" << debugEvent.dwProcessId;
 
 		if (!rootProcessId_ && processHandles_.empty())
 			rootProcessId_ = debugEvent.dwProcessId;
@@ -206,12 +206,15 @@ namespace CppCoverage
 		HANDLE hThread,
 		IDebugEventsHandler& debugEventsHandler)
 	{
-		LOG_DEBUG << "Exit Process:" << hProcess;
+		OnExitThread(debugEvent.dwThreadId);
+		auto processId = debugEvent.dwProcessId;
+
+		LOG_DEBUG << "Exit Process:" << processId;
 
 		auto exitProcess = debugEvent.u.ExitProcess;
 		debugEventsHandler.OnExitProcess(hProcess, hThread, exitProcess);
 
-		if (processHandles_.erase(debugEvent.dwProcessId) != 1)
+		if (processHandles_.erase(processId) != 1)
 			THROW("Cannot find exited process.");
 
 		return exitProcess.dwExitCode;
@@ -222,7 +225,7 @@ namespace CppCoverage
 		HANDLE hThread,
 		DWORD dwThreadId)
 	{
-		LOG_DEBUG << "Create Process:" << dwThreadId;
+		LOG_DEBUG << "Create Thread:" << dwThreadId;
 
 		if (!threadHandles_.emplace(dwThreadId, hThread).second)
 			THROW("Thread id already exist");
@@ -249,4 +252,15 @@ namespace CppCoverage
 		return threadHandles_.at(dwThreadId);
 	}
 
+	//-------------------------------------------------------------------------
+	size_t Debugger::GetRunningProcesses() const
+	{
+		return processHandles_.size();
+	}
+
+	//-------------------------------------------------------------------------
+	size_t Debugger::GetRunningThreads() const
+	{
+		return threadHandles_.size();
+	}
 }
