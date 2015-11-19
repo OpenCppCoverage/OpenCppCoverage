@@ -114,5 +114,16 @@ namespace ExporterTest
 		htmlExporter_.Export(data, output_);	
 		CheckWarningInIndex(true);
 	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(HtmlExporterTest, SubFolderDoesNotExist)
+	{
+		cov::CoverageData data{ L"Test", 42 };
+		auto outputFolder = output_.GetPath() / "SubFolder1" / "SubFolder2";
+
+		ASSERT_FALSE(fs::exists(outputFolder));
+		htmlExporter_.Export(data, outputFolder);
+		ASSERT_TRUE(fs::exists(outputFolder));
+	}
 }
 

@@ -186,4 +186,18 @@ namespace Tools
 		LOG_INFO << message << path.wstring();
 		LOG_INFO << separators;
 	}
+
+	//---------------------------------------------------------------------
+	void CreateParentFolderIfNeeded(const boost::filesystem::path& path)
+	{
+		auto parentPath = path.parent_path();
+		boost::system::error_code er;
+
+		boost::filesystem::create_directories(parentPath, er);
+		if (er)
+		{
+			THROW(L"Error when creating folder " << parentPath.wstring()
+				<< L" Error code:" << er.value());
+		}
+	}
 }

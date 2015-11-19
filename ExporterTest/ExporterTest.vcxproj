@@ -173,6 +173,7 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BinaryExporterTest.cpp" />
     <ClCompile Include="CoberturaExporterTest.cpp" />
     <ClCompile Include="CoverageDataSerializerTest.cpp" />
     <ClCompile Include="Data\TestFile1.cpp">

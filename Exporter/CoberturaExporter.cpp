@@ -125,7 +125,8 @@ namespace Exporter
 	void CoberturaExporter::Export(
 		const CppCoverage::CoverageData& coverageData, 
 		const boost::filesystem::path& output) const
-	{		
+	{
+		Tools::CreateParentFolderIfNeeded(output);
 		std::wofstream ofs{ output.string().c_str() };
 
 		Export(coverageData, ofs);

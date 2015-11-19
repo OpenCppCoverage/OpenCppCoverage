@@ -39,6 +39,8 @@ namespace Tools
 	TOOLS_DLL void CreateMiniDumpOnUnHandledException();
 
 	TOOLS_DLL void ShowOutputMessage(const std::wstring& message, const boost::filesystem::path& path);
+
+	TOOLS_DLL void CreateParentFolderIfNeeded(const boost::filesystem::path& path);
 }
 
 

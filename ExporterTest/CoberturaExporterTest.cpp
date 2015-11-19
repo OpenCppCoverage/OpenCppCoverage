@@ -24,6 +24,8 @@
 
 #include "Exporter/CoberturaExporter.hpp"
 
+#include "TestHelper/TemporaryPath.hpp"
+
 namespace cov = CppCoverage;
 namespace fs = boost::filesystem;
 
@@ -66,4 +68,16 @@ namespace ExporterTest
 		
 		ASSERT_EQ(result, expectedResult);
 	}	
+
+	//-------------------------------------------------------------------------
+	TEST(CoberturaExporterTest, SubFolderDoesNotExist)
+	{
+		cov::CoverageData coverageData{ L"", 0 };
+		TestHelper::TemporaryPath output;
+		auto outputPath = output.GetPath() / "SubFolder" / "output.xml";
+
+		ASSERT_FALSE(fs::exists(outputPath));
+		Exporter::CoberturaExporter().Export(coverageData, outputPath);
+		ASSERT_TRUE(fs::exists(outputPath));
+	}
 }

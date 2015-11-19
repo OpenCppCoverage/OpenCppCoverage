@@ -97,6 +97,8 @@ namespace Exporter
 		const boost::filesystem::path& output) const
 	{		
 		pb::CoverageData coverageDataProtoBuff;
+		Tools::CreateParentFolderIfNeeded(output);
+
 		std::ofstream ofs(output.string(), std::ios::binary);		
 		google::protobuf::io::OstreamOutputStream outputStream(&ofs);
 		google::protobuf::io::CodedOutputStream codedOutputStream(&outputStream);
