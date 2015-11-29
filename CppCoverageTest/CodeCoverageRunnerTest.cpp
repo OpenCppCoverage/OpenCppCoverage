@@ -323,7 +323,7 @@ namespace CppCoverageTest
 		auto coverageData = ComputeCoverageData(
 			TestCoverageConsole::TestSpecialLineInfo, specialLineInfoFilename);
 		auto& file = GetFirstFileCoverage(coverageData);
-		ASSERT_EQ(specialLineInfoFilename, file.GetPath().filename().wstring());
+		ASSERT_TRUE(boost::algorithm::iequals(specialLineInfoFilename, file.GetPath().filename().wstring()));
 		for (const auto& lineInfo : file.GetLines())
 			ASSERT_TRUE(lineInfo.HasBeenExecuted());
 	}
