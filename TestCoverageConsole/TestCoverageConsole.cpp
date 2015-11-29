@@ -22,6 +22,7 @@
 
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
+#include "SpecialLineInfo.hpp"
 #include "TestCoverageConsole.hpp"
 #include "TestBasic.hpp"
 #include "TestThread.hpp"
@@ -75,6 +76,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			TestCoverageConsole::RunChildProcesses(argc, argv);
 		else if (type == TestCoverageConsole::TestFileInSeveralModules)
 			TestFileInSeveralModules();
+		else if (type == TestCoverageConsole::TestSpecialLineInfo)
+			TestCoverageConsole::SpecialLineInfo();
 		else
 			std::wcerr << L"Unsupported type:" << type << std::endl;
 	}

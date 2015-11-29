@@ -41,6 +41,7 @@
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "TestCoverageConsole/TestBasic.hpp"
 #include "TestCoverageConsole/TestThread.hpp"
+#include "TestCoverageConsole/SpecialLineInfo.hpp"
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
 #include "TestTools.hpp"
@@ -312,5 +313,18 @@ namespace CppCoverageTest
 			TestLine(*file, sharedFunctionLine + 3, true);
 			TestLine(*file, sharedFunctionLine + 4, true);
 		}
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, SpecialLineInfo)
+	{
+		const auto specialLineInfoFilename = TestCoverageConsole::GetSpecialLineInfoFilename().wstring();
+
+		auto coverageData = ComputeCoverageData(
+			TestCoverageConsole::TestSpecialLineInfo, specialLineInfoFilename);
+		auto& file = GetFirstFileCoverage(coverageData);
+		ASSERT_EQ(specialLineInfoFilename, file.GetPath().filename().wstring());
+		for (const auto& lineInfo : file.GetLines())
+			ASSERT_TRUE(lineInfo.HasBeenExecuted());
 	}
 }

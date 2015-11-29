@@ -61,4 +61,5 @@ namespace TestCoverageConsole
 	const std::wstring TestBreakPoint = L"TestBreakPoint";
 	const std::wstring TestChildProcess = L"ChildProcess";
 	const std::wstring TestFileInSeveralModules = L"FileInSeveralModules";
+	const std::wstring TestSpecialLineInfo = L"TestSpecialLineInfo";
 }

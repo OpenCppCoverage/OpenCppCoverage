@@ -56,13 +56,35 @@ namespace CppCoverage
 		};
 
 		//---------------------------------------------------------------------
+		bool ExcludeLineInfo(const SRCCODEINFO& lineInfo, const Context& context)
+		{
+			const int NoSource = 0x00feefee;
+			if (lineInfo.LineNumber == NoSource)
+				return true;
+
+			char buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TCHAR)];
+			PSYMBOL_INFO symbol = reinterpret_cast<PSYMBOL_INFO>(buffer);
+
+			symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
+			symbol->MaxNameLen = MAX_SYM_NAME;
+			if (!SymFromAddr(context.hProcess_, lineInfo.Address, 0, symbol))
+				THROW("Error when calling SymFromAddr");
+
+			// Exclude compiler internal symbols.
+			return boost::algorithm::starts_with(symbol->Name, "__");
+		}
+
+		//---------------------------------------------------------------------
 		BOOL CALLBACK SymEnumLinesProc(PSRCCODEINFO lineInfo, PVOID userContext)
 		{
 			auto context = static_cast<Context*>(userContext);
 
 			if (!context)
 				THROW("Invalid user context.");
-						
+
+			if (ExcludeLineInfo(*lineInfo, *context))
+				return TRUE;
+
 			DWORD64 addressValue = lineInfo->Address - lineInfo->ModBase + reinterpret_cast<DWORD64>(context->processBaseOfImage_);
 
 			context->debugInformationEventHandler_.OnNewLine(
@@ -168,7 +190,7 @@ namespace CppCoverage
 		Tools::ScopedAction scopedAction{ [=]{ UnloadModule64(baseAddress);  } };
 
 		Context context{ hProcess_, baseAddress, baseOfImage, debugInformationEventHandler };
-			
+
 		if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
 			LOG_WARNING << L"Cannot find pdb for " << filename;
 	}
