@@ -84,9 +84,6 @@ namespace CppCoverage
 
 			return &buffer[0];
 		}
-
-		//---------------------------------------------------------------------------
-		void ThisFunctionIsRequiredToAvoidInternalCompilerError() {}
 	}
 
 	//-------------------------------------------------------------------------
