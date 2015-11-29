@@ -1,6 +1,7 @@
 ﻿using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.Win32;
 using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
@@ -91,8 +92,41 @@ namespace OpenCppCoverage.VSPackage
 
                 var openCppCoverageRunner = new CoverageRunner(dte, webBrowsingService, settingsBuilder, errorHandler, outputWriter);
 
+                CheckVCRedistInstalled();
                 openCppCoverageRunner.RunCoverageOnStartupProject();
             });                                             
-        }        
+        }
+
+        //---------------------------------------------------------------------
+        static void CheckVCRedistInstalled()
+        {
+            if (!IsVCRedistInstalled("x86")
+              || (Environment.Is64BitOperatingSystem && !IsVCRedistInstalled("x64")))
+            {
+                throw new VSPackageException("Cannot start OpenCppCoverage. " +
+                        "You need to install Visual Studio 2015 redistributable " +
+                        "vc_redist.x86.exe and vc_redist.x64.exe (for 64 bits operating system) " +
+                        "and restart Visual Studio: " +
+                        "https://www.microsoft.com/en-US/download/details.aspx?id=48145");
+            }
+        }
+
+        //---------------------------------------------------------------------
+        static bool IsVCRedistInstalled(string architecture)
+        {
+            const string runtimeKey = @"SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\";
+
+            using (var subKey = Registry.LocalMachine.OpenSubKey(runtimeKey + architecture))
+            {
+                if (subKey != null)
+                {
+                    var installedValueObject = subKey.GetValue("Installed");
+                    int installedValue = Convert.ToInt32(installedValueObject);
+                    return installedValue == 1;
+                }
+            }
+
+            return false;
+        }
     }
 }
