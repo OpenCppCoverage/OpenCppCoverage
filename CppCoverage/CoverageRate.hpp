@@ -33,6 +33,7 @@ namespace CppCoverage
 		int GetUnExecutedLinesCount() const;
 		int GetTotalLinesCount() const;
 		int GetPercentRate() const;
+		double GetRate() const;
 
 		CoverageRate& operator+=(const CoverageRate&);
 		

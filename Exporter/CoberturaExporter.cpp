@@ -26,6 +26,7 @@
 #include "CppCoverage/ModuleCoverage.hpp"
 #include "CppCoverage/FileCoverage.hpp"
 #include "CppCoverage/LineCoverage.hpp"
+#include "CppCoverage/CoverageRateComputer.hpp"
 
 #include "Tools/Tool.hpp"
 
@@ -45,16 +46,19 @@ namespace Exporter
 
 		//-------------------------------------------------------------------------
 		void FillFileTree(
+			const cov::CoverageRateComputer& coverageRateComputer,
 			property_tree::wptree& fileTree, 
 			const cov::FileCoverage& file,
 			std::unordered_set<std::wstring>& rootPaths)
 		{
 			const auto& path = file.GetPath();
 			auto res = path.relative_path();
+			const auto& coverageRate = coverageRateComputer.GetCoverageRate(file);
 
 			rootPaths.insert(path.root_name().wstring());
 			fileTree.put(L"<xmlattr>.name", path.filename().wstring());
 			fileTree.put(L"<xmlattr>.filename", path.relative_path().wstring());
+			fileTree.put(L"<xmlattr>.line-rate", coverageRate.GetRate());
 
 			property_tree::wptree& linesTree = AddChild(fileTree, L"lines");
 
@@ -86,6 +90,7 @@ namespace Exporter
 			auto& coverageTree = AddChild(root, L"coverage");
 			property_tree::wptree& packagesTree = AddChild(coverageTree, L"packages");
 			std::unordered_set<std::wstring> rootPaths;
+			cov::CoverageRateComputer coverageRateComputer(coverageData);
 
 			for (const auto& module : coverageData.GetModules())
 			{
@@ -94,13 +99,15 @@ namespace Exporter
 				{
 					property_tree::wptree& packageTree = AddChild(packagesTree, L"package");
 					property_tree::wptree& classesTree = AddChild(packageTree, L"classes");
+					const auto& coverageRate = coverageRateComputer.GetCoverageRate(*module);
 
 					packageTree.put(L"<xmlattr>.name", module->GetPath().wstring());
+					packageTree.put(L"<xmlattr>.line-rate", coverageRate.GetRate());
 
 					for (const auto& file : module->GetFiles())
 					{
 						property_tree::wptree& fileTree = AddChild(classesTree, L"class");
-						FillFileTree(fileTree, *file, rootPaths);
+						FillFileTree(coverageRateComputer, fileTree, *file, rootPaths);
 					}
 				}
 			}

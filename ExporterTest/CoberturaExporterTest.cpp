@@ -59,7 +59,8 @@ namespace ExporterTest
 
 		file.AddLine(0, true);
 		file.AddLine(1, false);
-		file.AddLine(2, true);
+
+		module.AddFile("File2").AddLine(0, true);
 
 		std::wostringstream ostr;
 		Exporter::CoberturaExporter().Export(coverageData, ostr);

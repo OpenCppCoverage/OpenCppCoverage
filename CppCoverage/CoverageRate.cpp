@@ -51,13 +51,19 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	int CoverageRate::GetPercentRate() const
+	double CoverageRate::GetRate() const
 	{
 		auto totalLines = executedLinesCount_ + unexecutedLinesCount_;
 
 		if (totalLines == 0)
-			return 100;
-		return (executedLinesCount_ * 100) / (executedLinesCount_ + unexecutedLinesCount_);
+			return 1.0;
+		return static_cast<double>(executedLinesCount_) / totalLines;
+	}
+
+	//-------------------------------------------------------------------------
+	int CoverageRate::GetPercentRate() const
+	{
+		return static_cast<int>(GetRate() * 100);
 	}
 
 	//-------------------------------------------------------------------------

@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <coverage>
   <packages>
-    <package name="Module">
+    <package name="Module" line-rate="0.66666666666666663">
       <classes>
-        <class name="EmptyFile" filename="EmptyFile">
+        <class name="EmptyFile" filename="EmptyFile" line-rate="1">
           <lines/>
         </class>
-        <class name="File" filename="File">
+        <class name="File" filename="File" line-rate="0.5">
           <lines>
             <line number="0" hits="1"/>
             <line number="1" hits="0"/>
-            <line number="2" hits="1"/>
+          </lines>
+        </class>
+        <class name="File2" filename="File2" line-rate="1">
+          <lines>
+            <line number="0" hits="1"/>
           </lines>
         </class>
       </classes>

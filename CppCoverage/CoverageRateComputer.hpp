@@ -18,10 +18,10 @@
 
 #include "CppCoverageExport.hpp"
 #include <unordered_map>
+#include "CoverageRate.hpp"
 
 namespace CppCoverage
 {
-	class CoverageRate;
 	class ModuleCoverage;
 	class FileCoverage;
 	class CoverageData;
