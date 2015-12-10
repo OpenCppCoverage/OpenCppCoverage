@@ -186,8 +186,12 @@ namespace CppCoverage
 
 		if (!baseAddress)
 			THROW("Cannot load module for: " << filename);
-		
-		Tools::ScopedAction scopedAction{ [=]{ UnloadModule64(baseAddress);  } };
+
+		Tools::ScopedAction scopedAction{ [=] {
+			if (!SymUnloadModule64(hProcess_, baseAddress))
+				THROW("UnloadModule64 ");
+		} };
+
 
 		Context context{ hProcess_, baseAddress, baseOfImage, debugInformationEventHandler };
 

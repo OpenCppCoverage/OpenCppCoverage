@@ -42,9 +42,11 @@ namespace CppCoverage
 		~CodeCoverageRunner();
 
 		CoverageData RunCoverage(const StartInfo&, const CoverageSettings&, bool coverChildren);
+		size_t GetDebugInformationCount() const;
 
 	private:
 		virtual void OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO&) override;
+		virtual void OnExitProcess(HANDLE hProcess, HANDLE hThread, const EXIT_PROCESS_DEBUG_INFO&) override;
 		virtual void OnLoadDll(HANDLE hProcess, HANDLE hThread, const LOAD_DLL_DEBUG_INFO&) override;
 		virtual ExceptionType OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&) override;
 

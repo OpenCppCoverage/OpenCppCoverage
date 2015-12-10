@@ -78,6 +78,14 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
+	void CodeCoverageRunner::OnExitProcess(HANDLE hProcess, HANDLE, const EXIT_PROCESS_DEBUG_INFO&)
+	{
+		exceptionHandler_->OnExitProcess(hProcess);
+		if (debugInformation_.erase(hProcess) != 1)
+			THROW("Cannot find process for debugInformation_.");
+	}
+
+	//-------------------------------------------------------------------------
 	void CodeCoverageRunner::OnLoadDll(
 		HANDLE hProcess, 
 		HANDLE hThread, 
@@ -176,5 +184,11 @@ namespace CppCoverage
 
 		if (!executedAddressManager_->RegisterAddress(address, filename, lineNumber, oldInstruction))
 			breakpoint_->RemoveBreakPoint(address, oldInstruction);
+	}
+
+	//-------------------------------------------------------------------------
+	size_t CodeCoverageRunner::GetDebugInformationCount() const
+	{
+		return debugInformation_.size();
 	}
 }

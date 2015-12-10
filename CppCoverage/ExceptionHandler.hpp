@@ -39,11 +39,12 @@ namespace CppCoverage
 		static const std::wstring ExceptionCpp;
 		static const std::wstring ExceptionAccesViolation;
 		static const std::wstring ExceptionUnknown;
-		static const int ExceptionEmulationX86ErroCode;
+		static const int ExceptionEmulationX86ErrorCode;
 
 		ExceptionHandler();
 
 		ExceptionHandlerStatus HandleException(HANDLE hProcess, const EXCEPTION_DEBUG_INFO&, std::wostream&);
+		void OnExitProcess(HANDLE hProcess);
 
 	private:
 		ExceptionHandler(const ExceptionHandler&) = delete;

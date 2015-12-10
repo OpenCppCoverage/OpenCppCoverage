@@ -26,13 +26,13 @@ namespace CppCoverage
 	const std::wstring ExceptionHandler::ExceptionCpp = L"Exception C++";
 	const std::wstring ExceptionHandler::ExceptionAccesViolation = L"EXCEPTION_ACCESS_VIOLATION";
 	const std::wstring ExceptionHandler::ExceptionUnknown = L"Unknown";
-	const int ExceptionHandler::ExceptionEmulationX86ErroCode = 0x4000001f;
+	const int ExceptionHandler::ExceptionEmulationX86ErrorCode = 0x4000001f;
 
 	//-------------------------------------------------------------------------
 	ExceptionHandler::ExceptionHandler()
 	{
 		breakPointExceptionCode_.emplace(EXCEPTION_BREAKPOINT, std::vector<HANDLE>{});
-		breakPointExceptionCode_.emplace(ExceptionEmulationX86ErroCode, std::vector<HANDLE>{});
+		breakPointExceptionCode_.emplace(ExceptionEmulationX86ErrorCode, std::vector<HANDLE>{});
 		InitExceptionCode();
 	}
 
@@ -97,6 +97,19 @@ namespace CppCoverage
 		message << L"-----------------------------------------------" << std::endl;
 
 		return ExceptionHandlerStatus::Fatal;
+	}
+
+	//-------------------------------------------------------------------------
+	void ExceptionHandler::OnExitProcess(HANDLE hProcess)
+	{
+		for (auto& pair : breakPointExceptionCode_)
+		{
+			std::vector<HANDLE>& processes = pair.second;
+			auto it = std::find(processes.begin(), processes.end(), hProcess);
+
+			if (it != processes.end())
+				processes.erase(it);
+		}
 	}
 
 	//-------------------------------------------------------------------------

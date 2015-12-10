@@ -111,7 +111,11 @@ namespace CppCoverageTest
 			for (const auto& argument: arguments)
 				startInfo.AddArgument(argument);
 
-			return codeCoverageRunner.RunCoverage(startInfo, coverageSettings, coverChildren);
+			auto coverageData = codeCoverageRunner.RunCoverage(startInfo, coverageSettings, coverChildren);
+			if (codeCoverageRunner.GetDebugInformationCount() != 0)
+				throw std::runtime_error("Invalid number of DebugInformation.");
+
+			return coverageData;
 		}
 
 		//---------------------------------------------------------------------
