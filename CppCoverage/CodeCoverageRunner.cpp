@@ -81,6 +81,7 @@ namespace CppCoverage
 	void CodeCoverageRunner::OnExitProcess(HANDLE hProcess, HANDLE, const EXIT_PROCESS_DEBUG_INFO&)
 	{
 		exceptionHandler_->OnExitProcess(hProcess);
+		executedAddressManager_->OnExitProcess(hProcess);
 		if (debugInformation_.erase(hProcess) != 1)
 			THROW("Cannot find process for debugInformation_.");
 	}

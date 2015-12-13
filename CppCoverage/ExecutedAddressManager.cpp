@@ -57,8 +57,7 @@ namespace CppCoverage
 			return false;
 		}
 
-		// We cannot use vector because we will take the adress of the item
-		std::list<ExecutedAddressManager::Instruction*> instructions_;
+		std::vector<std::shared_ptr<ExecutedAddressManager::Instruction>> instructions_;
 	};
 
 	//-------------------------------------------------------------------------
@@ -113,17 +112,16 @@ namespace CppCoverage
 		// Different {filename, line} can have the same address.
 		// Same {filename, line} can have several addresses.		
 		bool keepBreakpoint = false;
-		Instruction* instruction = nullptr;
 		auto itAddress = addressLineMap_.find(address);
 
 		if (itAddress == addressLineMap_.end())
 		{
-			itAddress = addressLineMap_.emplace(address, Instruction{ instructionValue }).first;
+			auto instruction = std::make_shared<Instruction>(instructionValue);
+			itAddress = addressLineMap_.emplace(address, instruction).first;
 			keepBreakpoint = true;
 		}
 		
-		instruction = &itAddress->second;
-		line.instructions_.push_back(instruction);
+		line.instructions_.push_back(itAddress->second);
 		
 		return keepBreakpoint;
 	}
@@ -145,11 +143,11 @@ namespace CppCoverage
 		if (it == addressLineMap_.end())
 			return boost::none;
 
-		Instruction& instruction = it->second;
+		auto& instruction = it->second;
 				
-		instruction.hasBeenExecuted_ = true;
+		instruction->hasBeenExecuted_ = true;
 			 
-		return instruction.instruction_;
+		return instruction->instruction_;
 	}
 	
 	//-------------------------------------------------------------------------
@@ -182,5 +180,21 @@ namespace CppCoverage
 		}
 
 		return coverageData;
+	}
+
+	//-------------------------------------------------------------------------
+	void ExecutedAddressManager::OnExitProcess(HANDLE hProcess)
+	{
+		auto it = addressLineMap_.begin();
+
+		while (it != addressLineMap_.end())
+		{
+			const Address& address = it->first;
+
+			if (address.GetProcessHandle() == hProcess)
+				it = addressLineMap_.erase(it);
+			else
+				++it;
+		}
 	}
 }

@@ -19,6 +19,7 @@
 #include <string>
 #include <vector>
 
+#include <Windows.h>
 #include <memory>
 #include <map>
 #include <boost/optional.hpp>
@@ -48,6 +49,8 @@ namespace CppCoverage
 
 		CoverageData CreateCoverageData(const std::wstring& name, int exitCode) const;
 
+		void OnExitProcess(HANDLE hProcess);
+
 	private:
 		struct Module;
 		struct File;
@@ -64,7 +67,7 @@ namespace CppCoverage
 	
 	private:
 		std::vector<std::unique_ptr<Module>> modules_;
-		std::map<Address, Instruction> addressLineMap_;
+		std::map<Address, std::shared_ptr<Instruction>> addressLineMap_;
 	};
 }
 
