@@ -31,12 +31,21 @@ namespace TestHelper
 	namespace
 	{
 		//---------------------------------------------------------------------
+		template <typename T>
+		void AssertEqual(T&& v1, T&& v2)
+		{
+			ASSERT_EQ(v1, v2);
+			if (v1 != v2)
+				throw std::runtime_error("Values are not equals.");
+		}
+
+		//---------------------------------------------------------------------
 		void AssertLinesEquals(
 			const cov::LineCoverage& line1,
 			const cov::LineCoverage& line2)
 		{
-			ASSERT_EQ(line1.GetLineNumber(), line2.GetLineNumber());
-			ASSERT_EQ(line1.HasBeenExecuted(), line2.HasBeenExecuted());
+			AssertEqual(line1.GetLineNumber(), line2.GetLineNumber());
+			AssertEqual(line1.HasBeenExecuted(), line2.HasBeenExecuted());
 		}
 
 		//---------------------------------------------------------------------
@@ -44,7 +53,7 @@ namespace TestHelper
 			const cov::FileCoverage& file1,
 			const cov::FileCoverage& file2)
 		{
-			ASSERT_EQ(file1.GetPath(), file2.GetPath());
+			AssertEqual(file1.GetPath(), file2.GetPath());
 			AssertContainerEqual(file1.GetLines(), file2.GetLines(), AssertLinesEquals);
 		}
 
@@ -53,7 +62,7 @@ namespace TestHelper
 			const cov::ModuleCoverage& module1,
 			const cov::ModuleCoverage& module2)
 		{
-			ASSERT_EQ(module1.GetPath(), module2.GetPath());
+			AssertEqual(module1.GetPath(), module2.GetPath());
 			AssertContainerUniquePtrEqual(module1.GetFiles(), module2.GetFiles(), AssertFilesEquals);
 		}
 	}
@@ -63,8 +72,8 @@ namespace TestHelper
 		const CppCoverage::CoverageData& coverageData,
 		const CppCoverage::CoverageData& coverageDataRestored) const
 	{
-		ASSERT_EQ(coverageData.GetName(), coverageDataRestored.GetName());
-		ASSERT_EQ(coverageData.GetExitCode(), coverageDataRestored.GetExitCode());
+		AssertEqual(coverageData.GetName(), coverageDataRestored.GetName());
+		AssertEqual(coverageData.GetExitCode(), coverageDataRestored.GetExitCode());
 
 		AssertContainerUniquePtrEqual(
 			coverageData.GetModules(),
@@ -77,8 +86,8 @@ namespace TestHelper
 		const cov::ModuleCoverage* module1,
 		const cov::ModuleCoverage* module2) const
 	{
-		ASSERT_NE(nullptr, module1);
-		ASSERT_NE(nullptr, module2);
+		if (!module1 || !module2)
+			throw std::runtime_error("Module is null.");
 		AssertModulesEquals(*module1, *module2);
 	}
 }
