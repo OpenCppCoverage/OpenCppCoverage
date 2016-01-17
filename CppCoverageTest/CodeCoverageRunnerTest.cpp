@@ -142,9 +142,11 @@ namespace CppCoverageTest
 			arguments.insert(arguments.begin(), TestCoverageConsole::TestChildProcess);
 			auto coverageDataChildProcess = ComputeCoverageData(arguments, modulePattern, sourcePattern);
 
-			TestHelper::CoverageDataComparer().AssertEquals(
-				coverageData.GetModules().at(0).get(),
-				coverageDataChildProcess.GetModules().at(1).get());
+			if (!TestHelper::CoverageDataComparer().IsFirstCollectionContainsSecond(
+					coverageDataChildProcess.GetModules(), coverageData.GetModules()))
+			{
+				throw std::runtime_error("Invalid coverage");
+			}
 			return coverageData;
 		}
 
@@ -266,7 +268,13 @@ namespace CppCoverageTest
 		auto rootAndChildProcess = ComputeCoverageData(arguments, modulePattern, sourcePattern, true);
 		auto rootProcessOnly = ComputeCoverageData(arguments, modulePattern, sourcePattern, false);
 
-		ASSERT_GT(rootAndChildProcess.GetModules().size(), rootProcessOnly.GetModules().size());
+		const auto& rootOnlyModules = rootProcessOnly.GetModules();
+		const auto& rootAndChildModules = rootAndChildProcess.GetModules();
+
+		ASSERT_TRUE(TestHelper::CoverageDataComparer().IsFirstCollectionContainsSecond(
+			rootAndChildModules, rootOnlyModules));
+		ASSERT_FALSE(TestHelper::CoverageDataComparer().IsFirstCollectionContainsSecond(
+			rootOnlyModules, rootAndChildModules));
 	}
 
 	//-------------------------------------------------------------------------

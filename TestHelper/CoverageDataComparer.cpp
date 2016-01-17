@@ -90,4 +90,47 @@ namespace TestHelper
 			throw std::runtime_error("Module is null.");
 		AssertModulesEquals(*module1, *module2);
 	}
+
+	using FileCoveragePtr = std::unique_ptr<cov::FileCoverage>;
+
+	//---------------------------------------------------------------------
+	bool CoverageDataComparer::IsFirstModuleContainsSecond(
+		const ModuleCoveragePtr& module1,
+		const ModuleCoveragePtr& module2) const
+	{
+		if (module1->GetPath() != module2->GetPath())
+			return false;
+
+		return IsFirstContainsSecond<boost::filesystem::path>(
+			module1->GetFiles(), module2->GetFiles(),
+			[](const FileCoveragePtr& file) { return file->GetPath(); },
+			[](const FileCoveragePtr& file1, const FileCoveragePtr& file2)
+		{
+			if (file1->GetPath() != file2->GetPath())
+				return false;
+
+			return IsFirstContainsSecond<unsigned int>(
+				file1->GetLines(), file2->GetLines(),
+				[](const cov::LineCoverage& line) { return line.GetLineNumber(); },
+				[](const cov::LineCoverage& line1, const cov::LineCoverage& line2)
+			{
+				return !line2.HasBeenExecuted() || line1.HasBeenExecuted();
+			});
+		});
+	}
+
+	//---------------------------------------------------------------------
+	bool CoverageDataComparer::IsFirstCollectionContainsSecond(
+		const ModuleCoverageCollection& container1,
+		const ModuleCoverageCollection& container2) const
+	{
+		return IsFirstContainsSecond<boost::filesystem::path>(
+			container1, container2,
+			[](const ModuleCoveragePtr& module) { return module->GetPath(); },
+			[=](const ModuleCoveragePtr& module1,
+			   const ModuleCoveragePtr& module2)
+		{
+			return IsFirstModuleContainsSecond(module1, module2);
+		});
+	}
 }

@@ -29,6 +29,13 @@ namespace TestHelper
 		const Container& container1,
 		const Container& container2,
 		const CompareFct& compareFct);
+
+	template<typename Key, typename Container, typename CompareFct>
+	bool IsFirstContainsSecond(
+		const Container& container1,
+		const Container& container2,
+		const std::function<Key(const typename Container::value_type&)>& getKeyFct,
+		const CompareFct& compareFct);
 }
 
 #include "Container.inl"

@@ -52,4 +52,28 @@ namespace TestHelper
 			compareFct(*value1, *value2);
 		});
 	}
+
+	//---------------------------------------------------------------------
+	template<typename Key, typename Container, typename CompareFct>
+	bool IsFirstContainsSecond(
+		const Container& container1,
+		const Container& container2,
+		const std::function<Key (const typename Container::value_type&)>& getKeyFct,
+		const CompareFct& compareFct)
+	{
+		std::map<Key, typename const Container::value_type*> container1ByKey;
+
+		for (const auto& object : container1)
+			container1ByKey.emplace(getKeyFct(object), &object);
+		for (const auto& object : container2)
+		{
+			auto it = container1ByKey.find(getKeyFct(object));
+
+			if (it == container1ByKey.end())
+				return false;
+
+			return compareFct(*it->second, object);
+		}
+		return true;
+	}
 }

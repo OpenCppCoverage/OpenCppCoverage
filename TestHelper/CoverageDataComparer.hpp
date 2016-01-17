@@ -17,6 +17,7 @@
 #pragma once
 
 #include "TestHelperExport.hpp"
+#include <memory>
 
 namespace CppCoverage
 {
@@ -34,6 +35,16 @@ namespace TestHelper
 		void AssertEquals(const CppCoverage::CoverageData&, const CppCoverage::CoverageData&) const;
 		void AssertEquals(const CppCoverage::ModuleCoverage*, const CppCoverage::ModuleCoverage*) const;
 
+		using ModuleCoveragePtr = std::unique_ptr<CppCoverage::ModuleCoverage>;
+		using ModuleCoverageCollection = std::vector<ModuleCoveragePtr>;
+
+		bool IsFirstModuleContainsSecond(
+			const ModuleCoveragePtr& module1,
+			const ModuleCoveragePtr& module2) const;
+
+		bool IsFirstCollectionContainsSecond(
+			const ModuleCoverageCollection& container1,
+			const ModuleCoverageCollection& container2) const;
 	private:
 		CoverageDataComparer(const CoverageDataComparer&) = delete;
 		CoverageDataComparer& operator=(const CoverageDataComparer&) = delete;

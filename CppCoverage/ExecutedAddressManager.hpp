@@ -18,6 +18,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include <Windows.h>
 #include <memory>
@@ -38,7 +39,7 @@ namespace CppCoverage
 		ExecutedAddressManager();
 		~ExecutedAddressManager();
 
-		void SetCurrentModule(const std::wstring& moduleName);
+		void AddModule(HANDLE hProcess, const std::wstring& moduleName);
 		bool RegisterAddress(
 			const Address&,
 			const std::wstring& filename,
@@ -47,8 +48,7 @@ namespace CppCoverage
 
 		boost::optional<unsigned char> MarkAddressAsExecuted(const Address&);
 
-		CoverageData CreateCoverageData(const std::wstring& name, int exitCode) const;
-
+		CoverageData CreateCoverageData(const std::wstring& name, int exitCode);
 		void OnExitProcess(HANDLE hProcess);
 
 	private:
@@ -62,11 +62,17 @@ namespace CppCoverage
 		ExecutedAddressManager(const ExecutedAddressManager&) = delete;
 		ExecutedAddressManager& operator=(const ExecutedAddressManager&) = delete;
 
-		Module& GetCurrentModule();
+		using T_Modules = std::vector<std::unique_ptr<Module>>;
+
+		Module& GetLastAddedModule(HANDLE hProcess);
 		void AddFileCoverageInfo(const File& fileData, FileCoverage& fileCoverage) const;
-	
+		void AddModulesToCoverageData(HANDLE hProcess);
+		CoverageData CreateCoverageData(const T_Modules&) const;
+
 	private:
-		std::vector<std::unique_ptr<Module>> modules_;
+		std::unordered_map<HANDLE, T_Modules> modulesByHandle_;
+
+		CoverageData coverageData_;
 		std::map<Address, std::shared_ptr<Instruction>> addressLineMap_;
 	};
 }

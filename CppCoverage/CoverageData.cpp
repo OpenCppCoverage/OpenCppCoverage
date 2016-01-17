@@ -36,9 +36,19 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	CoverageData::CoverageData(CoverageData&& coverageData)
 	{
-		std::swap(modules_, coverageData.modules_);		
-		name_ = coverageData.name_;
-		exitCode_ = coverageData.exitCode_;		
+		*this = std::move(coverageData);
+	}
+
+	//-------------------------------------------------------------------------
+	CoverageData& CoverageData::operator=(CoverageData&& coverageData)
+	{
+		if (this != &coverageData)
+		{
+			std::swap(modules_, coverageData.modules_);
+			name_ = coverageData.name_;
+			exitCode_ = coverageData.exitCode_;
+		}
+		return *this;
 	}
 
 	//-------------------------------------------------------------------------
@@ -50,6 +60,18 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------	
+	void CoverageData::SetName(const std::wstring& name)
+	{
+		name_ = name;
+	}
+
+	//-------------------------------------------------------------------------
+	void CoverageData::SetExitCode(int exitCode)
+	{
+		exitCode_ = exitCode;
+	}
+
+	//-------------------------------------------------------------------------
 	const CoverageData::T_ModuleCoverageCollection& CoverageData::GetModules() const
 	{
 		return modules_;

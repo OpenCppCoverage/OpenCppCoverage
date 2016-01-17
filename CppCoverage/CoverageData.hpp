@@ -44,12 +44,14 @@ namespace CppCoverage
 		~CoverageData();
 
 		CoverageData(CoverageData&&);			
-
+		CoverageData& operator=(CoverageData&&);
 		ModuleCoverage& AddModule(const boost::filesystem::path& name);
 		
+		void SetName(const std::wstring&);
+		void SetExitCode(int);
+
 		const T_ModuleCoverageCollection& GetModules() const;
 		const std::wstring& GetName() const;
-
 		int GetExitCode() const;
 
 	private:

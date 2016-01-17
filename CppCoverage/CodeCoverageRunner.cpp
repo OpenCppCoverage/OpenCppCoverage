@@ -158,7 +158,7 @@ namespace CppCoverage
 		
 		if (coverageFilter_->IsModuleSelected(filename))
 		{
-			executedAddressManager_->SetCurrentModule(filename);			
+			executedAddressManager_->AddModule(hProcess, filename);
 			auto it = debugInformation_.find(hProcess);
 
 			if (it == debugInformation_.end())
