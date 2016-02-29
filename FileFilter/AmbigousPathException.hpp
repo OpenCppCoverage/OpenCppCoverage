@@ -17,24 +17,31 @@
 #pragma once
 
 #include "FileFilterExport.hpp"
-#include <string>
+#include <boost/filesystem/path.hpp>
 
 #pragma warning(push)
 #pragma warning(disable: 4275) // warning C4275: non dll-interface class 'std::exception' used as base for dll-interface class
 
 namespace FileFilter
-{
-	class FILEFILTER_DLL UnifiedDiffParserException : public std::runtime_error
+{	
+	class FILEFILTER_DLL AmbigousPathException : public std::exception
 	{
-	public:
-		static const std::wstring FromFilePrefix;
-		static const std::wstring ErrorContextHunks;
-		static const std::wstring ErrorNoFilenameBeforeHunks;
-		static const std::wstring ErrorCannotReadLine;
-		static const std::wstring ErrorExpectFromFilePrefix;
-		static const std::wstring ErrorInvalidHunks;
+	public:		
+		AmbigousPathException(
+			const boost::filesystem::path& postFixPath,
+			const boost::filesystem::path& firstPossiblePath,
+			const boost::filesystem::path& secondPossiblePath);
 
-		explicit UnifiedDiffParserException(const std::wstring& message);
+		AmbigousPathException(const AmbigousPathException&) = default;
+
+		const boost::filesystem::path& GetPostFixPath() const;
+		const boost::filesystem::path& GetFirstPossiblePath() const;
+		const boost::filesystem::path& GetSecondPossiblePath() const;
+
+	private:
+		boost::filesystem::path postFixPath_;
+		boost::filesystem::path firstPossiblePath_;
+		boost::filesystem::path secondPossiblePath_;
 	};	
 }
 

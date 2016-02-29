@@ -150,7 +150,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AmbigousPathException.cpp" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="PathMatcher.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -161,8 +163,10 @@
     <ClCompile Include="UnifiedDiffParserException.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AmbigousPathException.hpp" />
     <ClInclude Include="File.hpp" />
     <ClInclude Include="FileFilterExport.hpp" />
+    <ClInclude Include="PathMatcher.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UnifiedDiffParser.hpp" />
     <ClInclude Include="UnifiedDiffParserException.hpp" />
