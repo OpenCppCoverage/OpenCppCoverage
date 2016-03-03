@@ -19,6 +19,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "DebugInformationEventHandlerMock.hpp"
+#include "CoverageFilterManagerMock.hpp"
 
 #include "CppCoverage/DebugInformation.hpp"
 #include "CppCoverage/Address.hpp"
@@ -35,32 +36,34 @@ namespace CppCoverageTest
 	namespace
 	{
 		//---------------------------------------------------------------------
-		void LoadModule(DebugInformationEventHandlerMock& mock, HANDLE hProcess, HANDLE hFile)
+		void LoadModule(
+			CoverageFilterManagerMock& filterManagerMock,
+			DebugInformationEventHandlerMock& eventHandlerMock,
+			HANDLE hProcess,
+			HANDLE hFile)
 		{
 			cov::DebugInformation debugInformation{ hProcess};
 			
-			debugInformation.LoadModule(L"", hFile, nullptr, mock);			
+			debugInformation.LoadModule(L"", hFile, nullptr, filterManagerMock, eventHandlerMock);
 		}
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(DebugInformationTest, LoadModule)
 	{						
-		DebugInformationEventHandlerMock mock;
+		DebugInformationEventHandlerMock eventHandlerMock;
+		CoverageFilterManagerMock filterManagerMock;
 		auto mainCppPath = TestCoverageConsole::GetMainCppFilename().wstring();
 
-		EXPECT_CALL(mock, IsSourceFileSelected(testing::_))
-			.Times(testing::AnyNumber())
-			.WillRepeatedly(testing::Return(false));		
-		EXPECT_CALL(mock, IsSourceFileSelected(testing::_))
+		EXPECT_CALL(filterManagerMock, IsSourceFileSelected(testing::_))
 			.WillRepeatedly(testing::Invoke(
 			[=](const std::wstring& path){ return boost::algorithm::icontains(path, mainCppPath); }));
-		EXPECT_CALL(mock, OnNewLine(testing::_, testing::_, testing::_))
+		EXPECT_CALL(eventHandlerMock, OnNewLine(testing::_, testing::_, testing::_))
 			.Times(testing::AtLeast(1));
 
 		TestTools::GetHandles(TestCoverageConsole::GetOutputBinaryPath(), [&](HANDLE hProcess, HANDLE hFile)
 		{ 
-			LoadModule(mock, hProcess, hFile);
+			LoadModule(filterManagerMock, eventHandlerMock, hProcess, hFile);
 		});				
 	}
 }

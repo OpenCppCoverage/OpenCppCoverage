@@ -28,6 +28,7 @@
 
 #include "CppCoverageException.hpp"
 #include "IDebugInformationEventHandler.hpp"
+#include "ICoverageFilterManager.hpp"
 #include "Address.hpp"
 
 namespace CppCoverage
@@ -41,10 +42,12 @@ namespace CppCoverage
 				HANDLE hProcess, 
 				DWORD64 baseAddress, 
 				void* processBaseOfImage,
+				ICoverageFilterManager& coverageFilterManager,
 				IDebugInformationEventHandler& debugInformationEventHandler)
 				: hProcess_(hProcess)
 				, baseAddress_(baseAddress)
 				, processBaseOfImage_(processBaseOfImage)
+				, coverageFilterManager_(coverageFilterManager)
 				, debugInformationEventHandler_(debugInformationEventHandler)
 			{
 			}
@@ -52,6 +55,7 @@ namespace CppCoverage
 			HANDLE hProcess_;
 			DWORD64 baseAddress_;
 			void* processBaseOfImage_;
+			ICoverageFilterManager& coverageFilterManager_;
 			IDebugInformationEventHandler& debugInformationEventHandler_;
 		};
 
@@ -106,7 +110,7 @@ namespace CppCoverage
 			
 			auto filename = Tools::ToWString(pSourceFile->FileName);
 			
-			if (context->debugInformationEventHandler_.IsSourceFileSelected(filename))
+			if (context->coverageFilterManager_.IsSourceFileSelected(filename))
 			{				
 				if (!SymEnumSourceLines(
 					context->hProcess_,
@@ -179,6 +183,7 @@ namespace CppCoverage
 		const std::wstring& filename,
 		HANDLE hFile,
 		void* baseOfImage,
+		ICoverageFilterManager& coverageFilterManager,
 		IDebugInformationEventHandler& debugInformationEventHandler) const
 	{		
 		UpdateSearchPath(filename);
@@ -192,8 +197,7 @@ namespace CppCoverage
 				THROW("UnloadModule64 ");
 		} };
 
-
-		Context context{ hProcess_, baseAddress, baseOfImage, debugInformationEventHandler };
+		Context context{ hProcess_, baseAddress, baseOfImage, coverageFilterManager, debugInformationEventHandler };
 
 		if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
 			LOG_WARNING << L"Cannot find pdb for " << filename;

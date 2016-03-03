@@ -159,6 +159,8 @@
     <ClInclude Include="CodeCoverageRunner.hpp" />
     <ClInclude Include="CoverageData.hpp" />
     <ClInclude Include="CoverageDataMerger.hpp" />
+    <ClInclude Include="CoverageFilterManager.hpp" />
+    <ClInclude Include="ICoverageFilterManager.hpp" />
     <ClInclude Include="WildcardCoverageFilter.hpp" />
     <ClInclude Include="CoverageRate.hpp" />
     <ClInclude Include="CoverageRateComputer.hpp" />
@@ -192,6 +194,7 @@
     <ClCompile Include="CodeCoverageRunner.cpp" />
     <ClCompile Include="CoverageData.cpp" />
     <ClCompile Include="CoverageDataMerger.cpp" />
+    <ClCompile Include="CoverageFilterManager.cpp" />
     <ClCompile Include="WildcardCoverageFilter.cpp" />
     <ClCompile Include="CoverageRate.cpp" />
     <ClCompile Include="CoverageRateComputer.cpp" />

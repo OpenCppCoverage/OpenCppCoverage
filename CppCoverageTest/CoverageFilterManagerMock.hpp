@@ -1,5 +1,5 @@
 // OpenCppCoverage is an open source code coverage for C++.
-// Copyright (C) 2014 OpenCppCoverage
+// Copyright (C) 2016 OpenCppCoverage
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,25 +16,22 @@
 
 #pragma once
 
-#include <string>
-#include <Windows.h>
-#include "CppCoverageExport.hpp"
+#include <gmock/gmock.h>
+#include "CppCoverage/ICoverageFilterManager.hpp"
 
-namespace CppCoverage
+namespace CppCoverageTest
 {
-	class Address;
-
-	class CPPCOVERAGE_DLL IDebugInformationEventHandler
+	class CoverageFilterManagerMock : public CppCoverage::ICoverageFilterManager
 	{
 	public:
-		IDebugInformationEventHandler() = default;
-		virtual ~IDebugInformationEventHandler() = default;
-								
-		virtual void OnNewLine(const std::wstring& fileName, int lineNumber, const Address&) = 0;
-		
+		CoverageFilterManagerMock() = default;
+
+		MOCK_CONST_METHOD1(IsModuleSelected, bool(const std::wstring&));
+		MOCK_CONST_METHOD1(IsSourceFileSelected, bool(const std::wstring&));
+
 	private:
-		IDebugInformationEventHandler(const IDebugInformationEventHandler&) = delete;
-		IDebugInformationEventHandler& operator=(const IDebugInformationEventHandler&) = delete;
+		CoverageFilterManagerMock(const CoverageFilterManagerMock&) = delete;
+		CoverageFilterManagerMock& operator=(const CoverageFilterManagerMock&) = delete;
 	};
 }
 

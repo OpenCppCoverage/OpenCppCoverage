@@ -29,7 +29,7 @@
 #include "ExecutedAddressManager.hpp"
 #include "HandleInformation.hpp"
 #include "BreakPoint.hpp"
-#include "WildcardCoverageFilter.hpp"
+#include "CoverageFilterManager.hpp"
 #include "StartInfo.hpp"
 #include "ExceptionHandler.hpp"
 #include "CppCoverageException.hpp"
@@ -60,7 +60,7 @@ namespace CppCoverage
 	{
 		Debugger debugger;
 
-		wildcardCoverageFilter_.reset(new WildcardCoverageFilter(coverageSettings));
+		coverageFilterManager_ = std::make_unique<CoverageFilterManager>(coverageSettings);
 		int exitCode = debugger.Debug(startInfo, *this, coverChildren);
 		const auto& path = startInfo.GetPath();
 
@@ -156,7 +156,7 @@ namespace CppCoverage
 
 		std::wstring filename = handleInformation.ComputeFilename(hFile);
 		
-		if (wildcardCoverageFilter_->IsModuleSelected(filename))
+		if (coverageFilterManager_->IsModuleSelected(filename))
 		{
 			executedAddressManager_->AddModule(hProcess, filename);
 			auto it = debugInformation_.find(hProcess);
@@ -165,14 +165,8 @@ namespace CppCoverage
 				THROW("Cannot find debug information.");
 			const auto& debugInformation = it->second;
 
-			debugInformation->LoadModule(filename, hFile, baseOfImage, *this);
+			debugInformation->LoadModule(filename, hFile, baseOfImage, *coverageFilterManager_, *this);
 		}
-	}
-
-	//-------------------------------------------------------------------------
-	bool CodeCoverageRunner::IsSourceFileSelected(const std::wstring& filename) const
-	{		
-		return wildcardCoverageFilter_->IsSourceFileSelected(filename);
 	}
 	
 	//-------------------------------------------------------------------------

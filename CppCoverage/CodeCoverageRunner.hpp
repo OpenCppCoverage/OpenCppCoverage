@@ -32,7 +32,7 @@ namespace CppCoverage
 	class DebugInformationEventHandler;
 	class ExecutedAddressManager;
 	class BreakPoint;
-	class WildcardCoverageFilter;
+	class CoverageFilterManager;
 	class ExceptionHandler;
 
 	class CPPCOVERAGE_DLL CodeCoverageRunner : private IDebugEventsHandler, private IDebugInformationEventHandler
@@ -51,7 +51,6 @@ namespace CppCoverage
 		virtual ExceptionType OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&) override;
 
 	private:
-		virtual bool IsSourceFileSelected(const std::wstring& filename) const override;
 		virtual void OnNewLine(const std::wstring& fileName, int lineNumber, const Address&) override;
 
 	private:
@@ -65,7 +64,7 @@ namespace CppCoverage
 		std::unordered_map<HANDLE, std::unique_ptr<DebugInformation>> debugInformation_;
 		std::unique_ptr<BreakPoint> breakpoint_;
 		std::unique_ptr<ExecutedAddressManager> executedAddressManager_;
-		std::unique_ptr<WildcardCoverageFilter> wildcardCoverageFilter_;
+		std::unique_ptr<CoverageFilterManager> coverageFilterManager_;
 		std::unique_ptr<ExceptionHandler> exceptionHandler_;
 	};
 }
