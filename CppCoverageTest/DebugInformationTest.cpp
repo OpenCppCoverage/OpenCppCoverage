@@ -55,15 +55,40 @@ namespace CppCoverageTest
 		CoverageFilterManagerMock filterManagerMock;
 		auto mainCppPath = TestCoverageConsole::GetMainCppFilename().wstring();
 
+		std::vector<int> selectedLines;
+		int lineSelectedCallCount = 0;
+
+		EXPECT_CALL(filterManagerMock, IsLineSelected(testing::_, testing::_))
+			.WillRepeatedly(testing::Invoke(
+				[&](const std::wstring& path, int lineNumber)
+		{
+			++lineSelectedCallCount;
+
+			if (lineNumber % 2 == 0)
+				return false;
+			selectedLines.push_back(lineNumber);
+			return true;
+		}));
+
 		EXPECT_CALL(filterManagerMock, IsSourceFileSelected(testing::_))
 			.WillRepeatedly(testing::Invoke(
 			[=](const std::wstring& path){ return boost::algorithm::icontains(path, mainCppPath); }));
+
+		std::vector<int> newLines;
 		EXPECT_CALL(eventHandlerMock, OnNewLine(testing::_, testing::_, testing::_))
-			.Times(testing::AtLeast(1));
+			.WillRepeatedly(testing::Invoke(
+				[&](const std::wstring&, int lineNumber, const cov::Address&)
+		{
+			newLines.push_back(lineNumber);
+		}));
 
 		TestTools::GetHandles(TestCoverageConsole::GetOutputBinaryPath(), [&](HANDLE hProcess, HANDLE hFile)
 		{ 
 			LoadModule(filterManagerMock, eventHandlerMock, hProcess, hFile);
-		});				
+		});
+
+		ASSERT_NE(0, selectedLines.size());
+		ASSERT_NE(lineSelectedCallCount, selectedLines.size());
+		ASSERT_EQ(selectedLines, newLines);
 	}
 }

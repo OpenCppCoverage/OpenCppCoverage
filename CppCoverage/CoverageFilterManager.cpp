@@ -36,4 +36,10 @@ namespace CppCoverage
 	{
 		return wildcardCoverageFilter_.IsSourceFileSelected(filename);
 	}
+
+	//-------------------------------------------------------------------------
+	bool CoverageFilterManager::IsLineSelected(const std::wstring& filename, int lineNumber) const
+	{
+		return true;
+	}
 }

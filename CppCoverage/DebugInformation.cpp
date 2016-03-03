@@ -89,11 +89,16 @@ namespace CppCoverage
 			if (ExcludeLineInfo(*lineInfo, *context))
 				return TRUE;
 
-			DWORD64 addressValue = lineInfo->Address - lineInfo->ModBase + reinterpret_cast<DWORD64>(context->processBaseOfImage_);
+			auto filename = Tools::ToWString(lineInfo->FileName);
+			auto lineNumber = lineInfo->LineNumber;
 
-			context->debugInformationEventHandler_.OnNewLine(
-				Tools::ToWString(lineInfo->FileName), lineInfo->LineNumber,
-				Address{ context->hProcess_, reinterpret_cast<void*>(addressValue) });
+			if (!context->coverageFilterManager_.IsLineSelected(filename, lineNumber))
+				return TRUE;
+
+			DWORD64 addressValue = lineInfo->Address - lineInfo->ModBase + reinterpret_cast<DWORD64>(context->processBaseOfImage_);
+			Address address{ context->hProcess_, reinterpret_cast<void*>(addressValue) };
+
+			context->debugInformationEventHandler_.OnNewLine(filename, lineNumber, address);
 
 			return TRUE;
 		}		

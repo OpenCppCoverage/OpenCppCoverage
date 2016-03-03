@@ -32,6 +32,7 @@ namespace CppCoverage
 
 		bool IsModuleSelected(const std::wstring& filename) const override;
 		bool IsSourceFileSelected(const std::wstring& filename) const override;
+		bool IsLineSelected(const std::wstring& filename, int lineNumber) const override;
 
 	private:
 		CoverageFilterManager(const CoverageFilterManager&) = delete;
