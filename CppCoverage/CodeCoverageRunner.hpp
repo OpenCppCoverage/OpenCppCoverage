@@ -32,7 +32,7 @@ namespace CppCoverage
 	class DebugInformationEventHandler;
 	class ExecutedAddressManager;
 	class BreakPoint;
-	class CoverageFilter;
+	class WildcardCoverageFilter;
 	class ExceptionHandler;
 
 	class CPPCOVERAGE_DLL CodeCoverageRunner : private IDebugEventsHandler, private IDebugInformationEventHandler
@@ -65,7 +65,7 @@ namespace CppCoverage
 		std::unordered_map<HANDLE, std::unique_ptr<DebugInformation>> debugInformation_;
 		std::unique_ptr<BreakPoint> breakpoint_;
 		std::unique_ptr<ExecutedAddressManager> executedAddressManager_;
-		std::unique_ptr<CoverageFilter> coverageFilter_;
+		std::unique_ptr<WildcardCoverageFilter> wildcardCoverageFilter_;
 		std::unique_ptr<ExceptionHandler> exceptionHandler_;
 	};
 }

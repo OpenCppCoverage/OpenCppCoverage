@@ -60,7 +60,7 @@ namespace CppCoverage
 	{
 		Debugger debugger;
 
-		coverageFilter_.reset(new CoverageFilter(coverageSettings));
+		wildcardCoverageFilter_.reset(new WildcardCoverageFilter(coverageSettings));
 		int exitCode = debugger.Debug(startInfo, *this, coverChildren);
 		const auto& path = startInfo.GetPath();
 
@@ -156,7 +156,7 @@ namespace CppCoverage
 
 		std::wstring filename = handleInformation.ComputeFilename(hFile);
 		
-		if (coverageFilter_->IsModuleSelected(filename))
+		if (wildcardCoverageFilter_->IsModuleSelected(filename))
 		{
 			executedAddressManager_->AddModule(hProcess, filename);
 			auto it = debugInformation_.find(hProcess);
@@ -172,7 +172,7 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	bool CodeCoverageRunner::IsSourceFileSelected(const std::wstring& filename) const
 	{		
-		return coverageFilter_->IsSourceFileSelected(filename);
+		return wildcardCoverageFilter_->IsSourceFileSelected(filename);
 	}
 	
 	//-------------------------------------------------------------------------

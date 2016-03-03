@@ -27,18 +27,18 @@ namespace CppCoverage
 	class CoverageSettings;
 	class Patterns;
 
-	class CPPCOVERAGE_DLL CoverageFilter
+	class CPPCOVERAGE_DLL WildcardCoverageFilter
 	{
 	public:
-		explicit CoverageFilter(const CoverageSettings&);
-		~CoverageFilter();
+		explicit WildcardCoverageFilter(const CoverageSettings&);
+		~WildcardCoverageFilter();
 
 		bool IsModuleSelected(const std::wstring& filename) const;
 		bool IsSourceFileSelected(const std::wstring& filename) const;
 
 	private:
-		CoverageFilter(const CoverageFilter&) = delete;
-		CoverageFilter& operator=(const CoverageFilter&) = delete;
+		WildcardCoverageFilter(const WildcardCoverageFilter&) = delete;
+		WildcardCoverageFilter& operator=(const WildcardCoverageFilter&) = delete;
 		
 		struct Filter;
 

@@ -53,9 +53,9 @@ namespace CppCoverageTest
 			//---------------------------------------------------------------------
 			void CheckSelection(
 				cov::CoverageSettings& settings, 
-				std::function<bool(const cov::CoverageFilter&, const std::wstring&)> isSelected)
+				std::function<bool(const cov::WildcardCoverageFilter&, const std::wstring&)> isSelected)
 			{
-				cov::CoverageFilter filter{settings};
+				cov::WildcardCoverageFilter filter{settings};
 
 				ASSERT_FALSE(isSelected(filter, L"aa"));
 				ASSERT_FALSE(isSelected(filter, L"a3b"));
@@ -71,7 +71,7 @@ namespace CppCoverageTest
 	TEST_F(CoverageFilterTest, IsModuleSelected)
 	{
 		cov::CoverageSettings settings{ defaultPatterns_, emptyPatterns_ };
-		CheckSelection(settings, [](const cov::CoverageFilter& filter, const std::wstring& str)
+		CheckSelection(settings, [](const cov::WildcardCoverageFilter& filter, const std::wstring& str)
 		{
 			return filter.IsModuleSelected(str);
 		});
@@ -81,7 +81,7 @@ namespace CppCoverageTest
 	TEST_F(CoverageFilterTest, IsSourceSelected)
 	{
 		cov::CoverageSettings settings{ emptyPatterns_, defaultPatterns_ };
-		CheckSelection(settings, [](const cov::CoverageFilter& filter, const std::wstring& str)
+		CheckSelection(settings, [](const cov::WildcardCoverageFilter& filter, const std::wstring& str)
 		{
 			return filter.IsSourceFileSelected(str);
 		});		

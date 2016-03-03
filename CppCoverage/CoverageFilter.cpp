@@ -29,7 +29,7 @@
 namespace CppCoverage
 {	
 	//-------------------------------------------------------------------------
-	struct CoverageFilter::Filter
+	struct WildcardCoverageFilter::Filter
 	{		
 		std::vector<Wildcards> selectedWildcards;
 		std::vector<Wildcards> excludedWildcards;
@@ -67,19 +67,19 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	CoverageFilter::CoverageFilter(const CoverageSettings& settings)		
+	WildcardCoverageFilter::WildcardCoverageFilter(const CoverageSettings& settings)		
 	{
 		moduleFilter_ = BuildFilter(settings.GetModulePatterns());
 		sourceFilter_ = BuildFilter(settings.GetSourcePatterns());
 	}
 
 	//-------------------------------------------------------------------------
-	CoverageFilter::~CoverageFilter()
+	WildcardCoverageFilter::~WildcardCoverageFilter()
 	{
 	}
 
 	//-------------------------------------------------------------------------
-	bool CoverageFilter::IsModuleSelected(const std::wstring& filename) const
+	bool WildcardCoverageFilter::IsModuleSelected(const std::wstring& filename) const
 	{
 		std::wostringstream ostr;
 		bool isSelected = Match(filename, *moduleFilter_, ostr);
@@ -89,7 +89,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	bool CoverageFilter::IsSourceFileSelected(const std::wstring& filename) const
+	bool WildcardCoverageFilter::IsSourceFileSelected(const std::wstring& filename) const
 	{
 		std::wostringstream ostr;
 		bool isSelected = Match(filename, *sourceFilter_, ostr);
@@ -99,8 +99,8 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	std::unique_ptr<CoverageFilter::Filter> 
-		CoverageFilter::BuildFilter(const Patterns& patterns) const
+	std::unique_ptr<WildcardCoverageFilter::Filter> 
+		WildcardCoverageFilter::BuildFilter(const Patterns& patterns) const
 	{
 		std::unique_ptr<Filter> filter{ new Filter()};
 
@@ -115,7 +115,7 @@ namespace CppCoverage
 	}
 
 	//---------------------------------------------------------------------
-	bool CoverageFilter::Match(
+	bool WildcardCoverageFilter::Match(
 		const std::wstring& str,
 		const Filter& filter,
 		std::wostream& ostr) const
