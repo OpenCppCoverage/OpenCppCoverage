@@ -15,7 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
-#include "CoverageFilter.hpp"
+#include "WildcardCoverageFilter.hpp"
 
 #include <sstream>
 #include <boost/regex.hpp>

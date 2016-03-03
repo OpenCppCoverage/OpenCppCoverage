@@ -18,7 +18,7 @@
 
 #include <functional>
 
-#include "CppCoverage/CoverageFilter.hpp"
+#include "CppCoverage/WildcardCoverageFilter.hpp"
 #include "CppCoverage/CoverageSettings.hpp"
 #include "CppCoverage/Patterns.hpp"
 
@@ -29,10 +29,10 @@ namespace CppCoverageTest
 	namespace
 	{
 		//-------------------------------------------------------------------------
-		struct CoverageFilterTest : public ::testing::Test
+		struct WildcardCoverageFilterTest : public ::testing::Test
 		{
 			//---------------------------------------------------------------------
-			CoverageFilterTest()
+			WildcardCoverageFilterTest()
 			: emptyPatterns_{}
 			, defaultPatterns_{BuildDefaultPatterns()}
 			{
@@ -68,7 +68,7 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CoverageFilterTest, IsModuleSelected)
+	TEST_F(WildcardCoverageFilterTest, IsModuleSelected)
 	{
 		cov::CoverageSettings settings{ defaultPatterns_, emptyPatterns_ };
 		CheckSelection(settings, [](const cov::WildcardCoverageFilter& filter, const std::wstring& str)
@@ -78,7 +78,7 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CoverageFilterTest, IsSourceSelected)
+	TEST_F(WildcardCoverageFilterTest, IsSourceSelected)
 	{
 		cov::CoverageSettings settings{ emptyPatterns_, defaultPatterns_ };
 		CheckSelection(settings, [](const cov::WildcardCoverageFilter& filter, const std::wstring& str)

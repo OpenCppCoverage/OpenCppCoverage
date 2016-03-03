@@ -172,7 +172,7 @@
     <ClCompile Include="CoverageDataMergerRandomTest.cpp" />
     <ClCompile Include="CoverageDataMergerTest.cpp" />
     <ClCompile Include="CoverageDataTest.cpp" />
-    <ClCompile Include="CoverageFilterTest.cpp" />
+    <ClCompile Include="WildcardCoverageFilterTest.cpp" />
     <ClCompile Include="CoverageRateComputerTest.cpp" />
     <ClCompile Include="CoverageRateTest.cpp" />
     <ClCompile Include="CppCoverageExceptionTest.cpp" />

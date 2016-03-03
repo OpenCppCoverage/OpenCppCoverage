@@ -29,7 +29,7 @@
 #include "ExecutedAddressManager.hpp"
 #include "HandleInformation.hpp"
 #include "BreakPoint.hpp"
-#include "CoverageFilter.hpp"
+#include "WildcardCoverageFilter.hpp"
 #include "StartInfo.hpp"
 #include "ExceptionHandler.hpp"
 #include "CppCoverageException.hpp"
