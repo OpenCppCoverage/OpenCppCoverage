@@ -25,7 +25,7 @@
 #include <unordered_map>
 #include <map>
 
-#include "AmbigousPathException.hpp"
+#include "AmbiguousPathException.hpp"
 #include "File.hpp"
 
 namespace fs = boost::filesystem;
@@ -74,7 +74,7 @@ namespace FileFilter
 					if (pathData.matchedPath_ && 
 						!boost::algorithm::iequals(pathData.matchedPath_->wstring(), path.wstring()))
 					{
-						throw AmbigousPathException(postFixPath,
+						throw AmbiguousPathException(postFixPath,
 							*pathData.matchedPath_, path);
 					}
 					pathData.matchedPath_ = path;

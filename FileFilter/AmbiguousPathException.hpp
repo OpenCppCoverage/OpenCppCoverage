@@ -24,15 +24,15 @@
 
 namespace FileFilter
 {	
-	class FILEFILTER_DLL AmbigousPathException : public std::runtime_error
+	class FILEFILTER_DLL AmbiguousPathException : public std::runtime_error
 	{
 	public:		
-		AmbigousPathException(
+		AmbiguousPathException(
 			const boost::filesystem::path& postFixPath,
 			const boost::filesystem::path& firstPossiblePath,
 			const boost::filesystem::path& secondPossiblePath);
 
-		AmbigousPathException(const AmbigousPathException&) = default;
+		AmbiguousPathException(const AmbiguousPathException&) = default;
 
 		const boost::filesystem::path& GetPostFixPath() const;
 		const boost::filesystem::path& GetFirstPossiblePath() const;

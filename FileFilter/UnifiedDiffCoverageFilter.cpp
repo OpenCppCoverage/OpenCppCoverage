@@ -23,7 +23,7 @@
 #include "UnifiedDiffCoverageFilter.hpp"
 #include "UnifiedDiffParser.hpp"
 #include "File.hpp"
-#include "AmbigousPathException.hpp"
+#include "AmbiguousPathException.hpp"
 
 namespace FileFilter
 {
@@ -86,7 +86,7 @@ namespace FileFilter
 			auto file = pathMatcher_.Match(path);
 			lastFile_ = file;
 		}
-		catch (const AmbigousPathException& e)
+		catch (const AmbiguousPathException& e)
 		{
 			std::ostringstream ostr;
 

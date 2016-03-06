@@ -59,7 +59,7 @@ namespace FileFilterTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST(UnifiedDiffCoverageFilterTest, AmbigousPathException)
+	TEST(UnifiedDiffCoverageFilterTest, AmbiguousPathException)
 	{
 		std::vector<std::wstring> filenames = { L"file1" };
 		auto files = ToFiles(filenames);

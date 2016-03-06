@@ -20,7 +20,7 @@
 
 #include "FileFilter/PathMatcher.hpp"
 #include "FileFilter/File.hpp"
-#include "FileFilter/AmbigousPathException.hpp"
+#include "FileFilter/AmbiguousPathException.hpp"
 #include "Tools.hpp"
 
 using namespace FileFilter;
@@ -74,7 +74,7 @@ namespace FileFilterTest
 			Match(pathMatcher, test2);
 			FAIL();
 		}
-		catch (const AmbigousPathException& e)
+		catch (const AmbiguousPathException& e)
 		{
 			ASSERT_EQ(filename, e.GetPostFixPath());
 			ASSERT_EQ(test1, e.GetFirstPossiblePath());

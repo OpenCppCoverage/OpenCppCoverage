@@ -150,7 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AmbigousPathException.cpp" />
+    <ClCompile Include="AmbiguousPathException.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="PathMatcher.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -164,7 +164,7 @@
     <ClCompile Include="UnifiedDiffParserException.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AmbigousPathException.hpp" />
+    <ClInclude Include="AmbiguousPathException.hpp" />
     <ClInclude Include="File.hpp" />
     <ClInclude Include="FileFilterExport.hpp" />
     <ClInclude Include="PathMatcher.hpp" />

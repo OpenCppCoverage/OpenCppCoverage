@@ -15,16 +15,16 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
-#include "AmbigousPathException.hpp"
+#include "AmbiguousPathException.hpp"
 
 namespace FileFilter
 {	
 	//-------------------------------------------------------------------------
-	AmbigousPathException::AmbigousPathException(
+	AmbiguousPathException::AmbiguousPathException(
 		const boost::filesystem::path& postFixPath,
 		const boost::filesystem::path& firstPossiblePath,
 		const boost::filesystem::path& secondPossiblePath)
-		: std::runtime_error{"AmbigousPathException"}
+		: std::runtime_error{"AmbiguousPathException"}
 		, postFixPath_{ postFixPath }
 		, firstPossiblePath_{ firstPossiblePath }
 		, secondPossiblePath_{ secondPossiblePath }
@@ -32,19 +32,19 @@ namespace FileFilter
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path& AmbigousPathException::GetPostFixPath() const
+	const boost::filesystem::path& AmbiguousPathException::GetPostFixPath() const
 	{
 		return postFixPath_;
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path& AmbigousPathException::GetFirstPossiblePath() const
+	const boost::filesystem::path& AmbiguousPathException::GetFirstPossiblePath() const
 	{
 		return firstPossiblePath_;
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path& AmbigousPathException::GetSecondPossiblePath() const
+	const boost::filesystem::path& AmbiguousPathException::GetSecondPossiblePath() const
 	{
 		return secondPossiblePath_;
 	}
