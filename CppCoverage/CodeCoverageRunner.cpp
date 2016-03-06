@@ -60,7 +60,7 @@ namespace CppCoverage
 	{
 		Debugger debugger;
 
-		coverageFilterManager_ = std::make_unique<CoverageFilterManager>(coverageSettings);
+		coverageFilterManager_ = std::make_unique<CoverageFilterManager>(coverageSettings, nullptr); // $$ TODO.
 		int exitCode = debugger.Debug(startInfo, *this, coverChildren);
 		const auto& path = startInfo.GetPath();
 

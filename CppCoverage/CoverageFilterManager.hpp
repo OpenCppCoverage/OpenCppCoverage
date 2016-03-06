@@ -16,19 +16,27 @@
 
 #pragma once
 
+#include <memory>
+
 #include "CppCoverageExport.hpp"
 #include "WildcardCoverageFilter.hpp"
 #include "ICoverageFilterManager.hpp"
 
+namespace FileFilter
+{
+	class UnifiedDiffCoverageFilter;
+}
+
 namespace CppCoverage
 {
 	class CoverageSettings;
+	class UnifiedDiffSettings;
 
 	class CPPCOVERAGE_DLL CoverageFilterManager: public ICoverageFilterManager
 	{
 	public:
-		explicit CoverageFilterManager(const CoverageSettings&);
-		~CoverageFilterManager() = default;
+		explicit CoverageFilterManager(const CoverageSettings&, const UnifiedDiffSettings*);
+		~CoverageFilterManager();
 
 		bool IsModuleSelected(const std::wstring& filename) const override;
 		bool IsSourceFileSelected(const std::wstring& filename) const override;
@@ -39,7 +47,6 @@ namespace CppCoverage
 		CoverageFilterManager& operator=(const CoverageFilterManager&) = delete;
 
 		WildcardCoverageFilter wildcardCoverageFilter_;
+		std::unique_ptr<FileFilter::UnifiedDiffCoverageFilter> unifiedDiffCoverageFilter_;
 	};
 }
-
-

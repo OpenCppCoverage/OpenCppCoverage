@@ -161,6 +161,7 @@
     <ClInclude Include="CoverageDataMerger.hpp" />
     <ClInclude Include="CoverageFilterManager.hpp" />
     <ClInclude Include="ICoverageFilterManager.hpp" />
+    <ClInclude Include="UnifiedDiffSettings.hpp" />
     <ClInclude Include="WildcardCoverageFilter.hpp" />
     <ClInclude Include="CoverageRate.hpp" />
     <ClInclude Include="CoverageRateComputer.hpp" />
@@ -195,6 +196,7 @@
     <ClCompile Include="CoverageData.cpp" />
     <ClCompile Include="CoverageDataMerger.cpp" />
     <ClCompile Include="CoverageFilterManager.cpp" />
+    <ClCompile Include="UnifiedDiffSettings.cpp" />
     <ClCompile Include="WildcardCoverageFilter.cpp" />
     <ClCompile Include="CoverageRate.cpp" />
     <ClCompile Include="CoverageRateComputer.cpp" />
@@ -226,6 +228,9 @@
     <ClCompile Include="Wildcards.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FileFilter\FileFilter.vcxproj">
+      <Project>{6fd7c5be-04bd-496d-a924-285a3e867814}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Tools\Tools.vcxproj">
       <Project>{7f6d05ef-deb0-4c64-bd13-a85f46314b91}</Project>
     </ProjectReference>

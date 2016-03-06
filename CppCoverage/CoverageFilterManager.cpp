@@ -16,14 +16,28 @@
 
 #include "stdafx.h"
 #include "CoverageFilterManager.hpp"
+#include "UnifiedDiffSettings.hpp"
+
+#include "FileFilter/UnifiedDiffCoverageFilter.hpp"
 
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	CoverageFilterManager::CoverageFilterManager(const CoverageSettings& settings)
+	CoverageFilterManager::CoverageFilterManager(
+		const CoverageSettings& settings,
+		const UnifiedDiffSettings* unifiedDiffSettings)
 		: wildcardCoverageFilter_{ settings }
 	{
+		if (unifiedDiffSettings)
+		{
+			unifiedDiffCoverageFilter_ =
+				std::make_unique<FileFilter::UnifiedDiffCoverageFilter>(
+					unifiedDiffSettings->GetUnifiedDiffPath(), unifiedDiffSettings->GetDiffParentFolder());
+		}
 	}
+
+	//-------------------------------------------------------------------------
+	CoverageFilterManager::~CoverageFilterManager() = default;
 
 	//-------------------------------------------------------------------------
 	bool CoverageFilterManager::IsModuleSelected(const std::wstring& filename) const
@@ -34,12 +48,16 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	bool CoverageFilterManager::IsSourceFileSelected(const std::wstring& filename) const
 	{
-		return wildcardCoverageFilter_.IsSourceFileSelected(filename);
+		if (!wildcardCoverageFilter_.IsSourceFileSelected(filename))
+			return false;
+
+		return !unifiedDiffCoverageFilter_ || unifiedDiffCoverageFilter_->IsSourceFileSelected(filename);
 	}
 
 	//-------------------------------------------------------------------------
 	bool CoverageFilterManager::IsLineSelected(const std::wstring& filename, int lineNumber) const
 	{
-		return true;
+		return !unifiedDiffCoverageFilter_
+			|| unifiedDiffCoverageFilter_->IsLineSelected(filename, lineNumber);
 	}
 }
