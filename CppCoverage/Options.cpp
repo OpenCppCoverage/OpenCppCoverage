@@ -17,7 +17,7 @@
 #include "stdafx.h"
 #include "Options.hpp"
 #include "CppCoverageException.hpp"
-namespace cov = CppCoverage;
+#include "OptionsExport.hpp"
 
 namespace CppCoverage
 {
@@ -38,9 +38,9 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	Options::Options(
-		const cov::Patterns& modulePatterns,
-		const cov::Patterns& sourcePatterns,
-		const cov::StartInfo* startInfo)
+		const Patterns& modulePatterns,
+		const Patterns& sourcePatterns,
+		const StartInfo* startInfo)
 		: modules_{modulePatterns}
 		, sources_{sourcePatterns}		
 		, logLevel_{ LogLevel::Normal }
@@ -53,19 +53,19 @@ namespace CppCoverage
 	}	
 
 	//-------------------------------------------------------------------------
-	const cov::Patterns& Options::GetModulePatterns() const
+	const Patterns& Options::GetModulePatterns() const
 	{
 		return modules_;
 	}
 	
 	//-------------------------------------------------------------------------
-	const cov::Patterns& Options::GetSourcePatterns() const
+	const Patterns& Options::GetSourcePatterns() const
 	{
 		return sources_;
 	}
 	
 	//-------------------------------------------------------------------------
-	const cov::StartInfo* Options::GetStartInfo() const
+	const StartInfo* Options::GetStartInfo() const
 	{
 		return optionalStartInfo_.get_ptr();
 	}

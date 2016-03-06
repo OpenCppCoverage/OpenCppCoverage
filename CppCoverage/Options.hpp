@@ -22,12 +22,12 @@
 #include "CppCoverageExport.hpp"
 #include "CppCoverage/Patterns.hpp"
 #include "CppCoverage/StartInfo.hpp"
-#include "CppCoverage/OptionsExport.hpp"
 
 namespace CppCoverage
 {
 	class Patterns;	
-
+	class OptionsExport;
+	
 	enum class LogLevel
 	{
 		Quiet,
@@ -39,15 +39,15 @@ namespace CppCoverage
 	{
 	public:
 		Options(
-			const CppCoverage::Patterns& modulePatterns,
-			const CppCoverage::Patterns& sourcePatterns,
-			const CppCoverage::StartInfo*);
+			const Patterns& modulePatterns,
+			const Patterns& sourcePatterns,
+			const StartInfo*);
 
 		Options(Options&&) = default;
 		
-		const CppCoverage::Patterns& GetModulePatterns() const;
-		const CppCoverage::Patterns& GetSourcePatterns() const;
-		const CppCoverage::StartInfo* GetStartInfo() const;
+		const Patterns& GetModulePatterns() const;
+		const Patterns& GetSourcePatterns() const;
+		const StartInfo* GetStartInfo() const;
 
 		void SetLogLevel(LogLevel);
 		LogLevel GetLogLevel() const;
@@ -74,9 +74,9 @@ namespace CppCoverage
 		Options& operator=(Options&&) = delete;
 
 	private:
-		CppCoverage::Patterns modules_;
-		CppCoverage::Patterns sources_;
-		boost::optional<CppCoverage::StartInfo> optionalStartInfo_;
+		Patterns modules_;
+		Patterns sources_;
+		boost::optional<StartInfo> optionalStartInfo_;
 
 		LogLevel logLevel_;
 		bool isPluginModeEnabled_;

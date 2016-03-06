@@ -28,6 +28,7 @@
 #include "Options.hpp"
 #include "CppCoverageException.hpp"
 #include "ProgramOptions.hpp"
+#include "OptionsExport.hpp"
 
 namespace po = boost::program_options;
 namespace cov = CppCoverage;
