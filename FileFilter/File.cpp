@@ -28,7 +28,7 @@ namespace FileFilter
 	//----------------------------------------------------------------------------
 	void File::AddSelectedLines(const std::vector<int>& lines)
 	{
-		selectedLines_.insert(selectedLines_.end(), lines.begin(), lines.end());
+		selectedLines_.insert(lines.begin(), lines.end());
 	}
 
 	//----------------------------------------------------------------------------
@@ -38,8 +38,14 @@ namespace FileFilter
 	}
 
 	//----------------------------------------------------------------------------
-	const std::vector<int>& File::GetSelectedLines() const
+	const std::set<int>& File::GetSelectedLines() const
 	{
 		return selectedLines_;
+	}
+
+	//----------------------------------------------------------------------------
+	bool File::IsLineSelected(int lineNumber) const
+	{
+		return selectedLines_.find(lineNumber) != selectedLines_.end();
 	}
 }

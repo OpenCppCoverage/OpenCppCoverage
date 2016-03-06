@@ -24,7 +24,7 @@
 
 namespace FileFilter
 {	
-	class FILEFILTER_DLL AmbigousPathException : public std::exception
+	class FILEFILTER_DLL AmbigousPathException : public std::runtime_error
 	{
 	public:		
 		AmbigousPathException(

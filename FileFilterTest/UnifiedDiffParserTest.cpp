@@ -107,7 +107,7 @@ namespace FileFilterTest
 
 		const auto& file = GetFile(files, "b/CppCoverage/ExecutedAddressManager.cpp");
 		const auto& lines = file.GetSelectedLines();
-		const std::vector<int> expectedLines = 
+		const std::set<int> expectedLines =
 				{93, 95, 105, 130, 132, 133, 134, 154, 155, 156, 158, 159, 160, 162};
 
 		ASSERT_EQ(expectedLines, lines);

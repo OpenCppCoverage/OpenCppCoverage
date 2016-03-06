@@ -21,6 +21,7 @@
 #include "FileFilter/PathMatcher.hpp"
 #include "FileFilter/File.hpp"
 #include "FileFilter/AmbigousPathException.hpp"
+#include "Tools.hpp"
 
 using namespace FileFilter;
 namespace fs = boost::filesystem;
@@ -35,17 +36,6 @@ namespace FileFilterTest
 			const auto* file = pathMatcher.Match(path);
 
 			return (file) ? file->GetPath().wstring() : L"No file found";
-		}
-
-		//-------------------------------------------------------------------------
-		std::vector<File> ToFiles(const std::vector<std::wstring>& filenames)
-		{
-			std::vector<File> files;
-
-			for (const auto& filename : filenames)
-				files.emplace_back(filename);
-
-			return files;
 		}
 	}
 

@@ -1,45 +1,32 @@
 // OpenCppCoverage is an open source code coverage for C++.
 // Copyright (C) 2016 OpenCppCoverage
-
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // any later version.
-
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
+#include "stdafx.h"
+#include "FileFilter/File.hpp"
 
-#include "FileFilterExport.hpp"
-#include <set>
-#include <boost/filesystem/path.hpp>
-
-namespace FileFilter
+namespace FileFilterTest
 {
-	class FILEFILTER_DLL File
+	//-----------------------------------------------------------------
+	std::vector<FileFilter::File> ToFiles(const std::vector<std::wstring>& filenames)
 	{
-	public:
-		explicit File(const boost::filesystem::path&);
-		File(File&&) = default;
+		std::vector<FileFilter::File> files;
 
-		void AddSelectedLines(const std::vector<int>&);
+		for (auto& filename : filenames)
+			files.emplace_back(filename);
 
-		const boost::filesystem::path& GetPath() const;
-		bool IsLineSelected(int) const;
-		const std::set<int>& GetSelectedLines() const;
-
-	private:
-		File(const File&) = delete;
-		File& operator=(const File&) = delete;
-
-		boost::filesystem::path path_;
-		std::set<int> selectedLines_;
-	};
+		return files;
+	}
 }
-
