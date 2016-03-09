@@ -216,22 +216,22 @@ namespace CppCoverage
 				for (const auto& unifiedDiff : *unifiedDiffCollection)
 				{
 					fs::path unifiedDiffPath;
-					boost::optional<fs::path> diffParentFolder;
+					boost::optional<fs::path> rootDiffFolder;
 
-					std::tie(unifiedDiffPath, diffParentFolder) = ExtractUnifiedDiffOption(unifiedDiff);
+					std::tie(unifiedDiffPath, rootDiffFolder) = ExtractUnifiedDiffOption(unifiedDiff);
 
 					if (!fs::is_regular_file(unifiedDiffPath))
 					{
 						throw OptionsParserException(
 							"Unified diff path " + unifiedDiffPath.string() + " does not exist.");
 					}
-					if (diffParentFolder && !is_directory(*diffParentFolder))
+					if (rootDiffFolder && !is_directory(*rootDiffFolder))
 					{
 						throw OptionsParserException(
-							"Unified diff root folder " + diffParentFolder->string() + " does not exist.");
+							"Unified diff root folder " + rootDiffFolder->string() + " does not exist.");
 					}
 
-					options.AddUnifiedDiffSettings(UnifiedDiffSettings{ unifiedDiffPath, diffParentFolder });
+					options.AddUnifiedDiffSettings(UnifiedDiffSettings{ unifiedDiffPath, rootDiffFolder });
 				}
 			}
 		}

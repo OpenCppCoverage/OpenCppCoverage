@@ -44,16 +44,16 @@ namespace FileFilter
 	//-------------------------------------------------------------------------
 	UnifiedDiffCoverageFilter::UnifiedDiffCoverageFilter(
 		const boost::filesystem::path& unifiedDiffPath,
-		const boost::optional<boost::filesystem::path>& diffParentFolder)
-		: UnifiedDiffCoverageFilter{ ParseUnifiedDiff(unifiedDiffPath), diffParentFolder }
+		const boost::optional<boost::filesystem::path>& rootDiffFolder)
+		: UnifiedDiffCoverageFilter{ ParseUnifiedDiff(unifiedDiffPath), rootDiffFolder }
 	{
 	}
 
 	//-------------------------------------------------------------------------
 	UnifiedDiffCoverageFilter::UnifiedDiffCoverageFilter(
 		std::vector<File>&& files,
-		const boost::optional<boost::filesystem::path>& diffParentFolder)
-		: pathMatcher_{ std::move(files), diffParentFolder }
+		const boost::optional<boost::filesystem::path>& rootDiffFolder)
+		: pathMatcher_{ std::move(files), rootDiffFolder }
 		, lastFile_ {nullptr}
 	{
 	}

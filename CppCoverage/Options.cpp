@@ -182,7 +182,7 @@ namespace CppCoverage
 		for (const auto& settings : options.unifiedDiffSettingsCollection_)
 		{
 			ostr << settings.GetUnifiedDiffPath() << L" Root folder: ";
-			ostr << settings.GetDiffParentFolder().get_value_or(L"") << std::endl;
+			ostr << settings.GetRootDiffFolder().get_value_or(L"") << std::endl;
 		}
 
 		return ostr;

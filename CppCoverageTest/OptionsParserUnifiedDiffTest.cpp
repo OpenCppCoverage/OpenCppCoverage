@@ -42,9 +42,9 @@ namespace CppCoverageTest
 				arguments.push_back(TestTools::OptionPrefix + cov::ProgramOptions::UnifiedDiffOption);
 
 				auto value = unifiedDiffSettings.GetUnifiedDiffPath().string();
-				auto diffParentFolder = unifiedDiffSettings.GetDiffParentFolder();
-				if (diffParentFolder)
-					value += cov::OptionsParser::UnifiedDiffSeparator + diffParentFolder->string();
+				auto rootDiffFolder = unifiedDiffSettings.GetRootDiffFolder();
+				if (rootDiffFolder)
+					value += cov::OptionsParser::UnifiedDiffSeparator + rootDiffFolder->string();
 				arguments.push_back(value);
 			}
 
@@ -80,7 +80,7 @@ namespace CppCoverageTest
 				[](const auto& setting1, const auto& setting2)
 			{
 				return setting1.GetUnifiedDiffPath() == setting2.GetUnifiedDiffPath()
-					&& setting1.GetDiffParentFolder() == setting2.GetDiffParentFolder();
+					&& setting1.GetRootDiffFolder() == setting2.GetRootDiffFolder();
 			});
 		}
 
@@ -113,13 +113,13 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST(OptionsParserUnifiedDifftTest, DiffParentFolder)
+	TEST(OptionsParserUnifiedDifftTest, RootDiffFolder)
 	{
 		CheckUnifiedDiffSettings({ __FILE__, fs::current_path() });
 	}
 
 	//-------------------------------------------------------------------------
-	TEST(OptionsParserUnifiedDifftTest, NotFoundDiffParentFolder)
+	TEST(OptionsParserUnifiedDifftTest, NotFoundRootDiffFolder)
 	{
 		ASSERT_TRUE(!!Parse({ __FILE__, boost::none }));
 		ASSERT_FALSE(!!Parse({ __FILE__, fs::path("Unknow") }));

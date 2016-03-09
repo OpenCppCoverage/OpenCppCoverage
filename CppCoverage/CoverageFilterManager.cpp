@@ -44,7 +44,7 @@ namespace CppCoverage
 			{
 				unifiedDiffCoverageFilters.emplace_back(
 					std::make_unique<FileFilter::UnifiedDiffCoverageFilter>(
-						unifiedDiffSettings.GetUnifiedDiffPath(), unifiedDiffSettings.GetDiffParentFolder()));
+						unifiedDiffSettings.GetUnifiedDiffPath(), unifiedDiffSettings.GetRootDiffFolder()));
 			}
 
 			return unifiedDiffCoverageFilters;
