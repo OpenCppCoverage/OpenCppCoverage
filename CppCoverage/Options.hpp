@@ -42,9 +42,10 @@ namespace CppCoverage
 			const Patterns& modulePatterns,
 			const Patterns& sourcePatterns,
 			const StartInfo*);
-
-		Options(Options&&) = default;
 		
+		Options(Options&&) = default;
+		~Options();
+
 		const Patterns& GetModulePatterns() const;
 		const Patterns& GetSourcePatterns() const;
 		const StartInfo* GetStartInfo() const;

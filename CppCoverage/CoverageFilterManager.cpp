@@ -22,18 +22,50 @@
 
 namespace CppCoverage
 {
+	namespace
+	{
+		//---------------------------------------------------------------------
+		template <typename Container, typename Fct>
+		bool AnyOfOrTrueIfEmpty(const Container& container, Fct fct)
+		{
+			if (container.empty())
+				return true;
+
+			return std::any_of(container.begin(), container.end(), fct);
+		}
+
+		//---------------------------------------------------------------------
+		CoverageFilterManager::UnifiedDiffCoverageFilters ToUnifiedDiffCoverageFilters(
+					const std::vector<UnifiedDiffSettings>& unifiedDiffSettingsCollection)
+		{
+			CoverageFilterManager::UnifiedDiffCoverageFilters unifiedDiffCoverageFilters;
+
+			for (const auto& unifiedDiffSettings : unifiedDiffSettingsCollection)
+			{
+				unifiedDiffCoverageFilters.emplace_back(
+					std::make_unique<FileFilter::UnifiedDiffCoverageFilter>(
+						unifiedDiffSettings.GetUnifiedDiffPath(), unifiedDiffSettings.GetDiffParentFolder()));
+			}
+
+			return unifiedDiffCoverageFilters;
+		}
+	}
+
 	//-------------------------------------------------------------------------
 	CoverageFilterManager::CoverageFilterManager(
 		const CoverageSettings& settings,
-		const UnifiedDiffSettings* unifiedDiffSettings)
-		: wildcardCoverageFilter_{ settings }
+		const std::vector<UnifiedDiffSettings>& unifiedDiffSettingsCollection)
+		: CoverageFilterManager{ settings, ToUnifiedDiffCoverageFilters(unifiedDiffSettingsCollection) }
 	{
-		if (unifiedDiffSettings)
-		{
-			unifiedDiffCoverageFilter_ =
-				std::make_unique<FileFilter::UnifiedDiffCoverageFilter>(
-					unifiedDiffSettings->GetUnifiedDiffPath(), unifiedDiffSettings->GetDiffParentFolder());
-		}
+	}
+
+	//-------------------------------------------------------------------------
+	CoverageFilterManager::CoverageFilterManager(
+		const CoverageSettings& settings,
+		UnifiedDiffCoverageFilters&& unifiedDiffCoverageFilters)
+		: wildcardCoverageFilter_{ settings }
+		, unifiedDiffCoverageFilters_( std::move(unifiedDiffCoverageFilters) )
+	{
 	}
 
 	//-------------------------------------------------------------------------
@@ -46,18 +78,21 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	bool CoverageFilterManager::IsSourceFileSelected(const std::wstring& filename) const
+	bool CoverageFilterManager::IsSourceFileSelected(const std::wstring& filename)
 	{
 		if (!wildcardCoverageFilter_.IsSourceFileSelected(filename))
 			return false;
 
-		return !unifiedDiffCoverageFilter_ || unifiedDiffCoverageFilter_->IsSourceFileSelected(filename);
+		return AnyOfOrTrueIfEmpty(unifiedDiffCoverageFilters_, [&](const auto& filter) {
+			return filter->IsSourceFileSelected(filename);
+		});
 	}
 
 	//-------------------------------------------------------------------------
-	bool CoverageFilterManager::IsLineSelected(const std::wstring& filename, int lineNumber) const
+	bool CoverageFilterManager::IsLineSelected(const std::wstring& filename, int lineNumber)
 	{
-		return !unifiedDiffCoverageFilter_
-			|| unifiedDiffCoverageFilter_->IsLineSelected(filename, lineNumber);
+		return AnyOfOrTrueIfEmpty(unifiedDiffCoverageFilters_, [&](const auto& filter) {
+			return filter->IsLineSelected(filename, lineNumber);
+		});
 	}
 }

@@ -56,11 +56,13 @@ namespace CppCoverage
 	CoverageData CodeCoverageRunner::RunCoverage(
 		const StartInfo& startInfo,
 		const CoverageSettings& coverageSettings,
+		const std::vector<UnifiedDiffSettings>& unifiedDiffSettingsCollection,
 		bool coverChildren)
 	{
 		Debugger debugger;
 
-		coverageFilterManager_ = std::make_unique<CoverageFilterManager>(coverageSettings, nullptr); // $$ TODO.
+		coverageFilterManager_ = std::make_unique<CoverageFilterManager>(
+			coverageSettings, unifiedDiffSettingsCollection);
 		int exitCode = debugger.Debug(startInfo, *this, coverChildren);
 		const auto& path = startInfo.GetPath();
 

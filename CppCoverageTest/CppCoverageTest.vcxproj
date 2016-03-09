@@ -173,6 +173,7 @@
     <ClCompile Include="CoverageDataMergerRandomTest.cpp" />
     <ClCompile Include="CoverageDataMergerTest.cpp" />
     <ClCompile Include="CoverageDataTest.cpp" />
+    <ClCompile Include="CoverageFilterManagerTest.cpp" />
     <ClCompile Include="WildcardCoverageFilterTest.cpp" />
     <ClCompile Include="CoverageRateComputerTest.cpp" />
     <ClCompile Include="CoverageRateTest.cpp" />
@@ -202,6 +203,9 @@
   <ItemGroup>
     <ProjectReference Include="..\CppCoverage\CppCoverage.vcxproj">
       <Project>{a50dd5a6-e85a-4e0b-9cc6-90d32503ce62}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\FileFilter\FileFilter.vcxproj">
+      <Project>{6fd7c5be-04bd-496d-a924-285a3e867814}</Project>
     </ProjectReference>
     <ProjectReference Include="..\TestCoverageSharedLib\TestCoverageSharedLib.vcxproj">
       <Project>{0481b51c-98f1-4e92-a51e-162b77ecd939}</Project>

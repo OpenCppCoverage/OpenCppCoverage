@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <vector>
 #include <memory>
 
 #include "CppCoverageExport.hpp"
@@ -35,18 +36,27 @@ namespace CppCoverage
 	class CPPCOVERAGE_DLL CoverageFilterManager: public ICoverageFilterManager
 	{
 	public:
-		explicit CoverageFilterManager(const CoverageSettings&, const UnifiedDiffSettings*);
+		explicit CoverageFilterManager(
+			const CoverageSettings&,
+			const std::vector<UnifiedDiffSettings>&);
+
+		using UnifiedDiffCoverageFilters = std::vector<std::unique_ptr<FileFilter::UnifiedDiffCoverageFilter>>;
+
+		explicit CoverageFilterManager(
+			const CoverageSettings&,
+			UnifiedDiffCoverageFilters&&);
+
 		~CoverageFilterManager();
 
 		bool IsModuleSelected(const std::wstring& filename) const override;
-		bool IsSourceFileSelected(const std::wstring& filename) const override;
-		bool IsLineSelected(const std::wstring& filename, int lineNumber) const override;
+		bool IsSourceFileSelected(const std::wstring& filename) override;
+		bool IsLineSelected(const std::wstring& filename, int lineNumber) override;
 
 	private:
 		CoverageFilterManager(const CoverageFilterManager&) = delete;
 		CoverageFilterManager& operator=(const CoverageFilterManager&) = delete;
 
 		WildcardCoverageFilter wildcardCoverageFilter_;
-		std::unique_ptr<FileFilter::UnifiedDiffCoverageFilter> unifiedDiffCoverageFilter_;
+		UnifiedDiffCoverageFilters unifiedDiffCoverageFilters_;
 	};
 }

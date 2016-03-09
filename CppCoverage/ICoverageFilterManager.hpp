@@ -29,8 +29,8 @@ namespace CppCoverage
 		virtual ~ICoverageFilterManager() = default;
 
 		virtual bool IsModuleSelected(const std::wstring& filename) const = 0;
-		virtual bool IsSourceFileSelected(const std::wstring& filename) const = 0;
-		virtual bool IsLineSelected(const std::wstring& filename, int lineNumber) const = 0;
+		virtual bool IsSourceFileSelected(const std::wstring& filename) = 0;
+		virtual bool IsLineSelected(const std::wstring& filename, int lineNumber) = 0;
 	};
 }
 

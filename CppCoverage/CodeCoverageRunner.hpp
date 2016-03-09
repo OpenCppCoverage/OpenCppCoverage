@@ -34,6 +34,7 @@ namespace CppCoverage
 	class BreakPoint;
 	class CoverageFilterManager;
 	class ExceptionHandler;
+	class UnifiedDiffSettings;
 
 	class CPPCOVERAGE_DLL CodeCoverageRunner : private IDebugEventsHandler, private IDebugInformationEventHandler
 	{
@@ -41,7 +42,11 @@ namespace CppCoverage
 		CodeCoverageRunner();
 		~CodeCoverageRunner();
 
-		CoverageData RunCoverage(const StartInfo&, const CoverageSettings&, bool coverChildren);
+		CoverageData RunCoverage(
+			const StartInfo&,
+			const CoverageSettings&,
+			const std::vector<UnifiedDiffSettings>&,
+			bool coverChildren);
 		size_t GetDebugInformationCount() const;
 
 	private:

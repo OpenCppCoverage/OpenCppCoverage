@@ -32,6 +32,7 @@
 #include "CppCoverage/Patterns.hpp"
 #include "CppCoverage/ExceptionHandler.hpp"
 #include "CppCoverage/CoverageDataMerger.hpp"
+#include "CppCoverage/UnifiedDiffSettings.hpp"
 
 #include "Tools/Log.hpp"
 #include "Tools/Tool.hpp"
@@ -111,7 +112,7 @@ namespace CppCoverageTest
 			for (const auto& argument: arguments)
 				startInfo.AddArgument(argument);
 
-			auto coverageData = codeCoverageRunner.RunCoverage(startInfo, coverageSettings, coverChildren);
+			auto coverageData = codeCoverageRunner.RunCoverage(startInfo, coverageSettings, {}, coverChildren);
 			if (codeCoverageRunner.GetDebugInformationCount() != 0)
 				throw std::runtime_error("Invalid number of DebugInformation.");
 

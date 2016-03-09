@@ -53,6 +53,9 @@ namespace CppCoverage
 	}	
 
 	//-------------------------------------------------------------------------
+	Options::~Options() = default;
+
+	//-------------------------------------------------------------------------
 	const Patterns& Options::GetModulePatterns() const
 	{
 		return modules_;
