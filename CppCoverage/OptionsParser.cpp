@@ -192,10 +192,54 @@ namespace CppCoverage
 				}
 			}
 		}
+
+		//----------------------------------------------------------------------------
+		std::pair<fs::path, boost::optional<fs::path>>
+			ExtractUnifiedDiffOption(const std::string& option)
+		{
+			auto pos = option.find(OptionsParser::UnifiedDiffSeparator);
+
+			if (pos == std::string::npos)
+				return{ option, boost::none };
+
+			return{ option.substr(0, pos), fs::path{option.substr(pos + 1)} };
+		}
+
+		//----------------------------------------------------------------------------
+		void AddUnifiedDiff(const po::variables_map& variables, Options& options)
+		{
+			auto unifiedDiffCollection = GetOptionalValue<std::vector<std::string>>(
+				variables, ProgramOptions::UnifiedDiffOption);
+
+			if (unifiedDiffCollection)
+			{
+				for (const auto& unifiedDiff : *unifiedDiffCollection)
+				{
+					fs::path unifiedDiffPath;
+					boost::optional<fs::path> diffParentFolder;
+
+					std::tie(unifiedDiffPath, diffParentFolder) = ExtractUnifiedDiffOption(unifiedDiff);
+
+					if (!fs::is_regular_file(unifiedDiffPath))
+					{
+						throw OptionsParserException(
+							"Unified diff path " + unifiedDiffPath.string() + " does not exist.");
+					}
+					if (diffParentFolder && !is_directory(*diffParentFolder))
+					{
+						throw OptionsParserException(
+							"Unified diff root folder " + diffParentFolder->string() + " does not exist.");
+					}
+
+					options.AddUnifiedDiffSettings(UnifiedDiffSettings{ unifiedDiffPath, diffParentFolder });
+				}
+			}
+		}
 	}
 		
 	//-------------------------------------------------------------------------
 	const char OptionsParser::ExportSeparator = ':';
+	const char OptionsParser::UnifiedDiffSeparator = '|';
 
 	//-------------------------------------------------------------------------
 	OptionsParser::OptionsParser()
@@ -296,6 +340,8 @@ namespace CppCoverage
 
 		AddExporTypes(variables, options);
 		AddInputCoverages(variables, options);
+		AddUnifiedDiff(variables, options);
+
 		if (!options.GetStartInfo() && options.GetInputCoveragePaths().empty())
 			throw OptionsParserException("You must specify a program to execute or use --" + ProgramOptions::InputCoverageValue);
 

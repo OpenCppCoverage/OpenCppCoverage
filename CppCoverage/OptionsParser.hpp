@@ -42,6 +42,7 @@ namespace CppCoverage
 	{
 	public:
 		static const char ExportSeparator;
+		static const char UnifiedDiffSeparator;
 
 		OptionsParser();
 		~OptionsParser();

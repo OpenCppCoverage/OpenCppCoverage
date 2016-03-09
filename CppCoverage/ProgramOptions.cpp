@@ -71,6 +71,15 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
+		std::string GetUnifiedDiffHelp()
+		{
+			return "Format: <unifiedDiffPath>|<rootFolder>\n"
+				"<unifiedDiffPath> path of the unified diff file. "
+				"Git user can use git diff output.\n"
+				"<rootFolder> (optional) root folder for paths in the diff file.";
+		}
+
+		//---------------------------------------------------------------------
 		void FillConfigurationOptions(
 			po::options_description& options, 
 			const std::vector<std::string>& exportTypes)
@@ -98,7 +107,9 @@ namespace CppCoverage
 				GetExportTypeText(exportTypes).c_str())
 				(ProgramOptions::WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")
 				(ProgramOptions::CoverChildrenOption.c_str(), "Enable code coverage for children processes.")
-				(ProgramOptions::NoAggregateByFileOption.c_str(), "Do not aggregate coverage for same file path.");
+				(ProgramOptions::NoAggregateByFileOption.c_str(), "Do not aggregate coverage for same file path.")
+				(ProgramOptions::UnifiedDiffOption.c_str(),
+					po::value<T_Strings>()->composing(), GetUnifiedDiffHelp().c_str());
 		}
 
 		//-------------------------------------------------------------------------
@@ -134,6 +145,7 @@ namespace CppCoverage
 	const std::string ProgramOptions::ExportTypeCoberturaValue = "cobertura";
 	const std::string ProgramOptions::ExportTypeBinaryValue = "binary";
 	const std::string ProgramOptions::InputCoverageValue = "input_coverage";
+	const std::string ProgramOptions::UnifiedDiffOption = "unified_diff";
 
 	//-------------------------------------------------------------------------
 	ProgramOptions::ProgramOptions(const std::vector<std::string>& exportTypes)

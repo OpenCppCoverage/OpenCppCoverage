@@ -146,6 +146,18 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	void Options::AddUnifiedDiffSettings(UnifiedDiffSettings&& unifiedDiffSettings)
+	{
+		unifiedDiffSettingsCollection_.push_back(std::move(unifiedDiffSettings));
+	}
+
+	//-------------------------------------------------------------------------
+	const std::vector<UnifiedDiffSettings>& Options::GetUnifiedDiffSettingsCollection() const
+	{
+		return unifiedDiffSettingsCollection_;
+	}
+
+	//-------------------------------------------------------------------------
 	std::wostream& operator<<(std::wostream& ostr, const Options& options)
 	{
 		if (options.optionalStartInfo_)
@@ -159,11 +171,20 @@ namespace CppCoverage
 		ostr << L"Export: ";
 		for (const auto& optionExport : options.exports_)
 			ostr << optionExport << L" ";
+		ostr << std::endl;
 
 		ostr << L"Input coverage: ";
 		for (const auto& path : options.inputCoveragePaths_)
 			ostr << path.wstring() << L" ";
 		ostr << std::endl;
+
+		ostr << L"Unified diff: ";
+		for (const auto& settings : options.unifiedDiffSettingsCollection_)
+		{
+			ostr << settings.GetUnifiedDiffPath() << L" Root folder: ";
+			ostr << settings.GetDiffParentFolder().get_value_or(L"") << std::endl;
+		}
+
 		return ostr;
 	}
 }

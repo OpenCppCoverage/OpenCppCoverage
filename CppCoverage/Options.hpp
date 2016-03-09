@@ -20,13 +20,14 @@
 #include <boost/filesystem.hpp>
 
 #include "CppCoverageExport.hpp"
-#include "CppCoverage/Patterns.hpp"
-#include "CppCoverage/StartInfo.hpp"
+#include "Patterns.hpp"
+#include "StartInfo.hpp"
+#include "UnifiedDiffSettings.hpp"
+#include "OptionsExport.hpp"
 
 namespace CppCoverage
 {
 	class Patterns;	
-	class OptionsExport;
 	
 	enum class LogLevel
 	{
@@ -68,6 +69,9 @@ namespace CppCoverage
 		void AddInputCoveragePath(const boost::filesystem::path&);
 		const std::vector<boost::filesystem::path>& GetInputCoveragePaths() const;
 
+		void AddUnifiedDiffSettings(UnifiedDiffSettings&&);
+		const std::vector<UnifiedDiffSettings>& GetUnifiedDiffSettingsCollection() const;
+
 		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream&, const Options&);
 
 	private:
@@ -85,5 +89,6 @@ namespace CppCoverage
 		bool isAggregateByFileModeEnabled_;
 		std::vector<OptionsExport> exports_;
 		std::vector<boost::filesystem::path> inputCoveragePaths_;
+		std::vector<UnifiedDiffSettings> unifiedDiffSettingsCollection_;
 	};
 }
