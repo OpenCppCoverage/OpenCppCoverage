@@ -24,6 +24,8 @@
 #include "CppCoverageException.hpp"
 #include "IDebugEventsHandler.hpp"
 
+#include "Tools/Tool.hpp"
+
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
@@ -164,9 +166,9 @@ namespace CppCoverage
 			}
 			case IDebugEventsHandler::ExceptionType::InvalidBreakPoint:
 			{
-				LOG_WARNING << "--------------------------------------------------------------------------------";
+				LOG_WARNING << Tools::GetSeparatorLine();
 				LOG_WARNING << "It seems there is an assertion failure or you call DebugBreak() in your program.";
-				LOG_WARNING << "--------------------------------------------------------------------------------";
+				LOG_WARNING << Tools::GetSeparatorLine();
 
 				return ProcessStatus( EXCEPTION_BREAKPOINT, DBG_CONTINUE );
 			}

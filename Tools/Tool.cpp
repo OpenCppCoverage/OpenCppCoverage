@@ -181,12 +181,17 @@ namespace Tools
 		const std::wstring& message, 
 		const boost::filesystem::path& path)
 	{
-		auto separators = L"----------------------------------------------------";
-		LOG_INFO << separators;
+		LOG_INFO << GetSeparatorLine();
 		LOG_INFO << message << path.wstring();
-		LOG_INFO << separators;
+		LOG_INFO << GetSeparatorLine();
 	}
 
+	//-------------------------------------------------------------------------
+	std::wstring GetSeparatorLine()
+	{
+		return L"----------------------------------------------------";
+	}
+	
 	//---------------------------------------------------------------------
 	void CreateParentFolderIfNeeded(const boost::filesystem::path& path)
 	{

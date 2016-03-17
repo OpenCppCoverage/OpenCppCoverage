@@ -18,6 +18,7 @@
 #include "ExceptionHandler.hpp"
 
 #include "Tools/ScopedAction.hpp"
+#include "Tools/Tool.hpp"
 
 namespace CppCoverage
 {
@@ -90,11 +91,11 @@ namespace CppCoverage
 		}
 				
 		message << std::endl << std::endl;
-		message << L"-----------------------------------------------" << std::endl;
+		message << Tools::GetSeparatorLine() << std::endl;
 		message << L"*** ";
 		message << UnhandledExceptionErrorMessage << exceptionRecord.ExceptionCode;
 		message << L": " << GetExceptionStrFromCode(exceptionRecord.ExceptionCode) << std::endl;
-		message << L"-----------------------------------------------" << std::endl;
+		message << Tools::GetSeparatorLine() << std::endl;
 
 		return ExceptionHandlerStatus::Fatal;
 	}

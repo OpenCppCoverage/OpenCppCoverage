@@ -29,16 +29,13 @@ namespace Tools
 	TOOLS_DLL std::string ToString(const std::wstring&);
 	TOOLS_DLL void Try(std::function<void()>);	
 	TOOLS_DLL boost::filesystem::path GetTemplateFolder();
-
-	TOOLS_DLL boost::filesystem::path MakeRelativeFrom(
-		const boost::filesystem::path& absolutePath, 
-		const boost::filesystem::path& currentFolder);
-
+	
 	TOOLS_DLL boost::filesystem::path GetUniquePath(const boost::filesystem::path& prefix);
 
 	TOOLS_DLL void CreateMiniDumpOnUnHandledException();
 
 	TOOLS_DLL void ShowOutputMessage(const std::wstring& message, const boost::filesystem::path& path);
+	TOOLS_DLL std::wstring GetSeparatorLine();
 
 	TOOLS_DLL void CreateParentFolderIfNeeded(const boost::filesystem::path& path);
 }
