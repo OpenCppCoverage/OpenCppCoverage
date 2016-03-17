@@ -41,6 +41,7 @@ namespace FileFilter
 
 		bool IsSourceFileSelected(const boost::filesystem::path&);
 		bool IsLineSelected(const boost::filesystem::path&, int lineNumber);
+		std::vector<boost::filesystem::path> GetUnmatchedPaths() const;
 
 	private:
 		UnifiedDiffCoverageFilter(const UnifiedDiffCoverageFilter&) = delete;

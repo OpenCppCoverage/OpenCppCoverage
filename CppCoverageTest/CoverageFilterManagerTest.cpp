@@ -59,6 +59,19 @@ namespace CppCoverageTest
 
 			return std::make_unique<cov::CoverageFilterManager>(coverageSettings, std::move(filters));
 		}
+
+		//-------------------------------------------------------------------------
+		size_t GetUnmatchPathsCount(size_t pathCount, size_t maxUnmatchPaths)
+		{
+			std::vector<fs::path> paths;
+
+			for (size_t i = 0; i < pathCount; ++i)
+				paths.push_back("path" + std::to_string(i));
+			auto coverageFilterManager = CreateCoverageFilterManager(paths, { L"*" });
+			
+			auto messageLineCount = coverageFilterManager->ComputeWarningMessageLines(0).size();
+			return coverageFilterManager->ComputeWarningMessageLines(maxUnmatchPaths).size() - messageLineCount;
+		}
 	}
 
 	//-------------------------------------------------------------------------
@@ -83,5 +96,23 @@ namespace CppCoverageTest
 		ASSERT_TRUE(coverageFilterManager->IsSourceFileSelected(diff.wstring()));
 		ASSERT_TRUE(coverageFilterManager->IsSourceFileSelected(diff2.wstring()));
 		ASSERT_FALSE(coverageFilterManager->IsSourceFileSelected(L"Unknow"));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(CoverageFilterManagerTest, GetWarningMessageLine)
+	{
+		size_t pathCount = 10;
+		size_t maxUnmatchPaths = 20;
+
+		ASSERT_EQ(pathCount - 1, GetUnmatchPathsCount(pathCount, maxUnmatchPaths));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(CoverageFilterManagerTest, GetWarningMessageLineTrunc)
+	{
+		size_t pathCount = 10;
+		size_t maxUnmatchPaths = 5;
+
+		ASSERT_EQ(maxUnmatchPaths, GetUnmatchPathsCount(pathCount, maxUnmatchPaths));
 	}
 }

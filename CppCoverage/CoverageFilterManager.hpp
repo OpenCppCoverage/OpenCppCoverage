@@ -18,10 +18,19 @@
 
 #include <vector>
 #include <memory>
+#include <set>
 
 #include "CppCoverageExport.hpp"
 #include "WildcardCoverageFilter.hpp"
 #include "ICoverageFilterManager.hpp"
+
+namespace boost
+{
+	namespace filesystem
+	{
+		class path;
+	}
+}
 
 namespace FileFilter
 {
@@ -52,9 +61,15 @@ namespace CppCoverage
 		bool IsSourceFileSelected(const std::wstring& filename) override;
 		bool IsLineSelected(const std::wstring& filename, int lineNumber) override;
 
+		std::vector<std::wstring> ComputeWarningMessageLines(size_t maxUnmatchPaths) const;
+
 	private:
 		CoverageFilterManager(const CoverageFilterManager&) = delete;
 		CoverageFilterManager& operator=(const CoverageFilterManager&) = delete;
+
+		std::vector<std::wstring> ComputeWarningMessageLines(
+			const std::set<boost::filesystem::path>& unmatchPaths,
+			size_t maxUnmatchPaths) const;
 
 		WildcardCoverageFilter wildcardCoverageFilter_;
 		UnifiedDiffCoverageFilters unifiedDiffCoverageFilters_;

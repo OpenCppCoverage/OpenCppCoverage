@@ -133,12 +133,16 @@ namespace OpenCppCoverage
 			
 			if (startInfo)
 			{
+				size_t maxUnmatchPathsForWarning = (options.GetLogLevel() == cov::LogLevel::Verbose) 
+					? std::numeric_limits<size_t>::max() : 30;
+		
 				coveraDatas.push_back(
 					codeCoverageRunner.RunCoverage(
 						*startInfo,
 						settings,
 						options.GetUnifiedDiffSettingsCollection(),
-						options.IsCoverChildrenModeEnabled()));
+						options.IsCoverChildrenModeEnabled(),
+						maxUnmatchPathsForWarning));
 			}
 			cov::CoverageDataMerger	coverageDataMerger;
 

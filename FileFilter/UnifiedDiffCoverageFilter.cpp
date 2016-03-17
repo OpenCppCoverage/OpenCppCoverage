@@ -101,4 +101,10 @@ namespace FileFilter
 		lastPath_ = path;
 		return lastFile_;
 	}
+
+	//-------------------------------------------------------------------------
+	std::vector<boost::filesystem::path> UnifiedDiffCoverageFilter::GetUnmatchedPaths() const
+	{
+		return pathMatcher_.GetUnmatchedPaths();
+	}
 }

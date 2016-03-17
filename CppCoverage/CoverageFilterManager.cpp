@@ -19,6 +19,8 @@
 #include "UnifiedDiffSettings.hpp"
 
 #include "FileFilter/UnifiedDiffCoverageFilter.hpp"
+#include "ProgramOptions.hpp"
+#include "Tools/Tool.hpp"
 
 namespace CppCoverage
 {
@@ -94,5 +96,49 @@ namespace CppCoverage
 		return AnyOfOrTrueIfEmpty(unifiedDiffCoverageFilters_, [&](const auto& filter) {
 			return filter->IsLineSelected(filename, lineNumber);
 		});
+	}
+
+	//-------------------------------------------------------------------------
+	std::vector<std::wstring> CoverageFilterManager::ComputeWarningMessageLines(size_t maxUnmatchPaths) const
+	{
+		std::set<boost::filesystem::path> unmatchPaths;
+
+		for (const auto& filter : unifiedDiffCoverageFilters_)
+		{
+			auto paths = filter->GetUnmatchedPaths();
+			unmatchPaths.insert(paths.begin(), paths.end());
+		}
+
+		return ComputeWarningMessageLines(unmatchPaths, maxUnmatchPaths);
+	}
+
+	//-------------------------------------------------------------------------
+	std::vector<std::wstring> CoverageFilterManager::ComputeWarningMessageLines(
+		const std::set<boost::filesystem::path>& unmatchPaths,
+		size_t maxUnmatchPaths) const
+	{
+		std::vector<std::wstring> messageLines;
+		if (!unmatchPaths.empty())
+		{
+			messageLines.push_back(Tools::GetSeparatorLine());
+			messageLines.push_back(L"You have " + std::to_wstring(unmatchPaths.size())
+				+ L" path(s) inside unified diff file(s) that were ignored");
+			messageLines.push_back(L"because they did not match any path from pdb files.");
+			messageLines.push_back(L"To see all files use --" + 
+				Tools::ToWString(ProgramOptions::VerboseOption));
+
+			size_t i = 0;
+			for (const auto& path : unmatchPaths)
+			{
+				if (i++ >= maxUnmatchPaths)
+				{
+					messageLines.push_back(L"\t...");
+					break;
+				}
+				messageLines.push_back(L"\t- " + path.wstring());
+			}
+		}
+
+		return messageLines;
 	}
 }
