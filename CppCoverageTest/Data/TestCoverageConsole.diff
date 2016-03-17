@@ -1,0 +1,23 @@
+diff --git TestCoverageConsole/TestCoverageConsole.cpp TestCoverageConsole/TestCoverageConsole.cpp
+index 4e9c77e..7e1a50d 100644
+--- TestCoverageConsole/TestCoverageConsole.cpp
++++ TestCoverageConsole/TestCoverageConsole.cpp
+@@ -52,7 +52,7 @@ namespace
+ //-----------------------------------------------------------------------------
+ int _tmain(int argc, _TCHAR* argv[])
+ {	
+-	if (argc < 2)
++	if (argc < 2) 
+ 		std::wcout << L"Invalid number of argument:  " << argc << std::endl;
+ 	else
+ 	{
+@@ -79,7 +79,7 @@ int _tmain(int argc, _TCHAR* argv[])
+ 		else if (type == TestCoverageConsole::TestSpecialLineInfo)
+ 			TestCoverageConsole::SpecialLineInfo();
+ 		else
+-			std::wcerr << L"Unsupported type:" << type << std::endl;
++			std::wcerr << L"Unsupported type:" << type << std::endl; 
+ 	}
+-	return 0;	
++	return 0;
+ }

@@ -40,4 +40,3 @@ namespace CppCoverage
 		return rootDiffFolder_;
 	}
 }
-

@@ -42,5 +42,3 @@ namespace CppCoverage
 		boost::optional<boost::filesystem::path> rootDiffFolder_;
 	};
 }
-
-

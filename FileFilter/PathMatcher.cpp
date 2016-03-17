@@ -31,7 +31,19 @@
 namespace fs = boost::filesystem;
 
 namespace FileFilter
-{		
+{	
+	namespace
+	{
+		//---------------------------------------------------------------------
+		fs::path NormalizePath(const fs::path& path)
+		{
+			fs::path lowerPath = boost::algorithm::to_lower_copy(path.wstring());
+			lowerPath.make_preferred();
+
+			return lowerPath;
+		}
+	}
+
 	//-------------------------------------------------------------------------
 	class PathMatcher::IPathMatcherEngine
 	{
@@ -50,10 +62,9 @@ namespace FileFilter
 		{			
 			for (auto&& file : files)
 			{
-				const auto& filename = file.GetPath().filename();
-				const auto filenameStr = boost::algorithm::to_lower_copy(filename.wstring());
-
-				postFixPathByFilename_[filenameStr].emplace_back(std::move(file));
+				auto path = NormalizePath(file.GetPath());
+				auto filename = path.filename().wstring();
+				postFixPathByFilename_[filename].emplace_back(std::move(file));
 			}			
 		}
 
@@ -68,8 +79,9 @@ namespace FileFilter
 						
 			for (auto& pathData : it->second)
 			{
-				const auto& postFixPath = pathData.postFixPath_.GetPath();
-				if (boost::algorithm::iends_with(path.wstring(), postFixPath.wstring()))
+				auto postFixPath = NormalizePath(pathData.postFixPath_.GetPath());
+
+				if (boost::algorithm::ends_with(path.wstring(), postFixPath.wstring()))
 				{
 					if (pathData.matchedPath_ && 
 						!boost::algorithm::iequals(pathData.matchedPath_->wstring(), path.wstring()))

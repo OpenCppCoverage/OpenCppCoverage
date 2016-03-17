@@ -93,7 +93,7 @@ namespace FileFilter
 			ostr << "A path is ambiguous in the unified diff file." << std::endl;
 			ostr << e.GetPostFixPath() << " can be either " << e.GetFirstPossiblePath();
 			ostr << " or " << e.GetSecondPossiblePath() << std::endl;
-			ostr << "Please specify root folder. See help for diff more information."; // $$ Update this message
+			ostr << "Please specify root folder. See help for more information.";
 
 			throw std::runtime_error(ostr.str());
 		}

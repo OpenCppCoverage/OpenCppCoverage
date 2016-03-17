@@ -88,6 +88,7 @@ namespace CppCoverageTest
 			const std::vector<std::wstring>& arguments,
 			const std::vector<std::wstring>& modulePatternCollection,
 			const std::vector<std::wstring>& sourcePatternCollection,
+			const std::vector<cov::UnifiedDiffSettings>& unifiedDiffSettingsCollection = {},
 			bool coverChildren = true)
 		{
 			cov::CodeCoverageRunner codeCoverageRunner;
@@ -112,7 +113,8 @@ namespace CppCoverageTest
 			for (const auto& argument: arguments)
 				startInfo.AddArgument(argument);
 
-			auto coverageData = codeCoverageRunner.RunCoverage(startInfo, coverageSettings, {}, coverChildren);
+			auto coverageData = codeCoverageRunner.RunCoverage(
+				startInfo, coverageSettings, unifiedDiffSettingsCollection, coverChildren);
 			if (codeCoverageRunner.GetDebugInformationCount() != 0)
 				throw std::runtime_error("Invalid number of DebugInformation.");
 
@@ -124,9 +126,11 @@ namespace CppCoverageTest
 			const std::vector<std::wstring>& arguments,
 			const std::wstring& modulePattern,
 			const std::wstring& sourcePattern,
+			const std::vector<cov::UnifiedDiffSettings>& unifiedDiffSettingsCollection = {},
 			bool coverChildren = true)
 		{
-			return ComputeCoverageDataPatterns(arguments, { modulePattern }, { sourcePattern }, coverChildren);
+			return ComputeCoverageDataPatterns(
+				arguments, { modulePattern }, { sourcePattern }, unifiedDiffSettingsCollection, coverChildren);
 		}
 
 		//---------------------------------------------------------------------
@@ -266,8 +270,8 @@ namespace CppCoverageTest
 		const auto modulePattern = TestCoverageConsole::GetOutputBinaryPath().wstring();
 		const auto sourcePattern = TestCoverageConsole::GetMainCppFilename().wstring();
 
-		auto rootAndChildProcess = ComputeCoverageData(arguments, modulePattern, sourcePattern, true);
-		auto rootProcessOnly = ComputeCoverageData(arguments, modulePattern, sourcePattern, false);
+		auto rootAndChildProcess = ComputeCoverageData(arguments, modulePattern, sourcePattern, {}, true);
+		auto rootProcessOnly = ComputeCoverageData(arguments, modulePattern, sourcePattern, {}, false);
 
 		const auto& rootOnlyModules = rootProcessOnly.GetModules();
 		const auto& rootAndChildModules = rootAndChildProcess.GetModules();
@@ -339,5 +343,26 @@ namespace CppCoverageTest
 		ASSERT_TRUE(boost::algorithm::iequals(specialLineInfoFilename, file.GetPath().filename().wstring()));
 		for (const auto& lineInfo : file.GetLines())
 			ASSERT_TRUE(lineInfo.HasBeenExecuted());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, UnifiedDiff)
+	{
+		const auto modulePattern = TestCoverageConsole::GetOutputBinaryPath().wstring();
+		const auto sourcePattern = TestCoverageConsole::GetMainCppPath().wstring();
+		std::vector<cov::UnifiedDiffSettings> unifiedDiffSettingsCollection;
+		auto diffPath = boost::filesystem::path(PROJECT_DIR) / "Data" / "TestCoverageConsole.diff";
+
+		unifiedDiffSettingsCollection.push_back({diffPath, boost::none});
+		auto coverageData = ComputeCoverageData(
+			{ TestCoverageConsole::TestBasic }, 
+			modulePattern, sourcePattern, 
+			unifiedDiffSettingsCollection);
+		const auto& file = GetFirstFileCoverage(coverageData);
+		ASSERT_EQ(3, file.GetLines().size());
+		int mainLine = TestCoverageConsole::GetTestCoverageConsoleCppMainLine();
+		TestLine(file, mainLine + 2, true);
+		TestLine(file, mainLine + 29, false);
+		TestLine(file, mainLine + 31, true);
 	}
 }

@@ -11,6 +11,7 @@ ipch/*
 *.user
 *.ipch
 *.log
+*.opendb
 CoverageReport-*
 NewRelease
 TestResults/

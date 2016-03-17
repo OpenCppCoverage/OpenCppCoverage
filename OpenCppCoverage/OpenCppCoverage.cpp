@@ -26,7 +26,6 @@
 #include "CppCoverage/ProgramOptions.hpp"
 #include "CppCoverage/CoverageDataMerger.hpp"
 #include "CppCoverage/OptionsExport.hpp"
-#include "CppCoverage/UnifiedDiffSettings.hpp" // $$ To Remove
 
 #include "Exporter/Html/HtmlExporter.hpp"
 #include "Exporter/CoberturaExporter.hpp"
@@ -138,7 +137,7 @@ namespace OpenCppCoverage
 					codeCoverageRunner.RunCoverage(
 						*startInfo,
 						settings,
-						{}, // $$ Todo
+						options.GetUnifiedDiffSettingsCollection(),
 						options.IsCoverChildrenModeEnabled()));
 			}
 			cov::CoverageDataMerger	coverageDataMerger;
