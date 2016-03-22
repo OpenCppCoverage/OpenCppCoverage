@@ -349,7 +349,7 @@ namespace CppCoverageTest
 	TEST_F(CodeCoverageRunnerTest, UnifiedDiff)
 	{
 		const auto modulePattern = TestCoverageConsole::GetOutputBinaryPath().wstring();
-		const auto sourcePattern = TestCoverageConsole::GetMainCppPath().wstring();
+		const auto sourcePattern = TestCoverageConsole::GetMainCppFilename().wstring();
 		std::vector<cov::UnifiedDiffSettings> unifiedDiffSettingsCollection;
 		auto diffPath = boost::filesystem::path(PROJECT_DIR) / "Data" / "TestCoverageConsole.diff";
 
