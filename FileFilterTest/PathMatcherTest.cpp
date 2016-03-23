@@ -60,9 +60,9 @@ namespace FileFilterTest
 	TEST(PathMatcherTest, PostFixAmgigousPath)
 	{
 		std::vector<File> files;
-		const fs::path filename{ L"Test.txt" };
-		const fs::path test1{ L"Test1" / filename };
-		const fs::path test2{ L"Test2" / filename };
+		const fs::path filename{ L"test.txt" };
+		const fs::path test1{ L"test1" / filename };
+		const fs::path test2{ L"test2" / filename };
 		files.emplace_back(filename);
 		
 		PathMatcher pathMatcher{ std::move(files), boost::none };

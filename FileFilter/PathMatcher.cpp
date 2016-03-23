@@ -71,7 +71,8 @@ namespace FileFilter
 		//-----------------------------------------------------------------
 		File* Match(const fs::path& path) override
 		{		
-			const auto filenameStr = boost::algorithm::to_lower_copy(path.filename().wstring());
+			const auto normalizedPath = NormalizePath(path);
+			const auto filenameStr = normalizedPath.filename().wstring();
 			auto it = postFixPathByFilename_.find(filenameStr);
 
 			if (it == postFixPathByFilename_.end())
@@ -81,15 +82,15 @@ namespace FileFilter
 			{
 				auto postFixPath = NormalizePath(pathData.postFixPath_.GetPath());
 
-				if (boost::algorithm::ends_with(path.wstring(), postFixPath.wstring()))
+				if (boost::algorithm::ends_with(normalizedPath.wstring(), postFixPath.wstring()))
 				{
 					if (pathData.matchedPath_ && 
-						!boost::algorithm::iequals(pathData.matchedPath_->wstring(), path.wstring()))
+						!boost::algorithm::equals(pathData.matchedPath_->wstring(), normalizedPath.wstring()))
 					{
 						throw AmbiguousPathException(postFixPath,
-							*pathData.matchedPath_, path);
+							*pathData.matchedPath_, normalizedPath);
 					}
-					pathData.matchedPath_ = path;
+					pathData.matchedPath_ = normalizedPath;
 					return &pathData.postFixPath_;
 				}
 			}
