@@ -33,6 +33,9 @@ namespace FileFilter
 	class FILEFILTER_DLL UnifiedDiffParser
 	{
 	public:
+		const static std::wstring FromFilePrefix;
+		const static std::wstring ToFilePrefix;
+
 		UnifiedDiffParser() = default;
 				
 		std::vector<File> Parse(std::wistream&) const;		
@@ -56,6 +59,11 @@ namespace FileFilter
 							const std::wstring& hunksDifferencesLine) const;
 
 		void ThrowError(const Stream&, const std::wstring&) const;
+
+		void FillUpdatedLines(
+			const std::wstring& line,
+			std::vector<File>& files,
+			Stream& stream) const;
 	};
 }
 

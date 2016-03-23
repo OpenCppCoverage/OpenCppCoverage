@@ -180,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\test.diff" />
+    <None Include="Data\test_git.diff" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

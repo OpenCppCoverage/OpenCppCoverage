@@ -27,7 +27,6 @@ namespace FileFilter
 	class FILEFILTER_DLL UnifiedDiffParserException : public std::runtime_error
 	{
 	public:
-		static const std::wstring FromFilePrefix;
 		static const std::wstring ErrorContextHunks;
 		static const std::wstring ErrorNoFilenameBeforeHunks;
 		static const std::wstring ErrorCannotReadLine;

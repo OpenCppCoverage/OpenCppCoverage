@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="AmbiguousPathException.hpp" />
     <ClInclude Include="File.hpp" />
+    <ClInclude Include="FileFilterException.hpp" />
     <ClInclude Include="FileFilterExport.hpp" />
     <ClInclude Include="PathMatcher.hpp" />
     <ClInclude Include="stdafx.h" />

@@ -25,6 +25,7 @@
 #include "Tools/Tool.hpp"
 
 using namespace FileFilter;
+namespace fs = boost::filesystem;
 
 namespace FileFilterTest
 {
@@ -33,7 +34,7 @@ namespace FileFilterTest
 		//-------------------------------------------------------------------------
 		const File& GetFile(
 			const std::vector<File>& files,
-			const boost::filesystem::path& path)
+			const fs::path& path)
 		{
 			auto it = std::find_if(files.begin(), files.end(),
 				[&](const File& file) { return file.GetPath() == path; });
@@ -46,11 +47,19 @@ namespace FileFilterTest
 		//-------------------------------------------------------------------------
 		int GetSelectedLinesCount(
 			const std::vector<File>& files, 
-			const boost::filesystem::path& path)
+			const fs::path& path)
 		{
 			const auto& file = GetFile(files, path);
 			return file.GetSelectedLines().size();
 		}		
+
+		//---------------------------------------------------------------------------
+		void CheckEqual(const std::vector<File>& files1, const std::vector<File>& files2)
+		{
+			ASSERT_EQ(files1.size(), files2.size());
+			for (size_t i = 0; i < files1.size(); ++i)
+				ASSERT_EQ(files1[i], files2[i]);
+		}
 
 		//---------------------------------------------------------------------
 		struct UnifiedDiffParserTest : public testing::Test
@@ -74,8 +83,14 @@ namespace FileFilterTest
 				return L"";
 			}
 
+			//--------------------------------------------------------------------------
+			static fs::path GetFullPath(const std::wstring& filename)
+			{
+				return fs::path(PROJECT_DIR) / L"Data" / filename;
+			}
+
 			UnifiedDiffParser unifiedDiffParser_;
-			const boost::filesystem::path diffPath_{ boost::filesystem::path(PROJECT_DIR)/ "Data" / "test.diff" };
+			const fs::path diffPath_{ GetFullPath(L"test.diff") };
 		};
 	}
 		
@@ -85,18 +100,17 @@ namespace FileFilterTest
 		std::wifstream diffFile{ diffPath_.string() };
 		auto files = unifiedDiffParser_.Parse(diffFile);
 		
-		ASSERT_EQ(1, GetSelectedLinesCount(files, "b/CppCoverage/CodeCoverageRunner.cpp"));
-		ASSERT_EQ(3, GetSelectedLinesCount(files, "b/CppCoverage/CoverageData.cpp"));
-		ASSERT_EQ(2, GetSelectedLinesCount(files, "b/CppCoverage/CoverageData.hpp"));
-		ASSERT_EQ(14, GetSelectedLinesCount(files, "b/CppCoverage/ExecutedAddressManager.cpp"));
-		ASSERT_EQ(6, GetSelectedLinesCount(files, "b/CppCoverage/ExecutedAddressManager.hpp"));
-		ASSERT_EQ(4, GetSelectedLinesCount(files, "b/CppCoverageTest/CodeCoverageRunnerTest.cpp"));
-		ASSERT_EQ(4, GetSelectedLinesCount(files, "b/CppCoverageTest/ExecutedAddressManagerTest.cpp"));
-		ASSERT_EQ(1, GetSelectedLinesCount(files, "b/PropertySheets/Default.props"));
-		ASSERT_EQ(0, GetSelectedLinesCount(files, "b/TestHelper/Container.hpp"));
-		ASSERT_EQ(0, GetSelectedLinesCount(files, "b/TestHelper/Container.inl"));
-		ASSERT_EQ(0, GetSelectedLinesCount(files, "b/TestHelper/CoverageDataComparer.cpp"));
-		ASSERT_EQ(0, GetSelectedLinesCount(files, "b/TestHelper/CoverageDataComparer.hpp"));
+		ASSERT_EQ(1, GetSelectedLinesCount(files, "CppCoverage/CodeCoverageRunner.cpp"));
+		ASSERT_EQ(3, GetSelectedLinesCount(files, "CppCoverage/CoverageData.cpp"));
+		ASSERT_EQ(2, GetSelectedLinesCount(files, "CppCoverage/CoverageData.hpp"));
+		ASSERT_EQ(14, GetSelectedLinesCount(files, "CppCoverage/ExecutedAddressManager.cpp"));
+		ASSERT_EQ(6, GetSelectedLinesCount(files, "CppCoverage/ExecutedAddressManager.hpp"));
+		ASSERT_EQ(4, GetSelectedLinesCount(files, "CppCoverageTest/CodeCoverageRunnerTest.cpp"));
+		ASSERT_EQ(4, GetSelectedLinesCount(files, "CppCoverageTest/ExecutedAddressManagerTest.cpp"));
+		ASSERT_EQ(0, GetSelectedLinesCount(files, "TestHelper/Container.hpp"));
+		ASSERT_EQ(0, GetSelectedLinesCount(files, "TestHelper/Container.inl"));
+		ASSERT_EQ(0, GetSelectedLinesCount(files, "TestHelper/CoverageDataComparer.cpp"));
+		ASSERT_EQ(0, GetSelectedLinesCount(files, "TestHelper/CoverageDataComparer.hpp"));
 	}
 
 	//-------------------------------------------------------------------------
@@ -105,7 +119,7 @@ namespace FileFilterTest
 		std::wifstream diffFile{ diffPath_.string() };
 		auto files = unifiedDiffParser_.Parse(diffFile);
 
-		const auto& file = GetFile(files, "b/CppCoverage/ExecutedAddressManager.cpp");
+		const auto& file = GetFile(files, "CppCoverage/ExecutedAddressManager.cpp");
 		const auto& lines = file.GetSelectedLines();
 		const std::set<int> expectedLines =
 				{93, 95, 105, 130, 132, 133, 134, 154, 155, 156, 158, 159, 160, 162};
@@ -124,28 +138,28 @@ namespace FileFilterTest
 	TEST_F(UnifiedDiffParserTest, ErrorCannotReadLine)
 	{
 		ASSERT_EQ(UnifiedDiffParserException::ErrorCannotReadLine,
-			GetError(L"---"));
+			GetError(UnifiedDiffParser::FromFilePrefix));
 	}
 	
 	//-------------------------------------------------------------------------
 	TEST_F(UnifiedDiffParserTest, ErrorExpectFromFilePrefix)
 	{
 		ASSERT_EQ(UnifiedDiffParserException::ErrorExpectFromFilePrefix,
-			GetError(L"---\nXXX"));
+			GetError(UnifiedDiffParser::FromFilePrefix + L"\nXXX"));
 	}
 	
 	//-------------------------------------------------------------------------
 	TEST_F(UnifiedDiffParserTest, ErrorInvalidHunks)
 	{
 		ASSERT_EQ(UnifiedDiffParserException::ErrorInvalidHunks,
-			GetError(L"---\n+++ \n@@ -1,2 +3,X"));
+			GetError(UnifiedDiffParser::FromFilePrefix + L"\n+++ \n@@ -1,2 +3,X"));
 	}
 
 	//-------------------------------------------------------------------------
 	TEST_F(UnifiedDiffParserTest, ErrorContextHunks)
 	{
 		ASSERT_EQ(UnifiedDiffParserException::ErrorContextHunks,
-			GetError(L"---\n+++ \n@@ -1,2 +3,4\n"));
+			GetError(UnifiedDiffParser::FromFilePrefix + L"\n+++ \n@@ -1,2 +3,4\n"));
 	}
 
 	//-------------------------------------------------------------------------
@@ -158,5 +172,17 @@ namespace FileFilterTest
 
 		ASSERT_EQ(1, files.size());
 		ASSERT_EQ(L"bar", files.at(0).GetPath().wstring());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(UnifiedDiffParserTest, GitDiff)
+	{
+		std::wifstream diffFile{ diffPath_.wstring() };
+		auto files = unifiedDiffParser_.Parse(diffFile);
+
+		std::wifstream gitDiffFile{ GetFullPath(L"test_git.diff").wstring() };
+		auto gitFiles = unifiedDiffParser_.Parse(gitDiffFile);
+
+		CheckEqual(files, gitFiles);
 	}
 }

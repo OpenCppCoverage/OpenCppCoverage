@@ -1,7 +1,7 @@
-diff --git CppCoverage/CodeCoverageRunner.cpp CppCoverage/CodeCoverageRunner.cpp
+diff --git a/CppCoverage/CodeCoverageRunner.cpp b/CppCoverage/CodeCoverageRunner.cpp
 index d724791..b3b0b2e 100644
---- CppCoverage/CodeCoverageRunner.cpp
-+++ CppCoverage/CodeCoverageRunner.cpp
+--- a/CppCoverage/CodeCoverageRunner.cpp
++++ b/CppCoverage/CodeCoverageRunner.cpp
 @@ -158,7 +158,7 @@ namespace CppCoverage
  		
  		if (coverageFilter_->IsModuleSelected(filename))
@@ -11,10 +11,10 @@ index d724791..b3b0b2e 100644
  			auto it = debugInformation_.find(hProcess);
  
  			if (it == debugInformation_.end())
-diff --git CppCoverage/CoverageData.cpp CppCoverage/CoverageData.cpp
+diff --git a/CppCoverage/CoverageData.cpp b/CppCoverage/CoverageData.cpp
 index 747ecc0..d856660 100644
---- CppCoverage/CoverageData.cpp
-+++ CppCoverage/CoverageData.cpp
+--- a/CppCoverage/CoverageData.cpp
++++ b/CppCoverage/CoverageData.cpp
 @@ -36,19 +36,9 @@ namespace CppCoverage
  	//-------------------------------------------------------------------------
  	CoverageData::CoverageData(CoverageData&& coverageData)
@@ -57,10 +57,10 @@ index 747ecc0..d856660 100644
  	const CoverageData::T_ModuleCoverageCollection& CoverageData::GetModules() const
  	{
  		return modules_;
-diff --git CppCoverage/CoverageData.hpp CppCoverage/CoverageData.hpp
+diff --git a/CppCoverage/CoverageData.hpp b/CppCoverage/CoverageData.hpp
 index 941d7de..6c2bd0e 100644
---- CppCoverage/CoverageData.hpp
-+++ CppCoverage/CoverageData.hpp
+--- a/CppCoverage/CoverageData.hpp
++++ b/CppCoverage/CoverageData.hpp
 @@ -44,14 +44,12 @@ namespace CppCoverage
  		~CoverageData();
  
@@ -78,10 +78,10 @@ index 941d7de..6c2bd0e 100644
  		int GetExitCode() const;
  
  	private:
-diff --git CppCoverage/ExecutedAddressManager.cpp CppCoverage/ExecutedAddressManager.cpp
+diff --git a/CppCoverage/ExecutedAddressManager.cpp b/CppCoverage/ExecutedAddressManager.cpp
 index f910d9c..2e24950 100644
---- CppCoverage/ExecutedAddressManager.cpp
-+++ CppCoverage/ExecutedAddressManager.cpp
+--- a/CppCoverage/ExecutedAddressManager.cpp
++++ b/CppCoverage/ExecutedAddressManager.cpp
 @@ -26,7 +26,6 @@
  #include "ModuleCoverage.hpp"
  #include "FileCoverage.hpp"
@@ -207,10 +207,10 @@ index f910d9c..2e24950 100644
 -		return std::move(coverageData_);
 -	}
  }
-diff --git CppCoverage/ExecutedAddressManager.hpp CppCoverage/ExecutedAddressManager.hpp
+diff --git a/CppCoverage/ExecutedAddressManager.hpp b/CppCoverage/ExecutedAddressManager.hpp
 index a318b33..81a9a10 100644
---- CppCoverage/ExecutedAddressManager.hpp
-+++ CppCoverage/ExecutedAddressManager.hpp
+--- a/CppCoverage/ExecutedAddressManager.hpp
++++ b/CppCoverage/ExecutedAddressManager.hpp
 @@ -18,7 +18,6 @@
  
  #include <string>
@@ -259,10 +259,10 @@ index a318b33..81a9a10 100644
  		std::map<Address, std::shared_ptr<Instruction>> addressLineMap_;
  	};
  }
-diff --git CppCoverageTest/CodeCoverageRunnerTest.cpp CppCoverageTest/CodeCoverageRunnerTest.cpp
+diff --git a/CppCoverageTest/CodeCoverageRunnerTest.cpp b/CppCoverageTest/CodeCoverageRunnerTest.cpp
 index b0f6f56..e4be8e7 100644
---- CppCoverageTest/CodeCoverageRunnerTest.cpp
-+++ CppCoverageTest/CodeCoverageRunnerTest.cpp
+--- a/CppCoverageTest/CodeCoverageRunnerTest.cpp
++++ b/CppCoverageTest/CodeCoverageRunnerTest.cpp
 @@ -142,11 +142,9 @@ namespace CppCoverageTest
  			arguments.insert(arguments.begin(), TestCoverageConsole::TestChildProcess);
  			auto coverageDataChildProcess = ComputeCoverageData(arguments, modulePattern, sourcePattern);
@@ -293,10 +293,10 @@ index b0f6f56..e4be8e7 100644
  	}
  
  	//-------------------------------------------------------------------------
-diff --git CppCoverageTest/ExecutedAddressManagerTest.cpp CppCoverageTest/ExecutedAddressManagerTest.cpp
+diff --git a/CppCoverageTest/ExecutedAddressManagerTest.cpp b/CppCoverageTest/ExecutedAddressManagerTest.cpp
 index 40565ce..7da8314 100644
---- CppCoverageTest/ExecutedAddressManagerTest.cpp
-+++ CppCoverageTest/ExecutedAddressManagerTest.cpp
+--- a/CppCoverageTest/ExecutedAddressManagerTest.cpp
++++ b/CppCoverageTest/ExecutedAddressManagerTest.cpp
 @@ -45,7 +45,7 @@ namespace CppCoverageTest
  
  		ASSERT_THROW(manager.RegisterAddress(address, L"", 0, 0), cov::CppCoverageException);
@@ -330,10 +330,10 @@ index 40565ce..7da8314 100644
  
  		const cov::CoverageData coverageData = manager.CreateCoverageData(L"", 0);
  		
-diff --git TestHelper/Container.hpp TestHelper/Container.hpp
+diff --git a/TestHelper/Container.hpp b/TestHelper/Container.hpp
 index 80ac54f..4d54d8f 100644
---- TestHelper/Container.hpp
-+++ TestHelper/Container.hpp
+--- a/TestHelper/Container.hpp
++++ b/TestHelper/Container.hpp
 @@ -29,13 +29,6 @@ namespace TestHelper
  		const Container& container1,
  		const Container& container2,
@@ -349,10 +349,10 @@ index 80ac54f..4d54d8f 100644
  
  #include "Container.inl"
 \ No newline at end of file
-diff --git TestHelper/Container.inl TestHelper/Container.inl
+diff --git a/TestHelper/Container.inl b/TestHelper/Container.inl
 index 99f35ce..e3d1f29 100644
---- TestHelper/Container.inl
-+++ TestHelper/Container.inl
+--- a/TestHelper/Container.inl
++++ b/TestHelper/Container.inl
 @@ -52,28 +52,4 @@ namespace TestHelper
  			compareFct(*value1, *value2);
  		});
@@ -383,10 +383,10 @@ index 99f35ce..e3d1f29 100644
 -	}
  }
 \ No newline at end of file
-diff --git TestHelper/CoverageDataComparer.cpp TestHelper/CoverageDataComparer.cpp
+diff --git a/TestHelper/CoverageDataComparer.cpp b/TestHelper/CoverageDataComparer.cpp
 index ca3f63f..be0b6fd 100644
---- TestHelper/CoverageDataComparer.cpp
-+++ TestHelper/CoverageDataComparer.cpp
+--- a/TestHelper/CoverageDataComparer.cpp
++++ b/TestHelper/CoverageDataComparer.cpp
 @@ -90,47 +90,4 @@ namespace TestHelper
  			throw std::runtime_error("Module is null.");
  		AssertModulesEquals(*module1, *module2);
@@ -435,10 +435,10 @@ index ca3f63f..be0b6fd 100644
 -		});
 -	}
  }
-diff --git TestHelper/CoverageDataComparer.hpp TestHelper/CoverageDataComparer.hpp
+diff --git a/TestHelper/CoverageDataComparer.hpp b/TestHelper/CoverageDataComparer.hpp
 index 5739fc1..66a9a83 100644
---- TestHelper/CoverageDataComparer.hpp
-+++ TestHelper/CoverageDataComparer.hpp
+--- a/TestHelper/CoverageDataComparer.hpp
++++ b/TestHelper/CoverageDataComparer.hpp
 @@ -17,7 +17,6 @@
  #pragma once
  

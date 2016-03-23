@@ -38,6 +38,12 @@ namespace FileFilter
 	}
 
 	//----------------------------------------------------------------------------
+	void File::SetPath(const boost::filesystem::path& path)
+	{
+		path_ = path;
+	}
+
+	//----------------------------------------------------------------------------
 	const std::set<int>& File::GetSelectedLines() const
 	{
 		return selectedLines_;
@@ -47,5 +53,12 @@ namespace FileFilter
 	bool File::IsLineSelected(int lineNumber) const
 	{
 		return selectedLines_.find(lineNumber) != selectedLines_.end();
+	}
+
+	//----------------------------------------------------------------------------
+	bool File::operator==(const File& other) const
+	{
+		return path_ == other.path_
+			&& selectedLines_ == other.selectedLines_;
 	}
 }

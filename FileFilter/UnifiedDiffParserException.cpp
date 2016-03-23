@@ -16,20 +16,20 @@
 
 #include "stdafx.h"
 #include "UnifiedDiffParserException.hpp"
+#include "UnifiedDiffParser.hpp"
 #include "Tools/Tool.hpp"
 
 namespace FileFilter
 {
 	//-------------------------------------------------------------------------
-	const std::wstring UnifiedDiffParserException::FromFilePrefix = L"+++ ";
 	const std::wstring UnifiedDiffParserException::ErrorContextHunks
 		= L"Context line count is not consistent with hunks differences.";
 	const std::wstring UnifiedDiffParserException::ErrorNoFilenameBeforeHunks
 		= L"No filename previously found.";
 	const std::wstring UnifiedDiffParserException::ErrorCannotReadLine
-		= L"Cannot read a new line. Expect a line starting with " + FromFilePrefix + L'.';
+		= L"Cannot read a new line. Expect a line starting with " + UnifiedDiffParser::ToFilePrefix + L'.';
 	const std::wstring UnifiedDiffParserException::ErrorExpectFromFilePrefix
-		= L"Invalid line. Expect a line starting with " + FromFilePrefix + L'.';
+		= L"Invalid line. Expect a line starting with " + UnifiedDiffParser::ToFilePrefix + L'.';
 	const std::wstring UnifiedDiffParserException::ErrorInvalidHunks = L"Invalid hunks differences.";
 
 	//-------------------------------------------------------------------------
