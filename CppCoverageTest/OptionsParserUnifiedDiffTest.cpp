@@ -21,6 +21,7 @@
 #include "CppCoverage/UnifiedDiffSettings.hpp"
 
 #include "CppCoverageTest/TestTools.hpp"
+#include "TestHelper/TemporaryPath.hpp"
 
 namespace cov = CppCoverage;
 namespace fs = boost::filesystem;
@@ -98,39 +99,45 @@ namespace CppCoverageTest
 		{
 			CheckUnifiedDiffSettings(ToVector(std::move(unifiedDiffSettings)));
 		}
+
+		//---------------------------------------------------------------------
+		struct OptionsParserUnifiedDifftTest : public testing::Test
+		{
+			TestHelper::TemporaryPath temporaryPath{ true };
+		};
 	}
 
 	//-------------------------------------------------------------------------
-	TEST(OptionsParserUnifiedDifftTest, UnifiedDiffPath)
+	TEST_F(OptionsParserUnifiedDifftTest, UnifiedDiffPath)
 	{
-		CheckUnifiedDiffSettings({ __FILE__, boost::none });
+		CheckUnifiedDiffSettings({ temporaryPath, boost::none });
 	}
 
 	//-------------------------------------------------------------------------
-	TEST(OptionsParserUnifiedDifftTest, NotFoundUnifiedDiffPath)
+	TEST_F(OptionsParserUnifiedDifftTest, NotFoundUnifiedDiffPath)
 	{
 		ASSERT_TRUE(!Parse({ "Unknow", boost::none }));
 	}
 
 	//-------------------------------------------------------------------------
-	TEST(OptionsParserUnifiedDifftTest, RootDiffFolder)
+	TEST_F(OptionsParserUnifiedDifftTest, RootDiffFolder)
 	{
-		CheckUnifiedDiffSettings({ __FILE__, fs::current_path() });
+		CheckUnifiedDiffSettings({ temporaryPath, fs::current_path() });
 	}
 
 	//-------------------------------------------------------------------------
-	TEST(OptionsParserUnifiedDifftTest, NotFoundRootDiffFolder)
+	TEST_F(OptionsParserUnifiedDifftTest, NotFoundRootDiffFolder)
 	{
-		ASSERT_TRUE(!!Parse({ __FILE__, boost::none }));
-		ASSERT_FALSE(!!Parse({ __FILE__, fs::path("Unknow") }));
+		ASSERT_TRUE(!!Parse({ temporaryPath, boost::none }));
+		ASSERT_FALSE(!!Parse({ temporaryPath, fs::path("Unknow") }));
 	}
 
 	//-------------------------------------------------------------------------
-	TEST(OptionsParserUnifiedDifftTest, TwoDiff)
+	TEST_F(OptionsParserUnifiedDifftTest, TwoDiff)
 	{
 		std::vector<cov::UnifiedDiffSettings> unifiedDiffSettingsCollection;
-		unifiedDiffSettingsCollection.emplace_back(__FILE__, fs::current_path());
-		unifiedDiffSettingsCollection.emplace_back(__FILE__, boost::none);
+		unifiedDiffSettingsCollection.emplace_back(temporaryPath, fs::current_path());
+		unifiedDiffSettingsCollection.emplace_back(temporaryPath, boost::none);
 
 		CheckUnifiedDiffSettings(unifiedDiffSettingsCollection);
 	}
