@@ -185,4 +185,22 @@ namespace FileFilterTest
 
 		CheckEqual(files, gitFiles);
 	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(UnifiedDiffParserTest, FileRemoved)
+	{
+		std::wifstream diffFile{ GetFullPath(L"test_remove.diff").wstring() };
+		auto files = unifiedDiffParser_.Parse(diffFile);
+
+		ASSERT_TRUE(files.empty());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(UnifiedDiffParserTest, FileAdded)
+	{
+		std::wifstream diffFile{ GetFullPath(L"test_add.diff").wstring() };
+		auto files = unifiedDiffParser_.Parse(diffFile);
+
+		GetFile(files, "FileFilter/stdafx.h");		
+	}
 }

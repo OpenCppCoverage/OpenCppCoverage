@@ -31,7 +31,8 @@ namespace FileFilter
 	namespace
 	{
 		const std::wstring GitTargetPrefix = L"b/";
-		
+		const std::wstring DevNull = L"/dev/null";
+
 		//-----------------------------------------------------------------------
 		bool IsGitDetected(
 			const std::vector<File>& files,
@@ -76,6 +77,29 @@ namespace FileFilter
 			}
 		}
 
+		//---------------------------------------------------------------------
+		template <typename Container, typename Fct>
+		void EraseIf(Container& container, Fct fct)
+		{
+			auto it = std::remove_if(container.begin(), container.end(), fct);
+			container.erase(it, container.end());
+		}
+
+		//---------------------------------------------------------------------
+		void RemoveDevNull(
+			std::vector<File>& files, 
+			std::vector<std::wstring>& sourceFileLines)
+		{
+			EraseIf(files, [](const auto& file)
+			{
+				return file.GetPath().wstring() == DevNull;
+			});
+
+			EraseIf(sourceFileLines, [](const auto& line)
+			{
+				return boost::algorithm::starts_with(line, UnifiedDiffParser::FromFilePrefix + DevNull);
+			});
+		}
 	}
 	//---------------------------------------------------------------------
 	struct UnifiedDiffParser::HunksDifferences
@@ -135,6 +159,7 @@ namespace FileFilter
 			else if (boost::algorithm::starts_with(line, L"@@"))
 				FillUpdatedLines(line, files, stream);
 		}
+		RemoveDevNull(files, sourceFileLines);
 		UpdateFilePathIfGitDetected(files, sourceFileLines, foundGitHeader);
 
 		return files;

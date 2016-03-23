@@ -1,0 +1,20 @@
+diff --git a/FileFilter/stdafx.h b/FileFilter/stdafx.h
+new file mode 100644
+index 0000000..293d34a
+--- /dev/null
++++ b/FileFilter/stdafx.h
+@@ -0,0 +1,14 @@
++// stdafx.h : include file for standard system include files,
++// or project specific include files that are used frequently, but
++// are changed infrequently
++//
++
++#pragma once
++
++#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
++// Windows Header Files:
++#include <windows.h>
++
++#include <string>
++#include <vector>
++

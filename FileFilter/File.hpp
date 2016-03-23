@@ -27,6 +27,7 @@ namespace FileFilter
 	public:
 		explicit File(const boost::filesystem::path&);
 		File(File&&) = default;
+		File& operator=(File&&) = default;
 
 		void AddSelectedLines(const std::vector<int>&);
 
