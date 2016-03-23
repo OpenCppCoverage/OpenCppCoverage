@@ -18,18 +18,21 @@
 #include "TemporaryPath.hpp"
 
 #include "Tools/Log.hpp"
+#include "TestHelper/Tools.hpp"
 
 namespace fs = boost::filesystem;
 
 namespace TestHelper
 {
 	//-------------------------------------------------------------------------	
-	TemporaryPath::TemporaryPath(bool createPath)
+	TemporaryPath::TemporaryPath(TemporaryPathOption temporaryPathOption)
 	{
 		path_ = fs::absolute(fs::temp_directory_path() / fs::unique_path());
 
-		if (createPath)
+		if (temporaryPathOption == TemporaryPathOption::CreateAsFolder)
 			fs::create_directories(path_);
+		else if (temporaryPathOption == TemporaryPathOption::CreateAsFile)		
+			CreateEmptyFile(path_);
 	}
 
 	//-------------------------------------------------------------------------

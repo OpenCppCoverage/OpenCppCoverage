@@ -172,7 +172,7 @@ namespace CppCoverageTest
 	TEST(OptionsParserTest, InputCoverage)
 	{
 		cov::OptionsParser parser;		
-		TestHelper::TemporaryPath temporaryPath{ true };
+		TestHelper::TemporaryPath temporaryPath{ TestHelper::TemporaryPathOption::CreateAsFile };
 		auto pathStr = temporaryPath.GetPath().string();
 
 		auto options = TestTools::Parse(parser, 

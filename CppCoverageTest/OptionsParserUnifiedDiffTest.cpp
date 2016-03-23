@@ -103,7 +103,7 @@ namespace CppCoverageTest
 		//---------------------------------------------------------------------
 		struct OptionsParserUnifiedDifftTest : public testing::Test
 		{
-			TestHelper::TemporaryPath temporaryPath{ true };
+			TestHelper::TemporaryPath temporaryPath{ TestHelper::TemporaryPathOption::CreateAsFile };
 		};
 	}
 

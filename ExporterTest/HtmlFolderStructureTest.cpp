@@ -19,6 +19,7 @@
 #include "Exporter/Html/HtmlFolderStructure.hpp"
 
 #include "TestHelper/TemporaryPath.hpp"
+#include "TestHelper/Tools.hpp"
 
 namespace fs = boost::filesystem;
 
@@ -26,13 +27,6 @@ namespace ExporterTest
 {
 	namespace
 	{
-		//-------------------------------------------------------------------------
-		void CreateEmptyFile(const fs::path& path)
-		{
-			std::ofstream ofs;
-			ofs.open(path.string(), std::ios::out);
-		}
-
 		//-------------------------------------------------------------------------
 		struct HtmlFolderStructureTest : public ::testing::Test
 		{
@@ -58,7 +52,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST_F(HtmlFolderStructureTest, CreateCurrentRoot)
 	{						
-		CreateEmptyFile(templateFolder_.GetPath() / Exporter::HtmlFolderStructure::ThirdParty / "EmptyFile");
+		TestHelper::CreateEmptyFile(templateFolder_.GetPath() / Exporter::HtmlFolderStructure::ThirdParty / "EmptyFile");
 		htmlFolderStructure_->CreateCurrentRoot(outputFolder_);
 		auto createdPath = outputFolder_.GetPath() / Exporter::HtmlFolderStructure::ThirdParty;
 		ASSERT_TRUE(fs::exists(createdPath));	
@@ -110,7 +104,7 @@ namespace ExporterTest
 		auto module = htmlFolderStructure_->CreateCurrentModule(Module);
 		auto modulePath = module.GetAbsolutePath();
 
-		CreateEmptyFile(modulePath);
+		TestHelper::CreateEmptyFile(modulePath);
 		auto otherModule = htmlFolderStructure_->CreateCurrentModule(Module);
 
 		ASSERT_NE(modulePath, otherModule.GetAbsolutePath());
@@ -125,7 +119,7 @@ namespace ExporterTest
 		auto file = htmlFolderStructure_->GetHtmlFilePath(File);
 		auto filePath = file.GetAbsolutePath();
 
-		CreateEmptyFile(filePath);
+		TestHelper::CreateEmptyFile(filePath);
 		auto otherFile = htmlFolderStructure_->GetHtmlFilePath(File);
 
 		ASSERT_NE(filePath, otherFile.GetAbsolutePath());

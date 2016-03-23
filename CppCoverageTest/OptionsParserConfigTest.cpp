@@ -76,8 +76,8 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserConfigTest, ConfigurationFileCmdLineOverride)
 	{
-		TestHelper::TemporaryPath directory1{true};
-		TestHelper::TemporaryPath directory2{true};
+		TestHelper::TemporaryPath directory1{ TestHelper::TemporaryPathOption::CreateAsFolder };
+		TestHelper::TemporaryPath directory2{ TestHelper::TemporaryPathOption::CreateAsFolder };
 		
 		auto options = MutipleSourceParse(
 		{ { cov::ProgramOptions::WorkingDirectoryOption, directory1.GetPath().wstring() } },

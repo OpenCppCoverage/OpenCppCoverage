@@ -1,5 +1,5 @@
 // OpenCppCoverage is an open source code coverage for C++.
-// Copyright (C) 2014 OpenCppCoverage
+// Copyright (C) 2016 OpenCppCoverage
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,34 +16,17 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
-
-#include "TestHelperExport.hpp"
+#include "stdafx.h"
+#include "Tools.hpp"
+#include <fstream>
+#include <boost/filesystem/path.hpp>
 
 namespace TestHelper
 {
-	enum class TemporaryPathOption
+	//-------------------------------------------------------------------------
+	void CreateEmptyFile(const boost::filesystem::path& path)
 	{
-		DoNotCreate,
-		CreateAsFile,
-		CreateAsFolder
-	};
-
-	class TEST_HELPER_DLL TemporaryPath
-	{
-	public:
-		 
-		explicit TemporaryPath(TemporaryPathOption = TemporaryPathOption::DoNotCreate);
-		~TemporaryPath();
-
-		operator const boost::filesystem::path& () const;
-		const boost::filesystem::path& GetPath() const;
-
-	private:
-		TemporaryPath(const TemporaryPath&) = delete;
-		TemporaryPath& operator=(const TemporaryPath&) = delete;
-
-	private:
-		boost::filesystem::path path_;
-	};
+		std::ofstream ofs;
+		ofs.open(path.string(), std::ios::out);
+	}
 }

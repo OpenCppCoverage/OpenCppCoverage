@@ -106,7 +106,7 @@ namespace CppCoverageTest
 	TEST(OptionsParserExportTest, InvalidOutputPath)
 	{	
 		cov::OptionsParser parser;
-		TestHelper::TemporaryPath temporaryPath{ true };
+		TestHelper::TemporaryPath temporaryPath{ TestHelper::TemporaryPathOption::CreateAsFile };
 
 		std::string exportStr = cov::ProgramOptions::ExportTypeHtmlValue + 
 			cov::OptionsParser::ExportSeparator + temporaryPath.GetPath().string();
