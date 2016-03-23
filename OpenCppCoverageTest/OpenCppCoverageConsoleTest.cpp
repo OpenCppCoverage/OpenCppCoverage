@@ -53,6 +53,7 @@ namespace OpenCppCoverageTest
 			std::vector<std::pair<std::string, std::string>> coverageArguments;
 			AddDefaultFilters(coverageArguments, programToRun);			
 			coverageArguments.push_back(BuildExportTypeString(cov::ProgramOptions::ExportTypeHtmlValue, tempFolder.GetPath()));
+			coverageArguments.emplace_back(cov::ProgramOptions::QuietOption, "");
 
 			int exitCode = RunCoverageFor(coverageArguments, programToRun, arguments);
 			

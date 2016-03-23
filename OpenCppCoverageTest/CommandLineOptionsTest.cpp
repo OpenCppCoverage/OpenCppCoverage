@@ -67,6 +67,7 @@ namespace OpenCppCoverageTest
 				if (useSourceInSolutionDir)
 					coverageArguments.push_back({ cov::ProgramOptions::SelectedSourcesOption, GetSolutionFolderName()});
 				AddDefaultHtmlExport(coverageArguments, GetTempPath());
+				coverageArguments.emplace_back(cov::ProgramOptions::QuietOption, "");
 				int exitCode = RunCoverageFor(coverageArguments, testCoverageConsole, {});
 
 				ASSERT_EQ(0, exitCode);
