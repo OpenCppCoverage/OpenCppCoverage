@@ -138,15 +138,17 @@ namespace FileFilter
 		{
 			for (auto& file : files)
 			{
-				auto fullpath = (parentPath / file.GetPath()).wstring();
-				pathDataByPath_.emplace(fullpath, PathData{ std::move(file) });
+				auto fullPath = parentPath / file.GetPath();				
+				auto normalizedFullPathStr = NormalizePath(fullPath).wstring();
+				pathDataByPath_.emplace(normalizedFullPathStr, PathData{ std::move(file) });
 			}
 		}
 
 		//-----------------------------------------------------------------
 		File* Match(const fs::path& path) override
 		{
-			auto it = pathDataByPath_.find(path.wstring());
+			auto normalizedPath = NormalizePath(path);
+			auto it = pathDataByPath_.find(normalizedPath.wstring());
 
 			if (it == pathDataByPath_.end())
 				return nullptr;
@@ -154,7 +156,7 @@ namespace FileFilter
 			auto& pathData = it->second;
 			pathData.haveBeenMarched_ = true;
 
-			return &pathData.fullPath_;			
+			return &pathData.file_;
 		}
 
 		//-----------------------------------------------------------------
@@ -166,7 +168,7 @@ namespace FileFilter
 			{
 				const auto& pathData = pair.second;
 				if (!pathData.haveBeenMarched_)
-					paths.push_back(pathData.fullPath_.GetPath());
+					paths.push_back(pair.first);
 			}
 
 			return paths;
@@ -177,13 +179,13 @@ namespace FileFilter
 		struct PathData
 		{
 			explicit PathData(File&& fullPath) :
-				fullPath_{ std::move(fullPath) },
+				file_{ std::move(fullPath) },
 				haveBeenMarched_{false} 
 			{}
 
 			PathData(PathData&& pathData) = default;
 
-			File fullPath_;
+			File file_;
 			bool haveBeenMarched_;
 		};
 		

@@ -26,6 +26,18 @@
 using namespace FileFilter;
 namespace fs = boost::filesystem;
 
+namespace boost
+{
+	namespace filesystem
+	{
+		//---------------------------------------------------------------------
+		void PrintTo(const path& path, ::std::ostream* os) {
+			if (os)
+				*os << path.string();
+		}
+	}
+}
+
 namespace FileFilterTest
 {		
 	namespace
@@ -101,9 +113,9 @@ namespace FileFilterTest
 	//-------------------------------------------------------------------------
 	TEST(PathMatcherTest, FullPathBasicMatch)
 	{
-		std::vector<std::wstring> filenames{ L"Test.txt", L"Test2" };
+		std::vector<std::wstring> filenames{ L"test.txt", L"test2" };
 		auto files = ToFiles(filenames);
-		fs::path parentPath = "Test";
+		fs::path parentPath = "test";
 		PathMatcher pathMatcher{ std::move(files), parentPath };
 
 		ASSERT_EQ(nullptr, pathMatcher.Match(filenames.at(0)));
@@ -111,6 +123,6 @@ namespace FileFilterTest
 
 		auto unmatchedPaths = pathMatcher.GetUnmatchedPaths();
 		ASSERT_EQ(1, unmatchedPaths.size());
-		ASSERT_EQ(filenames.at(1), unmatchedPaths.at(0));
+		ASSERT_EQ(parentPath / filenames.at(1), unmatchedPaths.at(0));
 	}
 }
