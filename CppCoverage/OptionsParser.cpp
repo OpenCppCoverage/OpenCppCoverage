@@ -239,7 +239,7 @@ namespace CppCoverage
 		
 	//-------------------------------------------------------------------------
 	const char OptionsParser::ExportSeparator = ':';
-	const char OptionsParser::UnifiedDiffSeparator = '|';
+	const char OptionsParser::UnifiedDiffSeparator = '?';
 
 	//-------------------------------------------------------------------------
 	OptionsParser::OptionsParser()
