@@ -53,6 +53,7 @@ Source: "{#MyAppVersion}\{#Architecture}\binaries\libctemplate.dll"; DestDir: "{
 Source: "{#MyAppVersion}\{#Architecture}\binaries\OpenCppCoverage.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyAppVersion}\{#Architecture}\binaries\template_test_util_test.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyAppVersion}\{#Architecture}\binaries\Tools.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyAppVersion}\{#Architecture}\binaries\FileFilter.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "VCRedist\vc_redist.{#Architecture}.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
