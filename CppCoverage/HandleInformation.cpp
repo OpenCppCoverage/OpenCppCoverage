@@ -31,7 +31,9 @@ namespace CppCoverage
 			std::vector<wchar_t> logicalDriveStrings(PathBufferSize);
 			std::vector<std::wstring> logicalDrives;
 
-			auto size = GetLogicalDriveStrings(logicalDriveStrings.size(), &logicalDriveStrings[0]);
+			auto size = GetLogicalDriveStrings(
+				static_cast<int>(logicalDriveStrings.size()), 
+				&logicalDriveStrings[0]);
 
 			if (!size)
 				THROW(L"Cannot GetLogicalDriveStrings");
@@ -62,7 +64,7 @@ namespace CppCoverage
 				auto pos = logicalDrive.find('\\');
 				std::wstring drive = (pos != std::string::npos) ? logicalDrive.substr(0, pos) : logicalDrive;
 
-				if (QueryDosDevice(drive.c_str(), &dosDevice[0], dosDevice.size()))
+				if (QueryDosDevice(drive.c_str(), &dosDevice[0], static_cast<int>(dosDevice.size())))
 				{
 					std::wstring dosDeviceName{ &dosDevice[0] };
 					queryDosDevicesMapping.emplace_back(dosDeviceName, drive);
@@ -79,7 +81,7 @@ namespace CppCoverage
 		{
 			std::vector<wchar_t> buffer(PathBufferSize);
 
-			if (!GetFinalPathNameByHandle(hfile, &buffer[0], buffer.size() - 1, VOLUME_NAME_NT))
+			if (!GetFinalPathNameByHandle(hfile, &buffer[0], static_cast<int>(buffer.size()) - 1, VOLUME_NAME_NT))
 				THROW_LAST_ERROR(L"Cannot find path for the handle.", GetLastError());
 
 			return &buffer[0];

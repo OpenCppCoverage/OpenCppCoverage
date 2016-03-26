@@ -21,11 +21,7 @@
 #include <iostream>
 #include <codecvt>
 
-#pragma warning(push)
-#pragma warning(disable: 4091) // 'typedef ': ignored on left of '' when no variable is declared
-#include <DbgHelp.h>
-#pragma warning(pop)
-
+#include "DbgHelp.hpp"
 #include "Log.hpp"
 #include "ToolsException.hpp"
 #include "ScopedAction.hpp"
@@ -42,7 +38,7 @@ namespace Tools
 			const int PathBufferSize = 40 * 1000;
 			std::vector<wchar_t> filename(PathBufferSize);
 
-			if (!GetModuleFileName(nullptr, &filename[0], static_cast<DWORD>(filename.size())))
+			if (!GetModuleFileName(nullptr, &filename[0], static_cast<int>(filename.size())))
 				THROW("Cannot get current executable path.");
 
 			return fs::path{ &filename[0] };

@@ -71,7 +71,7 @@ namespace FileFilter
 
 					if (!boost::algorithm::starts_with(path, GitTargetPrefix))
 						THROW(L"File should have the prefix: " + GitTargetPrefix);
-					boost::algorithm::erase_head(path, GitTargetPrefix.size());
+					boost::algorithm::erase_head(path, static_cast<int>(GitTargetPrefix.size()));
 					file.SetPath(path);
 				}
 			}

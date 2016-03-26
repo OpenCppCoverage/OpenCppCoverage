@@ -1,5 +1,5 @@
 // OpenCppCoverage is an open source code coverage for C++.
-// Copyright (C) 2014 OpenCppCoverage
+// Copyright (C) 2016 OpenCppCoverage
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,34 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "stdafx.h"
-#include "CppCoverageException.hpp"
+#pragma once
 
-#include <sstream>
-
-#include "Tools/Tool.hpp"
-
-namespace CppCoverage
-{	
-	//-------------------------------------------------------------------------
-	std::wstring GetErrorMessage(int lastErrorCode)
-	{			
-		std::vector<wchar_t> sysMsg(64 * 1024);
-		std::wostringstream ostr;
-			
-		if (FormatMessage(
-				FORMAT_MESSAGE_FROM_SYSTEM,
-				NULL, lastErrorCode,
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL),
-				&sysMsg[0], static_cast<int>(sysMsg.size()), NULL))
-		{
-			ostr << &sysMsg[0];
-		}
-		else
-		{
-			ostr << "Last error code:" << lastErrorCode;
-		}
-
-		return ostr.str();
-	}
-}
+#pragma warning(push)
+	#pragma warning(disable: 4091) // 'typedef ': ignored on left of '' when no variable is declared
+	#include <DbgHelp.h>
+#pragma warning(pop)

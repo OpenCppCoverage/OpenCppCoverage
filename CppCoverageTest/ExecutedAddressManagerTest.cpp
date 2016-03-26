@@ -30,11 +30,15 @@ namespace CppCoverageTest
 {
 	namespace
 	{
+		#pragma warning(push)
+		#pragma warning(disable: 4312) // 'reinterpret_cast': conversion from 'int' to 'void *' of greater size
 		//-------------------------------------------------------------------------
 		cov::Address CreateAddress(int addressValue)
 		{
 			return cov::Address{ nullptr, reinterpret_cast<void*>(addressValue) };
 		}
+
+		#pragma warning(pop)
 	}
 
 	//-------------------------------------------------------------------------

@@ -154,6 +154,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DbgHelp.hpp" />
     <ClInclude Include="ExceptionBase.hpp" />
     <ClInclude Include="Log.hpp" />
     <ClInclude Include="ScopedAction.hpp" />

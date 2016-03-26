@@ -50,7 +50,7 @@ namespace FileFilterTest
 			const fs::path& path)
 		{
 			const auto& file = GetFile(files, path);
-			return file.GetSelectedLines().size();
+			return static_cast<int>(file.GetSelectedLines().size());
 		}		
 
 		//---------------------------------------------------------------------------

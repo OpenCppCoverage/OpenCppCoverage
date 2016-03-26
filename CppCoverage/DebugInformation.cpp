@@ -17,11 +17,10 @@
 #include "stdafx.h"
 #include "DebugInformation.hpp"
 
-#include <dbghelp.h>
-
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/path.hpp>
 
+#include "Tools/DbgHelp.hpp"
 #include "Tools/Tool.hpp"
 #include "Tools/Log.hpp"
 #include "Tools/ScopedAction.hpp"
@@ -169,7 +168,7 @@ namespace CppCoverage
 			THROW("Error when calling SymRegisterCallback64");
 
 		std::vector<char> searchPath(PathBufferSize);
-		if (!SymGetSearchPath(hProcess_, &searchPath[0], searchPath.size()))
+		if (!SymGetSearchPath(hProcess_, &searchPath[0], static_cast<int>(searchPath.size())))
 			THROW_LAST_ERROR("Error when calling SymGetSearchPath", GetLastError());
 		defaultSearchPath_ = &searchPath[0];
 	}
