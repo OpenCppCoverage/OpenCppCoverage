@@ -64,20 +64,25 @@ namespace Exporter
 		}
 
 		//---------------------------------------------------------------------
-		void AddLineCoverageColor(
+		bool AddLineCoverageColor(
 			std::wostream& output,
 			const std::wstring& line, 
 			const cov::LineCoverage* lineCoverage,
 			const cov::LineCoverage* previousLineCoverage)
 		{
 			if (HaveSameCoverage(lineCoverage, previousLineCoverage))
-				output << std::endl << line;
-			else
 			{
-				AddEndStyleIfNeeded(output, previousLineCoverage);
-				output << std::endl;
-				output << GetStyle(lineCoverage) << line;
+				output << std::endl << line;
+				return false;
 			}
+			
+			AddEndStyleIfNeeded(output, previousLineCoverage);
+			auto style = GetStyle(lineCoverage);
+
+			output << std::endl;			
+			output << style << line;
+
+			return !style.empty();
 		}
 
 		const std::wstring StyleBackgroundColor = L"<span style = \"background-color:#";
@@ -90,7 +95,15 @@ namespace Exporter
 	const std::wstring HtmlFileCoverageExporter::EndStyle = L"</span>";
 
 	//-------------------------------------------------------------------------
-	HtmlFileCoverageExporter::HtmlFileCoverageExporter() = default;
+	HtmlFileCoverageExporter::HtmlFileCoverageExporter(
+		int maxSourceLineCount,
+		int maxSourceLineStyleChangesCount,
+		int maxStyleChangesCount)
+		: maxSourceLineCount_{ maxSourceLineCount }
+		, maxSourceLineStyleChangesCount_{ maxSourceLineStyleChangesCount }
+		, maxStyleChangesCount_{ maxStyleChangesCount }
+	{
+	}
 
 	//-------------------------------------------------------------------------
 	bool HtmlFileCoverageExporter::Export(
@@ -99,26 +112,42 @@ namespace Exporter
 	{
 		auto filePath = fileCoverage.GetPath();
 
-		if (!fs::exists(filePath))
-			return false;
-
 		std::wifstream ifs{filePath.string()};
 		if (!ifs)
 			THROW(L"Cannot open file : " + filePath.wstring());
 
 		std::wstring line;
 		const cov::LineCoverage* previousLineCoverage = nullptr;
+		int styleChangesCount = 0;
+		int lineCount = 0;
 		for (int i = 1; std::getline(ifs, line); ++i)
 		{			
 			auto lineCoverage = fileCoverage[i];
 			
 			line = boost::spirit::classic::xml::encode(line);				
-			AddLineCoverageColor(output, line, lineCoverage, previousLineCoverage);
+			if (AddLineCoverageColor(output, line, lineCoverage, previousLineCoverage))
+				++styleChangesCount;
+			++lineCount;
 			previousLineCoverage = lineCoverage;
 		}
 		AddEndStyleIfNeeded(output, previousLineCoverage);
 		output.flush();
 
-		return true;
+		return MustEnableCodePrettify(lineCount, styleChangesCount);
+	}
+
+	//-------------------------------------------------------------------------
+	bool HtmlFileCoverageExporter::MustEnableCodePrettify(
+		int lineCount,
+		int styleChangesCount) const
+	{
+		if (lineCount > maxSourceLineCount_)
+			return false;
+
+		auto ratio = static_cast<double>(maxSourceLineStyleChangesCount_ - maxStyleChangesCount_) 
+			/ (maxSourceLineCount_ - maxStyleChangesCount_);
+		auto maxStyleChanges = maxStyleChangesCount_ + (lineCount - maxStyleChangesCount_) * ratio;
+		
+		return styleChangesCount <= maxStyleChanges;
 	}
 }

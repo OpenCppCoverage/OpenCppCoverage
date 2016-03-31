@@ -131,13 +131,15 @@ namespace Exporter
 	{
 		auto htmlFilePath = htmlFolderStructure.GetHtmlFilePath(fileCoverage.GetPath());
 		std::wostringstream ostr;
-
-		if (!fileCoverageExporter_.Export(fileCoverage, ostr))
-			return boost::optional<fs::path>();
 		
+		if (!fs::exists(fileCoverage.GetPath()))
+			return boost::optional<fs::path>();
+
+		auto enableCodePrettify = fileCoverageExporter_.Export(fileCoverage, ostr);
+
 		auto title = fileCoverage.GetPath().filename().wstring();
 		exporter_.GenerateSourceTemplate(
-			title, ostr.str(), htmlFilePath.GetAbsolutePath());
+			title, ostr.str(), enableCodePrettify, htmlFilePath.GetAbsolutePath());
 
 		return htmlFilePath.GetRelativeLinkPath();
 	}	

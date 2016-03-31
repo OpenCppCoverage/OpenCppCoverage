@@ -89,6 +89,19 @@ namespace ExporterTest
 				Exporter::TemplateHtmlExporter::NameTemplate));
 		}
 
+		//---------------------------------------------------------------------
+		std::wstring GenerateSourceTemplate(
+			const std::wstring& title,
+			const std::wstring& codeContent,
+			bool enableCodePrettify) const
+		{
+			TestHelper::TemporaryPath path;
+			templateHtmlExporter_.GenerateSourceTemplate(title, codeContent, enableCodePrettify, path);
+			std::wifstream ifs(path.GetPath().string());
+
+			return{ std::istreambuf_iterator<wchar_t>(ifs), std::istreambuf_iterator<wchar_t>() };
+		}
+
 		const std::wstring title_;
 		std::unique_ptr<ctemplate::TemplateDictionaryPeer> peer_;
 		std::unique_ptr<ctemplate::TemplateDictionary> templateDictionary_;	
@@ -153,4 +166,33 @@ namespace ExporterTest
 		ASSERT_THROW(templateHtmlExporter_.GenerateModuleTemplate(*templateDictionary_, fileOutput_.GetPath()), Exporter::ExporterException);
 	}
 
+	//-------------------------------------------------------------------------
+	TEST_F(TemplateHtmlExporterTest, GenerateSourceTemplate)
+	{
+		const std::wstring title = L"TITLE";
+		const std::wstring codeContent = L"CODE_CONTENT";
+		
+		auto output = GenerateSourceTemplate(title, codeContent, true);
+
+		ASSERT_TRUE(boost::algorithm::contains(output, title));
+		ASSERT_TRUE(boost::algorithm::contains(output, codeContent));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(TemplateHtmlExporterTest, PrettifyEnabled)
+	{
+		auto output = GenerateSourceTemplate(L"", L"", true);
+		
+		ASSERT_TRUE(boost::algorithm::contains(output, Exporter::TemplateHtmlExporter::BodyOnLoadFct));
+		ASSERT_FALSE(boost::algorithm::contains(output, Exporter::TemplateHtmlExporter::SyntaxHighlightingDisabledMsg));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(TemplateHtmlExporterTest, PrettifyDisabled)
+	{
+		auto output = GenerateSourceTemplate(L"", L"", false);
+
+		ASSERT_FALSE(boost::algorithm::contains(output, Exporter::TemplateHtmlExporter::BodyOnLoadFct));
+		ASSERT_TRUE(boost::algorithm::contains(output, Exporter::TemplateHtmlExporter::SyntaxHighlightingDisabledMsg));
+	}
 } 

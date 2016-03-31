@@ -183,6 +183,11 @@ namespace Exporter
 	const std::string TemplateHtmlExporter::NameTemplate = "NAME";
 	const std::string TemplateHtmlExporter::ItemLinkSection = "ITEM_LINK";
 	const std::string TemplateHtmlExporter::ItemNoLinkSection = "ITEM_NO_LINK";
+	const std::string TemplateHtmlExporter::BodyOnLoadTemplate = "BODY_ON_LOAD";
+	const std::string TemplateHtmlExporter::SourceWarningMessageTemplate = "SOURCE_WARNING_MESSAGE";
+	const std::string TemplateHtmlExporter::BodyOnLoadFct = "prettyPrint()";
+	const std::string TemplateHtmlExporter::SyntaxHighlightingDisabledMsg 
+		= "Syntax highlighting has been disabled for performance reasons.";
 
 	//-------------------------------------------------------------------------
 	TemplateHtmlExporter::TemplateHtmlExporter(const fs::path& templateFolder)
@@ -255,14 +260,25 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	void TemplateHtmlExporter::GenerateSourceTemplate(
 		const std::wstring& title,
-		const std::wstring& codeContent,		
+		const std::wstring& codeContent,
+		bool enableCodePrettify,
 		const fs::path& output) const
 	{
 		auto titleStr = Tools::ToString(title);
 		ctemplate::TemplateDictionary dictionary(titleStr);
+		std::string bodyLoad = TemplateHtmlExporter::BodyOnLoadFct;
+		std::string warning = "";
+
+		if (!enableCodePrettify)
+		{
+			bodyLoad = "";
+			warning = TemplateHtmlExporter::SyntaxHighlightingDisabledMsg;
+		}
 
 		dictionary.SetValue(TitleTemplate, titleStr);
-		dictionary.SetValue(codeTemplate, Tools::ToString(codeContent));	
+		dictionary.SetValue(codeTemplate, Tools::ToString(codeContent));
+		dictionary.SetValue(BodyOnLoadTemplate, bodyLoad);
+		dictionary.SetValue(SourceWarningMessageTemplate, warning);
 		WriteTemplate(dictionary, fileTemplatePath_, output);
 	}		
 }

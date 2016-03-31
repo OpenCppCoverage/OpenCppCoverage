@@ -32,9 +32,11 @@ namespace ExporterTest
 			NotExecutable
 		};
 
+		using SourceLines = std::vector<std::pair<std::wstring, CoverageType>>;
+
 		//-----------------------------------------------------------------
 		void FillSources(
-			const std::vector<std::pair<std::wstring, CoverageType>>& sourceLines,
+			const SourceLines& sourceLines,
 			const TestHelper::TemporaryPath& sourceFile,
 			CppCoverage::FileCoverage& fileCoverage)
 		{
@@ -57,7 +59,7 @@ namespace ExporterTest
 
 		//-----------------------------------------------------------------
 		std::vector<std::wstring> GetExportedLines(
-			const std::vector<std::pair<std::wstring, CoverageType>>& sourceLines)
+			const SourceLines& sourceLines)
 		{
 			std::wostringstream ostr;
 			TestHelper::TemporaryPath sourceFile;
@@ -125,5 +127,21 @@ namespace ExporterTest
 		ASSERT_EQ(lines.at(3), exportedLines.at(3));
 		ASSERT_EQ(StyleExecuted + lines.at(4), exportedLines.at(4));
 		ASSERT_EQ(lines.at(5) + EndStyle, exportedLines.at(5));
+	}
+
+	//---------------------------------------------------------------------
+	TEST(HtmlFileCoverageExporterTest, MustEnableCodePrettify)
+	{
+		Exporter::HtmlFileCoverageExporter exporter;
+
+		ASSERT_TRUE(exporter.MustEnableCodePrettify(8000, 1000));
+		ASSERT_FALSE(exporter.MustEnableCodePrettify(8001, 1000));
+		ASSERT_FALSE(exporter.MustEnableCodePrettify(8000, 1001));
+		
+		ASSERT_TRUE(exporter.MustEnableCodePrettify(4000, 1666));
+		ASSERT_FALSE(exporter.MustEnableCodePrettify(4000, 1667));
+
+		ASSERT_TRUE(exporter.MustEnableCodePrettify(2000, 2000));
+		ASSERT_FALSE(exporter.MustEnableCodePrettify(2000, 2001));
 	}
 }

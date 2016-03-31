@@ -43,15 +43,24 @@ namespace Exporter
 		static const std::wstring EndStyle;
 
 	public:
-		HtmlFileCoverageExporter();
+		HtmlFileCoverageExporter(
+			int maxSourceLineCount = 8000, 
+			int maxSourceLineStyleChangesCount = 1000,
+			int maxStyleChangesCount = 2000);
 
 		bool Export(
 			const CppCoverage::FileCoverage&,
 			std::wostream& output) const;
 		
+		bool MustEnableCodePrettify(int lineCount, int styleChangedCount) const;
+
 	private:
 		HtmlFileCoverageExporter(const HtmlFileCoverageExporter&) = delete;
 		HtmlFileCoverageExporter& operator=(const HtmlFileCoverageExporter&) = delete;
+
+		int maxSourceLineCount_;
+		int maxSourceLineStyleChangesCount_;
+		int maxStyleChangesCount_;
 	};
 }
 

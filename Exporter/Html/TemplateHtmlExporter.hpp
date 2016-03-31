@@ -52,6 +52,10 @@ namespace Exporter
 		static const std::string NameTemplate;
 		static const std::string ItemLinkSection;
 		static const std::string ItemNoLinkSection;
+		static const std::string BodyOnLoadTemplate;
+		static const std::string SourceWarningMessageTemplate;
+		static const std::string BodyOnLoadFct;
+		static const std::string SyntaxHighlightingDisabledMsg;
 
 	public:
 		explicit TemplateHtmlExporter(const fs::path& templateFolder);
@@ -82,6 +86,7 @@ namespace Exporter
 		void GenerateSourceTemplate(
 			const std::wstring& title, 
 			const std::wstring& codeContent,
+			bool enableCodePrettify,
 			const fs::path& output) const;
 
 	private:
