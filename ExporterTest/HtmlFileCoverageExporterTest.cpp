@@ -16,89 +16,114 @@
 
 #include "stdafx.h"
 
-#include <iterator>
-#include <fstream>
-
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
 #include "CppCoverage/FileCoverage.hpp"
 #include "Exporter/Html/HtmlFileCoverageExporter.hpp"
-
-#include "TestCoverageConsole/TestCoverageConsole.hpp"
-
-namespace fs = boost::filesystem;
+#include "TestHelper/TemporaryPath.hpp"
 
 namespace ExporterTest
 {
 	namespace
 	{
-		//---------------------------------------------------------------------
-		class HtmlFileCoverageExporterTest: public ::testing::Test
+		enum class CoverageType
 		{
-		public:
-			HtmlFileCoverageExporterTest()
-			{
-				fs::path path = TestCoverageConsole::GetMainCppPath();
-
-				CppCoverage::FileCoverage fileCoverage{ path };
-				Exporter::HtmlFileCoverageExporter exporter;
-
-				fileCoverage.AddLine(11, true);
-				fileCoverage.AddLine(12, true);
-				fileCoverage.AddLine(13, false);
-
-				std::wstring exportedString = GetExportedString(exporter, fileCoverage);				
-				boost::split(lines_, exportedString, boost::is_any_of("\n"));
-			}
-		
-			//-----------------------------------------------------------------
-			bool HasBeenExecuted(int lineNumber)
-			{				
-				return boost::starts_with(lines_.at(lineNumber - 1),
-					Exporter::HtmlFileCoverageExporter::StyleBackgroundColorExecuted);
-			}
-
-			//-----------------------------------------------------------------
-			bool HasBeenUnexecuted(int lineNumber)
-			{
-				return boost::starts_with(lines_.at(lineNumber - 1),
-					Exporter::HtmlFileCoverageExporter::StyleBackgroundColorUnexecuted);
-			}
-
-		private:
-			//-----------------------------------------------------------------
-			std::wstring GetExportedString(
-				Exporter::HtmlFileCoverageExporter& exporter,
-				const CppCoverage::FileCoverage& fileCoverage)
-			{
-				std::wostringstream ostr;
-				exporter.Export(fileCoverage, ostr);
-
-				return ostr.str();
-			}
-
-		private:
-			std::vector<std::wstring> lines_;
+			Cover,
+			UnCover,
+			NotExecutable
 		};
+
+		//-----------------------------------------------------------------
+		void FillSources(
+			const std::vector<std::pair<std::wstring, CoverageType>>& sourceLines,
+			const TestHelper::TemporaryPath& sourceFile,
+			CppCoverage::FileCoverage& fileCoverage)
+		{
+			std::wofstream ofs(sourceFile.GetPath().wstring());
+
+			unsigned int lineNumber = 1;
+			for (const auto& line : sourceLines)
+			{
+				ofs << line.first << std::endl;
+				auto coverageType = line.second;
+				switch (coverageType)
+				{
+					case CoverageType::Cover: fileCoverage.AddLine(lineNumber, true); break;
+					case CoverageType::UnCover: fileCoverage.AddLine(lineNumber, false); break;
+					case CoverageType::NotExecutable: break;
+				}
+				++lineNumber;
+			}
+		}
+
+		//-----------------------------------------------------------------
+		std::vector<std::wstring> GetExportedLines(
+			const std::vector<std::pair<std::wstring, CoverageType>>& sourceLines)
+		{
+			std::wostringstream ostr;
+			TestHelper::TemporaryPath sourceFile;
+			CppCoverage::FileCoverage fileCoverage{ sourceFile };
+
+			FillSources(sourceLines, sourceFile, fileCoverage);
+
+			if (!Exporter::HtmlFileCoverageExporter{}.Export(fileCoverage, ostr))
+				throw std::runtime_error("Error in HtmlFileCoverageExporter::Export");
+
+			std::wstring exportedString = ostr.str();
+			std::vector<std::wstring> lines;
+			boost::split(lines, exportedString, boost::is_any_of("\n"));
+
+			// First line is always empty
+			lines.erase(lines.begin());
+
+			if (lines.size() != sourceLines.size())
+				throw std::runtime_error("Invalid number of exported lines.");
+			return lines;
+		}
 	}
 
-	//---------------------------------------------------------------------
-	TEST_F(HtmlFileCoverageExporterTest, ExecutedLine)
-	{		
-		ASSERT_TRUE(HasBeenExecuted(11));
-		ASSERT_TRUE(HasBeenExecuted(12));
-	}
+	const auto StyleExecuted = Exporter::HtmlFileCoverageExporter::StyleBackgroundColorExecuted;
+	const auto StyleNotExecuted = Exporter::HtmlFileCoverageExporter::StyleBackgroundColorUnexecuted;
+	const auto EndStyle = Exporter::HtmlFileCoverageExporter::EndStyle;
+	const std::wstring Line = L"line";
 
 	//---------------------------------------------------------------------
-	TEST_F(HtmlFileCoverageExporterTest, UnexecutedLine)
+	TEST(HtmlFileCoverageExporterTest, ExecutedLine)
 	{
-		ASSERT_TRUE(HasBeenUnexecuted(13));
+		auto exportedLines = GetExportedLines({ {Line, CoverageType::Cover} });
+		ASSERT_EQ(StyleExecuted + Line + EndStyle, exportedLines.at(0));
 	}
 
 	//---------------------------------------------------------------------
-	TEST_F(HtmlFileCoverageExporterTest, NotRunnableLine)
+	TEST(HtmlFileCoverageExporterTest, NotExecutedLine)
 	{
-		ASSERT_FALSE(HasBeenExecuted(14));
-		ASSERT_FALSE(HasBeenUnexecuted(14));
+		auto exportedLines = GetExportedLines({ { Line, CoverageType::UnCover } });
+		ASSERT_EQ(StyleNotExecuted + Line + EndStyle, exportedLines.at(0));
+	}
+
+	//---------------------------------------------------------------------
+	TEST(HtmlFileCoverageExporterTest, NotRunnableLine)
+	{
+		auto exportedLines = GetExportedLines({ { Line, CoverageType::NotExecutable } });
+		ASSERT_EQ(Line, exportedLines.at(0));
+	}
+
+	//---------------------------------------------------------------------
+	TEST(HtmlFileCoverageExporterTest, SeveralLines)
+	{
+		std::vector<std::wstring> lines = { L"1", L"2", L"3", L"4", L"5", L"6" };
+		auto exportedLines = GetExportedLines({
+			{ lines.at(0), CoverageType::UnCover },
+			{ lines.at(1), CoverageType::UnCover },
+			{ lines.at(2), CoverageType::NotExecutable }, 
+			{ lines.at(3), CoverageType::NotExecutable },
+			{ lines.at(4), CoverageType::Cover },
+			{ lines.at(5), CoverageType::Cover } });
+				
+		ASSERT_EQ(StyleNotExecuted + lines.at(0), exportedLines.at(0));
+		ASSERT_EQ(lines.at(1) + EndStyle, exportedLines.at(1));
+		ASSERT_EQ(lines.at(2), exportedLines.at(2));
+		ASSERT_EQ(lines.at(3), exportedLines.at(3));
+		ASSERT_EQ(StyleExecuted + lines.at(4), exportedLines.at(4));
+		ASSERT_EQ(lines.at(5) + EndStyle, exportedLines.at(5));
 	}
 }

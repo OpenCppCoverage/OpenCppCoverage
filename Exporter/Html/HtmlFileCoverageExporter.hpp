@@ -40,6 +40,7 @@ namespace Exporter
 	public:
 		static const std::wstring StyleBackgroundColorExecuted;
 		static const std::wstring StyleBackgroundColorUnexecuted;
+		static const std::wstring EndStyle;
 
 	public:
 		HtmlFileCoverageExporter();

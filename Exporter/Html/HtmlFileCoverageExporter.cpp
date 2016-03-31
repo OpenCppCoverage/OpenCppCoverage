@@ -27,39 +27,74 @@
 #include "../ExporterException.hpp"
 
 namespace fs = boost::filesystem;
+namespace cov = CppCoverage;
 
 namespace Exporter
 {
 	namespace
 	{
 		//---------------------------------------------------------------------
-		std::wstring UpdateLineColor(const std::wstring& line, bool codeHasBeenExecuted)
+		bool HaveSameCoverage(
+			const cov::LineCoverage* lineCoverage,
+			const cov::LineCoverage* otherLineCoverage)
 		{
-			std::wstring output;
+			if (!lineCoverage || !otherLineCoverage)
+				return lineCoverage == otherLineCoverage;
+			return lineCoverage->HasBeenExecuted() == otherLineCoverage->HasBeenExecuted();
+		}
 
-			if (codeHasBeenExecuted)
-				output += HtmlFileCoverageExporter::StyleBackgroundColorExecuted;
+		//---------------------------------------------------------------------
+		std::wstring GetStyle(const cov::LineCoverage* lineCoverage)
+		{
+			if (!lineCoverage)
+				return L"";
+
+			return (lineCoverage->HasBeenExecuted())
+				? HtmlFileCoverageExporter::StyleBackgroundColorExecuted
+				: HtmlFileCoverageExporter::StyleBackgroundColorUnexecuted;
+		}
+
+		//---------------------------------------------------------------------
+		void AddEndStyleIfNeeded(
+			std::wostream& output,
+			const cov::LineCoverage* previousLineCoverage)
+		{
+			if (previousLineCoverage)
+				output << HtmlFileCoverageExporter::EndStyle;
+		}
+
+		//---------------------------------------------------------------------
+		void AddLineCoverageColor(
+			std::wostream& output,
+			const std::wstring& line, 
+			const cov::LineCoverage* lineCoverage,
+			const cov::LineCoverage* previousLineCoverage)
+		{
+			if (HaveSameCoverage(lineCoverage, previousLineCoverage))
+				output << std::endl << line;
 			else
-				output += HtmlFileCoverageExporter::StyleBackgroundColorUnexecuted;
-
-			output += line;
-			output += L"</span>";
-
-			return output;
+			{
+				AddEndStyleIfNeeded(output, previousLineCoverage);
+				output << std::endl;
+				output << GetStyle(lineCoverage) << line;
+			}
 		}
 
 		const std::wstring StyleBackgroundColor = L"<span style = \"background-color:#";
 	}
 
-	const std::wstring HtmlFileCoverageExporter::StyleBackgroundColorExecuted = StyleBackgroundColor + L"dfd" + L"\">";
-	const std::wstring HtmlFileCoverageExporter::StyleBackgroundColorUnexecuted = StyleBackgroundColor + L"fdd" + L"\">";
-	
+	const std::wstring HtmlFileCoverageExporter::StyleBackgroundColorExecuted = 
+		StyleBackgroundColor + L"dfd" + L"\">";
+	const std::wstring HtmlFileCoverageExporter::StyleBackgroundColorUnexecuted = 
+		StyleBackgroundColor + L"fdd" + L"\">";
+	const std::wstring HtmlFileCoverageExporter::EndStyle = L"</span>";
+
 	//-------------------------------------------------------------------------
 	HtmlFileCoverageExporter::HtmlFileCoverageExporter() = default;
 
 	//-------------------------------------------------------------------------
 	bool HtmlFileCoverageExporter::Export(
-		const CppCoverage::FileCoverage& fileCoverage,
+		const cov::FileCoverage& fileCoverage,
 		std::wostream& output) const
 	{
 		auto filePath = fileCoverage.GetPath();
@@ -72,17 +107,16 @@ namespace Exporter
 			THROW(L"Cannot open file : " + filePath.wstring());
 
 		std::wstring line;
+		const cov::LineCoverage* previousLineCoverage = nullptr;
 		for (int i = 1; std::getline(ifs, line); ++i)
 		{			
 			auto lineCoverage = fileCoverage[i];
 			
-			line = boost::spirit::classic::xml::encode(line);
-				
-			if (lineCoverage)
-				line = UpdateLineColor(line, lineCoverage->HasBeenExecuted());
-				
-			output << line << std::endl;
+			line = boost::spirit::classic::xml::encode(line);				
+			AddLineCoverageColor(output, line, lineCoverage, previousLineCoverage);
+			previousLineCoverage = lineCoverage;
 		}
+		AddEndStyleIfNeeded(output, previousLineCoverage);
 		output.flush();
 
 		return true;
