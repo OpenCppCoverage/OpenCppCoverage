@@ -189,7 +189,7 @@ namespace CppCoverageTest
 			return ComputeCoverageDataInBothMode(
 				programArg,
 				TestCoverageConsole::GetOutputBinaryPath().wstring(),
-				TestCoverageConsole::GetMainCppPath().wstring(),
+				TestCoverageConsole::GetMainCppFilename().wstring(),
 				continueAfterCppException);
 		}
 
