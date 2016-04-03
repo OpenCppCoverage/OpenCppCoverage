@@ -57,13 +57,21 @@ namespace CppCoverage
 	};
 
 	//-------------------------------------------------------------------------
+	Debugger::Debugger(
+		bool coverChildren,
+		bool continueAfterCppException)
+		: coverChildren_{ coverChildren }
+		, continueAfterCppException_{ continueAfterCppException }
+	{
+	}
+
+	//-------------------------------------------------------------------------
 	int Debugger::Debug(
 		const StartInfo& startInfo,
-		IDebugEventsHandler& debugEventsHandler,
-		bool coverChildren)
+		IDebugEventsHandler& debugEventsHandler)
 	{
 		Process process(startInfo);
-		process.Start((coverChildren) ? DEBUG_PROCESS: DEBUG_ONLY_THIS_PROCESS);
+		process.Start((coverChildren_) ? DEBUG_PROCESS: DEBUG_ONLY_THIS_PROCESS);
 		
 		DEBUG_EVENT debugEvent;
 		boost::optional<int> exitCode;
@@ -183,9 +191,13 @@ namespace CppCoverage
 			}
 			case IDebugEventsHandler::ExceptionType::CppError:
 			{
-				const auto& exceptionRecord = exception.ExceptionRecord;
-				
-				return ProcessStatus{ static_cast<int>(exceptionRecord.ExceptionCode), DBG_CONTINUE };
+				if (continueAfterCppException_)
+				{
+					const auto& exceptionRecord = exception.ExceptionRecord;
+					LOG_WARNING << "Continue after a C++ exception.";
+					return ProcessStatus{ static_cast<int>(exceptionRecord.ExceptionCode), DBG_CONTINUE };
+				}
+				return ProcessStatus{ boost::none, DBG_EXCEPTION_NOT_HANDLED };
 			}
 		}
 		THROW("Invalid exception Type.");

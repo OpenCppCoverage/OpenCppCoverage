@@ -58,13 +58,14 @@ namespace CppCoverage
 		const CoverageSettings& coverageSettings,
 		const std::vector<UnifiedDiffSettings>& unifiedDiffSettingsCollection,
 		bool coverChildren,
+		bool continueAfterCppException,
 		size_t maxUnmatchPathsForWarning)
 	{
-		Debugger debugger;
+		Debugger debugger{ coverChildren, continueAfterCppException };
 
 		coverageFilterManager_ = std::make_unique<CoverageFilterManager>(
 			coverageSettings, unifiedDiffSettingsCollection);
-		int exitCode = debugger.Debug(startInfo, *this, coverChildren);
+		int exitCode = debugger.Debug(startInfo, *this);
 		const auto& path = startInfo.GetPath();
 
 		auto warningMessageLines = coverageFilterManager_->ComputeWarningMessageLines(maxUnmatchPathsForWarning);

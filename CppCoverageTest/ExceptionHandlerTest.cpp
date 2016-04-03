@@ -38,10 +38,10 @@ namespace CppCoverageTest
 			void Run(const std::wstring& commandLineArgument)
 			{
 				cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath() };
-				cov::Debugger debugger;
+				cov::Debugger debugger{ false, false };
 
 				startInfo.AddArgument(commandLineArgument);
-				debugger.Debug(startInfo, *this, false);
+				debugger.Debug(startInfo, *this);
 			}
 
 			//---------------------------------------------------------------------

@@ -337,6 +337,8 @@ namespace CppCoverage
 			options.EnablePlugingMode();
 		if (IsOptionSelected(variables, ProgramOptions::NoAggregateByFileOption))
 			options.DisableAggregateByFileMode();
+		if (IsOptionSelected(variables, ProgramOptions::ContinueAfterCppExceptionOption))
+			options.EnableContinueAfterCppExceptionMode();
 
 		AddExporTypes(variables, options);
 		AddInputCoverages(variables, options);

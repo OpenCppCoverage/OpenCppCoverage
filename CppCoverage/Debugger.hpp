@@ -31,9 +31,11 @@ namespace CppCoverage
 	class CPPCOVERAGE_DLL Debugger
 	{
 	public:
-		Debugger() = default;
+		Debugger(
+			bool coverChildren,
+			bool continueAfterCppException);
 
-		int Debug(const StartInfo&, IDebugEventsHandler&, bool coverChildren);
+		int Debug(const StartInfo&, IDebugEventsHandler&);
 		size_t GetRunningProcesses() const;
 		size_t GetRunningThreads() const;
 
@@ -77,6 +79,8 @@ namespace CppCoverage
 		std::unordered_map<DWORD, HANDLE> processHandles_;
 		std::unordered_map<DWORD, HANDLE> threadHandles_;
 		boost::optional<DWORD> rootProcessId_;
+		bool coverChildren_;
+		bool continueAfterCppException_;
 	};
 }
 

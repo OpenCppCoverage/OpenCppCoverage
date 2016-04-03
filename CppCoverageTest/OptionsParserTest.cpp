@@ -46,6 +46,7 @@ namespace CppCoverageTest
 		ASSERT_FALSE(options->IsPlugingModeEnabled());
 		ASSERT_FALSE(options->IsCoverChildrenModeEnabled());
 		ASSERT_TRUE(options->IsAggregateByFileModeEnabled());
+		ASSERT_FALSE(options->IsContinueAfterCppExceptionModeEnabled());
 	}
 
 	//-------------------------------------------------------------------------
@@ -109,6 +110,16 @@ namespace CppCoverageTest
 
 		ASSERT_FALSE(TestTools::Parse(parser,
 		{ TestTools::OptionPrefix + cov::ProgramOptions::NoAggregateByFileOption })->IsAggregateByFileModeEnabled());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, ContinueAfterCppException)
+	{
+		cov::OptionsParser parser;
+
+		ASSERT_TRUE(TestTools::Parse(parser,
+		{ TestTools::OptionPrefix + cov::ProgramOptions::ContinueAfterCppExceptionOption })
+			->IsContinueAfterCppExceptionModeEnabled());
 	}
 
 	//-------------------------------------------------------------------------

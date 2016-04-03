@@ -47,6 +47,7 @@ namespace CppCoverage
 			const CoverageSettings&,
 			const std::vector<UnifiedDiffSettings>&,
 			bool coverChildren,
+			bool continueAfterCppException,
 			size_t maxUnmatchPathsForWarning);
 		size_t GetDebugInformationCount() const;
 

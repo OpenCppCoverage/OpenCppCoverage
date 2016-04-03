@@ -142,6 +142,7 @@ namespace OpenCppCoverage
 						settings,
 						options.GetUnifiedDiffSettingsCollection(),
 						options.IsCoverChildrenModeEnabled(),
+						options.IsContinueAfterCppExceptionModeEnabled(),
 						maxUnmatchPathsForWarning));
 			}
 			cov::CoverageDataMerger	coverageDataMerger;

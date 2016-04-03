@@ -63,6 +63,9 @@ namespace CppCoverage
 		void DisableAggregateByFileMode();
 		bool IsAggregateByFileModeEnabled() const;
 
+		void EnableContinueAfterCppExceptionMode();
+		bool IsContinueAfterCppExceptionModeEnabled() const;
+
 		void AddExport(const OptionsExport&);
 		const std::vector<OptionsExport>& GetExports() const;
 		
@@ -87,6 +90,7 @@ namespace CppCoverage
 		bool isPluginModeEnabled_;
 		bool isCoverChildrenModeEnabled_;
 		bool isAggregateByFileModeEnabled_;
+		bool isContinueAfterCppExceptionModeEnabled_;
 		std::vector<OptionsExport> exports_;
 		std::vector<boost::filesystem::path> inputCoveragePaths_;
 		std::vector<UnifiedDiffSettings> unifiedDiffSettingsCollection_;

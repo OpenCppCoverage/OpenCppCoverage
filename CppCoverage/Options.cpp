@@ -47,6 +47,7 @@ namespace CppCoverage
 		, isPluginModeEnabled_{false}
 		, isCoverChildrenModeEnabled_{false}
 		, isAggregateByFileModeEnabled_{true}
+		, isContinueAfterCppExceptionModeEnabled_{false}
 	{
 		if (startInfo)
 			optionalStartInfo_ = *startInfo;
@@ -122,6 +123,18 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	void Options::EnableContinueAfterCppExceptionMode()
+	{
+		isContinueAfterCppExceptionModeEnabled_ = true;
+	}
+	
+	//-------------------------------------------------------------------------
+	bool Options::IsContinueAfterCppExceptionModeEnabled() const
+	{
+		return isContinueAfterCppExceptionModeEnabled_;
+	}
+
+	//-------------------------------------------------------------------------
 	void Options::AddExport(const OptionsExport& optionExport)
 	{
 		exports_.push_back(optionExport);
@@ -167,6 +180,7 @@ namespace CppCoverage
 		ostr << L"Log Level: " << GetLogLevelStr(options.GetLogLevel()) << std::endl;
 		ostr << L"Cover Children: " << options.isCoverChildrenModeEnabled_ << std::endl;
 		ostr << L"Aggregate by file: " << options.isAggregateByFileModeEnabled_ << std::endl;
+		ostr << L"Continue after C++ exception: " << options.isContinueAfterCppExceptionModeEnabled_ << std::endl;
 
 		ostr << L"Export: ";
 		for (const auto& optionExport : options.exports_)

@@ -30,7 +30,7 @@ namespace CppCoverageTest
 	TEST(DebugerTest, Debug)
 	{		
 		cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath() };
-		cov::Debugger debugger;
+		cov::Debugger debugger{ false, false };
 		DebugEventsHandlerMock debugEventsHandlerMock;
 
 		EXPECT_CALL(debugEventsHandlerMock, OnCreateProcess(testing::_));
@@ -39,7 +39,7 @@ namespace CppCoverageTest
 		EXPECT_CALL(debugEventsHandlerMock, OnException(testing::_, testing::_, testing::_))
 			.WillRepeatedly(testing::Return(cov::IDebugEventsHandler::ExceptionType::NotHandled));
 
-		debugger.Debug(startInfo, debugEventsHandlerMock, false);
+		debugger.Debug(startInfo, debugEventsHandlerMock);
 		ASSERT_EQ(0, debugger.GetRunningProcesses());
 		ASSERT_EQ(0, debugger.GetRunningThreads());
 	}	

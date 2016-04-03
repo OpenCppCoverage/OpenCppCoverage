@@ -48,6 +48,7 @@ namespace CppCoverage
 		static const std::string ExportTypeBinaryValue;
 		static const std::string InputCoverageValue;
 		static const std::string UnifiedDiffOption;
+		static const std::string ContinueAfterCppExceptionOption;
 
 		ProgramOptions(const std::vector<std::string>& optionsExportTypes);
 

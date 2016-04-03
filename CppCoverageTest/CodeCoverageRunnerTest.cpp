@@ -89,7 +89,8 @@ namespace CppCoverageTest
 			const std::vector<std::wstring>& modulePatternCollection,
 			const std::vector<std::wstring>& sourcePatternCollection,
 			const std::vector<cov::UnifiedDiffSettings>& unifiedDiffSettingsCollection = {},
-			bool coverChildren = true)
+			bool coverChildren = true,
+			bool continueAfterCppException = false)
 		{
 			cov::CodeCoverageRunner codeCoverageRunner;
 			cov::Patterns modulePatterns{false};
@@ -114,7 +115,13 @@ namespace CppCoverageTest
 				startInfo.AddArgument(argument);
 
 			auto coverageData = codeCoverageRunner.RunCoverage(
-				startInfo, coverageSettings, unifiedDiffSettingsCollection, coverChildren, 0);
+				startInfo, 
+				coverageSettings, 
+				unifiedDiffSettingsCollection, 
+				coverChildren, 
+				continueAfterCppException, 
+				0);
+
 			if (codeCoverageRunner.GetDebugInformationCount() != 0)
 				throw std::runtime_error("Invalid number of DebugInformation.");
 
@@ -127,25 +134,44 @@ namespace CppCoverageTest
 			const std::wstring& modulePattern,
 			const std::wstring& sourcePattern,
 			const std::vector<cov::UnifiedDiffSettings>& unifiedDiffSettingsCollection = {},
-			bool coverChildren = true)
+			bool coverChildren = true,
+			bool continueAfterCppException = false)
 		{
 			return ComputeCoverageDataPatterns(
-				arguments, { modulePattern }, { sourcePattern }, unifiedDiffSettingsCollection, coverChildren);
+				arguments, 
+				{ modulePattern }, 
+				{ sourcePattern }, 
+				unifiedDiffSettingsCollection, 
+				coverChildren, 
+				continueAfterCppException);
 		}
 
 		//---------------------------------------------------------------------
 		cov::CoverageData ComputeCoverageDataInBothMode(
 			const std::wstring& programArg,
 			std::wstring modulePattern,
-			std::wstring sourcePattern)
+			std::wstring sourcePattern,
+			bool continueAfterCppException = false)
 		{
 			std::vector<std::wstring> arguments = { programArg };
 
-			auto coverageData = ComputeCoverageData(arguments, modulePattern, sourcePattern);
+			auto coverageData = ComputeCoverageData(
+				arguments, 
+				modulePattern, 
+				sourcePattern, 
+				{},
+				true,
+				continueAfterCppException);
 
 			// Run child child process.
 			arguments.insert(arguments.begin(), TestCoverageConsole::TestChildProcess);
-			auto coverageDataChildProcess = ComputeCoverageData(arguments, modulePattern, sourcePattern);
+			auto coverageDataChildProcess = ComputeCoverageData(
+				arguments, 
+				modulePattern, 
+				sourcePattern, 
+				{}, 
+				true, 
+				continueAfterCppException);
 
 			if (!TestHelper::CoverageDataComparer().IsFirstCollectionContainsSecond(
 					coverageDataChildProcess.GetModules(), coverageData.GetModules()))
@@ -156,12 +182,15 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		cov::CoverageData RunCoverageWithException(const std::wstring& programArg)
+		cov::CoverageData RunCoverageWithException(
+			const std::wstring& programArg,
+			bool continueAfterCppException)
 		{
 			return ComputeCoverageDataInBothMode(
 				programArg,
 				TestCoverageConsole::GetOutputBinaryPath().wstring(),
-				TestCoverageConsole::GetMainCppPath().wstring());
+				TestCoverageConsole::GetMainCppPath().wstring(),
+				continueAfterCppException);
 		}
 
 		//---------------------------------------------------------------------
@@ -246,7 +275,8 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, HandledException)
 	{
-		cov::CoverageData coverageData = RunCoverageWithException(TestCoverageConsole::TestThrowHandledException);
+		cov::CoverageData coverageData = RunCoverageWithException(
+			TestCoverageConsole::TestThrowHandledException, false);
 		ASSERT_EQ(std::string::npos, 
 			GetError().find(cov::ExceptionHandler::UnhandledExceptionErrorMessage));
 		ASSERT_EQ(0, coverageData.GetExitCode());
@@ -255,7 +285,8 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, UnHandledSEHException)
 	{
-		cov::CoverageData coverageData = RunCoverageWithException(TestCoverageConsole::TestThrowUnHandledSEHException);
+		cov::CoverageData coverageData = RunCoverageWithException(
+			TestCoverageConsole::TestThrowUnHandledSEHException, false);
 		ASSERT_NE(std::string::npos, 
 			GetError().find(cov::ExceptionHandler::UnhandledExceptionErrorMessage));
 		ASSERT_NE(0, coverageData.GetExitCode());
@@ -264,7 +295,8 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, UnHandledCppException)
 	{
-		auto coverageData = RunCoverageWithException(TestCoverageConsole::TestThrowUnHandledCppException);
+		auto coverageData = RunCoverageWithException(
+			TestCoverageConsole::TestThrowUnHandledCppException, false);
 		ASSERT_NE(std::string::npos,
 			GetError().find(cov::ExceptionHandler::UnhandledExceptionErrorMessage));
 		ASSERT_EQ(cov::ExceptionHandler::CppExceptionErrorCode, coverageData.GetExitCode());
@@ -273,10 +305,21 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, UnHandledCppExceptionContinue)
 	{
-		auto coverageData = RunCoverageWithException(TestCoverageConsole::TestThrowUnHandledCppException);
+		auto coverageData = RunCoverageWithException(
+			TestCoverageConsole::TestThrowUnHandledCppException, true);
 		auto& file = GetFirstFileCoverage(coverageData);
 		auto returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainLine() + 31;
 		TestLine(file, returnLine, true);
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, UnHandledCppExceptionNotContinue)
+	{
+		auto coverageData = RunCoverageWithException(
+			TestCoverageConsole::TestThrowUnHandledCppException, false);
+		auto& file = GetFirstFileCoverage(coverageData);
+		auto returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainLine() + 31;
+		TestLine(file, returnLine, false);
 	}
 
 	//-------------------------------------------------------------------------
