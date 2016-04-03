@@ -94,6 +94,15 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
+	TEST_F(CoverageRateComputerTest, CoverageRate)
+	{
+		const auto& rate = coverageRateComputer_->GetCoverageRate();
+
+		ASSERT_EQ(1 + 3 + 5, rate.GetExecutedLinesCount());
+		ASSERT_EQ(2 + 4 + 10, rate.GetUnExecutedLinesCount());
+	}
+
+	//-------------------------------------------------------------------------
 	TEST_F(CoverageRateComputerTest, SortModulesByCoverageRate)
 	{
 		const auto& modules = coverageRateComputer_->SortModulesByCoverageRate();

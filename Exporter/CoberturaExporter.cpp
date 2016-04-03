@@ -87,10 +87,13 @@ namespace Exporter
 			property_tree::wptree& root,
 			const CppCoverage::CoverageData& coverageData)
 		{
-			auto& coverageTree = AddChild(root, L"coverage");
-			property_tree::wptree& packagesTree = AddChild(coverageTree, L"packages");
-			std::unordered_set<std::wstring> rootPaths;
 			cov::CoverageRateComputer coverageRateComputer(coverageData);
+
+			auto& coverageTree = AddChild(root, L"coverage");
+			coverageTree.put(L"<xmlattr>.line-rate", coverageRateComputer.GetCoverageRate().GetRate());
+
+			property_tree::wptree& packagesTree = AddChild(coverageTree, L"packages");
+			std::unordered_set<std::wstring> rootPaths;			
 
 			for (const auto& module : coverageData.GetModules())
 			{

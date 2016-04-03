@@ -88,6 +88,7 @@ namespace CppCoverage
 			}
 
 			moduleCoverageRate_.emplace(module.get(), moduleCoverageRate);
+			coverageRate_ += moduleCoverageRate;
 		}
 	}
 	
@@ -102,6 +103,12 @@ namespace CppCoverage
 		const ModuleCoverage& modules) const
 	{
 		return SortByCoverageRate(modules.GetFiles(), fileCoverageRate_);
+	}
+
+	//-------------------------------------------------------------------------
+	const CoverageRate& CoverageRateComputer::GetCoverageRate() const
+	{
+		return coverageRate_;
 	}
 
 	//-------------------------------------------------------------------------

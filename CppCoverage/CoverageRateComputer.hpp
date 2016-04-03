@@ -34,6 +34,7 @@ namespace CppCoverage
 		std::vector<ModuleCoverage*> SortModulesByCoverageRate() const;
 		std::vector<FileCoverage*> SortFilesByCoverageRate(const ModuleCoverage&) const;
 		
+		const CoverageRate& GetCoverageRate() const;
 		const CoverageRate& GetCoverageRate(const ModuleCoverage&) const;
 		const CoverageRate& GetCoverageRate(const FileCoverage&) const;
 
@@ -47,5 +48,6 @@ namespace CppCoverage
 
 		std::unordered_map<const ModuleCoverage*, CoverageRate> moduleCoverageRate_;
 		std::unordered_map<const FileCoverage*, CoverageRate> fileCoverageRate_;
+		CoverageRate coverageRate_;
 	};
 }
