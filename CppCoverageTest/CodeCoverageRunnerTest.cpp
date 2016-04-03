@@ -160,8 +160,8 @@ namespace CppCoverageTest
 		{
 			return ComputeCoverageDataInBothMode(
 				programArg,
-				TestCoverageSharedLib::GetOutputBinaryPath().wstring(),
-				TestCoverageSharedLib::GetMainCppPath().wstring());
+				TestCoverageConsole::GetOutputBinaryPath().wstring(),
+				TestCoverageConsole::GetMainCppPath().wstring());
 		}
 
 		//---------------------------------------------------------------------
@@ -259,6 +259,24 @@ namespace CppCoverageTest
 		ASSERT_NE(std::string::npos, 
 			GetError().find(cov::ExceptionHandler::UnhandledExceptionErrorMessage));
 		ASSERT_NE(0, coverageData.GetExitCode());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, UnHandledCppException)
+	{
+		auto coverageData = RunCoverageWithException(TestCoverageConsole::TestThrowUnHandledCppException);
+		ASSERT_NE(std::string::npos,
+			GetError().find(cov::ExceptionHandler::UnhandledExceptionErrorMessage));
+		ASSERT_EQ(cov::ExceptionHandler::CppExceptionErrorCode, coverageData.GetExitCode());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, UnHandledCppExceptionContinue)
+	{
+		auto coverageData = RunCoverageWithException(TestCoverageConsole::TestThrowUnHandledCppException);
+		auto& file = GetFirstFileCoverage(coverageData);
+		auto returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainLine() + 31;
+		TestLine(file, returnLine, true);
 	}
 
 	//-------------------------------------------------------------------------

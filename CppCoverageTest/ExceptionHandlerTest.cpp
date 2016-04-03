@@ -90,7 +90,7 @@ namespace CppCoverageTest
 	TEST_F(ExceptionHandlerTest, TestUnHandleCppException)
 	{
 		Run(TestCoverageConsole::TestThrowUnHandledCppException);
-		ASSERT_EQ(cov::ExceptionHandlerStatus::Fatal, exceptionHandlerStatus_);
+		ASSERT_EQ(cov::ExceptionHandlerStatus::CppError, exceptionHandlerStatus_);
 		ASSERT_NE(std::string::npos, message_.find(cov::ExceptionHandler::ExceptionCpp));
 	}
 
@@ -98,7 +98,7 @@ namespace CppCoverageTest
 	TEST_F(ExceptionHandlerTest, TestUnHandleSEHException)
 	{
 		Run(TestCoverageConsole::TestThrowUnHandledSEHException);	
-		ASSERT_EQ(CppCoverage::ExceptionHandlerStatus::Fatal, exceptionHandlerStatus_);
+		ASSERT_EQ(CppCoverage::ExceptionHandlerStatus::Error, exceptionHandlerStatus_);
 		ASSERT_NE(std::string::npos, message_.find(cov::ExceptionHandler::ExceptionAccesViolation));
 	}
 	

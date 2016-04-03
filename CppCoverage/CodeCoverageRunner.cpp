@@ -124,12 +124,18 @@ namespace CppCoverage
 			{
 				return IDebugEventsHandler::ExceptionType::NotHandled;
 			}
-			case CppCoverage::ExceptionHandlerStatus::Fatal:
+			case CppCoverage::ExceptionHandlerStatus::Error:
 			{
 				LOG_ERROR << ostr.str();
 				
-				return IDebugEventsHandler::ExceptionType::NotHandled;
-			}			
+				return IDebugEventsHandler::ExceptionType::Error;
+			}
+			case CppCoverage::ExceptionHandlerStatus::CppError:
+			{
+				LOG_ERROR << ostr.str();
+
+				return IDebugEventsHandler::ExceptionType::CppError;
+			}
 		}
 
 		return IDebugEventsHandler::ExceptionType::NotHandled;

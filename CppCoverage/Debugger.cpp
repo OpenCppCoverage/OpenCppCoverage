@@ -156,7 +156,8 @@ namespace CppCoverage
 		HANDLE hProcess,
 		HANDLE hThread) const
 	{
-		auto exceptionType = debugEventsHandler.OnException(hProcess, hThread, debugEvent.u.Exception);
+		const auto& exception = debugEvent.u.Exception;
+		auto exceptionType = debugEventsHandler.OnException(hProcess, hThread, exception);
 
 		switch (exceptionType)
 		{
@@ -175,6 +176,16 @@ namespace CppCoverage
 			case IDebugEventsHandler::ExceptionType::NotHandled:
 			{
 				return ProcessStatus{ boost::none, DBG_EXCEPTION_NOT_HANDLED };
+			}
+			case IDebugEventsHandler::ExceptionType::Error:
+			{
+				return ProcessStatus{ boost::none, DBG_EXCEPTION_NOT_HANDLED };
+			}
+			case IDebugEventsHandler::ExceptionType::CppError:
+			{
+				const auto& exceptionRecord = exception.ExceptionRecord;
+				
+				return ProcessStatus{ static_cast<int>(exceptionRecord.ExceptionCode), DBG_CONTINUE };
 			}
 		}
 		THROW("Invalid exception Type.");

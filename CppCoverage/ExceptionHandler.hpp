@@ -29,7 +29,8 @@ namespace CppCoverage
 	{		
 		BreakPoint,
 		FirstChanceException,
-		Fatal
+		Error,
+		CppError
 	};
 
 	class CPPCOVERAGE_DLL ExceptionHandler
@@ -40,6 +41,7 @@ namespace CppCoverage
 		static const std::wstring ExceptionAccesViolation;
 		static const std::wstring ExceptionUnknown;
 		static const int ExceptionEmulationX86ErrorCode;
+		static const int CppExceptionErrorCode;
 
 		ExceptionHandler();
 

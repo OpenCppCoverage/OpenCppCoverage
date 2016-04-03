@@ -28,6 +28,7 @@ namespace CppCoverage
 	const std::wstring ExceptionHandler::ExceptionAccesViolation = L"EXCEPTION_ACCESS_VIOLATION";
 	const std::wstring ExceptionHandler::ExceptionUnknown = L"Unknown";
 	const int ExceptionHandler::ExceptionEmulationX86ErrorCode = 0x4000001f;
+	const int ExceptionHandler::CppExceptionErrorCode = 0xE06D7363;
 
 	//-------------------------------------------------------------------------
 	ExceptionHandler::ExceptionHandler()
@@ -61,8 +62,7 @@ namespace CppCoverage
 		exceptionCode_.emplace(EXCEPTION_SINGLE_STEP, L"EXCEPTION_SINGLE_STEP");
 		exceptionCode_.emplace(EXCEPTION_STACK_OVERFLOW, L"EXCEPTION_STACK_OVERFLOW");
 		
-		auto cppException = 0xE06D7363;
-		exceptionCode_.emplace(cppException, ExceptionCpp);
+		exceptionCode_.emplace(CppExceptionErrorCode, ExceptionCpp);
 	}
 	
 	//-------------------------------------------------------------------------
@@ -72,10 +72,11 @@ namespace CppCoverage
 		std::wostream& message)
 	{
 		const auto& exceptionRecord = exceptionDebugInfo.ExceptionRecord;
-				
+		const auto exceptionCode = exceptionRecord.ExceptionCode;
+
 		if (exceptionDebugInfo.dwFirstChance)
 		{
-			auto it = breakPointExceptionCode_.find(exceptionRecord.ExceptionCode);
+			auto it = breakPointExceptionCode_.find(exceptionCode);
 			
 			if (it != breakPointExceptionCode_.end())
 			{
@@ -97,7 +98,8 @@ namespace CppCoverage
 		message << L": " << GetExceptionStrFromCode(exceptionRecord.ExceptionCode) << std::endl;
 		message << Tools::GetSeparatorLine() << std::endl;
 
-		return ExceptionHandlerStatus::Fatal;
+		return (exceptionCode == CppExceptionErrorCode) 
+			? ExceptionHandlerStatus::CppError : ExceptionHandlerStatus::Error;
 	}
 
 	//-------------------------------------------------------------------------
