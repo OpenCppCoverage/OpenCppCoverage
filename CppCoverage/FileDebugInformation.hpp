@@ -1,5 +1,5 @@
 // OpenCppCoverage is an open source code coverage for C++.
-// Copyright (C) 2014 OpenCppCoverage
+// Copyright (C) 2016 OpenCppCoverage
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,38 +17,30 @@
 #pragma once
 
 #include "CppCoverageExport.hpp"
-#include "FileDebugInformation.hpp"
+#include <Windows.h>
 
 namespace CppCoverage
 {
 	class IDebugInformationEventHandler;
 	class ICoverageFilterManager;
 
-	class CPPCOVERAGE_DLL DebugInformation
+	class CPPCOVERAGE_DLL FileDebugInformation
 	{
 	public:
-		explicit DebugInformation(HANDLE hProcess);
-		~DebugInformation();
-
-		void LoadModule(
-			const std::wstring& filename, 
-			HANDLE hFile, 
-			void* baseOfImage,
-			ICoverageFilterManager&,
+		explicit FileDebugInformation(HANDLE hProcess);
+	
+		void LoadFile(
+			void* processBaseOfImage,
+			DWORD64 baseAddress,
+			const std::wstring& filename,
+			ICoverageFilterManager& coverageFilterManager,
 			IDebugInformationEventHandler& debugInformationEventHandler) const;
 
 	private:
-		DebugInformation(const DebugInformation&) = delete;
-		DebugInformation& operator=(const DebugInformation&) = delete;
-
-		void UnloadModule64(DWORD64 baseOfDll) const;
-		void UpdateSearchPath(const std::wstring&) const;
+		FileDebugInformation(const FileDebugInformation&) = delete;
+		FileDebugInformation& operator=(const FileDebugInformation&) = delete;
 
 	private:
 		HANDLE hProcess_;
-		std::string defaultSearchPath_;
-		FileDebugInformation fileDebugInformation_;
 	};
 }
-
-

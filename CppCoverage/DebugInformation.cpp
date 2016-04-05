@@ -18,7 +18,6 @@
 #include "DebugInformation.hpp"
 
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem/path.hpp>
 
 #include "Tools/DbgHelp.hpp"
 #include "Tools/Tool.hpp"
@@ -26,9 +25,7 @@
 #include "Tools/ScopedAction.hpp"
 
 #include "CppCoverageException.hpp"
-#include "IDebugInformationEventHandler.hpp"
 #include "ICoverageFilterManager.hpp"
-#include "Address.hpp"
 
 namespace CppCoverage
 {
@@ -38,70 +35,26 @@ namespace CppCoverage
 		struct Context
 		{
 			Context(
-				HANDLE hProcess, 
 				DWORD64 baseAddress, 
 				void* processBaseOfImage,
+				const FileDebugInformation& fileDebugInformation,
 				ICoverageFilterManager& coverageFilterManager,
 				IDebugInformationEventHandler& debugInformationEventHandler)
-				: hProcess_(hProcess)
-				, baseAddress_(baseAddress)
+				: baseAddress_(baseAddress)
 				, processBaseOfImage_(processBaseOfImage)
+				, fileDebugInformation_{ fileDebugInformation }
 				, coverageFilterManager_(coverageFilterManager)
 				, debugInformationEventHandler_(debugInformationEventHandler)
 			{
 			}
 
-			HANDLE hProcess_;
 			DWORD64 baseAddress_;
 			void* processBaseOfImage_;
-			ICoverageFilterManager& coverageFilterManager_;
+			const FileDebugInformation& fileDebugInformation_;
 			IDebugInformationEventHandler& debugInformationEventHandler_;
+			ICoverageFilterManager& coverageFilterManager_;
 		};
 
-		//---------------------------------------------------------------------
-		bool ExcludeLineInfo(const SRCCODEINFO& lineInfo, const Context& context)
-		{
-			const int NoSource = 0x00feefee;
-			if (lineInfo.LineNumber == NoSource)
-				return true;
-
-			char buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TCHAR)];
-			PSYMBOL_INFO symbol = reinterpret_cast<PSYMBOL_INFO>(buffer);
-
-			symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
-			symbol->MaxNameLen = MAX_SYM_NAME;
-			if (!SymFromAddr(context.hProcess_, lineInfo.Address, 0, symbol))
-				THROW("Error when calling SymFromAddr");
-
-			// Exclude compiler internal symbols.
-			return boost::algorithm::starts_with(symbol->Name, "__");
-		}
-
-		//---------------------------------------------------------------------
-		BOOL CALLBACK SymEnumLinesProc(PSRCCODEINFO lineInfo, PVOID userContext)
-		{
-			auto context = static_cast<Context*>(userContext);
-
-			if (!context)
-				THROW("Invalid user context.");
-
-			if (ExcludeLineInfo(*lineInfo, *context))
-				return TRUE;
-
-			auto filename = Tools::ToWString(lineInfo->FileName);
-			auto lineNumber = lineInfo->LineNumber;
-
-			if (!context->coverageFilterManager_.IsLineSelected(filename, lineNumber))
-				return TRUE;
-
-			DWORD64 addressValue = lineInfo->Address - lineInfo->ModBase + reinterpret_cast<DWORD64>(context->processBaseOfImage_);
-			Address address{ context->hProcess_, reinterpret_cast<void*>(addressValue) };
-
-			context->debugInformationEventHandler_.OnNewLine(filename, lineNumber, address);
-
-			return TRUE;
-		}		
-				
 		//---------------------------------------------------------------------
 		BOOL CALLBACK SymEnumSourceFilesProc(PSOURCEFILE pSourceFile, PVOID userContext)			
 		{
@@ -115,19 +68,13 @@ namespace CppCoverage
 			auto filename = Tools::ToWString(pSourceFile->FileName);
 			
 			if (context->coverageFilterManager_.IsSourceFileSelected(filename))
-			{				
-				if (!SymEnumSourceLines(
-					context->hProcess_,
+			{
+				context->fileDebugInformation_.LoadFile(
+					context->processBaseOfImage_,
 					context->baseAddress_,
-					nullptr,
-					pSourceFile->FileName,
-					0,
-					ESLFLAG_FULLPATH,
-					SymEnumLinesProc,
-					userContext))
-				{
-					THROW("Cannot enumerate source lines for" << pSourceFile->FileName);
-				}
+					filename,
+					context->coverageFilterManager_,
+					context->debugInformationEventHandler_);
 			}
 
 			return TRUE;
@@ -157,6 +104,7 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	DebugInformation::DebugInformation(HANDLE hProcess)
 		: hProcess_(hProcess)
+		, fileDebugInformation_{hProcess}
 	{		
 		SymSetOptions(SYMOPT_DEFERRED_LOADS | SYMOPT_LOAD_LINES
 				| SYMOPT_NO_UNQUALIFIED_LOADS | SYMOPT_UNDNAME | SYMOPT_DEBUG);
@@ -201,7 +149,7 @@ namespace CppCoverage
 				THROW("UnloadModule64 ");
 		} };
 
-		Context context{ hProcess_, baseAddress, baseOfImage, coverageFilterManager, debugInformationEventHandler };
+		Context context{ baseAddress, baseOfImage, fileDebugInformation_, coverageFilterManager, debugInformationEventHandler };
 
 		if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
 			LOG_WARNING << L"Cannot find pdb for " << filename;
