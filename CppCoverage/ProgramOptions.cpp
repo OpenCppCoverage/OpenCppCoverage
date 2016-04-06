@@ -22,6 +22,7 @@
 #include "Tools/Tool.hpp"
 
 #include "CppCoverageException.hpp"
+#include "OptionsParser.hpp"
 
 namespace po = boost::program_options;
 
@@ -73,9 +74,11 @@ namespace CppCoverage
 		//---------------------------------------------------------------------
 		std::string GetUnifiedDiffHelp()
 		{
-			return "Format: <unifiedDiffPath>|<rootFolder>\n"
-				"<unifiedDiffPath> path of the unified diff file. "
-				"Git user can use git diff output.\n"
+			return std::string("Format: <unifiedDiffPath>") +
+				OptionsParser::UnifiedDiffSeparator +
+				"<rootFolder>\n" +
+				"<unifiedDiffPath> path of the unified diff file. " +
+				"Git users can use git diff output.\n" +
 				"<rootFolder> (optional) root folder for paths in the diff file.";
 		}
 
