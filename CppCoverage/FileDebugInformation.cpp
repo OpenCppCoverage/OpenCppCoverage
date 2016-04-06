@@ -17,6 +17,7 @@
 #include "stdafx.h"
 #include "FileDebugInformation.hpp"
 
+#include <set>
 #include <boost/algorithm/string.hpp>
 
 #include "Tools/DbgHelp.hpp"
@@ -121,12 +122,13 @@ namespace CppCoverage
 			HANDLE hProcess,
 			const LineData& lineData,
 			const std::wstring& filename,
+			const std::set<int>& executableLinesSet,
 			ICoverageFilterManager& coverageFilterManager,
 			IDebugInformationEventHandler& debugInformationEventHandler)
 		{
 			auto lineNumber = lineData.lineNumber_;
 
-			if (coverageFilterManager.IsLineSelected(filename, lineNumber))
+			if (coverageFilterManager.IsLineSelected(filename, lineNumber, executableLinesSet))
 			{
 				Address address{ hProcess, lineData.address_ };
 
@@ -152,10 +154,13 @@ namespace CppCoverage
 		LineContext context{ hProcess_, processBaseOfImage };
 
 		RetreiveLineData(filename, baseAddress, context);
+		std::set<int> executableLinesSet;
+		for (const auto& lineData : context.lineDataCollection_)
+			executableLinesSet.insert(lineData.lineNumber_);
 
 		for (const auto& lineData : context.lineDataCollection_)
 		{
-			HandleNewLine(hProcess_, lineData, filename, 
+			HandleNewLine(hProcess_, lineData, filename, executableLinesSet,
 				coverageFilterManager, debugInformationEventHandler);
 		}
 	}	

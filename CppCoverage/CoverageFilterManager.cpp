@@ -51,6 +51,19 @@ namespace CppCoverage
 
 			return unifiedDiffCoverageFilters;
 		}
+
+		//-------------------------------------------------------------------------
+		boost::optional<int> GetExecutableLineOrPreviousOne(
+			int lineNumber,
+			const std::set<int>& executableLinesSet)
+		{
+			auto it = executableLinesSet.lower_bound(lineNumber);
+
+			if (it != executableLinesSet.end() && *it == lineNumber)
+				return lineNumber;
+
+			return (it == executableLinesSet.begin()) ? boost::optional<int>{} : *(--it);
+		}
 	}
 
 	//-------------------------------------------------------------------------
@@ -91,10 +104,20 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	bool CoverageFilterManager::IsLineSelected(const std::wstring& filename, int lineNumber)
+	bool CoverageFilterManager::IsLineSelected(
+		const std::wstring& filename, 
+		int lineNumber,
+		const std::set<int>& executableLinesSet)
 	{
+		if (unifiedDiffCoverageFilters_.empty())
+			return true;
+
+		auto executableLineNumber = GetExecutableLineOrPreviousOne(lineNumber, executableLinesSet);
+		if (!executableLineNumber)
+			return false;
+
 		return AnyOfOrTrueIfEmpty(unifiedDiffCoverageFilters_, [&](const auto& filter) {
-			return filter->IsLineSelected(filename, lineNumber);
+			return filter->IsLineSelected(filename, *executableLineNumber);
 		});
 	}
 

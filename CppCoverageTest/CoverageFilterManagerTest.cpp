@@ -30,23 +30,31 @@ namespace CppCoverageTest
 {
 	namespace
 	{
+		using UnifiedDiffCoverageFilters = cov::CoverageFilterManager::UnifiedDiffCoverageFilters;
+
 		//-------------------------------------------------------------------------
-		cov::CoverageFilterManager::UnifiedDiffCoverageFilters CreateFilter(
-			const std::vector<fs::path>& paths)
+		UnifiedDiffCoverageFilters CreateFilter(
+			const std::vector<fs::path>& paths,
+			const std::vector<int>& selectedLines = {})
 		{
-			cov::CoverageFilterManager::UnifiedDiffCoverageFilters filters;
+			UnifiedDiffCoverageFilters filters;
 			std::vector<FileFilter::File> files;
 
 			for (const auto& path : paths)
-				files.emplace_back(path);
-			filters.push_back(std::make_unique<FileFilter::UnifiedDiffCoverageFilter>(std::move(files), boost::none));
+			{
+				FileFilter::File file{ path };
+				file.AddSelectedLines(selectedLines);
+				files.emplace_back(std::move(file));
+			}
+			filters.push_back(std::make_unique<FileFilter::UnifiedDiffCoverageFilter>(
+				std::move(files), boost::none));
 
 			return filters;
 		}
 
 		//-------------------------------------------------------------------------
 		std::unique_ptr<cov::CoverageFilterManager> CreateCoverageFilterManager(
-			const std::vector<fs::path>& paths,
+			UnifiedDiffCoverageFilters&& filters, 
 			const std::vector<std::wstring>& sourcePatternStrs)
 		{
 			cov::Patterns sourcePatterns{ false };
@@ -54,10 +62,17 @@ namespace CppCoverageTest
 			for (const auto& pattern : sourcePatternStrs)
 				sourcePatterns.AddSelectedPatterns(pattern);
 			cov::CoverageSettings coverageSettings{ cov::Patterns{ false }, sourcePatterns };
-
-			auto filters = CreateFilter(paths);
-
+	
 			return std::make_unique<cov::CoverageFilterManager>(coverageSettings, std::move(filters));
+		}
+
+		//-------------------------------------------------------------------------
+		std::unique_ptr<cov::CoverageFilterManager> CreateCoverageFilterManager(
+			const std::vector<fs::path>& paths,
+			const std::vector<std::wstring>& sourcePatternStrs)
+		{
+			auto filters = CreateFilter(paths);
+			return CreateCoverageFilterManager(std::move(filters), sourcePatternStrs);
 		}
 
 		//-------------------------------------------------------------------------
@@ -114,5 +129,25 @@ namespace CppCoverageTest
 		size_t maxUnmatchPaths = 5;
 
 		ASSERT_EQ(maxUnmatchPaths, GetUnmatchPathsCount(pathCount, maxUnmatchPaths));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(CoverageFilterManagerTest, IsLineSelected)
+	{
+		const fs::path diff = L"diff";
+		const std::vector<int> selectedLines = { 3, 5, 10 };
+		const std::set<int> selectedLineSet{ selectedLines.begin(), selectedLines.end() };
+
+		auto filters = CreateFilter({ diff }, selectedLines);
+		auto coverageFilterManager = CreateCoverageFilterManager(std::move(filters), { L"*" });
+
+		ASSERT_TRUE(coverageFilterManager->IsLineSelected(diff.wstring(), 3, selectedLineSet));
+		ASSERT_TRUE(coverageFilterManager->IsLineSelected(diff.wstring(), 5, selectedLineSet));
+		ASSERT_TRUE(coverageFilterManager->IsLineSelected(diff.wstring(), 10, selectedLineSet));
+		ASSERT_FALSE(coverageFilterManager->IsLineSelected(diff.wstring(), 7, { 6 }));
+
+		ASSERT_FALSE(coverageFilterManager->IsLineSelected(diff.wstring(), 4, {}));
+		ASSERT_FALSE(coverageFilterManager->IsLineSelected(diff.wstring(), 4, { 2 }));
+		ASSERT_TRUE(coverageFilterManager->IsLineSelected(diff.wstring(), 4, { 3 }));
 	}
 }

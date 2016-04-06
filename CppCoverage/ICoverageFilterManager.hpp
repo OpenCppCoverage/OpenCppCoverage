@@ -18,6 +18,7 @@
 
 #include "CppCoverageExport.hpp"
 #include <string>
+#include <set>
 
 namespace CppCoverage
 {
@@ -30,7 +31,10 @@ namespace CppCoverage
 
 		virtual bool IsModuleSelected(const std::wstring& filename) const = 0;
 		virtual bool IsSourceFileSelected(const std::wstring& filename) = 0;
-		virtual bool IsLineSelected(const std::wstring& filename, int lineNumber) = 0;
+		virtual bool IsLineSelected(
+			const std::wstring& filename, 
+			int lineNumber, 
+			const std::set<int>& executableLinesSet) = 0;
 	};
 }
 

@@ -58,9 +58,9 @@ namespace CppCoverageTest
 		std::vector<int> selectedLines;
 		int lineSelectedCallCount = 0;
 
-		EXPECT_CALL(filterManagerMock, IsLineSelected(testing::_, testing::_))
+		EXPECT_CALL(filterManagerMock, IsLineSelected(testing::_, testing::_, testing::_))
 			.WillRepeatedly(testing::Invoke(
-				[&](const std::wstring& path, int lineNumber)
+				[&](const std::wstring& path, int lineNumber, const std::set<int>&)
 		{
 			++lineSelectedCallCount;
 
