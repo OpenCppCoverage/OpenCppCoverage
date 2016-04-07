@@ -79,7 +79,8 @@ namespace CppCoverage
 				"<rootFolder>\n" +
 				"<unifiedDiffPath> path of the unified diff file. " +
 				"Git users can use git diff output.\n" +
-				"<rootFolder> (optional) root folder for paths in the diff file.";
+				"<rootFolder> (optional) root folder for paths in the diff file.\n" +
+				"See documentation for limitations.";
 		}
 
 		//---------------------------------------------------------------------
