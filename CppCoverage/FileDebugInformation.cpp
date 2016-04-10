@@ -22,6 +22,7 @@
 
 #include "Tools/DbgHelp.hpp"
 #include "Tools/Tool.hpp"
+#include "Tools/Log.hpp"
 
 #include "CppCoverageException.hpp"
 #include "IDebugInformationEventHandler.hpp"
@@ -157,6 +158,8 @@ namespace CppCoverage
 		std::set<int> executableLinesSet;
 		for (const auto& lineData : context.lineDataCollection_)
 			executableLinesSet.insert(lineData.lineNumber_);
+		LOG_DEBUG << L"Executable lines for " << filename << L": ";
+		LOG_DEBUG << executableLinesSet;
 
 		for (const auto& lineData : context.lineDataCollection_)
 		{

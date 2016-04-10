@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <set>
 #include <iosfwd>
 #include <boost/log/trivial.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
@@ -47,4 +48,36 @@ namespace Tools
 	void TOOLS_DLL SetLoggerMinSeverity(boost::log::trivial::severity_level minSeverity);
 	void TOOLS_DLL EnableLogger(bool isEnabled);
 	void TOOLS_DLL InitLoggerOstream(const boost::shared_ptr<std::ostringstream>& ostr);
+}
+
+namespace boost
+{
+	namespace log
+	{
+		//-----------------------------------------------------------------------
+		template <typename Collection>
+		wformatting_ostream& LogCollection(
+			wformatting_ostream& ostr, 
+			const Collection& collection)
+		{
+			ostr << L'[';
+			for (auto it = collection.begin(); it != collection.end(); ++it)
+			{
+				if (it != collection.begin())
+					ostr << L", ";
+				ostr << *it;
+			}
+			ostr << L']';
+			return ostr;
+		}
+
+		//-----------------------------------------------------------------------
+		template <typename T>
+		wformatting_ostream& operator<<(
+			wformatting_ostream& ostr, 
+			const std::set<T>& values)
+		{
+			return LogCollection(ostr, values);
+		}
+	}
 }

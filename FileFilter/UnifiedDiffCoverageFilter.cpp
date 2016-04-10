@@ -19,7 +19,7 @@
 #include <fstream>
 #include <sstream>
 #include <boost/optional/optional.hpp>
-
+#include "Tools/Log.hpp"
 #include "UnifiedDiffCoverageFilter.hpp"
 #include "UnifiedDiffParser.hpp"
 #include "File.hpp"
@@ -37,7 +37,14 @@ namespace FileFilter
 			if (!ifs)
 				std::runtime_error("The file " + unifiedDiffPath.string() + " cannot be opened.");
 
-			return UnifiedDiffParser{}.Parse(ifs);
+			auto files = UnifiedDiffParser{}.Parse(ifs);
+			LOG_DEBUG << L"Unified diff: " << unifiedDiffPath;
+			for (const auto& file : files)
+			{
+				LOG_DEBUG << L"Selected lines for " << file.GetPath().wstring() << L": ";
+				LOG_DEBUG << file.GetSelectedLines();
+			}
+			return files;
 		}
 	}
 
