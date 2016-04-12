@@ -16,6 +16,9 @@
 
 #include "stdafx.h"
 #include "ScopedAction.hpp"
+
+#include <boost/optional/optional.hpp>
+
 #include "Tool.hpp"
 
 #include "Log.hpp"
@@ -31,10 +34,13 @@ namespace Tools
 	//-------------------------------------------------------------------------
 	ScopedAction::~ScopedAction()
 	{
-		Try([&]
+		auto error = Try([&]
 		{
 			action_();
 		});
+
+		if (error)
+			LOG_ERROR << *error;
 	}
 
 }

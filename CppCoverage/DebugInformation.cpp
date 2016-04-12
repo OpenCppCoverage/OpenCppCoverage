@@ -18,6 +18,7 @@
 #include "DebugInformation.hpp"
 
 #include <boost/algorithm/string.hpp>
+#include <boost/optional/optional.hpp>
 
 #include "Tools/DbgHelp.hpp"
 #include "Tools/Tool.hpp"
@@ -53,6 +54,7 @@ namespace CppCoverage
 			const FileDebugInformation& fileDebugInformation_;
 			IDebugInformationEventHandler& debugInformationEventHandler_;
 			ICoverageFilterManager& coverageFilterManager_;
+			boost::optional<std::wstring> error_;
 		};
 
 		//---------------------------------------------------------------------
@@ -61,23 +63,29 @@ namespace CppCoverage
 			auto context = static_cast<Context*>(userContext);
 
 			if (!userContext)
-				THROW("Invalid user context.");
-			if (!pSourceFile)
-				THROW("Source File is null");
-			
-			auto filename = Tools::ToWString(pSourceFile->FileName);
-			
-			if (context->coverageFilterManager_.IsSourceFileSelected(filename))
 			{
-				context->fileDebugInformation_.LoadFile(
-					context->processBaseOfImage_,
-					context->baseAddress_,
-					filename,
-					context->coverageFilterManager_,
-					context->debugInformationEventHandler_);
+				LOG_ERROR << L"Invalid user context.";
+				return FALSE;
 			}
+			
+			context->error_ = Tools::Try([&]()
+			{
+				if (!pSourceFile)
+					THROW("Source File is null");
 
-			return TRUE;
+				auto filename = Tools::ToWString(pSourceFile->FileName);
+
+				if (context->coverageFilterManager_.IsSourceFileSelected(filename))
+				{
+					context->fileDebugInformation_.LoadFile(
+						context->processBaseOfImage_,
+						context->baseAddress_,
+						filename,
+						context->coverageFilterManager_,
+						context->debugInformationEventHandler_);
+				}
+			});
+			return context->error_ ? FALSE : TRUE;
 		}
 
 		//-------------------------------------------------------------------------
@@ -153,6 +161,8 @@ namespace CppCoverage
 
 		if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
 			LOG_WARNING << L"Cannot find pdb for " << filename;
+		if (context.error_)
+			throw std::runtime_error(Tools::ToString(*context.error_));
 	}
 
 	//-------------------------------------------------------------------------

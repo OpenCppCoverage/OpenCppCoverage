@@ -30,12 +30,13 @@
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 
 namespace cov = CppCoverage;
+using namespace testing;
 
 namespace CppCoverageTest
 {
 	namespace
 	{
-		//---------------------------------------------------------------------
+		//-----------------------------------------------------------------------
 		void LoadModule(
 			CoverageFilterManagerMock& filterManagerMock,
 			DebugInformationEventHandlerMock& eventHandlerMock,
@@ -45,6 +46,20 @@ namespace CppCoverageTest
 			cov::DebugInformation debugInformation{ hProcess};
 			
 			debugInformation.LoadModule(L"", hFile, nullptr, filterManagerMock, eventHandlerMock);
+		}
+
+		//---------------------------------------------------------------------------
+		void LoadModuleWithoutFilter(DebugInformationEventHandlerMock& eventHandlerMock)
+		{
+			TestTools::GetHandles(TestCoverageConsole::GetOutputBinaryPath(), [&](HANDLE hProcess, HANDLE hFile)
+			{
+				CoverageFilterManagerMock filterManagerMock;
+
+				EXPECT_CALL(filterManagerMock, IsSourceFileSelected(_)).WillRepeatedly(Return(true));
+				EXPECT_CALL(filterManagerMock, IsLineSelected(_, _, _)).WillRepeatedly(Return(true));
+
+				LoadModule(filterManagerMock, eventHandlerMock, hProcess, hFile);
+			});
 		}
 	}
 
@@ -58,8 +73,8 @@ namespace CppCoverageTest
 		std::vector<int> selectedLines;
 		int lineSelectedCallCount = 0;
 
-		EXPECT_CALL(filterManagerMock, IsLineSelected(testing::_, testing::_, testing::_))
-			.WillRepeatedly(testing::Invoke(
+		EXPECT_CALL(filterManagerMock, IsLineSelected(_, _, _))
+			.WillRepeatedly(Invoke(
 				[&](const std::wstring& path, int lineNumber, const std::set<int>&)
 		{
 			++lineSelectedCallCount;
@@ -70,13 +85,13 @@ namespace CppCoverageTest
 			return true;
 		}));
 
-		EXPECT_CALL(filterManagerMock, IsSourceFileSelected(testing::_))
-			.WillRepeatedly(testing::Invoke(
+		EXPECT_CALL(filterManagerMock, IsSourceFileSelected(_))
+			.WillRepeatedly(Invoke(
 			[=](const std::wstring& path){ return boost::algorithm::icontains(path, mainCppPath); }));
 
 		std::vector<int> newLines;
-		EXPECT_CALL(eventHandlerMock, OnNewLine(testing::_, testing::_, testing::_))
-			.WillRepeatedly(testing::Invoke(
+		EXPECT_CALL(eventHandlerMock, OnNewLine(_, _, _))
+			.WillRepeatedly(Invoke(
 				[&](const std::wstring&, int lineNumber, const cov::Address&)
 		{
 			newLines.push_back(lineNumber);
@@ -90,5 +105,19 @@ namespace CppCoverageTest
 		ASSERT_NE(0, selectedLines.size());
 		ASSERT_NE(lineSelectedCallCount, selectedLines.size());
 		ASSERT_EQ(selectedLines, newLines);
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(DebugInformationTest, Exception)
+	{
+		DebugInformationEventHandlerMock eventHandlerMock;
+
+		EXPECT_CALL(eventHandlerMock, OnNewLine(_, _, _)).WillOnce(Invoke(
+			[&](const std::wstring&, int, const cov::Address&)
+		{
+			throw std::runtime_error{""};
+		}));
+
+		ASSERT_THROW(LoadModuleWithoutFilter(eventHandlerMock), std::runtime_error);
 	}
 }

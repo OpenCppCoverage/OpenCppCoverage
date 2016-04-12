@@ -17,6 +17,7 @@
 #include "stdafx.h"
 #include "Tool.hpp"
 
+#include <boost/optional/optional.hpp>
 #include <cvt/wstring>
 #include <iostream>
 #include <codecvt>
@@ -147,7 +148,7 @@ namespace Tools
 	}
 
 	//-------------------------------------------------------------------------
-	void Try(std::function<void()> action)
+	boost::optional<std::wstring> Try(std::function<void()> action)
 	{
 		try
 		{
@@ -155,12 +156,14 @@ namespace Tools
 		}
 		catch (const std::exception& e)
 		{
-			LOG_ERROR << "ERROR: " << e.what();
+			return Tools::ToWString(e.what());
 		}
 		catch (...)
 		{
-			LOG_ERROR << "Unkown exception";
+			return L"Unkown exception";
 		}
+
+		return boost::none;
 	}
 
 	//-------------------------------------------------------------------------

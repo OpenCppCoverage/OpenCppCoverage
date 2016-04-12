@@ -19,6 +19,7 @@
 
 #include <set>
 #include <boost/algorithm/string.hpp>
+#include <boost/optional/optional.hpp>
 
 #include "Tools/DbgHelp.hpp"
 #include "Tools/Tool.hpp"
@@ -58,6 +59,7 @@ namespace CppCoverage
 			HANDLE hProcess_;
 			void* processBaseOfImage_;
 			std::vector<LineData> lineDataCollection_;
+			boost::optional<std::wstring> error_;
 		};
 
 		//-----------------------------------------------------------------------
@@ -85,17 +87,23 @@ namespace CppCoverage
 			auto lineContext = static_cast<LineContext*>(context);
 
 			if (!lineContext)
-				THROW("Invalid user context.");
+			{
+				LOG_ERROR << "Invalid user context.";
+				return FALSE;
+			}
 
-			if (ExcludeLineInfo(*lineInfo, *lineContext))
-				return TRUE;
+			lineContext->error_ = Tools::Try([&]() {
+				if (!ExcludeLineInfo(*lineInfo, *lineContext))
+				{
+					auto lineNumber = lineInfo->LineNumber;
 
-			auto lineNumber = lineInfo->LineNumber;
+					DWORD64 addressValue = lineInfo->Address - lineInfo->ModBase
+						+ reinterpret_cast<DWORD64>(lineContext->processBaseOfImage_);
+					lineContext->lineDataCollection_.emplace_back(lineNumber, reinterpret_cast<void*>(addressValue));						
+				}
+			});
 
-			DWORD64 addressValue = lineInfo->Address - lineInfo->ModBase 
-				+ reinterpret_cast<DWORD64>(lineContext->processBaseOfImage_);
-			lineContext->lineDataCollection_.emplace_back(lineNumber, reinterpret_cast<void*>(addressValue));
-			return TRUE;
+			return lineContext->error_ ? FALSE: TRUE;
 		}		
 		
 		//-------------------------------------------------------------------------
@@ -155,6 +163,8 @@ namespace CppCoverage
 		LineContext context{ hProcess_, processBaseOfImage };
 
 		RetreiveLineData(filename, baseAddress, context);
+		if (context.error_)
+			throw std::runtime_error(Tools::ToString(*context.error_));
 		std::set<int> executableLinesSet;
 		for (const auto& lineData : context.lineDataCollection_)
 			executableLinesSet.insert(lineData.lineNumber_);
