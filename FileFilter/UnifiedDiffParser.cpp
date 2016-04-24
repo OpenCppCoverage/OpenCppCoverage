@@ -18,6 +18,7 @@
 #include "UnifiedDiffParser.hpp"
 
 #include <sstream>
+#include <regex>
 #include <boost/filesystem/path.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -201,24 +202,26 @@ namespace FileFilter
 			const Stream& stream, 
 			const std::wstring& hunksDifferencesLine) const
 	{
-		std::vector<std::wstring> values;
-		boost::algorithm::split(values, hunksDifferencesLine, boost::algorithm::is_any_of(" ,"));
-		
-		try
-		{
-			HunksDifferences hunksDifferences;
-			hunksDifferences.startFrom = std::stoi(values.at(1));
-			hunksDifferences.countFrom = std::stoi(values.at(2));
-			hunksDifferences.startTo = std::stoi(values.at(3));
-			hunksDifferences.countTo = std::stoi(values.at(4));
+		std::wstring range = L"(\\d+)(?:,(\\d+))?";
+		std::wregex hunkRegex{ L"^@@\\s*-" + range + L"\\s*\\+" + range + L"\\s*@@" };
+		std::wcmatch match;
 
-			return hunksDifferences;
-		}
-		catch (std::exception&)
+		if (std::regex_search(hunksDifferencesLine.c_str(), match, hunkRegex))
 		{
-			ThrowError(stream, UnifiedDiffParserException::ErrorInvalidHunks);
+			if (match.size() == 5 && match[1].matched && match[3].matched)
+			{
+				HunksDifferences hunksDifferences;
+				hunksDifferences.startFrom = std::stoi(match[1]);
+				hunksDifferences.countFrom = match[2].matched ? std::stoi(match[2]) : 1;
+				hunksDifferences.startTo = std::stoi(match[3]);
+				hunksDifferences.countTo = match[4].matched ? std::stoi(match[4]) : 1;
+
+				return hunksDifferences;
+			}
 		}
-		return{};
+
+		ThrowError(stream, UnifiedDiffParserException::ErrorInvalidHunks);
+		return{}; 
 	}
 	
 	//-------------------------------------------------------------------------
@@ -234,7 +237,8 @@ namespace FileFilter
 		std::vector<int> updatedLines;
 		while (currentLine < endLine && stream.GetLine(lineStr))
 		{
-			if (!boost::algorithm::starts_with(lineStr, "-"))
+			if (!boost::algorithm::starts_with(lineStr, "-") &&
+				!boost::algorithm::starts_with(lineStr, "\\")) // For: \ No newline at end of file
 			{
 				if (boost::algorithm::starts_with(lineStr, "+"))
 					updatedLines.push_back(currentLine);

@@ -61,6 +61,18 @@ namespace FileFilterTest
 				ASSERT_EQ(files1[i], files2[i]);
 		}
 
+		//-------------------------------------------------------------------------
+		void AssertSingleFile(
+			const std::vector<File>& files,
+			const std::wstring& filename,
+			const std::set<int>& expectedLines)
+		{
+			ASSERT_EQ(1, files.size());
+			const auto& file = files.at(0);
+			ASSERT_EQ(filename, file.GetPath().wstring());
+			EXPECT_THAT(expectedLines, testing::ContainerEq(file.GetSelectedLines()));
+		}
+
 		//---------------------------------------------------------------------
 		struct UnifiedDiffParserTest : public testing::Test
 		{
@@ -159,7 +171,7 @@ namespace FileFilterTest
 	TEST_F(UnifiedDiffParserTest, ErrorContextHunks)
 	{
 		ASSERT_EQ(UnifiedDiffParserException::ErrorContextHunks,
-			GetError(UnifiedDiffParser::FromFilePrefix + L"\n+++ \n@@ -1,2 +3,4\n"));
+			GetError(UnifiedDiffParser::FromFilePrefix + L"\n+++ \n@@ -1,2 +3,4 @@\n"));
 	}
 
 	//-------------------------------------------------------------------------
@@ -202,5 +214,45 @@ namespace FileFilterTest
 		auto files = unifiedDiffParser_.Parse(diffFile);
 
 		GetFile(files, "FileFilter/stdafx.h");		
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(UnifiedDiffParserTest, NoRange)
+	{		
+		std::wistringstream istr{	L"--- a/test\n"
+									L"+++ b/test\n"
+									L"@@ -1 +1 @@ Something\n"
+									L"- something\n"
+									L"\\ No newline at end of file\n"
+									L"+ something\n"
+									L"\\ No newline at end of file\n"};
+		auto files = unifiedDiffParser_.Parse(istr);
+		AssertSingleFile(files, L"b/test", { 1 });
+	}
+	
+	//-------------------------------------------------------------------------
+	TEST_F(UnifiedDiffParserTest, FromRangeZero)
+	{
+		std::wistringstream istr{	
+			L"--- test1.txt\n"
+			L"+++ test2.txt\n"
+			L"@@ -0,0 +1 @@\n"
+			L"+ test\n"
+			L"\\ No newline at end of file\n" };
+		auto files = unifiedDiffParser_.Parse(istr);
+		AssertSingleFile(files, L"test2.txt", { 1 });
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(UnifiedDiffParserTest, ToRangeZero)
+	{
+		std::wistringstream istr{ 
+			L"--- test2.txt\n"
+			L"+++ test1.txt\n"
+			L"@@ -1 +0,0 @@\n"
+			L"- test\n"
+			L"\\ No newline at end of file\n" };
+		auto files = unifiedDiffParser_.Parse(istr);
+		AssertSingleFile(files, L"test1.txt", {});
 	}
 }
