@@ -26,6 +26,7 @@
 #include "TestCoverageConsole.hpp"
 #include "TestBasic.hpp"
 #include "TestThread.hpp"
+#include "FileWithSpecialCharÈ‡Ë.hpp"
 
 namespace
 {
@@ -46,6 +47,12 @@ namespace
 	{
 		TestCoverageSharedLib::CallSharedFunctionFromSharedLib();
 		TestCoverageSharedLib::SharedFunction(false);
+	}
+
+	//-----------------------------------------------------------------------------
+	void IncludeGetFileWithSpecialCharsInPdb()
+	{
+		TestCoverageConsole::GetFileWithSpecialChars();
 	}
 }
 

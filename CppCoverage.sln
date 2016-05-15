@@ -52,6 +52,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileFilter", "FileFilter\Fi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileFilterTest", "FileFilterTest\FileFilterTest.vcxproj", "{94E71104-2BAB-420B-8B69-833708CA6D35}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ToolsTest", "ToolsTest\ToolsTest.vcxproj", "{42F32EB3-42B6-498A-9823-26E6E5982EE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -278,6 +280,20 @@ Global
 		{94E71104-2BAB-420B-8B69-833708CA6D35}.Release|Win32.Build.0 = Release|Win32
 		{94E71104-2BAB-420B-8B69-833708CA6D35}.Release|x64.ActiveCfg = Release|x64
 		{94E71104-2BAB-420B-8B69-833708CA6D35}.Release|x64.Build.0 = Release|x64
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Debug|Win32.Build.0 = Debug|Win32
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Debug|x64.ActiveCfg = Debug|x64
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Debug|x64.Build.0 = Debug|x64
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Release|Any CPU.ActiveCfg = Release|Win32
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Release|Win32.ActiveCfg = Release|Win32
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Release|Win32.Build.0 = Release|Win32
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Release|x64.ActiveCfg = Release|x64
+		{42F32EB3-42B6-498A-9823-26E6E5982EE3}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

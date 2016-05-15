@@ -43,6 +43,7 @@
 #include "TestCoverageConsole/TestBasic.hpp"
 #include "TestCoverageConsole/TestThread.hpp"
 #include "TestCoverageConsole/SpecialLineInfo.hpp"
+#include "TestCoverageConsole/FileWithSpecialCharÈ‡Ë.hpp"
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
 #include "TestTools.hpp"
@@ -425,5 +426,19 @@ namespace CppCoverageTest
 		TestLine(file, mainLine + 2, true);
 		TestLine(file, mainLine + 29, false);
 		TestLine(file, mainLine + 31, true);
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, SpecialChars)
+	{
+		const auto fileWithSpecialChars = TestCoverageConsole::GetFileWithSpecialChars();
+
+		auto coverageData = ComputeCoverageData(
+			{L""},
+			TestCoverageConsole::GetOutputBinaryPath().filename().wstring(),
+			fileWithSpecialChars.wstring(), {}, true, false);
+		const auto& file = GetFirstFileCoverage(coverageData);
+
+		ASSERT_EQ(fileWithSpecialChars.filename(), file.GetPath().filename());
 	}
 }

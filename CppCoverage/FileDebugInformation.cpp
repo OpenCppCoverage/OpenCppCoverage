@@ -112,11 +112,13 @@ namespace CppCoverage
 			DWORD64 baseAddress,
 			LineContext& context)
 		{
+			auto filenameStr = Tools::ToString(filename);
+
 			if (!SymEnumSourceLines(
 				context.hProcess_,
 				baseAddress,
 				nullptr,
-				Tools::ToString(filename).c_str(),
+				filenameStr.c_str(),
 				0,
 				ESLFLAG_FULLPATH,
 				SymEnumLinesProc,

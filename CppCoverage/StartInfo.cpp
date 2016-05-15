@@ -101,7 +101,7 @@ namespace CppCoverage
 		if (startInfo.workingDirectory_)
 			ostr << *startInfo.workingDirectory_;
 		else
-			ostr << "not set.";
+			ostr << L"not set.";
 		return ostr;
 	}
 }

@@ -117,25 +117,41 @@ namespace Tools
 	//-------------------------------------------------------------------------
 	std::string ToString(const std::wstring& str)
 	{
-		std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+		auto size = WideCharToMultiByte(CP_ACP, 0, str.c_str(), 
+			static_cast<int>(str.size()), nullptr, 0, nullptr, nullptr);
+		std::vector<char> buffer(size);
 
-		return converter.to_bytes(str);
+		if (!WideCharToMultiByte(CP_ACP, 0, str.c_str(), static_cast<int>(str.size()), 
+			&buffer[0], static_cast<int>(buffer.size()), nullptr, nullptr))
+		{
+			throw std::runtime_error("Error in WideCharToMultiByte.");
+		}
+
+		return { buffer.begin(), buffer.end() };
 	}
 
 	//-------------------------------------------------------------------------
 	std::wstring ToWString(const std::string& str)
 	{
-		std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+		auto size = MultiByteToWideChar(CP_ACP, 0, 
+			str.c_str(), static_cast<int>(str.size()), nullptr, 0);
+		std::vector<wchar_t> buffer(size);
 		
-		return converter.from_bytes(str);
+		if (!MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int>(str.size()), 
+			&buffer[0], static_cast<int>(buffer.size())))
+		{
+			throw std::runtime_error("Error in MultiByteToWideChar for " + str);
+		}
+
+		return { buffer.begin(), buffer.end() };
 	}
-		
+
 	//-------------------------------------------------------------------------
 	boost::filesystem::path GetTemplateFolder()
 	{
 		return GetExecutableFolder() / "Template";
 	}
-		
+
 	//-------------------------------------------------------------------------
 	boost::filesystem::path GetUniquePath(const boost::filesystem::path& prefix)
 	{
