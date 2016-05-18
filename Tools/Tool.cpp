@@ -117,6 +117,9 @@ namespace Tools
 	//-------------------------------------------------------------------------
 	std::string ToString(const std::wstring& str)
 	{
+		if (str.empty())
+			return {};
+
 		auto size = WideCharToMultiByte(CP_ACP, 0, str.c_str(), 
 			static_cast<int>(str.size()), nullptr, 0, nullptr, nullptr);
 		std::vector<char> buffer(size);
@@ -133,6 +136,9 @@ namespace Tools
 	//-------------------------------------------------------------------------
 	std::wstring ToWString(const std::string& str)
 	{
+		if (str.empty())
+			return {};
+
 		auto size = MultiByteToWideChar(CP_ACP, 0, 
 			str.c_str(), static_cast<int>(str.size()), nullptr, 0);
 		std::vector<wchar_t> buffer(size);
