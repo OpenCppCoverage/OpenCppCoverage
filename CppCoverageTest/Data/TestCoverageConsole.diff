@@ -2,7 +2,7 @@ diff --git TestCoverageConsole/TestCoverageConsole.cpp TestCoverageConsole/TestC
 index 4e9c77e..7e1a50d 100644
 --- TestCoverageConsole/TestCoverageConsole.cpp
 +++ TestCoverageConsole/TestCoverageConsole.cpp
-@@ -52,7 +52,7 @@ namespace
+@@ -59,7 +59,7 @@ namespace
  //-----------------------------------------------------------------------------
  int _tmain(int argc, _TCHAR* argv[])
  {	
@@ -11,7 +11,7 @@ index 4e9c77e..7e1a50d 100644
  		std::wcout << L"Invalid number of argument:  " << argc << std::endl;
  	else
  	{
-@@ -79,7 +79,7 @@ int _tmain(int argc, _TCHAR* argv[])
+@@ -86,7 +86,7 @@ int _tmain(int argc, _TCHAR* argv[])
  		else if (type == TestCoverageConsole::TestSpecialLineInfo)
  			TestCoverageConsole::SpecialLineInfo();
  		else
