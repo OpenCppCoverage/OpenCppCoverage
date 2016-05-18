@@ -112,7 +112,7 @@ namespace CppCoverage
 			DWORD64 baseAddress,
 			LineContext& context)
 		{
-			auto filenameStr = Tools::ToString(filename);
+			auto filenameStr = Tools::ToLocalString(filename);
 
 			if (!SymEnumSourceLines(
 				context.hProcess_,
@@ -166,7 +166,7 @@ namespace CppCoverage
 
 		RetreiveLineData(filename, baseAddress, context);
 		if (context.error_)
-			throw std::runtime_error(Tools::ToString(*context.error_));
+			throw std::runtime_error(Tools::ToLocalString(*context.error_));
 		std::set<int> executableLinesSet;
 		for (const auto& lineData : context.lineDataCollection_)
 			executableLinesSet.insert(lineData.lineNumber_);

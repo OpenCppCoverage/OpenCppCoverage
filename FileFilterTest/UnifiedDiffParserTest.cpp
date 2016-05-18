@@ -86,7 +86,7 @@ namespace FileFilterTest
 				}
 				catch (UnifiedDiffParserException& e)
 				{
-					auto fullMessage = Tools::ToWString(e.what());
+					auto fullMessage = Tools::LocalToWString(e.what());
 					auto index = fullMessage.find('\n');
 
 					if (index != std::string::npos)

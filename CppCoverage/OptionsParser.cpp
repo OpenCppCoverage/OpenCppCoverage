@@ -62,7 +62,7 @@ namespace CppCoverage
 			auto* optionalValue = GetOptionalValue<T>(variables, optionName);
 			
 			if (!optionalValue)
-				THROW(L"Cannot find option:" + Tools::ToWString(optionName));
+				THROW(L"Cannot find option:" + Tools::LocalToWString(optionName));
 			
 			return *optionalValue;
 		}
@@ -77,13 +77,13 @@ namespace CppCoverage
 
 			auto selectedPatterns = GetValue<std::vector<std::string>>(variables, selected);
 			for (const auto& pattern : selectedPatterns)
-				patterns.AddSelectedPatterns(Tools::ToWString(pattern));
+				patterns.AddSelectedPatterns(Tools::LocalToWString(pattern));
 
 			auto excludedPatterns = GetOptionalValue<std::vector<std::string>>(variables, excluded);
 			if (excludedPatterns)
 			{
 				for (const auto& pattern : *excludedPatterns)
-					patterns.AddExcludedPatterns(Tools::ToWString(pattern));
+					patterns.AddExcludedPatterns(Tools::LocalToWString(pattern));
 			}
 
 			return patterns;
@@ -112,7 +112,7 @@ namespace CppCoverage
 			if (arguments)
 			{
 				for (const auto& arg : *arguments)
-					startInfo.AddArgument(Tools::ToWString(arg));
+					startInfo.AddArgument(Tools::LocalToWString(arg));
 			}
 
 			const auto* workingDirectory = GetOptionalValue<std::string>(variables, 

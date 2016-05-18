@@ -148,7 +148,7 @@ namespace CppCoverage
 				+ L" path(s) inside unified diff file(s) that were ignored");
 			messageLines.push_back(L"because they did not match any path from pdb files.");
 			messageLines.push_back(L"To see all files use --" + 
-				Tools::ToWString(ProgramOptions::VerboseOption));
+				Tools::LocalToWString(ProgramOptions::VerboseOption));
 
 			size_t i = 0;
 			for (const auto& path : unmatchPaths)

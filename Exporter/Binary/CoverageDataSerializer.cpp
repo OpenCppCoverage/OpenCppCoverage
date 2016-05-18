@@ -42,7 +42,7 @@ namespace Exporter
 			const cov::FileCoverage& file,
 			pb::FileCoverage& fileProtoBuff)
 		{
-			fileProtoBuff.set_path(file.GetPath().string());
+			fileProtoBuff.set_path(Tools::ToUtf8String(file.GetPath().wstring()));
 
 			for (const auto& line : file.GetLines())
 			{
@@ -58,7 +58,7 @@ namespace Exporter
 			const cov::ModuleCoverage& module,
 			pb::ModuleCoverage& moduleProtoBuff)
 		{
-			moduleProtoBuff.set_path(module.GetPath().string());
+			moduleProtoBuff.set_path(Tools::ToUtf8String(module.GetPath().wstring()));
 			
 			for (const auto& file : module.GetFiles())
 			{
@@ -72,7 +72,7 @@ namespace Exporter
 			const cov::CoverageData& coverageData,
 			pb::CoverageData& coverageDataProtoBuff)
 		{
-			coverageDataProtoBuff.set_name(Tools::ToString(coverageData.GetName()));
+			coverageDataProtoBuff.set_name(Tools::ToUtf8String(coverageData.GetName()));
 			coverageDataProtoBuff.set_exitcode(coverageData.GetExitCode());
 			coverageDataProtoBuff.set_modulecount(coverageData.GetModules().size());			
 		}

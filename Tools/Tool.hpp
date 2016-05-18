@@ -26,8 +26,11 @@
 
 namespace Tools
 {	
-	TOOLS_DLL std::wstring ToWString(const std::string&);
-	TOOLS_DLL std::string ToString(const std::wstring&);
+	TOOLS_DLL std::wstring LocalToWString(const std::string&);
+	TOOLS_DLL std::wstring Utf8ToWString(const std::string&);
+	TOOLS_DLL std::string ToLocalString(const std::wstring&);
+	TOOLS_DLL std::string ToUtf8String(const std::wstring&);
+
 	TOOLS_DLL boost::optional<std::wstring> Try(std::function<void()>);	
 	TOOLS_DLL boost::filesystem::path GetTemplateFolder();
 	

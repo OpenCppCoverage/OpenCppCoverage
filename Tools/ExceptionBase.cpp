@@ -22,7 +22,7 @@ namespace Tools
 {
 	//-------------------------------------------------------------------------
 	ExceptionBase::ExceptionBase(const std::wstring& message)
-		: std::exception(ToString(message).c_str())
+		: std::exception(ToLocalString(message).c_str())
 	{
 	}
 }

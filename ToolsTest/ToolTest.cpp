@@ -20,18 +20,26 @@
 namespace ToolsTests
 {
 	//---------------------------------------------------------------------
-	TEST(Tool, ToString)
+	TEST(Tool, ToLocalString)
 	{
-		ASSERT_EQ("123456789", Tools::ToString(L"123456789"));
-		ASSERT_EQ(1, Tools::ToString(L"1").size());
-		ASSERT_EQ(std::string("יאט"), Tools::ToString(L"יאט"));
+		ASSERT_EQ("", Tools::ToLocalString(L""));
+		ASSERT_EQ("123456789", Tools::ToLocalString(L"123456789"));
+		ASSERT_EQ(1, Tools::ToLocalString(L"1").size());
+		ASSERT_EQ(std::string("יאט"), Tools::ToLocalString(L"יאט"));
 	}
 
 	//---------------------------------------------------------------------
-	TEST(Tool, ToWString)
+	TEST(Tool, LocalToWString)
 	{
-		ASSERT_EQ(L"123456789", Tools::ToWString("123456789"));
-		ASSERT_EQ(1, Tools::ToWString("1").size());
-		ASSERT_EQ(std::wstring(L"יאט"), Tools::ToWString("יאט"));
+		ASSERT_EQ(L"", Tools::LocalToWString(""));
+		ASSERT_EQ(L"123456789", Tools::LocalToWString("123456789"));
+		ASSERT_EQ(1, Tools::LocalToWString("1").size());
+		ASSERT_EQ(std::wstring(L"יאט"), Tools::LocalToWString("יאט"));
+	}
+
+	//---------------------------------------------------------------------
+	TEST(Tool, Uft8)
+	{
+		ASSERT_EQ(L"יאט", Tools::Utf8ToWString(Tools::ToUtf8String(L"יאט")));
 	}
 }

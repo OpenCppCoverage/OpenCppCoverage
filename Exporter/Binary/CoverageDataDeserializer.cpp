@@ -67,11 +67,11 @@ namespace Exporter
 				pb::ModuleCoverage moduleProtoBuff;
 
 				ReadMessage(input, moduleProtoBuff);				
-				auto& module = coverageData.AddModule(Tools::ToWString(moduleProtoBuff.path()));
+				auto& module = coverageData.AddModule(Tools::Utf8ToWString(moduleProtoBuff.path()));
 
 				for (const auto& fileProtoBuff : moduleProtoBuff.files())
 				{
-					auto& file = module.AddFile(Tools::ToWString(fileProtoBuff.path()));
+					auto& file = module.AddFile(Tools::Utf8ToWString(fileProtoBuff.path()));
 
 					for (const auto& line : fileProtoBuff.lines())
 						file.AddLine(line.linenumber(), line.hasbeenexecuted());
@@ -96,7 +96,7 @@ namespace Exporter
 			ReadMessage(codedInputStream, coverageDataProtoBuff);
 
 			cov::CoverageData coverageData{
-				Tools::ToWString(coverageDataProtoBuff.name()),
+				Tools::Utf8ToWString(coverageDataProtoBuff.name()),
 				coverageDataProtoBuff.exitcode() };
 
 			InitCoverageDataFrom(codedInputStream, coverageDataProtoBuff, coverageData);

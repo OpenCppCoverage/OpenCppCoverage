@@ -76,7 +76,7 @@ namespace OpenCppCoverageTest
 				
 		allCoverageArguments.push_back(programToRun.string());
 		for (const auto& argument : arguments)
-			allCoverageArguments.push_back(Tools::ToString(argument));
+			allCoverageArguments.push_back(Tools::ToLocalString(argument));
 
 		for (auto& argument : allCoverageArguments)
 			argument = "\"" + argument + "\"";

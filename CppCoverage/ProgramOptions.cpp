@@ -205,6 +205,6 @@ namespace CppCoverage
 		output << std::endl;
 		programOptions.visibleOptions_.print(output);
 
-		return ostr << Tools::ToWString(output.str());
+		return ostr << Tools::LocalToWString(output.str());
 	}
 }

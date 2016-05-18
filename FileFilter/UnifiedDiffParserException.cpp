@@ -34,6 +34,6 @@ namespace FileFilter
 
 	//-------------------------------------------------------------------------
 	UnifiedDiffParserException::UnifiedDiffParserException(const std::wstring& message)
-		: std::runtime_error(Tools::ToString(message))
+		: std::runtime_error(Tools::ToLocalString(message))
 	{}
 }

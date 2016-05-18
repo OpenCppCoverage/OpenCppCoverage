@@ -33,23 +33,24 @@ namespace CppCoverageTest
 		//-------------------------------------------------------------------------
 		void CheckPatternOption(
 			const std::string& optionName,
-			const std::string& value,
+			const std::wstring& value,
 			std::function<std::wstring(const cov::Options&)> getOption)
 		{
 			cov::OptionsParser parser;
-			std::vector<std::string> arguments = { TestTools::OptionPrefix + optionName, value };
+			std::vector<std::string> arguments = { TestTools::OptionPrefix + optionName, 
+													Tools::ToLocalString(value) };
 
 			auto options = TestTools::Parse(parser, arguments);
 			auto option = getOption(*options);
 
-			ASSERT_EQ(Tools::ToWString(value), option);
+			ASSERT_EQ(value, option);
 		}
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserPatternTest, SelectedModulePatterns)
 	{
-		CheckPatternOption(cov::ProgramOptions::SelectedModulesOption, "module",
+		CheckPatternOption(cov::ProgramOptions::SelectedModulesOption, L"module",
 			[](const cov::Options& options) { return options.GetModulePatterns().GetSelectedPatterns().front(); }
 		);
 	}
@@ -57,7 +58,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserPatternTest, ExcludedModulePatterns)
 	{
-		CheckPatternOption(cov::ProgramOptions::ExcludedModulesOption, "module",
+		CheckPatternOption(cov::ProgramOptions::ExcludedModulesOption, L"module",
 			[](const cov::Options& options) { return options.GetModulePatterns().GetExcludedPatterns().front(); }
 		);
 	}
@@ -65,7 +66,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserPatternTest, SelectedSourcePatterns)
 	{
-		CheckPatternOption(cov::ProgramOptions::SelectedSourcesOption, "source",
+		CheckPatternOption(cov::ProgramOptions::SelectedSourcesOption, L"source",
 			[](const cov::Options& options) { return options.GetSourcePatterns().GetSelectedPatterns().front(); }
 		);
 	}
@@ -73,7 +74,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserPatternTest, ExcludedSourcePatterns)
 	{
-		CheckPatternOption(cov::ProgramOptions::ExcludedSourcesOption, "source",
+		CheckPatternOption(cov::ProgramOptions::ExcludedSourcesOption, L"source",
 			[](const cov::Options& options) { return options.GetSourcePatterns().GetExcludedPatterns().front(); }
 		);
 	}

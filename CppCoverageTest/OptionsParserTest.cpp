@@ -136,7 +136,7 @@ namespace CppCoverageTest
 		const auto* workingDirectory = options->GetStartInfo()->GetWorkingDirectory();
 
 		ASSERT_NE(nullptr, workingDirectory);
-		ASSERT_EQ(Tools::ToWString(folder), *workingDirectory);
+		ASSERT_EQ(Tools::LocalToWString(folder), *workingDirectory);
 	}
 		
 	//-------------------------------------------------------------------------
@@ -146,7 +146,9 @@ namespace CppCoverageTest
 		const std::string arg1 = "arg1";
 		const std::string arg2 = "arg2";
 		const std::vector<std::wstring> expectedArgs =
-		{ Tools::ToWString(TestTools::ProgramToRun), Tools::ToWString(arg1), Tools::ToWString(arg2) };
+			{	Tools::LocalToWString(TestTools::ProgramToRun), 
+				Tools::LocalToWString(arg1), 
+				Tools::LocalToWString(arg2) };
 
 		auto options = TestTools::Parse(parser, { TestTools::ProgramToRun, arg1, arg2 }, false);
 		ASSERT_TRUE(static_cast<bool>(options));

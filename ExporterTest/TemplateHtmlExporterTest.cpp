@@ -114,7 +114,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST_F(TemplateHtmlExporterTest, CreateTemplateDictionary)
 	{		
-		ASSERT_EQ(Tools::ToString(title_), peer_->GetSectionValue(
+		ASSERT_EQ(Tools::ToLocalString(title_), peer_->GetSectionValue(
 			Exporter::TemplateHtmlExporter::TitleTemplate));
 	}
 

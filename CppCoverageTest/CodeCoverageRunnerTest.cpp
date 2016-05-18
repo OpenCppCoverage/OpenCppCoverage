@@ -216,7 +216,7 @@ namespace CppCoverageTest
 		//---------------------------------------------------------------------
 		std::wstring GetError() const
 		{
-			return Tools::ToWString(error_->str());
+			return Tools::LocalToWString(error_->str());
 		}		
 
 	private:

@@ -43,14 +43,14 @@ namespace CppCoverageTest
 			std::wofstream ofs(path.GetPath().string().c_str());
 
 			for (const auto& argument : configArguments)
-				ofs << Tools::ToWString(argument.first) << L"=" << argument.second << std::endl;
+				ofs << Tools::LocalToWString(argument.first) << L"=" << argument.second << std::endl;
 
 			std::vector<std::string> arguments{ "--" + cov::ProgramOptions::ConfigFileOption, path.GetPath().string() };
 
 			for (const auto& argumentValue : commandLineArguments)
 			{
 				arguments.push_back(TestTools::OptionPrefix + argumentValue.first);
-				arguments.push_back(Tools::ToString(argumentValue.second));
+				arguments.push_back(Tools::ToLocalString(argumentValue.second));
 			}
 
 			return TestTools::Parse(parser, arguments);

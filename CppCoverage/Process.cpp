@@ -111,7 +111,7 @@ namespace CppCoverage
 			ostr << L"\n*** This version support only 32 bits executable ***.\n\n";
 			#endif
 			ostr << startInfo_ << CppCoverage::GetErrorMessage(GetLastError());
-			throw std::runtime_error(Tools::ToString(ostr.str()));
+			throw std::runtime_error(Tools::ToLocalString(ostr.str()));
 		}		
 	}
 }

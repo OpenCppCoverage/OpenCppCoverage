@@ -48,13 +48,6 @@ namespace Exporter
 		const std::string messageTemplate = "MAIN_MESSAGE";
 		const std::string idTemplate = "ID";
 		const std::string thirdPartyPathTemplate = "THIRD_PARTY_PATH";
-
-
-		//-------------------------------------------------------------------------
-		std::string ToStr(const std::wstring& str)
-		{
-			return Tools::ToString(str);
-		}
 		
 		//-------------------------------------------------------------------------
 		std::string GetUuid()
@@ -202,13 +195,13 @@ namespace Exporter
 		const std::wstring& title, 
 		const std::wstring& message) const
 	{
-		std::string titleStr{ ToStr(title) };
+		std::string titleStr{ Tools::ToLocalString(title) };
 		std::unique_ptr<ctemplate::TemplateDictionary> dictionary;
 
 		dictionary.reset(new ctemplate::TemplateDictionary(titleStr));
 
 		dictionary->SetValue(TitleTemplate, titleStr);
-		dictionary->SetValue(messageTemplate, ToStr(message));
+		dictionary->SetValue(messageTemplate, Tools::ToLocalString(message));
 
 		return dictionary;
 	}
@@ -264,7 +257,7 @@ namespace Exporter
 		bool enableCodePrettify,
 		const fs::path& output) const
 	{
-		auto titleStr = Tools::ToString(title);
+		auto titleStr = Tools::ToLocalString(title);
 		ctemplate::TemplateDictionary dictionary(titleStr);
 		std::string bodyLoad = TemplateHtmlExporter::BodyOnLoadFct;
 		std::string warning = "";
@@ -276,7 +269,7 @@ namespace Exporter
 		}
 
 		dictionary.SetValue(TitleTemplate, titleStr);
-		dictionary.SetValue(codeTemplate, Tools::ToString(codeContent));
+		dictionary.SetValue(codeTemplate, Tools::ToLocalString(codeContent));
 		dictionary.SetValue(BodyOnLoadTemplate, bodyLoad);
 		dictionary.SetValue(SourceWarningMessageTemplate, warning);
 		WriteTemplate(dictionary, fileTemplatePath_, output);

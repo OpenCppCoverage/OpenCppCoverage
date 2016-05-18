@@ -47,7 +47,7 @@ namespace TestCoverageConsole
 
 		for (int i = 2; i < argc; ++i)
 		{
-			auto argument = Tools::ToString(argv[i]);
+			auto argument = Tools::ToLocalString(argv[i]);
 			std::cout << "Start: " << outputBinaryPath << " with " << argument << std::endl;
 			auto handle = Poco::Process::launch(outputBinaryPath.string(), std::vector<std::string>{argument});
 			handle.wait();

@@ -57,7 +57,7 @@ namespace ExporterTest
 		//---------------------------------------------------------------------
 		cov::CoverageData CreateRandomCoverageData()
 		{
-			cov::CoverageData coverageData{ L"Test", 42 };
+			cov::CoverageData coverageData{ L"TestÈ", 42 };
 			std::default_random_engine generator;
 			std::uniform_int_distribution<int> distribution(0, 1);
 			
@@ -69,6 +69,8 @@ namespace ExporterTest
 					AddRandomFiles(module, generator, distribution);
 				}
 			}
+
+			coverageData.AddModule("ÈË‡").AddFile("ÈË‡").AddLine(0, true);
 
 			return coverageData;
 		}

@@ -73,7 +73,7 @@ namespace CppCoverage
 				if (!pSourceFile)
 					THROW("Source File is null");
 
-				auto filename = Tools::ToWString(pSourceFile->FileName);
+				auto filename = Tools::LocalToWString(pSourceFile->FileName);
 
 				if (context->coverageFilterManager_.IsSourceFileSelected(filename))
 				{
@@ -162,7 +162,7 @@ namespace CppCoverage
 		if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))
 			LOG_WARNING << L"Cannot find pdb for " << filename;
 		if (context.error_)
-			throw std::runtime_error(Tools::ToString(*context.error_));
+			throw std::runtime_error(Tools::ToLocalString(*context.error_));
 	}
 
 	//-------------------------------------------------------------------------

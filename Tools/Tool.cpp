@@ -112,44 +112,68 @@ namespace Tools
 			abort();
 			return 0;
 		}
+
+		//-------------------------------------------------------------------------
+		std::string ToString(unsigned int pageCode, const std::wstring& str)
+		{
+			if (str.empty())
+				return{};
+
+			auto size = WideCharToMultiByte(pageCode, 0, str.c_str(),
+				static_cast<int>(str.size()), nullptr, 0, nullptr, nullptr);
+			std::vector<char> buffer(size);
+
+			if (!WideCharToMultiByte(pageCode, 0, str.c_str(), static_cast<int>(str.size()),
+				&buffer[0], static_cast<int>(buffer.size()), nullptr, nullptr))
+			{
+				throw std::runtime_error("Error in WideCharToMultiByte.");
+			}
+
+			return{ buffer.begin(), buffer.end() };
+		}
+
+		//-------------------------------------------------------------------------
+		std::wstring ToWString(unsigned int pageCode, const std::string& str)
+		{
+			if (str.empty())
+				return{};
+
+			auto size = MultiByteToWideChar(pageCode, 0,
+				str.c_str(), static_cast<int>(str.size()), nullptr, 0);
+			std::vector<wchar_t> buffer(size);
+
+			if (!MultiByteToWideChar(pageCode, 0, str.c_str(), static_cast<int>(str.size()),
+				&buffer[0], static_cast<int>(buffer.size())))
+			{
+				throw std::runtime_error("Error in MultiByteToWideChar for " + str);
+			}
+
+			return{ buffer.begin(), buffer.end() };
+		}
 	}
 
 	//-------------------------------------------------------------------------
-	std::string ToString(const std::wstring& str)
+	std::string ToLocalString(const std::wstring& str)
 	{
-		if (str.empty())
-			return {};
-
-		auto size = WideCharToMultiByte(CP_ACP, 0, str.c_str(), 
-			static_cast<int>(str.size()), nullptr, 0, nullptr, nullptr);
-		std::vector<char> buffer(size);
-
-		if (!WideCharToMultiByte(CP_ACP, 0, str.c_str(), static_cast<int>(str.size()), 
-			&buffer[0], static_cast<int>(buffer.size()), nullptr, nullptr))
-		{
-			throw std::runtime_error("Error in WideCharToMultiByte.");
-		}
-
-		return { buffer.begin(), buffer.end() };
+		return ToString(CP_ACP, str);
 	}
 
 	//-------------------------------------------------------------------------
-	std::wstring ToWString(const std::string& str)
+	std::string ToUtf8String(const std::wstring& str)
 	{
-		if (str.empty())
-			return {};
+		return ToString(CP_UTF8, str);
+	}
 
-		auto size = MultiByteToWideChar(CP_ACP, 0, 
-			str.c_str(), static_cast<int>(str.size()), nullptr, 0);
-		std::vector<wchar_t> buffer(size);
-		
-		if (!MultiByteToWideChar(CP_ACP, 0, str.c_str(), static_cast<int>(str.size()), 
-			&buffer[0], static_cast<int>(buffer.size())))
-		{
-			throw std::runtime_error("Error in MultiByteToWideChar for " + str);
-		}
+	//-------------------------------------------------------------------------
+	std::wstring LocalToWString(const std::string& str)
+	{
+		return ToWString(CP_ACP, str);
+	}
 
-		return { buffer.begin(), buffer.end() };
+	//-------------------------------------------------------------------------
+	std::wstring Utf8ToWString(const std::string& str)
+	{
+		return ToWString(CP_UTF8, str);
 	}
 
 	//-------------------------------------------------------------------------
@@ -178,7 +202,7 @@ namespace Tools
 		}
 		catch (const std::exception& e)
 		{
-			return Tools::ToWString(e.what());
+			return Tools::LocalToWString(e.what());
 		}
 		catch (...)
 		{
