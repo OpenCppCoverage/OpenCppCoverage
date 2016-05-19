@@ -309,7 +309,7 @@ namespace CppCoverageTest
 		auto coverageData = RunCoverageWithException(
 			TestCoverageConsole::TestThrowUnHandledCppException, true);
 		auto& file = GetFirstFileCoverage(coverageData);
-		auto returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainLine() + 31;
+		auto returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainLine() + 33;
 		TestLine(file, returnLine, true);
 	}
 
@@ -424,8 +424,8 @@ namespace CppCoverageTest
 		ASSERT_EQ(3, file.GetLines().size());
 		int mainLine = TestCoverageConsole::GetTestCoverageConsoleCppMainLine();
 		TestLine(file, mainLine + 2, true);
-		TestLine(file, mainLine + 29, false);
-		TestLine(file, mainLine + 31, true);
+		TestLine(file, mainLine + 31, false);
+		TestLine(file, mainLine + 33, true);
 	}
 
 	//-------------------------------------------------------------------------
@@ -438,7 +438,7 @@ namespace CppCoverageTest
 			TestCoverageConsole::GetOutputBinaryPath().filename().wstring(),
 			fileWithSpecialChars.wstring(), {}, true, false);
 		const auto& file = GetFirstFileCoverage(coverageData);
-
-		ASSERT_EQ(fileWithSpecialChars.filename(), file.GetPath().filename());
+		auto filename = file.GetPath().filename().wstring();
+		ASSERT_TRUE(boost::algorithm::iequals(fileWithSpecialChars.wstring(), filename));
 	}
 }

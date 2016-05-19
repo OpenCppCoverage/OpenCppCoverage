@@ -48,12 +48,6 @@ namespace
 		TestCoverageSharedLib::CallSharedFunctionFromSharedLib();
 		TestCoverageSharedLib::SharedFunction(false);
 	}
-
-	//-----------------------------------------------------------------------------
-	void IncludeGetFileWithSpecialCharsInPdb()
-	{
-		TestCoverageConsole::GetFileWithSpecialChars();
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -85,6 +79,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			TestFileInSeveralModules();
 		else if (type == TestCoverageConsole::TestSpecialLineInfo)
 			TestCoverageConsole::SpecialLineInfo();
+		else if (false) // to have GetFileWithSpecialChars symbol in release.
+			TestCoverageConsole::GetFileWithSpecialChars();
 		else
 			std::wcerr << L"Unsupported type:" << type << std::endl;
 	}

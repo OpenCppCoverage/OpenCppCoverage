@@ -49,7 +49,7 @@ namespace TestCoverageConsole
 	//-------------------------------------------------------------------------
 	inline int GetTestCoverageConsoleCppMainLine()
 	{
-		return 60;
+		return 54;
 	}
 
 	const std::wstring TestBasic = L"TestBasic";
