@@ -45,6 +45,14 @@ namespace Exporter
 		}
 
 		//-------------------------------------------------------------------------
+		std::wstring ToUft8WString(const fs::path& path)
+		{
+			auto str = Tools::ToUtf8String(path.wstring());
+			auto utf8Str = Tools::LocalToWString(str);
+			return utf8Str;
+		}
+
+		//-------------------------------------------------------------------------
 		void FillFileTree(
 			const cov::CoverageRateComputer& coverageRateComputer,
 			property_tree::wptree& fileTree, 
@@ -56,8 +64,8 @@ namespace Exporter
 			const auto& coverageRate = coverageRateComputer.GetCoverageRate(file);
 
 			rootPaths.insert(path.root_name().wstring());
-			fileTree.put(L"<xmlattr>.name", path.filename().wstring());
-			fileTree.put(L"<xmlattr>.filename", path.relative_path().wstring());
+			fileTree.put(L"<xmlattr>.name", ToUft8WString(path.filename()));
+			fileTree.put(L"<xmlattr>.filename", ToUft8WString(path.relative_path()));
 			fileTree.put(L"<xmlattr>.line-rate", coverageRate.GetRate());
 
 			property_tree::wptree& linesTree = AddChild(fileTree, L"lines");
@@ -104,7 +112,7 @@ namespace Exporter
 					property_tree::wptree& classesTree = AddChild(packageTree, L"classes");
 					const auto& coverageRate = coverageRateComputer.GetCoverageRate(*module);
 
-					packageTree.put(L"<xmlattr>.name", module->GetPath().wstring());
+					packageTree.put(L"<xmlattr>.name", ToUft8WString(module->GetPath()));
 					packageTree.put(L"<xmlattr>.line-rate", coverageRate.GetRate());
 
 					for (const auto& file : module->GetFiles())

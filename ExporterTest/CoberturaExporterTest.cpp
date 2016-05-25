@@ -17,12 +17,14 @@
 #include "stdafx.h"
 
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "CppCoverage/CoverageData.hpp"
 #include "CppCoverage/ModuleCoverage.hpp"
 #include "CppCoverage/FileCoverage.hpp"
 
 #include "Exporter/CoberturaExporter.hpp"
+#include "tools/Tool.hpp"
 
 #include "TestHelper/TemporaryPath.hpp"
 
@@ -80,5 +82,24 @@ namespace ExporterTest
 		ASSERT_FALSE(fs::exists(outputPath));
 		Exporter::CoberturaExporter().Export(coverageData, outputPath);
 		ASSERT_TRUE(fs::exists(outputPath));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(CoberturaExporterTest, SpecialChars)
+	{
+		cov::CoverageData coverageData{ L"", 0 };
+		coverageData.AddModule(L"יא").AddFile(L"יא").AddLine(0, true);
+		
+		std::wostringstream ostr;
+		Exporter::CoberturaExporter().Export(coverageData, ostr);
+		auto result = ostr.str();
+
+		auto packageName = Tools::LocalToWString(u8"package name=\"יא\"");
+		auto name = Tools::LocalToWString(u8"class name=\"יא\"");
+		auto filename = Tools::LocalToWString(u8"filename=\"יא\"");
+
+		ASSERT_TRUE(boost::algorithm::contains(result, packageName));
+		ASSERT_TRUE(boost::algorithm::contains(result, name));
+		ASSERT_TRUE(boost::algorithm::contains(result, filename));
 	}
 }
