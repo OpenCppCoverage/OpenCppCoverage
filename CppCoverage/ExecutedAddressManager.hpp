@@ -24,6 +24,7 @@
 #include <memory>
 #include <map>
 #include <boost/optional.hpp>
+#include <boost/container/small_vector.hpp>
 
 #include "CoverageData.hpp"
 #include "CppCoverageExport.hpp"
@@ -55,8 +56,6 @@ namespace CppCoverage
 		struct Module;
 		struct File;
 		struct File;
-		struct Line;
-		struct Instruction;
 
 	private:
 		ExecutedAddressManager(const ExecutedAddressManager&) = delete;
@@ -65,7 +64,6 @@ namespace CppCoverage
 		using T_Modules = std::vector<std::unique_ptr<Module>>;
 
 		Module& GetLastAddedModule(HANDLE hProcess);
-		void AddFileCoverageInfo(const File& fileData, FileCoverage& fileCoverage) const;
 		void AddModulesToCoverageData(HANDLE hProcess);
 		CoverageData CreateCoverageData(const T_Modules&) const;
 
@@ -73,8 +71,15 @@ namespace CppCoverage
 		std::unordered_map<HANDLE, T_Modules> modulesByHandle_;
 
 		CoverageData coverageData_;
-		std::map<Address, std::shared_ptr<Instruction>> addressLineMap_;
+
+		struct Line
+		{
+			explicit Line(unsigned char instructionToRestore);
+
+			unsigned char instructionToRestore_;
+			boost::container::small_vector<bool*, 1> hasBeenExecutedCollection_;
+		};
+
+		std::map<Address, Line> addressLineMap_;
 	};
 }
-
-

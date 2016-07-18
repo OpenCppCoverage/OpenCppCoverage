@@ -31,41 +31,16 @@
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	struct ExecutedAddressManager::Instruction
+	ExecutedAddressManager::Line::Line(unsigned char instructionToRestore)
+		: instructionToRestore_{ instructionToRestore }
 	{
-		explicit Instruction(unsigned char instruction)
-			: instruction_(instruction)
-			, hasBeenExecuted_(false)			
-		{
-		}
-
-		unsigned char instruction_;
-		bool hasBeenExecuted_;
-	};
-	
-	//-------------------------------------------------------------------------
-	struct ExecutedAddressManager::Line
-	{
-		bool HasLineBeenExecuted() const
-		{
-			for (const auto& instruction : instructions_)
-			{
-				if (!instruction)
-					THROW(L"Null instruction");
-				if (instruction->hasBeenExecuted_)
-					return true;
-			}
-			return false;
-		}
-
-		std::vector<std::shared_ptr<ExecutedAddressManager::Instruction>> instructions_;
-	};
+	}
 
 	//-------------------------------------------------------------------------
 	struct ExecutedAddressManager::File
 	{		
-		// We cannot use set because Line can be updated by MarkAddressAsExecuted
-		std::map<unsigned int, Line> lines;
+		// Use map to have iterator always valid
+		std::map<unsigned int, bool> lines;
 	};
 
 	//-------------------------------------------------------------------------
@@ -107,7 +82,6 @@ namespace CppCoverage
 		auto& module = GetLastAddedModule(address.GetProcessHandle());
 		auto& file = module.files_[filename];
 		auto& lines = file.lines;
-		auto& line = lines[lineNumber];
 
 		LOG_TRACE << "RegisterAddress: " << address << " for " << filename << ":" << lineNumber;
 
@@ -118,12 +92,12 @@ namespace CppCoverage
 
 		if (itAddress == addressLineMap_.end())
 		{
-			auto instruction = std::make_shared<Instruction>(instructionValue);
-			itAddress = addressLineMap_.emplace(address, instruction).first;
+			itAddress = addressLineMap_.emplace(address, Line{ instructionValue }).first;
 			keepBreakpoint = true;
 		}
 		
-		line.instructions_.push_back(itAddress->second);
+		auto& line = itAddress->second;
+		line.hasBeenExecutedCollection_.push_back(&lines[lineNumber]);
 		
 		return keepBreakpoint;
 	}
@@ -152,11 +126,15 @@ namespace CppCoverage
 		if (it == addressLineMap_.end())
 			return boost::none;
 
-		auto& instruction = it->second;
-				
-		instruction->hasBeenExecuted_ = true;
-			 
-		return instruction->instruction_;
+		auto& line = it->second;
+
+		for (bool* hasBeenExecuted : line.hasBeenExecutedCollection_)
+		{
+			if (!hasBeenExecuted)
+				THROW("Invalid pointer");
+			*hasBeenExecuted = true;
+		}
+		return line.instructionToRestore_;
 	}
 	
 	//-------------------------------------------------------------------------
@@ -178,9 +156,9 @@ namespace CppCoverage
 				for (const auto& pair : fileData.lines)
 				{
 					auto lineNumber = pair.first;
-					const auto& line = pair.second;
+					bool hasLineBeenExecuted = pair.second;
 					
-					fileCoverage.AddLine(lineNumber, line.HasLineBeenExecuted());
+					fileCoverage.AddLine(lineNumber, hasLineBeenExecuted);
 				}
 			}			
 		}
