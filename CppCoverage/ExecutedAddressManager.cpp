@@ -18,7 +18,7 @@
 #include "ExecutedAddressManager.hpp"
 
 #include <unordered_map>
-#include <set>
+#include <boost/container/small_vector.hpp>
 
 #include "tools/Log.hpp"
 
@@ -26,15 +26,20 @@
 #include "ModuleCoverage.hpp"
 #include "FileCoverage.hpp"
 #include "Address.hpp"
-#include "CoverageDataMerger.hpp"
 
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	ExecutedAddressManager::Line::Line(unsigned char instructionToRestore)
-		: instructionToRestore_{ instructionToRestore }
+	struct ExecutedAddressManager::Line
 	{
-	}
+		explicit Line(unsigned char instructionToRestore)
+		: instructionToRestore_{ instructionToRestore }
+		{
+		}
+
+		unsigned char instructionToRestore_;
+		boost::container::small_vector<bool*, 1> hasBeenExecutedCollection_;
+	};
 
 	//-------------------------------------------------------------------------
 	struct ExecutedAddressManager::File
@@ -57,19 +62,23 @@ namespace CppCoverage
 	
 	//-------------------------------------------------------------------------
 	ExecutedAddressManager::ExecutedAddressManager()
-		: coverageData_{L"", 0}
+		: lastModule_{nullptr}
 	{
 	}
-	
+
 	//-------------------------------------------------------------------------
 	ExecutedAddressManager::~ExecutedAddressManager()
 	{
 	}
 
 	//-------------------------------------------------------------------------
-	void ExecutedAddressManager::AddModule(HANDLE hProcess, const std::wstring& moduleName)
+	void ExecutedAddressManager::AddModule(const std::wstring& moduleName)
 	{
-		modulesByHandle_[hProcess].push_back(std::make_unique<Module>(moduleName));
+		auto it = modules_.find(moduleName);
+
+		if (it == modules_.end())
+			it = modules_.emplace(moduleName, Module{ moduleName }).first;
+		lastModule_ = &it->second;
 	}
 	
 	//-------------------------------------------------------------------------
@@ -79,7 +88,7 @@ namespace CppCoverage
 		unsigned int lineNumber, 
 		unsigned char instructionValue)
 	{
-		auto& module = GetLastAddedModule(address.GetProcessHandle());
+		auto& module = GetLastAddedModule();
 		auto& file = module.files_[filename];
 		auto& lines = file.lines;
 
@@ -103,18 +112,12 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	ExecutedAddressManager::Module& ExecutedAddressManager::GetLastAddedModule(HANDLE hProcess)
+	ExecutedAddressManager::Module& ExecutedAddressManager::GetLastAddedModule()
 	{
-		auto it = modulesByHandle_.find(hProcess);
+		if (!lastModule_)
+			THROW("Cannot get last module.");
 
-		if (it == modulesByHandle_.end())
-			THROW("Cannot get last added module (hProcess).");
-		const auto& modules = it->second;
-
-		if (modules.empty())
-			THROW("Cannot get last added module (no module).");
-
-		return *modules.back();
+		return *lastModule_;
 	}
 
 	//-------------------------------------------------------------------------
@@ -138,15 +141,18 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
-	CoverageData ExecutedAddressManager::CreateCoverageData(const T_Modules& modules) const
+	CoverageData ExecutedAddressManager::CreateCoverageData(
+		const std::wstring& name,
+		int exitCode) const
 	{
-		CoverageData coverageData{ L"", 0 };
+		CoverageData coverageData{ name, exitCode };
 
-		for (const auto& module : modules)
+		for (const auto& pair : modules_)
 		{
-			auto& moduleCoverage = coverageData.AddModule(module->name_);
+			const auto& module = pair.second;
+			auto& moduleCoverage = coverageData.AddModule(module.name_);
 
-			for (const auto& file : module->files_)
+			for (const auto& file : module.files_)
 			{
 				const std::wstring& name = file.first;
 				const File& fileData = file.second;
@@ -167,28 +173,8 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void ExecutedAddressManager::AddModulesToCoverageData(HANDLE hProcess)
-	{
-		auto it = modulesByHandle_.find(hProcess);
-
-		if (it != modulesByHandle_.end())
-		{
-			CoverageDataMerger coverageDataMerger;
-
-			auto processCoverageData = CreateCoverageData(it->second);
-			modulesByHandle_.erase(it);
-			std::vector<CoverageData> coverageDatas;
-			coverageDatas.push_back(std::move(coverageData_));
-			coverageDatas.push_back(std::move(processCoverageData));
-			coverageData_ = coverageDataMerger.Merge(coverageDatas);
-		}
-	}
-
-	//-------------------------------------------------------------------------
 	void ExecutedAddressManager::OnExitProcess(HANDLE hProcess)
 	{
-		AddModulesToCoverageData(hProcess);
-
 		auto it = addressLineMap_.begin();
 
 		while (it != addressLineMap_.end())
@@ -200,16 +186,5 @@ namespace CppCoverage
 			else
 				++it;
 		}
-	}
-
-	//-------------------------------------------------------------------------
-	CoverageData ExecutedAddressManager::CreateCoverageData(
-		const std::wstring& name,
-		int exitCode)
-	{
-		coverageData_.SetName(name);
-		coverageData_.SetExitCode(exitCode);
-
-		return std::move(coverageData_);
 	}
 }

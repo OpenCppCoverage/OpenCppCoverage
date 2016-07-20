@@ -17,14 +17,11 @@
 #pragma once
 
 #include <string>
-#include <vector>
-#include <unordered_map>
 
 #include <Windows.h>
-#include <memory>
 #include <map>
+#include <set>
 #include <boost/optional.hpp>
-#include <boost/container/small_vector.hpp>
 
 #include "CoverageData.hpp"
 #include "CppCoverageExport.hpp"
@@ -40,7 +37,7 @@ namespace CppCoverage
 		ExecutedAddressManager();
 		~ExecutedAddressManager();
 
-		void AddModule(HANDLE hProcess, const std::wstring& moduleName);
+		void AddModule(const std::wstring& moduleName);
 		bool RegisterAddress(
 			const Address&,
 			const std::wstring& filename,
@@ -49,36 +46,22 @@ namespace CppCoverage
 
 		boost::optional<unsigned char> MarkAddressAsExecuted(const Address&);
 
-		CoverageData CreateCoverageData(const std::wstring& name, int exitCode);
+		CoverageData CreateCoverageData(const std::wstring& name, int exitCode) const;
 		void OnExitProcess(HANDLE hProcess);
 
 	private:
 		struct Module;
 		struct File;
 		struct File;
+		struct Line;
 
-	private:
 		ExecutedAddressManager(const ExecutedAddressManager&) = delete;
 		ExecutedAddressManager& operator=(const ExecutedAddressManager&) = delete;
 
-		using T_Modules = std::vector<std::unique_ptr<Module>>;
+		Module& GetLastAddedModule();
 
-		Module& GetLastAddedModule(HANDLE hProcess);
-		void AddModulesToCoverageData(HANDLE hProcess);
-		CoverageData CreateCoverageData(const T_Modules&) const;
-
-	private:
-		std::unordered_map<HANDLE, T_Modules> modulesByHandle_;
-
-		CoverageData coverageData_;
-
-		struct Line
-		{
-			explicit Line(unsigned char instructionToRestore);
-
-			unsigned char instructionToRestore_;
-			boost::container::small_vector<bool*, 1> hasBeenExecutedCollection_;
-		};
+		std::map<std::wstring, Module> modules_;
+		Module* lastModule_;
 
 		std::map<Address, Line> addressLineMap_;
 	};
