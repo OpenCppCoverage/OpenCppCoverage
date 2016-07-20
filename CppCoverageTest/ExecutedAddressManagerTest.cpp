@@ -108,5 +108,23 @@ namespace CppCoverageTest
 		ASSERT_NE(nullptr, line43);		
 		ASSERT_TRUE(line43->HasBeenExecuted());
 	}
-	
+
+	//-------------------------------------------------------------------------
+	TEST(ExecutedAddressManagerTest, AddSameModuleTwice)
+	{
+		cov::ExecutedAddressManager manager;
+		const auto moduleName1 = L"moduleName1";
+		const auto moduleName2 = L"moduleName2";
+
+		manager.AddModule(moduleName1);
+		manager.AddModule(moduleName2);
+		manager.AddModule(moduleName1);
+
+		auto coverageData = manager.CreateCoverageData(L"", 0);
+
+		const auto& modules = coverageData.GetModules();
+		ASSERT_EQ(2, modules.size());
+		ASSERT_EQ(moduleName1, modules.at(0)->GetPath().wstring());
+		ASSERT_EQ(moduleName2, modules.at(1)->GetPath().wstring());
+	}
 }
