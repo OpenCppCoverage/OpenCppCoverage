@@ -11,7 +11,7 @@ index 4e9c77e..7e1a50d 100644
  		std::wcout << L"Invalid number of argument:  " << argc << std::endl;
  	else
  	{
-@@ -80,9 +80,9 @@ int _tmain(int argc, _TCHAR* argv[])
+@@ -82,9 +82,9 @@ int _tmain(int argc, _TCHAR* argv[])
  		else if (type == TestCoverageConsole::TestSpecialLineInfo)
  			TestCoverageConsole::SpecialLineInfo();
 		else if (false) // to have GetFileWithSpecialChars symbol in release.

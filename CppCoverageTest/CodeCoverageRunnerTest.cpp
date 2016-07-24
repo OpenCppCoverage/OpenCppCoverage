@@ -311,7 +311,7 @@ namespace CppCoverageTest
 		auto coverageData = RunCoverageWithException(
 			TestCoverageConsole::TestThrowUnHandledCppException, true);
 		auto& file = GetFirstFileCoverage(coverageData);
-		auto returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainLine() + 33;
+		auto returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainReturnLine();
 		TestLine(file, returnLine, true);
 	}
 
@@ -321,7 +321,7 @@ namespace CppCoverageTest
 		auto coverageData = RunCoverageWithException(
 			TestCoverageConsole::TestThrowUnHandledCppException, false);
 		auto& file = GetFirstFileCoverage(coverageData);
-		auto returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainLine() + 31;
+		auto returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainReturnLine();
 		TestLine(file, returnLine, false);
 	}
 
@@ -362,7 +362,7 @@ namespace CppCoverageTest
 
 		auto& file = GetFirstFileCoverage(mergedCoverageData);
 
-		int mainLine = TestCoverageConsole::GetTestCoverageConsoleCppMainLine();
+		int mainLine = TestCoverageConsole::GetTestCoverageConsoleCppMainStartLine();
 		TestLine(file, mainLine + 15, false); // TestThrowHandledException
 		TestLine(file, mainLine + 17, true); // TestThrowUnHandledCppException
 		TestLine(file, mainLine + 19, true); // TestThrowUnHandledSEHException
@@ -424,10 +424,12 @@ namespace CppCoverageTest
 			unifiedDiffSettingsCollection);
 		const auto& file = GetFirstFileCoverage(coverageData);
 		ASSERT_EQ(3, file.GetLines().size());
-		int mainLine = TestCoverageConsole::GetTestCoverageConsoleCppMainLine();
+		int mainLine = TestCoverageConsole::GetTestCoverageConsoleCppMainStartLine();
+		int returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainReturnLine();
+
 		TestLine(file, mainLine + 2, true);
-		TestLine(file, mainLine + 31, false);
-		TestLine(file, mainLine + 33, true);
+		TestLine(file, returnLine - 2, false);
+		TestLine(file, returnLine, true);
 	}
 
 	//-------------------------------------------------------------------------

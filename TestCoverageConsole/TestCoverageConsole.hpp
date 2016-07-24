@@ -47,9 +47,15 @@ namespace TestCoverageConsole
 	}
 
 	//-------------------------------------------------------------------------
-	inline int GetTestCoverageConsoleCppMainLine()
+	inline int GetTestCoverageConsoleCppMainStartLine()
 	{
 		return 54;
+	}
+
+	//-------------------------------------------------------------------------
+	inline int GetTestCoverageConsoleCppMainReturnLine()
+	{
+		return GetTestCoverageConsoleCppMainStartLine() + 35;
 	}
 
 	const std::wstring TestBasic = L"TestBasic";
