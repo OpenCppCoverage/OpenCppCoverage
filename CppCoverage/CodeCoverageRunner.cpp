@@ -104,6 +104,15 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
+	void CodeCoverageRunner::OnUnLoadDll(
+		HANDLE hProcess,
+		HANDLE hThread,
+		const UNLOAD_DLL_DEBUG_INFO& unloadDllDebugInfo)
+	{
+		executedAddressManager_->OnUnLoadModule(hProcess, unloadDllDebugInfo.lpBaseOfDll);
+	}
+
+	//-------------------------------------------------------------------------
 	IDebugEventsHandler::ExceptionType CodeCoverageRunner::OnException(
 		HANDLE hProcess, 
 		HANDLE hThread, 
@@ -172,7 +181,7 @@ namespace CppCoverage
 		
 		if (coverageFilterManager_->IsModuleSelected(filename))
 		{
-			executedAddressManager_->AddModule(filename);
+			executedAddressManager_->AddModule(filename, baseOfImage);
 			auto it = debugInformation_.find(hProcess);
 
 			if (it == debugInformation_.end())

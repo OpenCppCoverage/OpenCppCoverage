@@ -37,7 +37,9 @@ namespace CppCoverage
 		ExecutedAddressManager();
 		~ExecutedAddressManager();
 
-		void AddModule(const std::wstring& moduleName);
+		void AddModule(const std::wstring& moduleName, void* dllBaseOfImage);
+		void OnUnLoadModule(HANDLE hProcess, void* dllBaseOfImage);
+
 		bool RegisterAddress(
 			const Address&,
 			const std::wstring& filename,
@@ -54,15 +56,21 @@ namespace CppCoverage
 		struct File;
 		struct File;
 		struct Line;
+		struct LastModule
+		{
+			Module* module_;
+			void* baseOfImage_;
+		};
 
 		ExecutedAddressManager(const ExecutedAddressManager&) = delete;
 		ExecutedAddressManager& operator=(const ExecutedAddressManager&) = delete;
 
 		Module& GetLastAddedModule();
+		template <typename F>
+		void RemoveAddressLineIf(F fct);
 
 		std::map<std::wstring, Module> modules_;
-		Module* lastModule_;
-
 		std::map<Address, Line> addressLineMap_;
+		LastModule lastModule_;
 	};
 }

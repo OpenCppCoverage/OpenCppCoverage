@@ -148,6 +148,11 @@ namespace CppCoverage
 				debugEventsHandler.OnLoadDll(hProcess, hThread, loadDll);
 				break;
 			}
+			case UNLOAD_DLL_DEBUG_EVENT:
+			{
+				debugEventsHandler.OnUnLoadDll(hProcess, hThread, debugEvent.u.UnloadDll);
+				break;
+			}
 			case EXCEPTION_DEBUG_EVENT: return OnException(debugEvent, debugEventsHandler, hProcess, hThread);
 			case RIP_EVENT: OnRip(debugEvent.u.RipInfo); break;
 			default: LOG_DEBUG << "Debug event:" << debugEvent.dwDebugEventCode; break;

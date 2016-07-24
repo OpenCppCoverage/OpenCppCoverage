@@ -32,12 +32,14 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	struct ExecutedAddressManager::Line
 	{
-		explicit Line(unsigned char instructionToRestore)
-		: instructionToRestore_{ instructionToRestore }
+		explicit Line(unsigned char instructionToRestore, void* dllBaseOfImage)
+			: instructionToRestore_{ instructionToRestore }
+			, dllBaseOfImage_{ dllBaseOfImage }
 		{
 		}
 
-		unsigned char instructionToRestore_;
+		const unsigned char instructionToRestore_;
+		void* const dllBaseOfImage_;
 		boost::container::small_vector<bool*, 1> hasBeenExecutedCollection_;
 	};
 
@@ -51,19 +53,19 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	struct ExecutedAddressManager::Module
 	{
-		explicit Module(const std::wstring& name)
-		: name_(name)
+		explicit Module(const std::wstring& name) : name_{ name }
 		{
 		}
 
-		std::wstring name_;
+		const std::wstring name_;
 		std::unordered_map<std::wstring, File> files_;
 	};
 	
 	//-------------------------------------------------------------------------
 	ExecutedAddressManager::ExecutedAddressManager()
-		: lastModule_{nullptr}
 	{
+		lastModule_.baseOfImage_ = nullptr;
+		lastModule_.module_ = nullptr;
 	}
 
 	//-------------------------------------------------------------------------
@@ -72,13 +74,16 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void ExecutedAddressManager::AddModule(const std::wstring& moduleName)
+	void ExecutedAddressManager::AddModule(
+		const std::wstring& moduleName,
+		void* dllBaseOfImage)
 	{
 		auto it = modules_.find(moduleName);
 
 		if (it == modules_.end())
 			it = modules_.emplace(moduleName, Module{ moduleName }).first;
-		lastModule_ = &it->second;
+		lastModule_.module_ = &it->second;
+		lastModule_.baseOfImage_ = dllBaseOfImage;
 	}
 	
 	//-------------------------------------------------------------------------
@@ -90,7 +95,6 @@ namespace CppCoverage
 	{
 		auto& module = GetLastAddedModule();
 		auto& file = module.files_[filename];
-		auto& lines = file.lines;
 
 		LOG_TRACE << "RegisterAddress: " << address << " for " << filename << ":" << lineNumber;
 
@@ -101,12 +105,13 @@ namespace CppCoverage
 
 		if (itAddress == addressLineMap_.end())
 		{
-			itAddress = addressLineMap_.emplace(address, Line{ instructionValue }).first;
+			itAddress = addressLineMap_.emplace(address, 
+				Line{ instructionValue, lastModule_.baseOfImage_ }).first;
 			keepBreakpoint = true;
 		}
 		
 		auto& line = itAddress->second;
-		line.hasBeenExecutedCollection_.push_back(&lines[lineNumber]);
+		line.hasBeenExecutedCollection_.push_back(&file.lines[lineNumber]);
 		
 		return keepBreakpoint;
 	}
@@ -114,10 +119,10 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	ExecutedAddressManager::Module& ExecutedAddressManager::GetLastAddedModule()
 	{
-		if (!lastModule_)
+		if (!lastModule_.module_)
 			THROW("Cannot get last module.");
 
-		return *lastModule_;
+		return *lastModule_.module_;
 	}
 
 	//-------------------------------------------------------------------------
@@ -173,18 +178,36 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void ExecutedAddressManager::OnExitProcess(HANDLE hProcess)
+	template <typename Condition>
+	void ExecutedAddressManager::RemoveAddressLineIf(Condition condition)
 	{
 		auto it = addressLineMap_.begin();
 
 		while (it != addressLineMap_.end())
 		{
-			const Address& address = it->first;
-
-			if (address.GetProcessHandle() == hProcess)
+			if (condition(*it))
 				it = addressLineMap_.erase(it);
 			else
 				++it;
 		}
+	}
+
+	//-------------------------------------------------------------------------
+	void ExecutedAddressManager::OnExitProcess(HANDLE hProcess)
+	{
+		RemoveAddressLineIf([=](const auto& pair)
+		{
+			return pair.first.GetProcessHandle() == hProcess;
+		});
+	}
+
+	//-------------------------------------------------------------------------
+	void ExecutedAddressManager::OnUnLoadModule(HANDLE hProcess, void* dllBaseOfImage)
+	{
+		RemoveAddressLineIf([=](const auto& pair)
+		{
+			return pair.first.GetProcessHandle() == hProcess
+				&& pair.second.dllBaseOfImage_ == dllBaseOfImage;
+		});
 	}
 }
