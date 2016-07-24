@@ -81,6 +81,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			TestCoverageConsole::SpecialLineInfo();
 		else if (false) // to have GetFileWithSpecialChars symbol in release.
 			TestCoverageConsole::GetFileWithSpecialChars();
+		else if (type == TestCoverageConsole::TestUnloadReloadDll)
+			TestCoverageConsole::UnloadReloadDll();
 		else
 			std::wcerr << L"Unsupported type:" << type << std::endl;
 	}

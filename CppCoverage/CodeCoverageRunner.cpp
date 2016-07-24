@@ -104,12 +104,12 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::OnUnLoadDll(
+	void CodeCoverageRunner::OnUnloadDll(
 		HANDLE hProcess,
 		HANDLE hThread,
 		const UNLOAD_DLL_DEBUG_INFO& unloadDllDebugInfo)
 	{
-		executedAddressManager_->OnUnLoadModule(hProcess, unloadDllDebugInfo.lpBaseOfDll);
+		executedAddressManager_->OnUnloadModule(hProcess, unloadDllDebugInfo.lpBaseOfDll);
 	}
 
 	//-------------------------------------------------------------------------

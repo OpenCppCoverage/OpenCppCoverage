@@ -21,8 +21,25 @@
 #include <fstream>
 #include <boost/filesystem/path.hpp>
 
+//-------------------------------------------------------------------------
+void TestUnloadDll()
+{
+}
+
 namespace TestHelper
 {
+	//-------------------------------------------------------------------------
+	boost::filesystem::path GetTestUnloadDllFilename()
+	{
+		return boost::filesystem::path(__FILE__).filename();
+	}
+
+	//-------------------------------------------------------------------------
+	boost::filesystem::path GetOutputBinaryPath()
+	{		
+		return TARGET_FILE_NAME;
+	}
+
 	//-------------------------------------------------------------------------
 	void CreateEmptyFile(const boost::filesystem::path& path)
 	{

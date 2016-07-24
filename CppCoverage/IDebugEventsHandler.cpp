@@ -35,7 +35,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void IDebugEventsHandler::OnUnLoadDll(HANDLE hProcess, HANDLE hThread, const UNLOAD_DLL_DEBUG_INFO&)
+	void IDebugEventsHandler::OnUnloadDll(HANDLE hProcess, HANDLE hThread, const UNLOAD_DLL_DEBUG_INFO&)
 	{
 	}
 

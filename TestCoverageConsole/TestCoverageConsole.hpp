@@ -62,4 +62,5 @@ namespace TestCoverageConsole
 	const std::wstring TestChildProcess = L"ChildProcess";
 	const std::wstring TestFileInSeveralModules = L"FileInSeveralModules";
 	const std::wstring TestSpecialLineInfo = L"TestSpecialLineInfo";
+	const std::wstring TestUnloadReloadDll = L"TestUnloadReloadDll";
 }

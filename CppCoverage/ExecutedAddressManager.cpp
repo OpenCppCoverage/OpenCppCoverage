@@ -202,7 +202,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void ExecutedAddressManager::OnUnLoadModule(HANDLE hProcess, void* dllBaseOfImage)
+	void ExecutedAddressManager::OnUnloadModule(HANDLE hProcess, void* dllBaseOfImage)
 	{
 		RemoveAddressLineIf([=](const auto& pair)
 		{

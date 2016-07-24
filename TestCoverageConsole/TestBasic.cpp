@@ -17,8 +17,10 @@
 #include "TestBasic.hpp"
 #include <Poco/Process.h>
 #include <iostream>
+#include <windows.h>
 
 #include "Tools/Tool.hpp"
+#include "Tools/ScopedAction.hpp"
 
 #include "TestCoverageConsole.hpp"
 
@@ -53,4 +55,19 @@ namespace TestCoverageConsole
 			handle.wait();
 		}
 	}
+
+	//-------------------------------------------------------------------------
+	void UnloadReloadDll()
+	{
+		auto testHelper = L"TestHelper.dll";
+		auto module = LoadLibraryEx(testHelper, nullptr, 0);
+		
+		// Be sure the library is unloaded by calling FreeLibrary until unload.
+		while (FreeLibrary(module));
+
+		module = LoadLibraryEx(testHelper, nullptr, 0);
+		Tools::ScopedAction freeLibrary{ [=]() { FreeLibrary(module); } };
+
+		auto fct = (void (*)())GetProcAddress(module, "TestUnloadDll");
+		fct();	}
 }

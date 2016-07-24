@@ -26,7 +26,15 @@ namespace boost
 	}
 }
 
+extern "C"
+{
+	void TEST_HELPER_DLL TestUnloadDll();
+}
+
 namespace TestHelper
 {
+	boost::filesystem::path TEST_HELPER_DLL  GetTestUnloadDllFilename();
+	boost::filesystem::path TEST_HELPER_DLL  GetOutputBinaryPath();
+
 	void TEST_HELPER_DLL CreateEmptyFile(const boost::filesystem::path&);
 }

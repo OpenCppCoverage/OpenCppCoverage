@@ -19,6 +19,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/range/algorithm/count_if.hpp>
 
 #include <boost/log/trivial.hpp>
 
@@ -38,6 +39,7 @@
 #include "Tools/Tool.hpp"
 
 #include "TestHelper/CoverageDataComparer.hpp"
+#include "TestHelper/Tools.hpp"
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "TestCoverageConsole/TestBasic.hpp"
@@ -440,5 +442,22 @@ namespace CppCoverageTest
 		const auto& file = GetFirstFileCoverage(coverageData);
 		auto filename = file.GetPath().filename().wstring();
 		ASSERT_TRUE(boost::algorithm::iequals(fileWithSpecialChars.wstring(), filename));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, UnloadReloadDll)
+	{
+		const auto unloadDllFilename = TestHelper::GetTestUnloadDllFilename().wstring();
+
+		auto coverageData = ComputeCoverageDataInBothMode(
+			TestCoverageConsole::TestUnloadReloadDll, 
+			TestHelper::GetOutputBinaryPath().wstring(), 
+			unloadDllFilename);
+		const auto& file = GetFirstFileCoverage(coverageData);
+		auto filename = file.GetPath().filename().wstring();
+		ASSERT_TRUE(boost::algorithm::iequals(unloadDllFilename, filename));
+		auto lines = file.GetLines();
+		ASSERT_NE(0, boost::count_if(lines, 
+			[](const auto& line) { return line.HasBeenExecuted(); }));
 	}
 }

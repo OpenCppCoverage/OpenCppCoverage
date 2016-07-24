@@ -150,7 +150,7 @@ namespace CppCoverage
 			}
 			case UNLOAD_DLL_DEBUG_EVENT:
 			{
-				debugEventsHandler.OnUnLoadDll(hProcess, hThread, debugEvent.u.UnloadDll);
+				debugEventsHandler.OnUnloadDll(hProcess, hThread, debugEvent.u.UnloadDll);
 				break;
 			}
 			case EXCEPTION_DEBUG_EVENT: return OnException(debugEvent, debugEventsHandler, hProcess, hThread);
