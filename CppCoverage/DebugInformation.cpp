@@ -174,12 +174,4 @@ namespace CppCoverage
 		if (!SymSetSearchPath(hProcess_, searchPath.c_str()))
 			THROW_LAST_ERROR("Error when calling SymSetSearchPath", GetLastError());
 	}
-
-	//-------------------------------------------------------------------------
-	void DebugInformation::UnloadModule64(DWORD64 baseOfDll) const
-	{
-		if (!SymUnloadModule64(hProcess_, baseOfDll))
-			THROW("Cannot unload module");
-	}
-
 }

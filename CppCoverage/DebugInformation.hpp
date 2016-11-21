@@ -41,7 +41,6 @@ namespace CppCoverage
 		DebugInformation(const DebugInformation&) = delete;
 		DebugInformation& operator=(const DebugInformation&) = delete;
 
-		void UnloadModule64(DWORD64 baseOfDll) const;
 		void UpdateSearchPath(const std::wstring&) const;
 
 	private:
