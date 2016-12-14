@@ -16,8 +16,8 @@
 
 #pragma once
 
+#include <memory>
 #include <boost/filesystem.hpp>
-#include <boost/optional.hpp>
 
 #include "HtmlFile.hpp"
 #include "../ExporterExport.hpp"
@@ -32,6 +32,7 @@ namespace Exporter
 
 	public:
 		HtmlFolderStructure(const boost::filesystem::path& templateFolder);
+		~HtmlFolderStructure();
 
 		boost::filesystem::path CreateCurrentRoot(const boost::filesystem::path& outputFolder);
 		HtmlFile CreateCurrentModule(const boost::filesystem::path&);		
@@ -43,8 +44,10 @@ namespace Exporter
 
 	private:
 		boost::filesystem::path templateFolder_;
-		boost::optional<boost::filesystem::path> currentRoot_;
-		boost::optional<boost::filesystem::path> currentModule_;
+
+		struct Hierarchy;
+		std::unique_ptr<Hierarchy> optionalCurrentRoot_;
+		std::unique_ptr<Hierarchy> optionalCurrentModule_;
 	};
 }
 

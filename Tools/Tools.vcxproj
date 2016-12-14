@@ -161,6 +161,7 @@
     <ClInclude Include="ToolsExport.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tool.hpp" />
+    <ClInclude Include="UniquePath.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -187,6 +188,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Tool.cpp" />
+    <ClCompile Include="UniquePath.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

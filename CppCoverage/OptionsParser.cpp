@@ -378,11 +378,7 @@ namespace CppCoverage
 		auto exportOutputPath = exportString.exportOutputPath;
 
 		if (!exportOutputPath.empty())
-		{
-			if (boost::filesystem::exists(exportOutputPath))
-				throw OptionsParserException("Export output " + exportOutputPath + " already exists.");
 			return OptionsExport{ type, exportOutputPath };
-		}
 
 		return OptionsExport{ type };
 	}

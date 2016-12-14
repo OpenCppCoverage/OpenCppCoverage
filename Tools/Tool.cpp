@@ -183,17 +183,6 @@ namespace Tools
 	}
 
 	//-------------------------------------------------------------------------
-	boost::filesystem::path GetUniquePath(const boost::filesystem::path& prefix)
-	{
-		std::string uniquePath = prefix.string();
-
-		for (int i = 2; fs::exists(uniquePath); ++i)
-			uniquePath = prefix.string() + '-' + std::to_string(i);
-
-		return uniquePath;
-	}
-
-	//-------------------------------------------------------------------------
 	boost::optional<std::wstring> Try(std::function<void()> action)
 	{
 		try

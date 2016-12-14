@@ -37,4 +37,14 @@ namespace ExporterTest
 		Exporter::BinaryExporter().Export(coverageData, outputPath);
 		ASSERT_TRUE(fs::exists(outputPath));
 	}
+
+	//-------------------------------------------------------------------------
+	TEST(BinaryExporterTest, OutputExists)
+	{
+		cov::CoverageData coverageData{ L"", 0 };
+
+		TestHelper::TemporaryPath outputPath{ TestHelper::TemporaryPathOption::CreateAsFile };
+		
+		ASSERT_NO_THROW(Exporter::BinaryExporter().Export(coverageData, outputPath.GetPath()));
+	}
 }

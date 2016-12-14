@@ -102,4 +102,13 @@ namespace ExporterTest
 		ASSERT_TRUE(boost::algorithm::contains(result, name));
 		ASSERT_TRUE(boost::algorithm::contains(result, filename));
 	}
+
+	//-------------------------------------------------------------------------
+	TEST(CoberturaExporterTest, OutputExists)
+	{
+		cov::CoverageData coverageData{ L"", 0 };
+		TestHelper::TemporaryPath outputPath{ TestHelper::TemporaryPathOption::CreateAsFile };
+		
+		ASSERT_NO_THROW(Exporter::CoberturaExporter().Export(coverageData, outputPath));
+	}
 }

@@ -34,8 +34,6 @@ namespace Tools
 	TOOLS_DLL boost::optional<std::wstring> Try(std::function<void()>);	
 	TOOLS_DLL boost::filesystem::path GetTemplateFolder();
 	
-	TOOLS_DLL boost::filesystem::path GetUniquePath(const boost::filesystem::path& prefix);
-
 	TOOLS_DLL void CreateMiniDumpOnUnHandledException();
 
 	TOOLS_DLL void ShowOutputMessage(const std::wstring& message, const boost::filesystem::path& path);

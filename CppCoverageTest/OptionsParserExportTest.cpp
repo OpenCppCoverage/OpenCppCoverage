@@ -103,7 +103,7 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST(OptionsParserExportTest, InvalidOutputPath)
+	TEST(OptionsParserExportTest, ExistingExportPath)
 	{	
 		cov::OptionsParser parser;
 		TestHelper::TemporaryPath temporaryPath{ TestHelper::TemporaryPathOption::CreateAsFile };
@@ -112,7 +112,7 @@ namespace CppCoverageTest
 			cov::OptionsParser::ExportSeparator + temporaryPath.GetPath().string();
 		auto options = TestTools::Parse(parser, { TestTools::OptionPrefix + cov::ProgramOptions::ExportTypeOption, 
 								exportStr });
-		ASSERT_FALSE(options);		
+		ASSERT_NE(nullptr, options.get_ptr());
 	}
 
 	//-------------------------------------------------------------------------

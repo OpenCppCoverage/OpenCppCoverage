@@ -26,6 +26,8 @@
 #include "Exporter/Html/HtmlExporter.hpp"
 #include "Exporter/Html/HtmlFolderStructure.hpp"
 
+#include "TestHelper/TemporaryPath.hpp"
+
 namespace cov = CppCoverage;
 namespace fs = boost::filesystem;
 
@@ -124,6 +126,37 @@ namespace ExporterTest
 		ASSERT_FALSE(fs::exists(outputFolder));
 		htmlExporter_.Export(data, outputFolder);
 		ASSERT_TRUE(fs::exists(outputFolder));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(HtmlExporterTest, OutputExists)
+	{
+		cov::CoverageData data{ L"Test", 42 };
+		TestHelper::TemporaryPath outputFolder{ TestHelper::TemporaryPathOption::CreateAsFolder };
+		
+		ASSERT_NO_THROW(htmlExporter_.Export(data, outputFolder));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(HtmlExporterTest, SameModuleSameSourceFile)
+	{
+		cov::CoverageData data{ L"Test", 0 };
+		const std::wstring filename = L"TestFile1.cpp";
+		const auto moduleName = L"Module.exe";
+		
+		auto& module = data.AddModule(moduleName);
+		module.AddFile(fs::path(PROJECT_DIR) / "Data" / filename).AddLine(0, true);
+		module.AddFile(fs::path(PROJECT_DIR) / "Data" / filename);
+		data.AddModule(moduleName).AddFile("file").AddLine(0, true);
+		
+		htmlExporter_.Export(data, output_);
+
+		auto modulesPath = output_.GetPath() / Exporter::HtmlFolderStructure::FolderModules;
+		ASSERT_TRUE(fs::exists(modulesPath / "module2"));
+		ASSERT_TRUE(fs::exists(modulesPath / "module2.html"));
+		ASSERT_TRUE(fs::exists(modulesPath / "module" / (filename + L".html")));
+		ASSERT_TRUE(fs::exists(modulesPath / "module" / (filename + L"2.html")));
+		ASSERT_TRUE(fs::exists(modulesPath / "module.html"));
 	}
 }
 

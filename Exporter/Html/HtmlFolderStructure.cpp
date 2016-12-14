@@ -19,9 +19,10 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include "Exporter\ExporterException.hpp"
+#include "Exporter/ExporterException.hpp"
 
 #include "Tools/Tool.hpp"
+#include "Tools/UniquePath.hpp"
 
 namespace fs = boost::filesystem;
 
@@ -50,18 +51,21 @@ namespace Exporter
 					fs::copy_file(path, destination, fs::copy_option::overwrite_if_exists);
 			}
 		}
-
-		//---------------------------------------------------------------------
-		fs::path CreateUniqueDirectories(const fs::path& initialPath)
-		{
-			auto uniquePath = Tools::GetUniquePath(initialPath);
-			
-			fs::create_directories(uniquePath);
-			
-			return uniquePath;
-		}
 	}
-	
+
+	//-------------------------------------------------------------------------
+	struct HtmlFolderStructure::Hierarchy
+	{
+		explicit Hierarchy(const boost::filesystem::path& path)
+			: path_{ path } 
+		{
+			fs::create_directories(path);
+		}
+
+		boost::filesystem::path path_;
+		Tools::UniquePath uniqueChildrenPath_;
+	};
+
 	//-------------------------------------------------------------------------
 	const std::wstring HtmlFolderStructure::ThirdParty = L"third-party";
 	const std::wstring HtmlFolderStructure::FolderModules = L"Modules";
@@ -73,43 +77,51 @@ namespace Exporter
 	}
 
 	//-------------------------------------------------------------------------
+	HtmlFolderStructure::~HtmlFolderStructure() = default;
+
+	//-------------------------------------------------------------------------
 	boost::filesystem::path HtmlFolderStructure::CreateCurrentRoot(const boost::filesystem::path& outputFolder)
 	{
-		currentRoot_ = CreateUniqueDirectories(fs::absolute(outputFolder));
+		auto root{ fs::absolute(outputFolder) };
+		optionalCurrentRoot_ = std::make_unique<Hierarchy>(root);
 		CopyRecursiveDirectoryContent(
 			templateFolder_ / HtmlFolderStructure::ThirdParty,
-			*currentRoot_ / HtmlFolderStructure::ThirdParty);
+			root / HtmlFolderStructure::ThirdParty);
 
-		return *currentRoot_;
+		return root;
 	}
 
 	//-------------------------------------------------------------------------
 	HtmlFile HtmlFolderStructure::CreateCurrentModule(const boost::filesystem::path& modulePath)
 	{
-		if (!currentRoot_)
+		if (!optionalCurrentRoot_)
 			THROW(L"No root is selected");
 
 		auto moduleFilename = modulePath.filename();
 		auto moduleName = moduleFilename.replace_extension(""); // remove extension
-		auto modulesPath = *currentRoot_ / HtmlFolderStructure::FolderModules;
-		currentModule_ = CreateUniqueDirectories(modulesPath / moduleName);
+		auto folderModules = optionalCurrentRoot_->path_ / HtmlFolderStructure::FolderModules;
+
+		auto moduleFolder = folderModules / moduleName;
+		auto uniqueModulesFolder = optionalCurrentRoot_->uniqueChildrenPath_.GetUniquePath(moduleFolder);
+		optionalCurrentModule_ = std::make_unique<Hierarchy>(uniqueModulesFolder);
+		fs::path moduleHtmlPath = uniqueModulesFolder.wstring() + L".html";
 		
-		auto moduleHtmlName = moduleName.string() + ".html";
-		auto moduleHtmlPath = Tools::GetUniquePath(modulesPath / moduleHtmlName);
-		
-		return HtmlFile{ moduleHtmlPath, fs::path{ HtmlFolderStructure::FolderModules } / moduleHtmlName };
+		return HtmlFile{ 
+			moduleHtmlPath, 
+			fs::path{ HtmlFolderStructure::FolderModules } / moduleHtmlPath.filename() };
 	}	
 	
 	//---------------------------------------------------------------------
 	HtmlFile HtmlFolderStructure::GetHtmlFilePath(const boost::filesystem::path& filePath) const
 	{
-		if (!currentModule_)
+		if (!optionalCurrentModule_)
 			THROW(L"No root module selected");
 		
 		auto filename = filePath.filename();
 		auto output = filename.wstring() + L".html";
-		auto fileHtmlPath = Tools::GetUniquePath(*currentModule_ / output);
+		const auto& modulePath = optionalCurrentModule_->path_;
+		auto fileHtmlPath = optionalCurrentModule_->uniqueChildrenPath_.GetUniquePath(modulePath / output);
 
-		return HtmlFile{fileHtmlPath, currentModule_->filename() / output};
+		return HtmlFile{fileHtmlPath, modulePath.filename() / fileHtmlPath.filename()};
 	}	
 }

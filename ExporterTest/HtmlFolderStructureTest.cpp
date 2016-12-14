@@ -84,17 +84,6 @@ namespace ExporterTest
 		expectedPath /= File + ".html";
 		ASSERT_EQ(expectedPath, htmlFilePath.GetAbsolutePath());
 	}
-	
-	//-------------------------------------------------------------------------
-	TEST_F(HtmlFolderStructureTest, TestConflictRoot)
-	{		
-		auto output = outputFolder_.GetPath() / "Output";
-
-		auto root = htmlFolderStructure_->CreateCurrentRoot(output);
-		auto otherRoot = htmlFolderStructure_->CreateCurrentRoot(output);
-
-		ASSERT_NE(root, otherRoot);
-	}
 
 	//-------------------------------------------------------------------------
 	TEST_F(HtmlFolderStructureTest, TestConflictModules)
