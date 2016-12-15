@@ -34,7 +34,7 @@ namespace TestHelper
 		template <typename T>
 		void AssertEqual(T&& v1, T&& v2)
 		{
-			ASSERT_EQ(v1, v2);
+			EXPECT_EQ(v1, v2);
 			if (v1 != v2)
 				throw std::runtime_error("Values are not equals.");
 		}
