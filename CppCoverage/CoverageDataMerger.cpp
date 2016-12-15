@@ -36,9 +36,7 @@ namespace CppCoverage
 
 			for (const auto& coverageData : coverageDataCollection)
 			{
-				if (!name.empty())
-					name += L"-";
-				name += coverageData.GetName();
+				name = coverageData.GetName();
 				auto exitCode = coverageData.GetExitCode();
 				if (exitCode)
 					lastNotZeroExitCode = exitCode;
