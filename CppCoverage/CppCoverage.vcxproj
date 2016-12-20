@@ -162,6 +162,7 @@
     <ClInclude Include="CoverageFilterManager.hpp" />
     <ClInclude Include="FileDebugInformation.hpp" />
     <ClInclude Include="ICoverageFilterManager.hpp" />
+    <ClInclude Include="RelocationsExtractor.hpp" />
     <ClInclude Include="UnifiedDiffSettings.hpp" />
     <ClInclude Include="WildcardCoverageFilter.hpp" />
     <ClInclude Include="CoverageRate.hpp" />
@@ -198,6 +199,7 @@
     <ClCompile Include="CoverageDataMerger.cpp" />
     <ClCompile Include="CoverageFilterManager.cpp" />
     <ClCompile Include="FileDebugInformation.cpp" />
+    <ClCompile Include="RelocationsExtractor.cpp" />
     <ClCompile Include="UnifiedDiffSettings.cpp" />
     <ClCompile Include="WildcardCoverageFilter.cpp" />
     <ClCompile Include="CoverageRate.cpp" />
