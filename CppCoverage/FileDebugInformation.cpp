@@ -37,27 +37,25 @@ namespace CppCoverage
 		//-----------------------------------------------------------------------
 		struct LineData
 		{
-			LineData(int lineNumber, void* address)
+			LineData(int lineNumber, DWORD64 lineAddress)
 				: lineNumber_{ lineNumber }
-				, address_{ address }
+				, lineAddress_{ lineAddress }
 			{
 			}
 
 			int lineNumber_;
-			void* address_;
+			DWORD64 lineAddress_;
 		};
 
 		//-----------------------------------------------------------------------
 		struct LineContext
 		{
-			LineContext(HANDLE hProcess, void* processBaseOfImage) 
+			explicit LineContext(HANDLE hProcess) 
 				: hProcess_{hProcess}
-				, processBaseOfImage_{ processBaseOfImage }
 			{
 			}
 
 			HANDLE hProcess_;
-			void* processBaseOfImage_;
 			std::vector<LineData> lineDataCollection_;
 			boost::optional<std::wstring> error_;
 		};
@@ -95,11 +93,9 @@ namespace CppCoverage
 			lineContext->error_ = Tools::Try([&]() {
 				if (!ExcludeLineInfo(*lineInfo, *lineContext))
 				{
-					auto lineNumber = lineInfo->LineNumber;
-
-					DWORD64 addressValue = lineInfo->Address - lineInfo->ModBase
-						+ reinterpret_cast<DWORD64>(lineContext->processBaseOfImage_);
-					lineContext->lineDataCollection_.emplace_back(lineNumber, reinterpret_cast<void*>(addressValue));						
+					lineContext->lineDataCollection_.emplace_back(
+						lineInfo->LineNumber,
+						lineInfo->Address);
 				}
 			});
 
@@ -128,9 +124,16 @@ namespace CppCoverage
 			}
 		}
 
+		struct ModuleAddress
+		{
+			HANDLE hProcess_;
+			void* processBaseOfImage_;
+			DWORD64 baseAddress_;
+		};
+
 		//-------------------------------------------------------------------------
 		void HandleNewLine(
-			HANDLE hProcess,
+			const ModuleAddress& moduleAddress,
 			const LineData& lineData,
 			const std::wstring& filename,
 			const std::set<int>& executableLinesSet,
@@ -141,7 +144,10 @@ namespace CppCoverage
 
 			if (coverageFilterManager.IsLineSelected(filename, lineNumber, executableLinesSet))
 			{
-				Address address{ hProcess, lineData.address_ };
+				auto addressValue = lineData.lineAddress_ - moduleAddress.baseAddress_
+					+ reinterpret_cast<DWORD64>(moduleAddress.processBaseOfImage_);
+
+				Address address{ moduleAddress.hProcess_,  reinterpret_cast<void*>(addressValue)};
 
 				debugInformationEventHandler.OnNewLine(filename, lineNumber, address);
 			}
@@ -162,7 +168,7 @@ namespace CppCoverage
 		ICoverageFilterManager& coverageFilterManager,
 		IDebugInformationEventHandler& debugInformationEventHandler) const
 	{		
-		LineContext context{ hProcess_, processBaseOfImage };
+		LineContext context{ hProcess_ };
 
 		RetreiveLineData(filename, baseAddress, context);
 		if (context.error_)
@@ -173,10 +179,21 @@ namespace CppCoverage
 		LOG_DEBUG << L"Executable lines for " << filename << L": ";
 		LOG_DEBUG << executableLinesSet;
 
+		ModuleAddress moduleAddress;
+
+		moduleAddress.hProcess_ = hProcess_;
+		moduleAddress.processBaseOfImage_ = processBaseOfImage;
+		moduleAddress.baseAddress_ = baseAddress;
+
 		for (const auto& lineData : context.lineDataCollection_)
 		{
-			HandleNewLine(hProcess_, lineData, filename, executableLinesSet,
-				coverageFilterManager, debugInformationEventHandler);
+			HandleNewLine(
+				moduleAddress,
+				lineData, 
+				filename, 
+				executableLinesSet,
+				coverageFilterManager, 
+				debugInformationEventHandler);
 		}
 	}	
 }
