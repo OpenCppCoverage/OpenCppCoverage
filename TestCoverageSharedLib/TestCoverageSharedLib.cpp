@@ -44,7 +44,7 @@ namespace TestCoverageSharedLib
 	//-------------------------------------------------------------------------
 	fs::path GetOutputBinaryPath()
 	{		
-		return TARGET_FILE_NAME;
+		return boost::filesystem::path(OUT_DIR) / TARGET_FILE_NAME;
 	}
 
 	//-------------------------------------------------------------------------

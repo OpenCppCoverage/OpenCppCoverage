@@ -39,7 +39,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(Process, InvalidProgram)
 	{		
-		cov::StartInfo startInfo{ OUT_DIR / TestCoverageSharedLib::GetOutputBinaryPath() };
+		cov::StartInfo startInfo{ TestCoverageSharedLib::GetOutputBinaryPath() };
 
 		cov::Process process{ startInfo };
 		ASSERT_THROW(process.Start(0), std::runtime_error);
