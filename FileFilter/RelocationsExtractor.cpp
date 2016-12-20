@@ -16,9 +16,9 @@
 
 #include "stdafx.h"
 #include "RelocationsExtractor.hpp"
-#include "CppCoverageException.hpp"
+#include "FileFilterException.hpp"
 
-namespace CppCoverage
+namespace FileFilter
 {			
 	//-------------------------------------------------------------------------
 	const IMAGE_NT_HEADERS& GetNTHeader(void* baseOfImage)

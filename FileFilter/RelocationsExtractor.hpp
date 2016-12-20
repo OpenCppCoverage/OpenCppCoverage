@@ -18,11 +18,11 @@
 
 #include <windows.h>
 #include <unordered_set>
-#include "CppCoverageExport.hpp"
+#include "FileFilterExport.hpp"
 
-namespace CppCoverage
+namespace FileFilter
 {
-	class CPPCOVERAGE_DLL RelocationsExtractor
+	class FILEFILTER_DLL RelocationsExtractor
 	{
 	public:		
 		std::unordered_set<DWORD_PTR> Extract(HANDLE hFile, void* baseOfImage) const;

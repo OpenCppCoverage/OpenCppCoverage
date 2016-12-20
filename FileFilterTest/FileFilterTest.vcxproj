@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClCompile Include="FileFilterTest.cpp" />
     <ClCompile Include="PathMatcherTest.cpp" />
+    <ClCompile Include="RelocationsExtractorTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -173,6 +174,9 @@
   <ItemGroup>
     <ProjectReference Include="..\FileFilter\FileFilter.vcxproj">
       <Project>{6fd7c5be-04bd-496d-a924-285a3e867814}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\TestCoverageSharedLib\TestCoverageSharedLib.vcxproj">
+      <Project>{0481b51c-98f1-4e92-a51e-162b77ecd939}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Tools\Tools.vcxproj">
       <Project>{7f6d05ef-deb0-4c64-bd13-a85f46314b91}</Project>

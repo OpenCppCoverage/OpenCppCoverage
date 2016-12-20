@@ -15,14 +15,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
-#include "CppCoverage/RelocationsExtractor.hpp"
+#include "FileFilter/RelocationsExtractor.hpp"
 
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 #include "TestHelper/AutoClose.hpp"
 
 using TestHelper::MakeAutoClose;
 
-namespace CppCoverageTest
+namespace FileFilterTest
 {	
 	// These values are computed with Dumpbin /RELOCATIONS TestCoverageSharedLib.dll
 #ifdef NDEBUG
@@ -61,7 +61,7 @@ namespace CppCoverageTest
 		auto handle = MakeAutoClose(
 			LoadLibrary(modulePath.wstring().c_str()), nullptr, FreeLibrary);
 				
-		CppCoverage::RelocationsExtractor extractor;
+		FileFilter::RelocationsExtractor extractor;
 
 		auto res = extractor.Extract(*handle, *lpFileBase);
 		ASSERT_EQ(1, res.count(firstAdress));
