@@ -153,6 +153,7 @@
     <ClCompile Include="AmbiguousPathException.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="PathMatcher.cpp" />
+    <ClCompile Include="ReleaseCoverageFilter.cpp" />
     <ClCompile Include="RelocationsExtractor.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -169,7 +170,12 @@
     <ClInclude Include="File.hpp" />
     <ClInclude Include="FileFilterException.hpp" />
     <ClInclude Include="FileFilterExport.hpp" />
+    <ClInclude Include="FileInfo.hpp" />
+    <ClInclude Include="IRelocationsExtractor.hpp" />
+    <ClInclude Include="LineInfo.hpp" />
+    <ClInclude Include="ModuleInfo.hpp" />
     <ClInclude Include="PathMatcher.hpp" />
+    <ClInclude Include="ReleaseCoverageFilter.hpp" />
     <ClInclude Include="RelocationsExtractor.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UnifiedDiffCoverageFilter.hpp" />
