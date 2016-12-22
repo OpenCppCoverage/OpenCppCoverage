@@ -19,6 +19,7 @@
 #include "UnifiedDiffSettings.hpp"
 
 #include "FileFilter/UnifiedDiffCoverageFilter.hpp"
+#include "FileFilter/ReleaseCoverageFilter.hpp"
 #include "ProgramOptions.hpp"
 #include "Tools/Tool.hpp"
 
@@ -69,17 +70,24 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	CoverageFilterManager::CoverageFilterManager(
 		const CoverageSettings& settings,
-		const std::vector<UnifiedDiffSettings>& unifiedDiffSettingsCollection)
-		: CoverageFilterManager{ settings, ToUnifiedDiffCoverageFilters(unifiedDiffSettingsCollection) }
+		const std::vector<UnifiedDiffSettings>& unifiedDiffSettingsCollection,
+		bool useReleaseCoverageFilter)
+		: CoverageFilterManager{ 
+			settings, 
+			ToUnifiedDiffCoverageFilters(unifiedDiffSettingsCollection), 
+			useReleaseCoverageFilter }
 	{
 	}
 
 	//-------------------------------------------------------------------------
 	CoverageFilterManager::CoverageFilterManager(
 		const CoverageSettings& settings,
-		UnifiedDiffCoverageFilters&& unifiedDiffCoverageFilters)
+		UnifiedDiffCoverageFilters&& unifiedDiffCoverageFilters,
+		bool useReleaseCoverageFilter )
 		: wildcardCoverageFilter_{ settings }
 		, unifiedDiffCoverageFilters_( std::move(unifiedDiffCoverageFilters) )
+		, optionalReleaseCoverageFilter_{ useReleaseCoverageFilter ? 
+			std::make_unique<FileFilter::ReleaseCoverageFilter>() : nullptr }
 	{
 	}
 

@@ -64,7 +64,7 @@ namespace CppCoverage
 		Debugger debugger{ coverChildren, continueAfterCppException };
 
 		coverageFilterManager_ = std::make_unique<CoverageFilterManager>(
-			coverageSettings, unifiedDiffSettingsCollection);
+			coverageSettings, unifiedDiffSettingsCollection, false);
 		int exitCode = debugger.Debug(startInfo, *this);
 		const auto& path = startInfo.GetPath();
 

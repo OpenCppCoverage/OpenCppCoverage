@@ -20,18 +20,28 @@
 #include "Tools/Log.hpp"
 
 #include "IRelocationsExtractor.hpp"
+#include "RelocationsExtractor.hpp"
 #include "ModuleInfo.hpp"
 #include "FileInfo.hpp"
 #include "LineInfo.hpp"
 
 namespace FileFilter
-{	
+{
+	//-------------------------------------------------------------------------
+	ReleaseCoverageFilter::ReleaseCoverageFilter()
+		: ReleaseCoverageFilter{std::make_unique<RelocationsExtractor>()}
+	{
+	}
+
 	//-------------------------------------------------------------------------
 	ReleaseCoverageFilter::ReleaseCoverageFilter(
 		std::unique_ptr<IRelocationsExtractor> relocationsExtractor)
 		: relocationsExtractor_{ std::move(relocationsExtractor) }
 	{
 	}
+
+	//-------------------------------------------------------------------------
+	ReleaseCoverageFilter::~ReleaseCoverageFilter() = default;
 
 	//-------------------------------------------------------------------------
 	bool ReleaseCoverageFilter::IsLineSelected(

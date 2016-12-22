@@ -63,7 +63,8 @@ namespace CppCoverageTest
 				sourcePatterns.AddSelectedPatterns(pattern);
 			cov::CoverageSettings coverageSettings{ cov::Patterns{ false }, sourcePatterns };
 	
-			return std::make_unique<cov::CoverageFilterManager>(coverageSettings, std::move(filters));
+			return std::make_unique<cov::CoverageFilterManager>
+						(coverageSettings, std::move(filters), false);
 		}
 
 		//-------------------------------------------------------------------------

@@ -35,6 +35,7 @@ namespace boost
 namespace FileFilter
 {
 	class UnifiedDiffCoverageFilter;
+	class ReleaseCoverageFilter;
 }
 
 namespace CppCoverage
@@ -47,13 +48,15 @@ namespace CppCoverage
 	public:
 		explicit CoverageFilterManager(
 			const CoverageSettings&,
-			const std::vector<UnifiedDiffSettings>&);
+			const std::vector<UnifiedDiffSettings>&,
+			bool useReleaseCoverageFilter);
 
 		using UnifiedDiffCoverageFilters = std::vector<std::unique_ptr<FileFilter::UnifiedDiffCoverageFilter>>;
 
 		explicit CoverageFilterManager(
 			const CoverageSettings&,
-			UnifiedDiffCoverageFilters&&);
+			UnifiedDiffCoverageFilters&&,
+			bool useReleaseCoverageFilter);
 
 		~CoverageFilterManager();
 
@@ -74,7 +77,8 @@ namespace CppCoverage
 			const std::set<boost::filesystem::path>& unmatchPaths,
 			size_t maxUnmatchPaths) const;
 
-		WildcardCoverageFilter wildcardCoverageFilter_;
-		UnifiedDiffCoverageFilters unifiedDiffCoverageFilters_;
+		const WildcardCoverageFilter wildcardCoverageFilter_;
+		const UnifiedDiffCoverageFilters unifiedDiffCoverageFilters_;
+		const std::unique_ptr<FileFilter::ReleaseCoverageFilter> optionalReleaseCoverageFilter_;
 	};
 }

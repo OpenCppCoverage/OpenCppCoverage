@@ -32,8 +32,9 @@ namespace FileFilter
 	class FILEFILTER_DLL ReleaseCoverageFilter
 	{
 	public:
+		ReleaseCoverageFilter();
 		explicit ReleaseCoverageFilter(std::unique_ptr<IRelocationsExtractor>);
-		~ReleaseCoverageFilter() = default;
+		~ReleaseCoverageFilter();
 
 		bool IsLineSelected(const ModuleInfo&, const FileInfo&, const LineInfo&);
 		
