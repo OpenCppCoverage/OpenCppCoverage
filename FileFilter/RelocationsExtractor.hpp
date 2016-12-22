@@ -19,13 +19,18 @@
 #include <windows.h>
 #include <unordered_set>
 #include "FileFilterExport.hpp"
+#include "IRelocationsExtractor.hpp"
 
 namespace FileFilter
 {
-	class FILEFILTER_DLL RelocationsExtractor
+	class IRelocationsExtractor;
+
+	class FILEFILTER_DLL RelocationsExtractor: public IRelocationsExtractor
 	{
 	public:		
-		std::unordered_set<DWORD_PTR> Extract(HANDLE hFile, void* baseOfImage) const;
+		std::unordered_set<DWORD_PTR> Extract(
+			HANDLE hFile, 
+			void* baseOfImage) const;
 	};
 }
 

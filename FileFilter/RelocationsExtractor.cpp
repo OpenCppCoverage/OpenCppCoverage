@@ -21,16 +21,16 @@
 namespace FileFilter
 {			
 	//-------------------------------------------------------------------------
-	const IMAGE_NT_HEADERS& GetNTHeader(void* baseOfImage)
+	const IMAGE_NT_HEADERS& GetNTHeader(const void* baseOfImage)
 	{
-		auto* dosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(baseOfImage);
+		auto* dosHeader = reinterpret_cast<const IMAGE_DOS_HEADER*>(baseOfImage);
 
 		if (dosHeader == nullptr || dosHeader->e_magic != IMAGE_DOS_SIGNATURE)
 			THROW("The image is not a valid NT headers.");
 
-		auto* dosHeaderAddress = reinterpret_cast<char*>(dosHeader);
+		auto* dosHeaderAddress = reinterpret_cast<const char*>(dosHeader);
 		
-		return *reinterpret_cast<IMAGE_NT_HEADERS*>(dosHeaderAddress + dosHeader->e_lfanew);
+		return *reinterpret_cast<const IMAGE_NT_HEADERS*>(dosHeaderAddress + dosHeader->e_lfanew);
 	}
 
 	//-------------------------------------------------------------------------
@@ -74,7 +74,9 @@ namespace FileFilter
 	}
 
 	//-------------------------------------------------------------------------
-	std::unordered_set<DWORD_PTR> RelocationsExtractor::Extract(HANDLE hFile, void* baseOfImage) const
+	std::unordered_set<DWORD_PTR> RelocationsExtractor::Extract(
+		HANDLE hFile, 
+		void* baseOfImage) const
 	{		
 		const auto& ntHeader = GetNTHeader(baseOfImage);
 		const auto& optionalHeader = ntHeader.OptionalHeader;		
