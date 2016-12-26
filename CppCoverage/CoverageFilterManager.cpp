@@ -20,6 +20,9 @@
 
 #include "FileFilter/UnifiedDiffCoverageFilter.hpp"
 #include "FileFilter/ReleaseCoverageFilter.hpp"
+#include "FileFilter/ModuleInfo.hpp"
+#include "FileFilter/FileInfo.hpp"
+#include "FileFilter/LineInfo.hpp"
 #include "ProgramOptions.hpp"
 #include "Tools/Tool.hpp"
 
@@ -113,20 +116,28 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	bool CoverageFilterManager::IsLineSelected(
-		const std::wstring& filename, 
-		int lineNumber,
+		const FileFilter::ModuleInfo& moduleInfo,
+		const FileFilter::FileInfo& fileInfo,
+		const FileFilter::LineInfo& lineInfo,
 		const std::set<int>& executableLinesSet)
 	{
 		if (unifiedDiffCoverageFilters_.empty())
 			return true;
 
-		auto executableLineNumber = GetExecutableLineOrPreviousOne(lineNumber, executableLinesSet);
+		auto executableLineNumber = GetExecutableLineOrPreviousOne(lineInfo.lineNumber_, executableLinesSet);
 		if (!executableLineNumber)
 			return false;
 
-		return AnyOfOrTrueIfEmpty(unifiedDiffCoverageFilters_, [&](const auto& filter) {
-			return filter->IsLineSelected(filename, *executableLineNumber);
+		auto isSelected = AnyOfOrTrueIfEmpty(unifiedDiffCoverageFilters_, [&](const auto& filter) {
+			return filter->IsLineSelected(fileInfo.filePath_, *executableLineNumber);
 		});
+
+		if (!isSelected)
+			return false;
+
+		if (optionalReleaseCoverageFilter_)
+			return optionalReleaseCoverageFilter_->IsLineSelected(moduleInfo, fileInfo, lineInfo);
+		return true;
 	}
 
 	//-------------------------------------------------------------------------

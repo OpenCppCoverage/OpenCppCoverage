@@ -32,6 +32,7 @@ namespace CppCoverage
 		void LoadFile(
 			void* processBaseOfImage,
 			DWORD64 baseAddress,
+			HANDLE hFileModule,
 			const std::wstring& filename,
 			ICoverageFilterManager& coverageFilterManager,
 			IDebugInformationEventHandler& debugInformationEventHandler) const;

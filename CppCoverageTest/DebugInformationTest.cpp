@@ -24,6 +24,9 @@
 #include "CppCoverage/DebugInformation.hpp"
 #include "CppCoverage/Address.hpp"
 
+#include "FileFilter/ModuleInfo.hpp"
+#include "FileFilter/FileInfo.hpp"
+#include "FileFilter/LineInfo.hpp"
 #include "Tools/Tool.hpp"
 #include "TestTools.hpp"
 
@@ -56,7 +59,7 @@ namespace CppCoverageTest
 				CoverageFilterManagerMock filterManagerMock;
 
 				EXPECT_CALL(filterManagerMock, IsSourceFileSelected(_)).WillRepeatedly(Return(true));
-				EXPECT_CALL(filterManagerMock, IsLineSelected(_, _, _)).WillRepeatedly(Return(true));
+				EXPECT_CALL(filterManagerMock, IsLineSelected(_, _, _, _)).WillRepeatedly(Return(true));
 
 				LoadModule(filterManagerMock, eventHandlerMock, hProcess, hFile);
 			});
@@ -73,10 +76,11 @@ namespace CppCoverageTest
 		std::vector<int> selectedLines;
 		int lineSelectedCallCount = 0;
 
-		EXPECT_CALL(filterManagerMock, IsLineSelected(_, _, _))
+		EXPECT_CALL(filterManagerMock, IsLineSelected(_, _, _, _))
 			.WillRepeatedly(Invoke(
-				[&](const std::wstring& path, int lineNumber, const std::set<int>&)
+				[&](const auto&, const auto&, const auto& lineInfo, const auto&)
 		{
+			auto lineNumber = lineInfo.lineNumber_;
 			++lineSelectedCallCount;
 
 			if (lineNumber % 2 == 0)

@@ -98,7 +98,7 @@ namespace FileFilter
 			relocations_ = relocationsExtractor_->Extract(hFileModule, moduleInfo.baseOfImage_);
 		
 		if (updateLineDataCaches)
-			UpdateLineDataCaches(fileInfo.lineData_);
+			UpdateLineDataCaches(fileInfo.lineInfoColllection_);
 
 		hProcess_ = hProcess;
 		hFileModule_ = hFileModule;

@@ -30,23 +30,14 @@
 #include "ICoverageFilterManager.hpp"
 #include "Address.hpp"
 
+#include "FileFilter/ModuleInfo.hpp"
+#include "FileFilter/FileInfo.hpp"
+#include "FileFilter/LineInfo.hpp"
+
 namespace CppCoverage
 {
 	namespace
 	{
-		//-----------------------------------------------------------------------
-		struct LineData
-		{
-			LineData(int lineNumber, DWORD64 lineAddress)
-				: lineNumber_{ lineNumber }
-				, lineAddress_{ lineAddress }
-			{
-			}
-
-			int lineNumber_;
-			DWORD64 lineAddress_;
-		};
-
 		//-----------------------------------------------------------------------
 		struct LineContext
 		{
@@ -56,16 +47,16 @@ namespace CppCoverage
 			}
 
 			HANDLE hProcess_;
-			std::vector<LineData> lineDataCollection_;
+			std::vector<FileFilter::LineInfo> lineInfoCollection_;
 			boost::optional<std::wstring> error_;
 		};
 
 		//-----------------------------------------------------------------------
-		bool ExcludeLineInfo(const SRCCODEINFO& lineInfo, const LineContext& context)
+		bool TryAddLineInfo(const SRCCODEINFO& lineInfo, LineContext& context)
 		{
 			const int NoSource = 0x00feefee;
 			if (lineInfo.LineNumber == NoSource)
-				return true;
+				return false;
 
 			char buffer[sizeof(SYMBOL_INFO) + MAX_SYM_NAME * sizeof(TCHAR)];
 			PSYMBOL_INFO symbol = reinterpret_cast<PSYMBOL_INFO>(buffer);
@@ -76,7 +67,15 @@ namespace CppCoverage
 				THROW("Error when calling SymFromAddr");
 
 			// Exclude compiler internal symbols.
-			return boost::algorithm::starts_with(symbol->Name, "__");
+			if (boost::algorithm::starts_with(symbol->Name, "__"))
+				return false;
+
+			context.lineInfoCollection_.emplace_back(
+				lineInfo.LineNumber,
+				lineInfo.Address,
+				symbol->Index);
+
+			return true;
 		}
 
 		//---------------------------------------------------------------------
@@ -91,12 +90,7 @@ namespace CppCoverage
 			}
 
 			lineContext->error_ = Tools::Try([&]() {
-				if (!ExcludeLineInfo(*lineInfo, *lineContext))
-				{
-					lineContext->lineDataCollection_.emplace_back(
-						lineInfo->LineNumber,
-						lineInfo->Address);
-				}
+				TryAddLineInfo(*lineInfo, *lineContext);
 			});
 
 			return lineContext->error_ ? FALSE: TRUE;
@@ -124,32 +118,26 @@ namespace CppCoverage
 			}
 		}
 
-		struct ModuleAddress
-		{
-			HANDLE hProcess_;
-			void* processBaseOfImage_;
-			DWORD64 baseAddress_;
-		};
-
 		//-------------------------------------------------------------------------
 		void HandleNewLine(
-			const ModuleAddress& moduleAddress,
-			const LineData& lineData,
-			const std::wstring& filename,
+			const FileFilter::ModuleInfo& moduleInfo,
+			const FileFilter::FileInfo& fileInfo,
+			const FileFilter::LineInfo& lineInfo,
+			DWORD64 baseAddress,
 			const std::set<int>& executableLinesSet,
 			ICoverageFilterManager& coverageFilterManager,
 			IDebugInformationEventHandler& debugInformationEventHandler)
 		{
-			auto lineNumber = lineData.lineNumber_;
+			auto lineNumber = lineInfo.lineNumber_;
 
-			if (coverageFilterManager.IsLineSelected(filename, lineNumber, executableLinesSet))
+			if (coverageFilterManager.IsLineSelected(moduleInfo, fileInfo, lineInfo, executableLinesSet))
 			{
-				auto addressValue = lineData.lineAddress_ - moduleAddress.baseAddress_
-					+ reinterpret_cast<DWORD64>(moduleAddress.processBaseOfImage_);
+				auto addressValue = lineInfo.lineAddress_ - baseAddress
+					+ reinterpret_cast<DWORD64>(moduleInfo.baseOfImage_);
 
-				Address address{ moduleAddress.hProcess_,  reinterpret_cast<void*>(addressValue)};
+				Address address{ moduleInfo.hProcess_,  reinterpret_cast<void*>(addressValue)};
 
-				debugInformationEventHandler.OnNewLine(filename, lineNumber, address);
+				debugInformationEventHandler.OnNewLine(fileInfo.filePath_.wstring(), lineNumber, address);
 			}
 		}
 	}
@@ -164,33 +152,32 @@ namespace CppCoverage
 	void FileDebugInformation::LoadFile(
 		void* processBaseOfImage,
 		DWORD64 baseAddress,
-		const std::wstring& filename,
+		HANDLE hFileModule,
+		const std::wstring& filePath,
 		ICoverageFilterManager& coverageFilterManager,
 		IDebugInformationEventHandler& debugInformationEventHandler) const
 	{		
 		LineContext context{ hProcess_ };
 
-		RetreiveLineData(filename, baseAddress, context);
+		RetreiveLineData(filePath, baseAddress, context);
 		if (context.error_)
 			throw std::runtime_error(Tools::ToLocalString(*context.error_));
 		std::set<int> executableLinesSet;
-		for (const auto& lineData : context.lineDataCollection_)
-			executableLinesSet.insert(lineData.lineNumber_);
-		LOG_DEBUG << L"Executable lines for " << filename << L": ";
+		for (const auto& lineInfo : context.lineInfoCollection_)
+			executableLinesSet.insert(lineInfo.lineNumber_);
+		LOG_DEBUG << L"Executable lines for " << filePath << L": ";
 		LOG_DEBUG << executableLinesSet;
 
-		ModuleAddress moduleAddress;
+		FileFilter::ModuleInfo moduleInfo{ hProcess_, hFileModule, processBaseOfImage };
+		FileFilter::FileInfo fileInfo{ filePath, std::move(context.lineInfoCollection_) };
 
-		moduleAddress.hProcess_ = hProcess_;
-		moduleAddress.processBaseOfImage_ = processBaseOfImage;
-		moduleAddress.baseAddress_ = baseAddress;
-
-		for (const auto& lineData : context.lineDataCollection_)
+		for (const auto& lineInfo : fileInfo.lineInfoColllection_)
 		{
 			HandleNewLine(
-				moduleAddress,
-				lineData, 
-				filename, 
+				moduleInfo,
+				fileInfo, 
+				lineInfo, 
+				baseAddress,
 				executableLinesSet,
 				coverageFilterManager, 
 				debugInformationEventHandler);

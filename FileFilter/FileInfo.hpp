@@ -27,12 +27,12 @@ namespace FileFilter
 	public:
 		FileInfo(
 			const boost::filesystem::path& filePath,
-			std::vector<LineInfo>&& lineData)
+			std::vector<LineInfo>&& lineInfoColllection)
 			: filePath_{ filePath }
-			, lineData_{ std::move(lineData) }
+			, lineInfoColllection_{ std::move(lineInfoColllection) }
 		{}
 
-		const boost::filesystem::path& filePath_;
-		const std::vector<LineInfo> lineData_;
+		const boost::filesystem::path filePath_;
+		const std::vector<LineInfo> lineInfoColllection_;
 	};	
 }

@@ -21,6 +21,9 @@
 #include "CppCoverage/Patterns.hpp"
 #include "CppCoverage/CoverageSettings.hpp"
 #include "FileFilter/UnifiedDiffCoverageFilter.hpp"
+#include "FileFilter/ModuleInfo.hpp"
+#include "FileFilter/FileInfo.hpp"
+#include "FileFilter/LineInfo.hpp"
 #include "FileFilter/File.hpp"
 
 namespace cov = CppCoverage;
@@ -133,6 +136,20 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
+	bool IsLineSelected(
+		cov::CoverageFilterManager& coverageFilterManager,
+		const boost::filesystem::path& filename, 
+		int lineNumber,
+		const std::set<int>& selectedLineSet)
+	{
+		FileFilter::ModuleInfo moduleInfo{ INVALID_HANDLE_VALUE, INVALID_HANDLE_VALUE, nullptr };
+		FileFilter::FileInfo fileInfo{ filename, {} };
+		FileFilter::LineInfo lineInfo{ lineNumber, 0, 0 };
+
+		return coverageFilterManager.IsLineSelected(moduleInfo, fileInfo, lineInfo, selectedLineSet);
+	}
+
+	//-------------------------------------------------------------------------
 	TEST(CoverageFilterManagerTest, IsLineSelected)
 	{
 		const fs::path diff = L"diff";
@@ -142,13 +159,13 @@ namespace CppCoverageTest
 		auto filters = CreateFilter({ diff }, selectedLines);
 		auto coverageFilterManager = CreateCoverageFilterManager(std::move(filters), { L"*" });
 
-		ASSERT_TRUE(coverageFilterManager->IsLineSelected(diff.wstring(), 3, selectedLineSet));
-		ASSERT_TRUE(coverageFilterManager->IsLineSelected(diff.wstring(), 5, selectedLineSet));
-		ASSERT_TRUE(coverageFilterManager->IsLineSelected(diff.wstring(), 10, selectedLineSet));
-		ASSERT_FALSE(coverageFilterManager->IsLineSelected(diff.wstring(), 7, { 6 }));
+		ASSERT_TRUE(IsLineSelected(*coverageFilterManager, diff, 3, selectedLineSet));
+		ASSERT_TRUE(IsLineSelected(*coverageFilterManager, diff, 5, selectedLineSet));
+		ASSERT_TRUE(IsLineSelected(*coverageFilterManager, diff, 10, selectedLineSet));
+		ASSERT_FALSE(IsLineSelected(*coverageFilterManager, diff, 7, { 6 }));
 
-		ASSERT_FALSE(coverageFilterManager->IsLineSelected(diff.wstring(), 4, {}));
-		ASSERT_FALSE(coverageFilterManager->IsLineSelected(diff.wstring(), 4, { 2 }));
-		ASSERT_TRUE(coverageFilterManager->IsLineSelected(diff.wstring(), 4, { 3 }));
+		ASSERT_FALSE(IsLineSelected(*coverageFilterManager, diff, 4, {}));
+		ASSERT_FALSE(IsLineSelected(*coverageFilterManager, diff, 4, { 2 }));
+		ASSERT_TRUE(IsLineSelected(*coverageFilterManager, diff, 4, { 3 }));
 	}
 }

@@ -20,6 +20,13 @@
 #include <string>
 #include <set>
 
+namespace FileFilter
+{
+	class ModuleInfo;
+	class FileInfo;
+	class LineInfo;
+}
+
 namespace CppCoverage
 {
 	class CoverageSettings;
@@ -32,8 +39,9 @@ namespace CppCoverage
 		virtual bool IsModuleSelected(const std::wstring& filename) const = 0;
 		virtual bool IsSourceFileSelected(const std::wstring& filename) = 0;
 		virtual bool IsLineSelected(
-			const std::wstring& filename, 
-			int lineNumber, 
+			const FileFilter::ModuleInfo&,
+			const FileFilter::FileInfo&,
+			const FileFilter::LineInfo&,
 			const std::set<int>& executableLinesSet) = 0;
 	};
 }
