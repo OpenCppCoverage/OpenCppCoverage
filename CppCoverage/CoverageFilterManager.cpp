@@ -121,6 +121,12 @@ namespace CppCoverage
 		const FileFilter::LineInfo& lineInfo,
 		const std::set<int>& executableLinesSet)
 	{
+		if (optionalReleaseCoverageFilter_ &&
+			!optionalReleaseCoverageFilter_->IsLineSelected(moduleInfo, fileInfo, lineInfo))
+		{
+			return false;
+		}
+
 		if (unifiedDiffCoverageFilters_.empty())
 			return true;
 
@@ -128,16 +134,9 @@ namespace CppCoverage
 		if (!executableLineNumber)
 			return false;
 
-		auto isSelected = AnyOfOrTrueIfEmpty(unifiedDiffCoverageFilters_, [&](const auto& filter) {
+		return AnyOfOrTrueIfEmpty(unifiedDiffCoverageFilters_, [&](const auto& filter) {
 			return filter->IsLineSelected(fileInfo.filePath_, *executableLineNumber);
 		});
-
-		if (!isSelected)
-			return false;
-
-		if (optionalReleaseCoverageFilter_)
-			return optionalReleaseCoverageFilter_->IsLineSelected(moduleInfo, fileInfo, lineInfo);
-		return true;
 	}
 
 	//-------------------------------------------------------------------------
