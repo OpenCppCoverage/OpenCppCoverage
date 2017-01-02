@@ -20,17 +20,12 @@
 #include <memory>
 #include <set>
 
+#include <boost/filesystem/path.hpp>
+
 #include "CppCoverageExport.hpp"
 #include "WildcardCoverageFilter.hpp"
 #include "ICoverageFilterManager.hpp"
 
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
 
 namespace FileFilter
 {
@@ -65,8 +60,7 @@ namespace CppCoverage
 		bool IsLineSelected(
 			const FileFilter::ModuleInfo&,
 			const FileFilter::FileInfo&,
-			const FileFilter::LineInfo&,
-			const std::set<int>& executableLinesSet) override;
+			const FileFilter::LineInfo&) override;
 
 		std::vector<std::wstring> ComputeWarningMessageLines(size_t maxUnmatchPaths) const;
 
@@ -78,8 +72,18 @@ namespace CppCoverage
 			const std::set<boost::filesystem::path>& unmatchPaths,
 			size_t maxUnmatchPaths) const;
 
+		const std::set<int>& GetExecutableLinesSet(const FileFilter::FileInfo&);
+
 		const WildcardCoverageFilter wildcardCoverageFilter_;
 		const UnifiedDiffCoverageFilters unifiedDiffCoverageFilters_;
 		const std::unique_ptr<FileFilter::ReleaseCoverageFilter> optionalReleaseCoverageFilter_;
+
+		struct ExecutableLineCache
+		{
+			boost::filesystem::path currentFilePath;
+			std::set<int> executableLinesSet;
+		};
+
+		ExecutableLineCache executableLineCache_;
 	};
 }

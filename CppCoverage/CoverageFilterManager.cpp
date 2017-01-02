@@ -15,16 +15,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
+
 #include "CoverageFilterManager.hpp"
 #include "UnifiedDiffSettings.hpp"
+#include "ProgramOptions.hpp"
 
 #include "FileFilter/UnifiedDiffCoverageFilter.hpp"
 #include "FileFilter/ReleaseCoverageFilter.hpp"
 #include "FileFilter/ModuleInfo.hpp"
 #include "FileFilter/FileInfo.hpp"
 #include "FileFilter/LineInfo.hpp"
-#include "ProgramOptions.hpp"
+
 #include "Tools/Tool.hpp"
+#include "Tools/Log.hpp"
 
 namespace CppCoverage
 {
@@ -118,8 +121,7 @@ namespace CppCoverage
 	bool CoverageFilterManager::IsLineSelected(
 		const FileFilter::ModuleInfo& moduleInfo,
 		const FileFilter::FileInfo& fileInfo,
-		const FileFilter::LineInfo& lineInfo,
-		const std::set<int>& executableLinesSet)
+		const FileFilter::LineInfo& lineInfo)
 	{
 		if (optionalReleaseCoverageFilter_ &&
 			!optionalReleaseCoverageFilter_->IsLineSelected(moduleInfo, fileInfo, lineInfo))
@@ -129,6 +131,8 @@ namespace CppCoverage
 
 		if (unifiedDiffCoverageFilters_.empty())
 			return true;
+
+		const auto& executableLinesSet = GetExecutableLinesSet(fileInfo);
 
 		auto executableLineNumber = GetExecutableLineOrPreviousOne(lineInfo.lineNumber_, executableLinesSet);
 		if (!executableLineNumber)
@@ -181,5 +185,25 @@ namespace CppCoverage
 		}
 
 		return messageLines;
+	}
+
+	//-------------------------------------------------------------------------
+	const std::set<int>& CoverageFilterManager::GetExecutableLinesSet(
+		const FileFilter::FileInfo& fileInfo)
+	{
+		auto filePath = fileInfo.filePath_;
+
+		if (filePath != executableLineCache_.currentFilePath)
+		{
+			auto& executableLinesSet = executableLineCache_.executableLinesSet;
+
+			executableLinesSet.clear();
+			for (const auto& lineInfo : fileInfo.lineInfoColllection_)
+				executableLinesSet.insert(lineInfo.lineNumber_);
+			LOG_DEBUG << L"Executable lines for " << filePath << L": ";
+			LOG_DEBUG << executableLinesSet;
+			executableLineCache_.currentFilePath = filePath;
+		}
+		return executableLineCache_.executableLinesSet;
 	}
 }

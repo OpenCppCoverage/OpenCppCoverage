@@ -59,7 +59,7 @@ namespace CppCoverageTest
 				CoverageFilterManagerMock filterManagerMock;
 
 				EXPECT_CALL(filterManagerMock, IsSourceFileSelected(_)).WillRepeatedly(Return(true));
-				EXPECT_CALL(filterManagerMock, IsLineSelected(_, _, _, _)).WillRepeatedly(Return(true));
+				EXPECT_CALL(filterManagerMock, IsLineSelected(_, _, _)).WillRepeatedly(Return(true));
 
 				LoadModule(filterManagerMock, eventHandlerMock, hProcess, hFile);
 			});
@@ -76,9 +76,9 @@ namespace CppCoverageTest
 		std::vector<int> selectedLines;
 		int lineSelectedCallCount = 0;
 
-		EXPECT_CALL(filterManagerMock, IsLineSelected(_, _, _, _))
+		EXPECT_CALL(filterManagerMock, IsLineSelected(_, _, _))
 			.WillRepeatedly(Invoke(
-				[&](const auto&, const auto&, const auto& lineInfo, const auto&)
+				[&](const auto&, const auto&, const auto& lineInfo)
 		{
 			auto lineNumber = lineInfo.lineNumber_;
 			++lineSelectedCallCount;

@@ -18,7 +18,6 @@
 
 #include "CppCoverageExport.hpp"
 #include <string>
-#include <set>
 
 namespace FileFilter
 {
@@ -41,8 +40,7 @@ namespace CppCoverage
 		virtual bool IsLineSelected(
 			const FileFilter::ModuleInfo&,
 			const FileFilter::FileInfo&,
-			const FileFilter::LineInfo&,
-			const std::set<int>& executableLinesSet) = 0;
+			const FileFilter::LineInfo&) = 0;
 	};
 }
 

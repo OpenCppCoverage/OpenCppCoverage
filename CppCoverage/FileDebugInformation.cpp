@@ -124,13 +124,12 @@ namespace CppCoverage
 			const FileFilter::FileInfo& fileInfo,
 			const FileFilter::LineInfo& lineInfo,
 			DWORD64 baseAddress,
-			const std::set<int>& executableLinesSet,
 			ICoverageFilterManager& coverageFilterManager,
 			IDebugInformationEventHandler& debugInformationEventHandler)
 		{
 			auto lineNumber = lineInfo.lineNumber_;
 
-			if (coverageFilterManager.IsLineSelected(moduleInfo, fileInfo, lineInfo, executableLinesSet))
+			if (coverageFilterManager.IsLineSelected(moduleInfo, fileInfo, lineInfo))
 			{
 				auto addressValue = lineInfo.lineAddress_ - baseAddress
 					+ reinterpret_cast<DWORD64>(moduleInfo.baseOfImage_);
@@ -162,11 +161,6 @@ namespace CppCoverage
 		RetreiveLineData(filePath, baseAddress, context);
 		if (context.error_)
 			throw std::runtime_error(Tools::ToLocalString(*context.error_));
-		std::set<int> executableLinesSet;
-		for (const auto& lineInfo : context.lineInfoCollection_)
-			executableLinesSet.insert(lineInfo.lineNumber_);
-		LOG_DEBUG << L"Executable lines for " << filePath << L": ";
-		LOG_DEBUG << executableLinesSet;
 
 		FileFilter::ModuleInfo moduleInfo{ hProcess_, hFileModule, processBaseOfImage };
 		FileFilter::FileInfo fileInfo{ filePath, std::move(context.lineInfoCollection_) };
@@ -178,7 +172,6 @@ namespace CppCoverage
 				fileInfo, 
 				lineInfo, 
 				baseAddress,
-				executableLinesSet,
 				coverageFilterManager, 
 				debugInformationEventHandler);
 		}

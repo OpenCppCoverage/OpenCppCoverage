@@ -28,11 +28,10 @@ namespace CppCoverageTest
 
 		MOCK_CONST_METHOD1(IsModuleSelected, bool(const std::wstring&));
 		MOCK_METHOD1(IsSourceFileSelected, bool(const std::wstring&));
-		MOCK_METHOD4(IsLineSelected, 
+		MOCK_METHOD3(IsLineSelected, 
 							bool(const FileFilter::ModuleInfo&,
 							const FileFilter::FileInfo&,
-							const FileFilter::LineInfo&, 
-								const std::set<int>&));
+							const FileFilter::LineInfo&));
 
 	private:
 		CoverageFilterManagerMock(const CoverageFilterManagerMock&) = delete;
