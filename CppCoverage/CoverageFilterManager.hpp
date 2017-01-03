@@ -16,20 +16,15 @@
 
 #pragma once
 
-#include <vector>
 #include <memory>
-#include <set>
-
-#include <boost/filesystem/path.hpp>
 
 #include "CppCoverageExport.hpp"
 #include "WildcardCoverageFilter.hpp"
 #include "ICoverageFilterManager.hpp"
-
+#include "UnifiedDiffCoverageFilterManager.hpp"
 
 namespace FileFilter
 {
-	class UnifiedDiffCoverageFilter;
 	class ReleaseCoverageFilter;
 }
 
@@ -44,13 +39,6 @@ namespace CppCoverage
 		explicit CoverageFilterManager(
 			const CoverageSettings&,
 			const std::vector<UnifiedDiffSettings>&,
-			bool useReleaseCoverageFilter);
-
-		using UnifiedDiffCoverageFilters = std::vector<std::unique_ptr<FileFilter::UnifiedDiffCoverageFilter>>;
-
-		explicit CoverageFilterManager(
-			const CoverageSettings&,
-			UnifiedDiffCoverageFilters&&,
 			bool useReleaseCoverageFilter);
 
 		~CoverageFilterManager();
@@ -68,22 +56,9 @@ namespace CppCoverage
 		CoverageFilterManager(const CoverageFilterManager&) = delete;
 		CoverageFilterManager& operator=(const CoverageFilterManager&) = delete;
 
-		std::vector<std::wstring> ComputeWarningMessageLines(
-			const std::set<boost::filesystem::path>& unmatchPaths,
-			size_t maxUnmatchPaths) const;
-
-		const std::set<int>& GetExecutableLinesSet(const FileFilter::FileInfo&);
-
 		const WildcardCoverageFilter wildcardCoverageFilter_;
-		const UnifiedDiffCoverageFilters unifiedDiffCoverageFilters_;
+		UnifiedDiffCoverageFilterManager unifiedDiffCoverageFilterManager_;
+
 		const std::unique_ptr<FileFilter::ReleaseCoverageFilter> optionalReleaseCoverageFilter_;
-
-		struct ExecutableLineCache
-		{
-			boost::filesystem::path currentFilePath;
-			std::set<int> executableLinesSet;
-		};
-
-		ExecutableLineCache executableLineCache_;
 	};
 }

@@ -173,7 +173,7 @@
     <ClCompile Include="CoverageDataMergerRandomTest.cpp" />
     <ClCompile Include="CoverageDataMergerTest.cpp" />
     <ClCompile Include="CoverageDataTest.cpp" />
-    <ClCompile Include="CoverageFilterManagerTest.cpp" />
+    <ClCompile Include="UnifiedDiffCoverageFilterManagerTest.cpp" />
     <ClCompile Include="OptionsParserUnifiedDiffTest.cpp" />
     <ClCompile Include="WildcardCoverageFilterTest.cpp" />
     <ClCompile Include="CoverageRateComputerTest.cpp" />

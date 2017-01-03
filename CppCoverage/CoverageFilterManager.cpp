@@ -17,83 +17,22 @@
 #include "stdafx.h"
 
 #include "CoverageFilterManager.hpp"
-#include "UnifiedDiffSettings.hpp"
-#include "ProgramOptions.hpp"
+#include "UnifiedDiffCoverageFilterManager.hpp"
 
-#include "FileFilter/UnifiedDiffCoverageFilter.hpp"
-#include "FileFilter/ReleaseCoverageFilter.hpp"
-#include "FileFilter/ModuleInfo.hpp"
 #include "FileFilter/FileInfo.hpp"
-#include "FileFilter/LineInfo.hpp"
-
-#include "Tools/Tool.hpp"
-#include "Tools/Log.hpp"
+#include "FileFilter/ReleaseCoverageFilter.hpp"
 
 namespace CppCoverage
 {
-	namespace
-	{
-		//---------------------------------------------------------------------
-		template <typename Container, typename Fct>
-		bool AnyOfOrTrueIfEmpty(const Container& container, Fct fct)
-		{
-			if (container.empty())
-				return true;
-
-			return std::any_of(container.begin(), container.end(), fct);
-		}
-
-		//---------------------------------------------------------------------
-		CoverageFilterManager::UnifiedDiffCoverageFilters ToUnifiedDiffCoverageFilters(
-					const std::vector<UnifiedDiffSettings>& unifiedDiffSettingsCollection)
-		{
-			CoverageFilterManager::UnifiedDiffCoverageFilters unifiedDiffCoverageFilters;
-
-			for (const auto& unifiedDiffSettings : unifiedDiffSettingsCollection)
-			{
-				unifiedDiffCoverageFilters.emplace_back(
-					std::make_unique<FileFilter::UnifiedDiffCoverageFilter>(
-						unifiedDiffSettings.GetUnifiedDiffPath(), unifiedDiffSettings.GetRootDiffFolder()));
-			}
-
-			return unifiedDiffCoverageFilters;
-		}
-
-		//-------------------------------------------------------------------------
-		boost::optional<int> GetExecutableLineOrPreviousOne(
-			int lineNumber,
-			const std::set<int>& executableLinesSet)
-		{
-			auto it = executableLinesSet.lower_bound(lineNumber);
-
-			if (it != executableLinesSet.end() && *it == lineNumber)
-				return lineNumber;
-
-			return (it == executableLinesSet.begin()) ? boost::optional<int>{} : *(--it);
-		}
-	}
-
 	//-------------------------------------------------------------------------
 	CoverageFilterManager::CoverageFilterManager(
 		const CoverageSettings& settings,
 		const std::vector<UnifiedDiffSettings>& unifiedDiffSettingsCollection,
 		bool useReleaseCoverageFilter)
-		: CoverageFilterManager{ 
-			settings, 
-			ToUnifiedDiffCoverageFilters(unifiedDiffSettingsCollection), 
-			useReleaseCoverageFilter }
-	{
-	}
-
-	//-------------------------------------------------------------------------
-	CoverageFilterManager::CoverageFilterManager(
-		const CoverageSettings& settings,
-		UnifiedDiffCoverageFilters&& unifiedDiffCoverageFilters,
-		bool useReleaseCoverageFilter )
 		: wildcardCoverageFilter_{ settings }
-		, unifiedDiffCoverageFilters_( std::move(unifiedDiffCoverageFilters) )
-		, optionalReleaseCoverageFilter_{ useReleaseCoverageFilter ? 
-			std::make_unique<FileFilter::ReleaseCoverageFilter>() : nullptr }
+		, unifiedDiffCoverageFilterManager_{ unifiedDiffSettingsCollection }
+		, optionalReleaseCoverageFilter_{ useReleaseCoverageFilter ?
+			std::make_unique<FileFilter::ReleaseCoverageFilter>() : nullptr }		
 	{
 	}
 
@@ -112,9 +51,7 @@ namespace CppCoverage
 		if (!wildcardCoverageFilter_.IsSourceFileSelected(filename))
 			return false;
 
-		return AnyOfOrTrueIfEmpty(unifiedDiffCoverageFilters_, [&](const auto& filter) {
-			return filter->IsSourceFileSelected(filename);
-		});
+		return unifiedDiffCoverageFilterManager_.IsSourceFileSelected(filename);
 	}
 
 	//-------------------------------------------------------------------------
@@ -129,81 +66,12 @@ namespace CppCoverage
 			return false;
 		}
 
-		if (unifiedDiffCoverageFilters_.empty())
-			return true;
-
-		const auto& executableLinesSet = GetExecutableLinesSet(fileInfo);
-
-		auto executableLineNumber = GetExecutableLineOrPreviousOne(lineInfo.lineNumber_, executableLinesSet);
-		if (!executableLineNumber)
-			return false;
-
-		return AnyOfOrTrueIfEmpty(unifiedDiffCoverageFilters_, [&](const auto& filter) {
-			return filter->IsLineSelected(fileInfo.filePath_, *executableLineNumber);
-		});
+		return unifiedDiffCoverageFilterManager_.IsLineSelected(fileInfo, lineInfo);
 	}
 
 	//-------------------------------------------------------------------------
 	std::vector<std::wstring> CoverageFilterManager::ComputeWarningMessageLines(size_t maxUnmatchPaths) const
 	{
-		std::set<boost::filesystem::path> unmatchPaths;
-
-		for (const auto& filter : unifiedDiffCoverageFilters_)
-		{
-			auto paths = filter->GetUnmatchedPaths();
-			unmatchPaths.insert(paths.begin(), paths.end());
-		}
-
-		return ComputeWarningMessageLines(unmatchPaths, maxUnmatchPaths);
-	}
-
-	//-------------------------------------------------------------------------
-	std::vector<std::wstring> CoverageFilterManager::ComputeWarningMessageLines(
-		const std::set<boost::filesystem::path>& unmatchPaths,
-		size_t maxUnmatchPaths) const
-	{
-		std::vector<std::wstring> messageLines;
-		if (!unmatchPaths.empty())
-		{
-			messageLines.push_back(Tools::GetSeparatorLine());
-			messageLines.push_back(L"You have " + std::to_wstring(unmatchPaths.size())
-				+ L" path(s) inside unified diff file(s) that were ignored");
-			messageLines.push_back(L"because they did not match any path from pdb files.");
-			messageLines.push_back(L"To see all files use --" + 
-				Tools::LocalToWString(ProgramOptions::VerboseOption));
-
-			size_t i = 0;
-			for (const auto& path : unmatchPaths)
-			{
-				if (i++ >= maxUnmatchPaths)
-				{
-					messageLines.push_back(L"\t...");
-					break;
-				}
-				messageLines.push_back(L"\t- " + path.wstring());
-			}
-		}
-
-		return messageLines;
-	}
-
-	//-------------------------------------------------------------------------
-	const std::set<int>& CoverageFilterManager::GetExecutableLinesSet(
-		const FileFilter::FileInfo& fileInfo)
-	{
-		auto filePath = fileInfo.filePath_;
-
-		if (filePath != executableLineCache_.currentFilePath)
-		{
-			auto& executableLinesSet = executableLineCache_.executableLinesSet;
-
-			executableLinesSet.clear();
-			for (const auto& lineInfo : fileInfo.lineInfoColllection_)
-				executableLinesSet.insert(lineInfo.lineNumber_);
-			LOG_DEBUG << L"Executable lines for " << filePath << L": ";
-			LOG_DEBUG << executableLinesSet;
-			executableLineCache_.currentFilePath = filePath;
-		}
-		return executableLineCache_.executableLinesSet;
+		return unifiedDiffCoverageFilterManager_.ComputeWarningMessageLines(maxUnmatchPaths);
 	}
 }

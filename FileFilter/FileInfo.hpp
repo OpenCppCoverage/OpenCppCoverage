@@ -20,6 +20,8 @@
 #include <vector>
 #include <boost/filesystem/path.hpp>
 
+#include "LineInfo.hpp"
+
 namespace FileFilter
 {
 	class FileInfo
