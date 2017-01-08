@@ -19,10 +19,6 @@
 
 namespace TestCoverageConsole
 {
-	// This line generates compiler symbols "__global_array_delete"
-	// and "__global_delete"
-	template class __declspec(dllexport) std::allocator<std::string>;
-
 	//-------------------------------------------------------------------------
 	void SpecialLineInfo()
 	{

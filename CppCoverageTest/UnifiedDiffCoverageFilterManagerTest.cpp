@@ -123,9 +123,9 @@ namespace CppCoverageTest
 		std::vector<FileFilter::LineInfo> lineInfoColllection;
 
 		for (auto line : selectedLines)
-			lineInfoColllection.emplace_back(line, 0, 0);
+			lineInfoColllection.emplace_back(line, 0, 0, L"");
 		FileFilter::FileInfo fileInfo{ filename, std::move(lineInfoColllection) };
-		FileFilter::LineInfo lineInfo{ lineNumber, 0, 0 };
+		FileFilter::LineInfo lineInfo{ lineNumber, 0, 0, L"" };
 
 		return filterManager->IsLineSelected(fileInfo, lineInfo);
 	}

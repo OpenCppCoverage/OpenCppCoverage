@@ -27,14 +27,17 @@ namespace FileFilter
 		LineInfo(
 			int lineNumber,
 			DWORD64 lineAddress,
-			ULONG symbolIndex)
+			ULONG symbolIndex,
+			const std::wstring& symbolName)
 			: lineNumber_{ lineNumber }
 			, lineAddress_{ lineAddress }
 			, symbolIndex_{ symbolIndex }
+			, symbolName_{ symbolName }
 		{}
 
 		const int lineNumber_;
 		const DWORD64 lineAddress_;
 		const ULONG symbolIndex_;
+		const std::wstring symbolName_;
 	};
 }

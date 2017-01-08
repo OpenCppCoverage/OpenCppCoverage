@@ -18,7 +18,6 @@
 #include "FileDebugInformation.hpp"
 
 #include <set>
-#include <boost/algorithm/string.hpp>
 #include <boost/optional/optional.hpp>
 
 #include "Tools/DbgHelp.hpp"
@@ -66,14 +65,11 @@ namespace CppCoverage
 			if (!SymFromAddr(context.hProcess_, lineInfo.Address, 0, symbol))
 				THROW("Error when calling SymFromAddr");
 
-			// Exclude compiler internal symbols.
-			if (boost::algorithm::starts_with(symbol->Name, "__"))
-				return false;
-
 			context.lineInfoCollection_.emplace_back(
 				lineInfo.LineNumber,
 				lineInfo.Address,
-				symbol->Index);
+				symbol->Index,
+				Tools::LocalToWString(symbol->Name));
 
 			return true;
 		}
