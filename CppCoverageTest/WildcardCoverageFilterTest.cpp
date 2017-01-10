@@ -19,7 +19,7 @@
 #include <functional>
 
 #include "CppCoverage/WildcardCoverageFilter.hpp"
-#include "CppCoverage/CoverageSettings.hpp"
+#include "CppCoverage/CoverageFilterSettings.hpp"
 #include "CppCoverage/Patterns.hpp"
 
 namespace cov = CppCoverage;
@@ -52,7 +52,7 @@ namespace CppCoverageTest
 
 			//---------------------------------------------------------------------
 			void CheckSelection(
-				cov::CoverageSettings& settings, 
+				cov::CoverageFilterSettings& settings, 
 				std::function<bool(const cov::WildcardCoverageFilter&, const std::wstring&)> isSelected)
 			{
 				cov::WildcardCoverageFilter filter{settings};
@@ -70,7 +70,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(WildcardCoverageFilterTest, IsModuleSelected)
 	{
-		cov::CoverageSettings settings{ defaultPatterns_, emptyPatterns_ };
+		cov::CoverageFilterSettings settings{ defaultPatterns_, emptyPatterns_ };
 		CheckSelection(settings, [](const cov::WildcardCoverageFilter& filter, const std::wstring& str)
 		{
 			return filter.IsModuleSelected(str);
@@ -80,7 +80,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(WildcardCoverageFilterTest, IsSourceSelected)
 	{
-		cov::CoverageSettings settings{ emptyPatterns_, defaultPatterns_ };
+		cov::CoverageFilterSettings settings{ emptyPatterns_, defaultPatterns_ };
 		CheckSelection(settings, [](const cov::WildcardCoverageFilter& filter, const std::wstring& str)
 		{
 			return filter.IsSourceFileSelected(str);

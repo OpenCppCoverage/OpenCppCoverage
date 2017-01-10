@@ -26,7 +26,7 @@
 #include "CppCoverage/CodeCoverageRunner.hpp"
 #include "CppCoverage/StartInfo.hpp"
 #include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/CoverageSettings.hpp"
+#include "CppCoverage/CoverageFilterSettings.hpp"
 #include "CppCoverage/ModuleCoverage.hpp"
 #include "CppCoverage/FileCoverage.hpp"
 #include "CppCoverage/LineCoverage.hpp"
@@ -99,7 +99,7 @@ namespace CppCoverageTest
 			cov::Patterns modulePatterns{false};
 			cov::Patterns sourcePatterns{false};
 			
-			cov::CoverageSettings coverageSettings{modulePatterns, sourcePatterns};
+			cov::CoverageFilterSettings coverageFilterSettings{modulePatterns, sourcePatterns};
 
 			for (auto modulePattern : modulePatternCollection)
 			{
@@ -119,7 +119,7 @@ namespace CppCoverageTest
 
 			auto coverageData = codeCoverageRunner.RunCoverage(
 				startInfo, 
-				coverageSettings, 
+				coverageFilterSettings, 
 				unifiedDiffSettingsCollection, 
 				coverChildren, 
 				continueAfterCppException, 

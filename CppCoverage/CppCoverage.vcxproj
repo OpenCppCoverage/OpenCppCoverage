@@ -167,7 +167,7 @@
     <ClInclude Include="WildcardCoverageFilter.hpp" />
     <ClInclude Include="CoverageRate.hpp" />
     <ClInclude Include="CoverageRateComputer.hpp" />
-    <ClInclude Include="CoverageSettings.hpp" />
+    <ClInclude Include="CoverageFilterSettings.hpp" />
     <ClInclude Include="CppCoverageException.hpp" />
     <ClInclude Include="Debugger.hpp" />
     <ClInclude Include="DebugInformation.hpp" />
@@ -204,7 +204,7 @@
     <ClCompile Include="WildcardCoverageFilter.cpp" />
     <ClCompile Include="CoverageRate.cpp" />
     <ClCompile Include="CoverageRateComputer.cpp" />
-    <ClCompile Include="CoverageSettings.cpp" />
+    <ClCompile Include="CoverageFilterSettings.cpp" />
     <ClCompile Include="CppCoverageException.cpp" />
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="DebugInformation.cpp" />

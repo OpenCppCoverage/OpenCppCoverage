@@ -27,7 +27,7 @@
 namespace CppCoverage
 {
 	class StartInfo;
-	class CoverageSettings;
+	class CoverageFilterSettings;
 	class DebugInformation;
 	class DebugInformationEventHandler;
 	class ExecutedAddressManager;
@@ -44,7 +44,7 @@ namespace CppCoverage
 
 		CoverageData RunCoverage(
 			const StartInfo&,
-			const CoverageSettings&,
+			const CoverageFilterSettings&,
 			const std::vector<UnifiedDiffSettings>&,
 			bool coverChildren,
 			bool continueAfterCppException,

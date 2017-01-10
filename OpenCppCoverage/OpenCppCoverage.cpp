@@ -20,7 +20,7 @@
 #include <iostream>
 
 #include "CppCoverage/CodeCoverageRunner.hpp"
-#include "CppCoverage/CoverageSettings.hpp"
+#include "CppCoverage/CoverageFilterSettings.hpp"
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/Options.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
@@ -129,7 +129,7 @@ namespace OpenCppCoverage
 			LOG_INFO << L"Start Program:" << ostr.str();
 
 			cov::CodeCoverageRunner codeCoverageRunner;
-			cov::CoverageSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
+			cov::CoverageFilterSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
 			
 			if (startInfo)
 			{

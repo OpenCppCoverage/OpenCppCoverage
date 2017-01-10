@@ -22,7 +22,7 @@
 
 #include "Tools/Log.hpp"
 
-#include "CoverageSettings.hpp"
+#include "CoverageFilterSettings.hpp"
 #include "Patterns.hpp"
 #include "Wildcards.hpp"
 
@@ -67,7 +67,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	WildcardCoverageFilter::WildcardCoverageFilter(const CoverageSettings& settings)		
+	WildcardCoverageFilter::WildcardCoverageFilter(const CoverageFilterSettings& settings)		
 	{
 		moduleFilter_ = BuildFilter(settings.GetModulePatterns());
 		sourceFilter_ = BuildFilter(settings.GetSourcePatterns());

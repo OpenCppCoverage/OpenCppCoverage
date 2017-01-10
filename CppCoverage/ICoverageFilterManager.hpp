@@ -28,7 +28,7 @@ namespace FileFilter
 
 namespace CppCoverage
 {
-	class CoverageSettings;
+	class CoverageFilterSettings;
 
 	class CPPCOVERAGE_DLL ICoverageFilterManager
 	{

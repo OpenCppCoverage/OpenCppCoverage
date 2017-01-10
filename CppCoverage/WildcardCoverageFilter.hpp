@@ -24,13 +24,13 @@
 
 namespace CppCoverage
 {
-	class CoverageSettings;
+	class CoverageFilterSettings;
 	class Patterns;
 
 	class CPPCOVERAGE_DLL WildcardCoverageFilter
 	{
 	public:
-		explicit WildcardCoverageFilter(const CoverageSettings&);
+		explicit WildcardCoverageFilter(const CoverageFilterSettings&);
 		~WildcardCoverageFilter();
 
 		bool IsModuleSelected(const std::wstring& filename) const;

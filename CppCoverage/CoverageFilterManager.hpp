@@ -30,14 +30,14 @@ namespace FileFilter
 
 namespace CppCoverage
 {
-	class CoverageSettings;
+	class CoverageFilterSettings;
 	class UnifiedDiffSettings;
 
 	class CPPCOVERAGE_DLL CoverageFilterManager: public ICoverageFilterManager
 	{
 	public:
 		explicit CoverageFilterManager(
-			const CoverageSettings&,
+			const CoverageFilterSettings&,
 			const std::vector<UnifiedDiffSettings>&,
 			bool useReleaseCoverageFilter);
 

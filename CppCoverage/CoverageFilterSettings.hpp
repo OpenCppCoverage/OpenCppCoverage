@@ -25,17 +25,17 @@ namespace CppCoverage
 {
 	class Patterns;
 
-	class CPPCOVERAGE_DLL CoverageSettings
+	class CPPCOVERAGE_DLL CoverageFilterSettings
 	{	
 	public:
-		CoverageSettings(const Patterns& modulePatterns, const Patterns& sourcePatterns);
+		CoverageFilterSettings(const Patterns& modulePatterns, const Patterns& sourcePatterns);
 
 		const Patterns& GetModulePatterns() const;
 		const Patterns& GetSourcePatterns() const;
 		
 	private:
-		CoverageSettings(const CoverageSettings&) = delete;
-		CoverageSettings& operator=(const CoverageSettings&) = delete;
+		CoverageFilterSettings(const CoverageFilterSettings&) = delete;
+		CoverageFilterSettings& operator=(const CoverageFilterSettings&) = delete;
 
 	private:
 		const Patterns& modulePatterns_;

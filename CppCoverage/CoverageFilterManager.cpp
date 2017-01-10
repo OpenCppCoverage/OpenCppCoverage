@@ -29,7 +29,7 @@ namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
 	CoverageFilterManager::CoverageFilterManager(
-		const CoverageSettings& settings,
+		const CoverageFilterSettings& settings,
 		const std::vector<UnifiedDiffSettings>& unifiedDiffSettingsCollection,
 		bool useReleaseCoverageFilter)
 		: wildcardCoverageFilter_{ settings }
