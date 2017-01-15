@@ -27,7 +27,7 @@
 namespace CppCoverage
 {
 	class StartInfo;
-	class CoverageFilterSettings;
+	class RunCoverageSettings;
 	class DebugInformation;
 	class DebugInformationEventHandler;
 	class ExecutedAddressManager;
@@ -42,13 +42,7 @@ namespace CppCoverage
 		CodeCoverageRunner();
 		~CodeCoverageRunner();
 
-		CoverageData RunCoverage(
-			const StartInfo&,
-			const CoverageFilterSettings&,
-			const std::vector<UnifiedDiffSettings>&,
-			bool coverChildren,
-			bool continueAfterCppException,
-			size_t maxUnmatchPathsForWarning);
+		CoverageData RunCoverage(const RunCoverageSettings&);
 		size_t GetDebugInformationCount() const;
 
 	private:

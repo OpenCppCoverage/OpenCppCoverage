@@ -20,26 +20,23 @@
 #include <vector>
 
 #include "CppCoverageExport.hpp"
+#include "Patterns.hpp"
 
 namespace CppCoverage
 {
-	class Patterns;
-
 	class CPPCOVERAGE_DLL CoverageFilterSettings
 	{	
 	public:
 		CoverageFilterSettings(const Patterns& modulePatterns, const Patterns& sourcePatterns);
+		CoverageFilterSettings(const CoverageFilterSettings&) = default;
+		CoverageFilterSettings& operator=(const CoverageFilterSettings&) = delete;
 
 		const Patterns& GetModulePatterns() const;
 		const Patterns& GetSourcePatterns() const;
-		
-	private:
-		CoverageFilterSettings(const CoverageFilterSettings&) = delete;
-		CoverageFilterSettings& operator=(const CoverageFilterSettings&) = delete;
 
 	private:
-		const Patterns& modulePatterns_;
-		const Patterns& sourcePatterns_;
+		Patterns modulePatterns_;
+		Patterns sourcePatterns_;
 	};
 }
 

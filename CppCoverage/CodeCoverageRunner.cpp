@@ -34,6 +34,7 @@
 #include "ExceptionHandler.hpp"
 #include "CppCoverageException.hpp"
 #include "Address.hpp"
+#include "RunCoverageSettings.hpp"
 
 #include "tools/Tool.hpp"
 
@@ -54,21 +55,20 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	CoverageData CodeCoverageRunner::RunCoverage(
-		const StartInfo& startInfo,
-		const CoverageFilterSettings& coverageFilterSettings,
-		const std::vector<UnifiedDiffSettings>& unifiedDiffSettingsCollection,
-		bool coverChildren,
-		bool continueAfterCppException,
-		size_t maxUnmatchPathsForWarning)
+		const RunCoverageSettings& settings)
 	{
-		Debugger debugger{ coverChildren, continueAfterCppException };
+		Debugger debugger{ settings.GetCoverChildren(), settings.GetContinueAfterCppException()};
 
 		coverageFilterManager_ = std::make_unique<CoverageFilterManager>(
-			coverageFilterSettings, unifiedDiffSettingsCollection, false);
+			settings.GetCoverageFilterSettings(),
+			settings.GetUnifiedDiffSettings(), 
+			false);
+		const auto& startInfo = settings.GetStartInfo();
 		int exitCode = debugger.Debug(startInfo, *this);
 		const auto& path = startInfo.GetPath();
 
-		auto warningMessageLines = coverageFilterManager_->ComputeWarningMessageLines(maxUnmatchPathsForWarning);
+		auto warningMessageLines = coverageFilterManager_->ComputeWarningMessageLines(
+			settings.GetMaxUnmatchPathsForWarning());
 		for (const auto& line : warningMessageLines)
 				LOG_WARNING << line;			
 

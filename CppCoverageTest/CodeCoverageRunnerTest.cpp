@@ -34,6 +34,7 @@
 #include "CppCoverage/ExceptionHandler.hpp"
 #include "CppCoverage/CoverageDataMerger.hpp"
 #include "CppCoverage/UnifiedDiffSettings.hpp"
+#include "CppCoverage/RunCoverageSettings.hpp"
 
 #include "Tools/Log.hpp"
 #include "Tools/Tool.hpp"
@@ -98,8 +99,6 @@ namespace CppCoverageTest
 			cov::CodeCoverageRunner codeCoverageRunner;
 			cov::Patterns modulePatterns{false};
 			cov::Patterns sourcePatterns{false};
-			
-			cov::CoverageFilterSettings coverageFilterSettings{modulePatterns, sourcePatterns};
 
 			for (auto modulePattern : modulePatternCollection)
 			{
@@ -113,17 +112,20 @@ namespace CppCoverageTest
 				sourcePatterns.AddSelectedPatterns(sourcePattern);
 			}
 			
+			cov::CoverageFilterSettings coverageFilterSettings{modulePatterns, sourcePatterns};
 			cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath().wstring() };
+
 			for (const auto& argument: arguments)
 				startInfo.AddArgument(argument);
 
-			auto coverageData = codeCoverageRunner.RunCoverage(
-				startInfo, 
-				coverageFilterSettings, 
-				unifiedDiffSettingsCollection, 
-				coverChildren, 
-				continueAfterCppException, 
-				0);
+			cov::RunCoverageSettings settings(
+				startInfo,
+				coverageFilterSettings,
+				unifiedDiffSettingsCollection);
+			settings.SetCoverChildren(coverChildren);
+			settings.SetContinueAfterCppException(continueAfterCppException);
+
+			auto coverageData = codeCoverageRunner.RunCoverage(settings);
 
 			if (codeCoverageRunner.GetDebugInformationCount() != 0)
 				throw std::runtime_error("Invalid number of DebugInformation.");

@@ -26,6 +26,7 @@
 #include "CppCoverage/ProgramOptions.hpp"
 #include "CppCoverage/CoverageDataMerger.hpp"
 #include "CppCoverage/OptionsExport.hpp"
+#include "CppCoverage/RunCoverageSettings.hpp"
 
 #include "Exporter/Html/HtmlExporter.hpp"
 #include "Exporter/CoberturaExporter.hpp"
@@ -129,21 +130,23 @@ namespace OpenCppCoverage
 			LOG_INFO << L"Start Program:" << ostr.str();
 
 			cov::CodeCoverageRunner codeCoverageRunner;
-			cov::CoverageFilterSettings settings{ options.GetModulePatterns(), options.GetSourcePatterns() };
+			cov::CoverageFilterSettings coverageFilterSettings{ options.GetModulePatterns(), options.GetSourcePatterns() };
 			
 			if (startInfo)
 			{
 				size_t maxUnmatchPathsForWarning = (options.GetLogLevel() == cov::LogLevel::Verbose) 
 					? std::numeric_limits<size_t>::max() : 30;
 		
-				coveraDatas.push_back(
-					codeCoverageRunner.RunCoverage(
-						*startInfo,
-						settings,
-						options.GetUnifiedDiffSettingsCollection(),
-						options.IsCoverChildrenModeEnabled(),
-						options.IsContinueAfterCppExceptionModeEnabled(),
-						maxUnmatchPathsForWarning));
+				cov::RunCoverageSettings runCoverageSettings(
+											*startInfo, 
+											coverageFilterSettings, 
+											options.GetUnifiedDiffSettingsCollection());
+
+				runCoverageSettings.SetCoverChildren(options.IsCoverChildrenModeEnabled());
+				runCoverageSettings.SetContinueAfterCppException(options.IsContinueAfterCppExceptionModeEnabled());
+				runCoverageSettings.SetMaxUnmatchPathsForWarning(maxUnmatchPathsForWarning);
+
+				coveraDatas.push_back(codeCoverageRunner.RunCoverage(runCoverageSettings));
 			}
 			cov::CoverageDataMerger	coverageDataMerger;
 

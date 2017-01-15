@@ -29,15 +29,15 @@ namespace CppCoverage
 		UnifiedDiffSettings(
 			const boost::filesystem::path& unifiedDiffPath,
 			const boost::optional<boost::filesystem::path>& rootDiffFolder);
+		UnifiedDiffSettings(const UnifiedDiffSettings&) = default;
 		UnifiedDiffSettings(UnifiedDiffSettings&&) = default;
 
 		const boost::filesystem::path& GetUnifiedDiffPath() const;
 		const boost::optional<boost::filesystem::path>& GetRootDiffFolder() const;
 
-	private:
-		UnifiedDiffSettings(const UnifiedDiffSettings&) = delete;
-		UnifiedDiffSettings& operator=(const UnifiedDiffSettings&) = delete;
+		UnifiedDiffSettings& operator=(const UnifiedDiffSettings&) = default;
 
+	private:
 		boost::filesystem::path unifiedDiffPath_;
 		boost::optional<boost::filesystem::path> rootDiffFolder_;
 	};
