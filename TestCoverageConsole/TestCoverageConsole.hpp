@@ -49,13 +49,13 @@ namespace TestCoverageConsole
 	//-------------------------------------------------------------------------
 	inline int GetTestCoverageConsoleCppMainStartLine()
 	{
-		return 54;
+		return 55;
 	}
 
 	//-------------------------------------------------------------------------
 	inline int GetTestCoverageConsoleCppMainReturnLine()
 	{
-		return GetTestCoverageConsoleCppMainStartLine() + 35;
+		return GetTestCoverageConsoleCppMainStartLine() + 37;
 	}
 
 	const std::wstring TestBasic = L"TestBasic";
@@ -69,4 +69,5 @@ namespace TestCoverageConsole
 	const std::wstring TestFileInSeveralModules = L"FileInSeveralModules";
 	const std::wstring TestSpecialLineInfo = L"TestSpecialLineInfo";
 	const std::wstring TestUnloadReloadDll = L"TestUnloadReloadDll";
+	const std::wstring TestDiff = L"TestDiff";
 }

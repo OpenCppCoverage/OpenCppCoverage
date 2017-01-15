@@ -219,7 +219,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Data\TestCoverageConsole.diff" />
+    <None Include="Data\TestDiff.diff" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

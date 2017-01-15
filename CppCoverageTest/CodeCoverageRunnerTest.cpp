@@ -47,6 +47,8 @@
 #include "TestCoverageConsole/TestThread.hpp"
 #include "TestCoverageConsole/SpecialLineInfo.hpp"
 #include "TestCoverageConsole/FileWithSpecialCharÈ‡Ë.hpp"
+#include "TestCoverageConsole/TestDiff.hpp"
+
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
 #include "TestTools.hpp"
@@ -414,24 +416,22 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, UnifiedDiff)
 	{
-		const auto modulePattern = TestCoverageConsole::GetOutputBinaryPath().wstring();
-		const auto sourcePattern = TestCoverageConsole::GetMainCppFilename().wstring();
 		std::vector<cov::UnifiedDiffSettings> unifiedDiffSettingsCollection;
-		auto diffPath = boost::filesystem::path(PROJECT_DIR) / "Data" / "TestCoverageConsole.diff";
+		auto diffPath = boost::filesystem::path(PROJECT_DIR) / "Data" / "TestDiff.diff";
 
 		unifiedDiffSettingsCollection.push_back({diffPath, boost::none});
 		auto coverageData = ComputeCoverageData(
-			{ TestCoverageConsole::TestBasic }, 
-			modulePattern, sourcePattern, 
+			{ TestCoverageConsole::TestDiff }, 
+			TestCoverageConsole::GetOutputBinaryPath().wstring(), 
+			TestCoverageConsole::GetTestDiffFilename().wstring(),
 			unifiedDiffSettingsCollection);
 		const auto& file = GetFirstFileCoverage(coverageData);
-		ASSERT_EQ(3, file.GetLines().size());
-		int mainLine = TestCoverageConsole::GetTestCoverageConsoleCppMainStartLine();
-		int returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainReturnLine();
-
-		TestLine(file, mainLine + 2, true);
-		TestLine(file, returnLine - 2, false);
-		TestLine(file, returnLine, true);
+		ASSERT_EQ(4, file.GetLines().size());
+		
+		TestLine(file, 27, true);
+		TestLine(file, 28, true);
+		TestLine(file, 29, true);
+		TestLine(file, 30, false);
 	}
 
 	//-------------------------------------------------------------------------

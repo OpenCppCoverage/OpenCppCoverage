@@ -166,12 +166,14 @@
     <ClInclude Include="TestBasic.hpp" />
     <ClInclude Include="TestCoverageConsole.hpp" />
     <ClInclude Include="SpecialLineInfo.hpp" />
+    <ClInclude Include="TestDiff.hpp" />
     <ClInclude Include="TestThread.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestBasic.cpp" />
     <ClCompile Include="TestCoverageConsole.cpp" />
     <ClCompile Include="SpecialLineInfo.cpp" />
+    <ClCompile Include="TestDiff.cpp" />
     <ClCompile Include="TestThread.cpp" />
   </ItemGroup>
   <ItemGroup>

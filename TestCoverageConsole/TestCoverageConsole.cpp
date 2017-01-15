@@ -27,6 +27,7 @@
 #include "TestBasic.hpp"
 #include "TestThread.hpp"
 #include "FileWithSpecialCharÈ‡Ë.hpp"
+#include "TestDiff.hpp"
 
 namespace
 {
@@ -83,6 +84,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			TestCoverageConsole::GetFileWithSpecialChars();
 		else if (type == TestCoverageConsole::TestUnloadReloadDll)
 			TestCoverageConsole::UnloadReloadDll();
+		else if (type == TestCoverageConsole::TestDiff)
+			TestCoverageConsole::FilterByDiff();
 		else
 			std::wcerr << L"Unsupported type:" << type << std::endl;
 	}
