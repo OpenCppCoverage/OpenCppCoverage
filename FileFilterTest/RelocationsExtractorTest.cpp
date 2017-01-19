@@ -15,56 +15,48 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
+#include <windows.h>
+
 #include "FileFilter/RelocationsExtractor.hpp"
-
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
-#include "TestHelper/AutoClose.hpp"
-
-using TestHelper::MakeAutoClose;
 
 namespace FileFilterTest
 {	
 	// These values are computed with Dumpbin /RELOCATIONS TestCoverageSharedLib.dll
-#ifdef NDEBUG
-	#ifdef _WIN64
-		auto firstAdress = 0x180003908;
-		auto lastAdress =  0x1800042C8;
+#ifdef _WIN64
+	#ifdef NDEBUG
+		const auto firstAdress = 0x180003908;
+		const auto lastAdress = 0x1800042C8;
 	#else
-		auto firstAdress = 0x100040BC;
-		auto lastAdress =  0x10004170;
+		auto firstAdress = 0x180011E90;
+		auto lastAdress = 0x180011609;
 	#endif
+	const auto baseAddress = 0x180000000;
+
 #else
-	#ifdef _WIN64
-		auto firstAdress = 0x180011E60;
-		auto lastAdress = 0x1800115FA;
+	#ifdef NDEBUG
+		const auto firstAdress = 0x100040C4;
+		const auto lastAdress = 0x10004170;
 	#else
-		auto firstAdress = 0x10023180;
-		auto lastAdress =  0x1001154B;
+		const auto firstAdress = 0x10024190;
+		const auto lastAdress = 0x10020C48;
 	#endif
+
+	const auto baseAddress = 0x10000000;
 #endif
 
 	//-------------------------------------------------------------------------
 	TEST(RelocationsExtractorTest, Extract)
 	{						
-		auto modulePath = TestCoverageSharedLib::GetOutputBinaryPath();
-		
-		auto hFile = MakeAutoClose(CreateFile(
-			modulePath.wstring().c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr,
-			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0), INVALID_HANDLE_VALUE, CloseHandle);
-
-		auto hFileMapping = MakeAutoClose(
-			CreateFileMapping(*hFile, nullptr, PAGE_READONLY, 0, 0, nullptr), nullptr, CloseHandle);		
-
-		auto lpFileBase = MakeAutoClose(
-			MapViewOfFile(*hFileMapping, FILE_MAP_READ, 0, 0, 0), nullptr, UnmapViewOfFile);		
-
-		auto handle = MakeAutoClose(
-			LoadLibrary(modulePath.wstring().c_str()), nullptr, FreeLibrary);
-				
 		FileFilter::RelocationsExtractor extractor;
 
-		auto res = extractor.Extract(*handle, *lpFileBase);
-		ASSERT_EQ(1, res.count(firstAdress));
-		ASSERT_EQ(1, res.count(lastAdress));
+		auto hProcess = GetCurrentProcess();
+		auto hModule = GetModuleHandle(TestCoverageSharedLib::GetOutputBinaryPath().c_str());
+		auto baseOfImage = reinterpret_cast<DWORD64>(hModule);
+		ASSERT_NE(0, baseOfImage);
+
+		auto relocations = extractor.Extract(hProcess, baseOfImage, baseAddress);		
+		ASSERT_EQ(1, relocations.count(firstAdress));
+		ASSERT_EQ(1, relocations.count(lastAdress));
 	}
 }

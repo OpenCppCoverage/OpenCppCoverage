@@ -51,7 +51,7 @@ namespace FileFilter
 		
 		std::unordered_set<DWORD64> lastSymbolAddresses_;
 		std::unordered_map<DWORD64, int> linelAddressCounts_;
-		std::unordered_set<DWORD_PTR> relocations_;
+		std::unordered_set<DWORD64> relocations_;
 
 		HANDLE hFileModule_;
 		HANDLE hProcess_;

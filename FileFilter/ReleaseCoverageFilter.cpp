@@ -70,7 +70,7 @@ namespace FileFilter
 			return true;
 		}
 
-		if (relocations_.count(static_cast<DWORD_PTR>(lineAddress)))
+		if (relocations_.count(lineAddress) == 0)
 		{
 			LOG_DEBUG << "\tNot a relocation";
 			return true;
@@ -95,7 +95,12 @@ namespace FileFilter
 		auto updateLineDataCaches = fileInfo.filePath_ != filePath_ || updateRelocationsCache;
 
 		if (updateRelocationsCache)
-			relocations_ = relocationsExtractor_->Extract(hFileModule, moduleInfo.baseOfImage_);
+		{
+			relocations_ = relocationsExtractor_->Extract(
+				hProcess, 
+				reinterpret_cast<DWORD64>(moduleInfo.baseOfImage_), 
+				moduleInfo.baseAddress_);
+		}
 		
 		if (updateLineDataCaches)
 			UpdateLineDataCaches(fileInfo.lineInfoColllection_);

@@ -158,7 +158,7 @@ namespace CppCoverage
 		if (context.error_)
 			throw std::runtime_error(Tools::ToLocalString(*context.error_));
 
-		FileFilter::ModuleInfo moduleInfo{ hProcess_, hFileModule, processBaseOfImage };
+		FileFilter::ModuleInfo moduleInfo{ hProcess_, hFileModule, processBaseOfImage, baseAddress };
 		FileFilter::FileInfo fileInfo{ filePath, std::move(context.lineInfoCollection_) };
 
 		for (const auto& lineInfo : fileInfo.lineInfoColllection_)

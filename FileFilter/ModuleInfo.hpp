@@ -27,14 +27,17 @@ namespace FileFilter
 		ModuleInfo(
 				HANDLE hProcess,
 				HANDLE hFileModule,
-				void* baseOfImage)
-			: hProcess_{ hProcess }
+				void* baseOfImage,
+				DWORD64 baseAddress)
+			: hProcess_ {hProcess}
 			, hFileModule_{ hFileModule }
 			, baseOfImage_{ baseOfImage }
+			, baseAddress_{ baseAddress }
 		{}
 
 		const HANDLE hProcess_;
 		const HANDLE hFileModule_;
 		void* const  baseOfImage_;
+		const DWORD64 baseAddress_;
 	};
 }

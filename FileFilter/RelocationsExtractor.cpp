@@ -17,82 +17,123 @@
 #include "stdafx.h"
 #include "RelocationsExtractor.hpp"
 #include "FileFilterException.hpp"
+#include <memory>
 
 namespace FileFilter
-{			
-	//-------------------------------------------------------------------------
-	const IMAGE_NT_HEADERS& GetNTHeader(const void* baseOfImage)
+{
+	namespace
 	{
-		auto* dosHeader = reinterpret_cast<const IMAGE_DOS_HEADER*>(baseOfImage);
-
-		if (dosHeader == nullptr || dosHeader->e_magic != IMAGE_DOS_SIGNATURE)
-			THROW("The image is not a valid NT headers.");
-
-		auto* dosHeaderAddress = reinterpret_cast<const char*>(dosHeader);
-		
-		return *reinterpret_cast<const IMAGE_NT_HEADERS*>(dosHeaderAddress + dosHeader->e_lfanew);
-	}
-
-	//-------------------------------------------------------------------------
-	DWORD_PTR ToPtr(DWORD_PTR value)
-	{
-		if (!value)
-			THROW("Null ptr");
-		return *reinterpret_cast<DWORD_PTR*>(value);
-	}
-
-	//-------------------------------------------------------------------------
-	DWORD_PTR ExtractRelocationsAddress(
-		DWORD_PTR baseRelocationPtr,
-		DWORD_PTR moduleAddress,
-		DWORD_PTR addressOffset,
-		std::unordered_set<DWORD_PTR>& relocations)
-	{
-		if (!baseRelocationPtr)
-			THROW("Invalid base relocation");
-
-		auto& imageBaseRelocation = *reinterpret_cast<IMAGE_BASE_RELOCATION*>(baseRelocationPtr);		
-		auto relocation = baseRelocationPtr + sizeof(IMAGE_BASE_RELOCATION);
-		auto count = (imageBaseRelocation.SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD);
-		
-		for (unsigned int i = 0; i < count; ++i)
+		//-------------------------------------------------------------------------
+		void ReadProcessMemory(
+			HANDLE hProcess,
+			DWORD64 address,
+			void* buffer,
+			SIZE_T size)
 		{
-			auto relocationPtr = ToPtr(relocation);
-			auto relocationType = (relocationPtr & 0xf000) >> 12;
+			SIZE_T bytesRead = 0;
 
-			if (relocationType == IMAGE_REL_BASED_HIGHLOW || relocationType == IMAGE_REL_BASED_DIR64)
+			if (!::ReadProcessMemory(hProcess,
+				reinterpret_cast<void*>(address),
+				buffer,
+				size,
+				&bytesRead) || bytesRead != size)
 			{
-				auto rva = relocationPtr & 0x0fff;
-				auto relocationValueAddress = imageBaseRelocation.VirtualAddress + rva + moduleAddress;
-				auto relocationValue = ToPtr(relocationValueAddress) - addressOffset;
-				
-				relocations.insert(relocationValue);				
+				THROW("Cannot read process memory");
 			}
-			relocation += sizeof(WORD);
 		}
-		return relocation;
+
+		//-------------------------------------------------------------------------
+		template <typename T>
+		T ReadProcessMemory(
+			HANDLE hProcess,
+			DWORD64 address)
+		{
+			T data;
+			ReadProcessMemory(hProcess, address, &data, sizeof(T));
+			return data;
+		}
+
+		//-------------------------------------------------------------------------
+		template<typename T>
+		std::unique_ptr<T> ReadStructInProcessMemory(
+			HANDLE hProcess,
+			DWORD64 address)
+		{
+			auto data = std::make_unique<T>();
+			ReadProcessMemory(hProcess, address, data.get(), sizeof(T));
+
+			return data;
+		}
+
+		//-------------------------------------------------------------------------
+		DWORD64 ExtractRelocations(
+			HANDLE hProcess,
+			DWORD64 baseOfImage,
+			DWORD64 baseAddress,
+			DWORD64 imageBaseRelocationPtr,
+			std::unordered_set<DWORD64>& relocations)
+		{
+			auto imageBaseRelocation = ReadStructInProcessMemory<IMAGE_BASE_RELOCATION>(
+				hProcess, imageBaseRelocationPtr);
+			auto sizeOfBlock = imageBaseRelocation->SizeOfBlock;
+			auto count = (sizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD);
+
+			std::vector<WORD> relocationPtrs(count);
+			ReadProcessMemory(
+				hProcess,
+				imageBaseRelocationPtr + sizeof(IMAGE_BASE_RELOCATION),
+				&relocationPtrs[0],
+				relocationPtrs.size() * sizeof(WORD));
+
+			for (auto relocationPtr : relocationPtrs)
+			{
+				auto relocationType = (relocationPtr & 0xf000) >> 12;
+
+				if (relocationType == IMAGE_REL_BASED_HIGHLOW || relocationType == IMAGE_REL_BASED_DIR64)
+				{
+					auto rva = relocationPtr & 0x0fff;
+					auto relocationAddress = imageBaseRelocation->VirtualAddress + rva + baseOfImage;
+					auto relocationValue = ReadProcessMemory<DWORD_PTR>(hProcess, relocationAddress);
+
+					auto relocation = relocationValue + baseAddress - baseOfImage;
+					relocations.insert(relocation);
+				}
+			}
+
+			return sizeOfBlock;
+		}
 	}
 
 	//-------------------------------------------------------------------------
-	std::unordered_set<DWORD_PTR> RelocationsExtractor::Extract(
-		HANDLE hFile, 
-		void* baseOfImage) const
-	{		
-		const auto& ntHeader = GetNTHeader(baseOfImage);
-		const auto& optionalHeader = ntHeader.OptionalHeader;		
+	std::unordered_set<DWORD64> RelocationsExtractor::Extract(
+		HANDLE hProcess,
+		DWORD64 baseOfImage,
+		DWORD64 baseAddress) const
+	{
+		auto dosHeader = ReadStructInProcessMemory<IMAGE_DOS_HEADER>(hProcess, baseOfImage);
+		if (dosHeader->e_magic != IMAGE_DOS_SIGNATURE)
+			THROW("The image is not a valid DOS image.");
+
+		auto ntHeader = ReadStructInProcessMemory<IMAGE_NT_HEADERS>(
+			hProcess, baseOfImage + dosHeader->e_lfanew);
+	
+		const auto& optionalHeader = ntHeader->OptionalHeader;
 		const auto& directory = optionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC];
-		auto moduleAddress = reinterpret_cast<DWORD_PTR>(hFile);
-		auto baseRelocationPtr = moduleAddress + directory.VirtualAddress;
-		auto endBaseRelocation = baseRelocationPtr + directory.Size;
-		auto addressOffset = moduleAddress - optionalHeader.ImageBase;
-		
-		std::unordered_set<DWORD_PTR> relocations;
-		while (baseRelocationPtr && baseRelocationPtr < endBaseRelocation)
+
+		std::unordered_set<DWORD64> relocations;
+		auto imageBaseRelocationPtr = baseOfImage + directory.VirtualAddress;
+		auto endBaseRelocationPtr = imageBaseRelocationPtr + directory.Size;
+
+		while (imageBaseRelocationPtr < endBaseRelocationPtr)
 		{
-			baseRelocationPtr = ExtractRelocationsAddress(
-				baseRelocationPtr, moduleAddress, addressOffset, relocations);
+			imageBaseRelocationPtr += ExtractRelocations(
+				hProcess,
+				baseOfImage,
+				baseAddress,
+				imageBaseRelocationPtr,
+				relocations);
 		}
-		
+
 		return relocations;
 	}
 }
