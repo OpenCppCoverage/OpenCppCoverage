@@ -145,7 +145,7 @@ namespace OpenCppCoverage
 				runCoverageSettings.SetCoverChildren(options.IsCoverChildrenModeEnabled());
 				runCoverageSettings.SetContinueAfterCppException(options.IsContinueAfterCppExceptionModeEnabled());
 				runCoverageSettings.SetMaxUnmatchPathsForWarning(maxUnmatchPathsForWarning);
-
+				runCoverageSettings.SetOptimizedBuildSupport(options.IsOptimizedBuildSupportEnabled());
 				coveraDatas.push_back(codeCoverageRunner.RunCoverage(runCoverageSettings));
 			}
 			cov::CoverageDataMerger	coverageDataMerger;

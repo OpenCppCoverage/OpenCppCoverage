@@ -48,6 +48,7 @@ namespace CppCoverage
 		, isCoverChildrenModeEnabled_{false}
 		, isAggregateByFileModeEnabled_{true}
 		, isContinueAfterCppExceptionModeEnabled_{false}
+		, isOptimizedBuildSupportEnabled_{false}
 	{
 		if (startInfo)
 			optionalStartInfo_ = *startInfo;
@@ -171,6 +172,18 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	void Options::EnableOptimizedBuildSupport()
+	{
+		isOptimizedBuildSupportEnabled_ = true;
+	}
+
+	//-------------------------------------------------------------------------
+	bool Options::IsOptimizedBuildSupportEnabled() const
+	{
+		return isOptimizedBuildSupportEnabled_;
+	}
+
+	//-------------------------------------------------------------------------
 	std::wostream& operator<<(std::wostream& ostr, const Options& options)
 	{
 		if (options.optionalStartInfo_)
@@ -181,6 +194,7 @@ namespace CppCoverage
 		ostr << L"Cover Children: " << options.isCoverChildrenModeEnabled_ << std::endl;
 		ostr << L"Aggregate by file: " << options.isAggregateByFileModeEnabled_ << std::endl;
 		ostr << L"Continue after C++ exception: " << options.isContinueAfterCppExceptionModeEnabled_ << std::endl;
+		ostr << L"Optimized build support: " << options.isOptimizedBuildSupportEnabled_ << std::endl;
 
 		ostr << L"Export: ";
 		for (const auto& optionExport : options.exports_)

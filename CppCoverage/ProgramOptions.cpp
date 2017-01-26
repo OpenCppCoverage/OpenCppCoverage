@@ -114,7 +114,9 @@ namespace CppCoverage
 				(ProgramOptions::NoAggregateByFileOption.c_str(), "Do not aggregate coverage for same file path.")
 				(ProgramOptions::UnifiedDiffOption.c_str(),
 					po::value<T_Strings>()->composing(), GetUnifiedDiffHelp().c_str())
-				(ProgramOptions::ContinueAfterCppExceptionOption.c_str(), "Try to continue after throwing a C++ exception.");
+				(ProgramOptions::ContinueAfterCppExceptionOption.c_str(), "Try to continue after throwing a C++ exception.")
+				(ProgramOptions::OptimizedBuildOption.c_str(), 
+					"Enable heuristics to support optimized build. See documentation for restrictions.");
 		}
 
 		//-------------------------------------------------------------------------
@@ -152,6 +154,7 @@ namespace CppCoverage
 	const std::string ProgramOptions::InputCoverageValue = "input_coverage";
 	const std::string ProgramOptions::UnifiedDiffOption = "unified_diff";
 	const std::string ProgramOptions::ContinueAfterCppExceptionOption = "continue_after_cpp_exception";
+	const std::string ProgramOptions::OptimizedBuildOption = "optimized_build";
 
 	//-------------------------------------------------------------------------
 	ProgramOptions::ProgramOptions(const std::vector<std::string>& exportTypes)

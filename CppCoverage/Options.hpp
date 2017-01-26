@@ -75,6 +75,9 @@ namespace CppCoverage
 		void AddUnifiedDiffSettings(UnifiedDiffSettings&&);
 		const std::vector<UnifiedDiffSettings>& GetUnifiedDiffSettingsCollection() const;
 
+		void EnableOptimizedBuildSupport();
+		bool IsOptimizedBuildSupportEnabled() const;
+
 		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream&, const Options&);
 
 	private:
@@ -91,6 +94,7 @@ namespace CppCoverage
 		bool isCoverChildrenModeEnabled_;
 		bool isAggregateByFileModeEnabled_;
 		bool isContinueAfterCppExceptionModeEnabled_;
+		bool isOptimizedBuildSupportEnabled_;
 		std::vector<OptionsExport> exports_;
 		std::vector<boost::filesystem::path> inputCoveragePaths_;
 		std::vector<UnifiedDiffSettings> unifiedDiffSettingsCollection_;

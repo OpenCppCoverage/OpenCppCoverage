@@ -49,6 +49,7 @@ namespace CppCoverage
 		static const std::string InputCoverageValue;
 		static const std::string UnifiedDiffOption;
 		static const std::string ContinueAfterCppExceptionOption;
+		static const std::string OptimizedBuildOption;
 
 		ProgramOptions(const std::vector<std::string>& optionsExportTypes);
 

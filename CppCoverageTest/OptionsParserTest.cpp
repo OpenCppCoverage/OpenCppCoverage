@@ -47,6 +47,7 @@ namespace CppCoverageTest
 		ASSERT_FALSE(options->IsCoverChildrenModeEnabled());
 		ASSERT_TRUE(options->IsAggregateByFileModeEnabled());
 		ASSERT_FALSE(options->IsContinueAfterCppExceptionModeEnabled());
+		ASSERT_FALSE(options->IsOptimizedBuildSupportEnabled());
 	}
 
 	//-------------------------------------------------------------------------
@@ -202,5 +203,15 @@ namespace CppCoverageTest
 		ASSERT_FALSE(static_cast<bool>(TestTools::Parse(parser,
 		{ TestTools::OptionPrefix + cov::ProgramOptions::InputCoverageValue, "invalidPath" }, true, &ostr)));
 		ASSERT_NE(L"", ostr.str());		
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, OptimizedBuild)
+	{
+		cov::OptionsParser parser;
+
+		ASSERT_TRUE(TestTools::Parse(parser,
+		{ TestTools::OptionPrefix + cov::ProgramOptions::OptimizedBuildOption })
+			->IsOptimizedBuildSupportEnabled());
 	}
 }
