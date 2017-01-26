@@ -441,10 +441,10 @@ namespace CppCoverageTest
 		const auto& file = GetFirstFileCoverage(coverageData);
 		ASSERT_EQ(4, file.GetLines().size());
 		
+		TestLine(file, 25, true);
+		TestLine(file, 26, true);
 		TestLine(file, 27, true);
-		TestLine(file, 28, true);
-		TestLine(file, 29, true);
-		TestLine(file, 30, false);
+		TestLine(file, 28, false);
 	}
 
 	//-------------------------------------------------------------------------

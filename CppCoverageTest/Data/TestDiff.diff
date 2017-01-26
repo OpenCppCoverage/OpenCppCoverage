@@ -2,7 +2,7 @@ diff --git a/TestCoverageConsole/TestDiff.cpp b/TestCoverageConsole/Tes
 index 8944117..c9f2773 100644
 --- a/TestCoverageConsole/TestDiff.cpp
 +++ b/TestCoverageConsole/TestDiff.cpp
-@@ -24,10 +24,10 @@ namespace TestCoverageConsole
+@@ -22,10 +22,10 @@ namespace TestCoverageConsole
         void FilterByDiff()
         {
                 int value1 = 0;
