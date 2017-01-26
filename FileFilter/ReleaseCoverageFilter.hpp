@@ -50,7 +50,7 @@ namespace FileFilter
 		const std::unique_ptr<IRelocationsExtractor> relocationsExtractor_;
 		
 		std::unordered_set<DWORD64> lastSymbolAddresses_;
-		std::unordered_map<DWORD64, int> linelAddressCounts_;
+		std::unordered_map<int, int> addressCountByLine_;
 		std::unordered_set<DWORD64> relocations_;
 
 		HANDLE hFileModule_;

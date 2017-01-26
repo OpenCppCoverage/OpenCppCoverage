@@ -51,32 +51,22 @@ namespace FileFilter
 	{
 		UpdateCachesIfExpired(moduleInfo, fileInfo);
 
-		LOG_DEBUG << "ReleaseCoverageFilter: " 
-			      << fileInfo.filePath_.wstring() << " " << lineInfo.lineNumber_;
-
 		auto lineAddress = lineInfo.lineAddress_;
 		if (lastSymbolAddresses_.count(lineAddress) == 0)
-		{
-			LOG_DEBUG << "\tNot the last symbol address.";
 			return true;
-		}
 
-		auto it = linelAddressCounts_.find(lineAddress);
-		auto lineAddressCount = (it == linelAddressCounts_.end()) ? 0 : it->second;
+		auto it = addressCountByLine_.find(lineInfo.lineNumber_);
+		auto addressCount = (it == addressCountByLine_.end()) ? 0 : it->second;
 
-		if (lineAddressCount < 2)
-		{
-			LOG_DEBUG << "\tlineAddressCount < 2: " << lineAddressCount;
+		if (addressCount < 2)
 			return true;
-		}
 
 		if (relocations_.count(lineAddress) == 0)
-		{
-			LOG_DEBUG << "\tNot a relocation";
 			return true;
-		}
 
-		LOG_DEBUG << "ReleaseCoverageFilter: Line removed";
+		LOG_DEBUG << "Optimized build support ignores line "
+			<< lineInfo.lineNumber_
+			<< " of " << fileInfo.filePath_.wstring();
 		return false;
 	}
 
@@ -118,10 +108,11 @@ namespace FileFilter
 		{
 			auto lineAddress = lineData.lineAddress_;
 			auto symbolIndex = lineData.symbolIndex_;
+			auto lineNumber = lineData.lineNumber_;
 
 			auto it = addressesBySymboleIndex.emplace(symbolIndex, 0).first;
 			it->second = std::max(it->second, lineAddress);	
-			++linelAddressCounts_[lineAddress];
+			++addressCountByLine_[lineNumber];
 		}
 
 		for (const auto& pair: addressesBySymboleIndex)
