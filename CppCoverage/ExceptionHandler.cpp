@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 #include "ExceptionHandler.hpp"
+#include "ProgramOptions.hpp"
 
 #include "Tools/ScopedAction.hpp"
 #include "Tools/Tool.hpp"
@@ -97,6 +98,8 @@ namespace CppCoverage
 		message << UnhandledExceptionErrorMessage << exceptionRecord.ExceptionCode;
 		message << L": " << GetExceptionStrFromCode(exceptionRecord.ExceptionCode) << std::endl;
 		message << Tools::GetSeparatorLine() << std::endl;
+		message << L"If your application was built with optimization enabled, make sure you use --"
+			+ Tools::LocalToWString(ProgramOptions::OptimizedBuildOption) << std::endl;
 
 		return (exceptionCode == CppExceptionErrorCode) 
 			? ExceptionHandlerStatus::CppError : ExceptionHandlerStatus::Error;
