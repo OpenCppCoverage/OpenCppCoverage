@@ -479,6 +479,8 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, OptimizedBuild)
 	{
+		// This test works only on x86.
+#ifndef _WIN64
 		auto computeCoverage = [&](bool optimizedBuild)
 		{
 			return ComputeCoverageData(
@@ -500,5 +502,6 @@ namespace CppCoverageTest
 		auto count = CountExecutedLines(file);
 
 		ASSERT_GT(optimizedBuildCount, count);
+#endif
 	}
 }
