@@ -30,6 +30,7 @@ namespace CppCoverage
 		, coverChildren_{ false }
 		, continueAfterCppException_{ false }
 		, maxUnmatchPathsForWarning_{ 0 }
+		, optimizedBuildSupport_{ false }
 	{
 	}
 
@@ -49,6 +50,12 @@ namespace CppCoverage
 	void RunCoverageSettings::SetMaxUnmatchPathsForWarning(size_t maxUnmatchPathsForWarning)
 	{
 		maxUnmatchPathsForWarning_ = maxUnmatchPathsForWarning;
+	}
+
+	//-------------------------------------------------------------------------
+	void RunCoverageSettings::SetOptimizedBuildSupport(bool optimizedBuildSupport)
+	{
+		optimizedBuildSupport_ = optimizedBuildSupport;
 	}
 
 	//-------------------------------------------------------------------------
@@ -85,5 +92,11 @@ namespace CppCoverage
 	size_t RunCoverageSettings::GetMaxUnmatchPathsForWarning() const
 	{
 		return maxUnmatchPathsForWarning_;
+	}
+
+	//-------------------------------------------------------------------------
+	bool RunCoverageSettings::GetOptimizedBuildSupport() const
+	{
+		return optimizedBuildSupport_;
 	}
 }

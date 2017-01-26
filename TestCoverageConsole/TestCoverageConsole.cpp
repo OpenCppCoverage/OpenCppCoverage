@@ -21,6 +21,7 @@
 #include <iostream>
 
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
+#include "TestCoverageOptimizedBuild/TestCoverageOptimizedBuild.hpp"
 
 #include "SpecialLineInfo.hpp"
 #include "TestCoverageConsole.hpp"
@@ -86,6 +87,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			TestCoverageConsole::UnloadReloadDll();
 		else if (type == TestCoverageConsole::TestDiff)
 			TestCoverageConsole::FilterByDiff();
+		else if (type == TestCoverageConsole::TestOptimizedBuild)
+			TestCoverageOptimizedBuild::TestOptimizedBuild();
 		else
 			std::wcerr << L"Unsupported type:" << type << std::endl;
 	}

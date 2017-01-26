@@ -38,6 +38,7 @@ namespace CppCoverage
 		void SetCoverChildren(bool);
 		void SetContinueAfterCppException(bool);
 		void SetMaxUnmatchPathsForWarning(size_t);
+		void SetOptimizedBuildSupport(bool);
 
 		const StartInfo& GetStartInfo() const;
 		const CoverageFilterSettings& GetCoverageFilterSettings() const;
@@ -45,6 +46,7 @@ namespace CppCoverage
 		bool GetCoverChildren() const;
 		bool GetContinueAfterCppException() const;
 		size_t GetMaxUnmatchPathsForWarning() const;
+		bool GetOptimizedBuildSupport() const;
 
 	private:
 		StartInfo startInfo_;
@@ -53,5 +55,6 @@ namespace CppCoverage
 		bool coverChildren_;
 		bool continueAfterCppException_;
 		size_t maxUnmatchPathsForWarning_;
+		bool optimizedBuildSupport_;
 	};
 }

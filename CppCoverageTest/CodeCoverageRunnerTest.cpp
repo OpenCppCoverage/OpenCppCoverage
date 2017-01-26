@@ -50,6 +50,7 @@
 #include "TestCoverageConsole/TestDiff.hpp"
 
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
+#include "TestCoverageOptimizedBuild/TestCoverageOptimizedBuild.hpp"
 
 #include "TestTools.hpp"
 
@@ -96,7 +97,8 @@ namespace CppCoverageTest
 			const std::vector<std::wstring>& sourcePatternCollection,
 			const std::vector<cov::UnifiedDiffSettings>& unifiedDiffSettingsCollection = {},
 			bool coverChildren = true,
-			bool continueAfterCppException = false)
+			bool continueAfterCppException = false,
+			bool optimizedBuildSupport = false)
 		{
 			cov::CodeCoverageRunner codeCoverageRunner;
 			cov::Patterns modulePatterns{false};
@@ -126,6 +128,7 @@ namespace CppCoverageTest
 				unifiedDiffSettingsCollection);
 			settings.SetCoverChildren(coverChildren);
 			settings.SetContinueAfterCppException(continueAfterCppException);
+			settings.SetOptimizedBuildSupport(optimizedBuildSupport);
 
 			auto coverageData = codeCoverageRunner.RunCoverage(settings);
 
@@ -142,7 +145,8 @@ namespace CppCoverageTest
 			const std::wstring& sourcePattern,
 			const std::vector<cov::UnifiedDiffSettings>& unifiedDiffSettingsCollection = {},
 			bool coverChildren = true,
-			bool continueAfterCppException = false)
+			bool continueAfterCppException = false,
+			bool optimizedBuildSupport = false)
 		{
 			return ComputeCoverageDataPatterns(
 				arguments, 
@@ -150,7 +154,8 @@ namespace CppCoverageTest
 				{ sourcePattern }, 
 				unifiedDiffSettingsCollection, 
 				coverChildren, 
-				continueAfterCppException);
+				continueAfterCppException,
+				optimizedBuildSupport);
 		}
 
 		//---------------------------------------------------------------------
@@ -223,7 +228,15 @@ namespace CppCoverageTest
 		std::wstring GetError() const
 		{
 			return Tools::LocalToWString(error_->str());
-		}		
+		}
+
+		//-------------------------------------------------------------------------
+		intptr_t CountExecutedLines(const cov::FileCoverage& file)
+		{
+			auto lines = file.GetLines();
+			return boost::count_if(lines,
+				[](const auto& line) { return line.HasBeenExecuted(); });
+		}
 
 	private:
 		boost::shared_ptr<std::ostringstream> error_;		
@@ -460,8 +473,32 @@ namespace CppCoverageTest
 		const auto& file = GetFirstFileCoverage(coverageData);
 		auto filename = file.GetPath().filename().wstring();
 		ASSERT_TRUE(boost::algorithm::iequals(unloadDllFilename, filename));
-		auto lines = file.GetLines();
-		ASSERT_NE(0, boost::count_if(lines, 
-			[](const auto& line) { return line.HasBeenExecuted(); }));
+		ASSERT_NE(0, CountExecutedLines(file));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, OptimizedBuild)
+	{
+		auto computeCoverage = [&](bool optimizedBuild)
+		{
+			return ComputeCoverageData(
+				{ TestCoverageConsole::TestOptimizedBuild },
+				TestCoverageOptimizedBuild::GetOutputBinaryPath().wstring(),
+				TestCoverageOptimizedBuild::GetMainCppPath().wstring(), 
+				{}, false, false, optimizedBuild);
+		};
+
+		auto coverageData = computeCoverage(false);
+		ASSERT_NE(0, coverageData.GetExitCode());
+
+		auto coverageDataOptimizedBuild = computeCoverage(true);
+		ASSERT_EQ(0, coverageDataOptimizedBuild.GetExitCode());
+
+		const auto& fileOptimizedBuild = GetFirstFileCoverage(coverageDataOptimizedBuild);
+		const auto& file = GetFirstFileCoverage(coverageData);
+		auto optimizedBuildCount = CountExecutedLines(fileOptimizedBuild);
+		auto count = CountExecutedLines(file);
+
+		ASSERT_GT(optimizedBuildCount, count);
 	}
 }
