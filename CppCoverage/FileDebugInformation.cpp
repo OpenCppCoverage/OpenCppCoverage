@@ -119,7 +119,6 @@ namespace CppCoverage
 			const FileFilter::ModuleInfo& moduleInfo,
 			const FileFilter::FileInfo& fileInfo,
 			const FileFilter::LineInfo& lineInfo,
-			DWORD64 baseAddress,
 			ICoverageFilterManager& coverageFilterManager,
 			IDebugInformationEventHandler& debugInformationEventHandler)
 		{
@@ -127,7 +126,7 @@ namespace CppCoverage
 
 			if (coverageFilterManager.IsLineSelected(moduleInfo, fileInfo, lineInfo))
 			{
-				auto addressValue = lineInfo.lineAddress_ - baseAddress
+				auto addressValue = lineInfo.lineAddress_ - moduleInfo.baseAddress_
 					+ reinterpret_cast<DWORD64>(moduleInfo.baseOfImage_);
 
 				Address address{ moduleInfo.hProcess_,  reinterpret_cast<void*>(addressValue)};
@@ -138,27 +137,18 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	FileDebugInformation::FileDebugInformation(HANDLE hProcess)
-		: hProcess_{ hProcess }
-	{
-	}
-
-	//-------------------------------------------------------------------------
 	void FileDebugInformation::LoadFile(
-		void* processBaseOfImage,
-		DWORD64 baseAddress,
-		HANDLE hFileModule,
+		const FileFilter::ModuleInfo& moduleInfo,
 		const std::wstring& filePath,
 		ICoverageFilterManager& coverageFilterManager,
 		IDebugInformationEventHandler& debugInformationEventHandler) const
 	{		
-		LineContext context{ hProcess_ };
+		LineContext context{ moduleInfo.hProcess_ };
 
-		RetreiveLineData(filePath, baseAddress, context);
+		RetreiveLineData(filePath, moduleInfo.baseAddress_, context);
 		if (context.error_)
 			throw std::runtime_error(Tools::ToLocalString(*context.error_));
 
-		FileFilter::ModuleInfo moduleInfo{ hProcess_, hFileModule, processBaseOfImage, baseAddress };
 		FileFilter::FileInfo fileInfo{ filePath, std::move(context.lineInfoCollection_) };
 
 		for (const auto& lineInfo : fileInfo.lineInfoColllection_)
@@ -167,7 +157,6 @@ namespace CppCoverage
 				moduleInfo,
 				fileInfo, 
 				lineInfo, 
-				baseAddress,
 				coverageFilterManager, 
 				debugInformationEventHandler);
 		}

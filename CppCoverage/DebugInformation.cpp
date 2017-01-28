@@ -28,6 +28,8 @@
 #include "CppCoverageException.hpp"
 #include "ICoverageFilterManager.hpp"
 
+#include "FileFilter/ModuleInfo.hpp"
+
 namespace CppCoverage
 {
 	namespace
@@ -36,24 +38,21 @@ namespace CppCoverage
 		struct Context
 		{
 			Context(
-				DWORD64 baseAddress, 
+				HANDLE hProcess,
+				DWORD64 baseAddress,
 				void* processBaseOfImage,
 				HANDLE hFileModule,
 				const FileDebugInformation& fileDebugInformation,
 				ICoverageFilterManager& coverageFilterManager,
 				IDebugInformationEventHandler& debugInformationEventHandler)
-				: baseAddress_(baseAddress)
-				, processBaseOfImage_(processBaseOfImage)
-				, hFileModule_{ hFileModule }
+				: moduleInfo_{hProcess, hFileModule, processBaseOfImage, baseAddress}
 				, fileDebugInformation_{ fileDebugInformation }
 				, coverageFilterManager_(coverageFilterManager)
 				, debugInformationEventHandler_(debugInformationEventHandler)
 			{
 			}
 
-			DWORD64 baseAddress_;
-			void* processBaseOfImage_;
-			HANDLE hFileModule_;
+			FileFilter::ModuleInfo moduleInfo_;
 			const FileDebugInformation& fileDebugInformation_;
 			IDebugInformationEventHandler& debugInformationEventHandler_;
 			ICoverageFilterManager& coverageFilterManager_;
@@ -81,9 +80,7 @@ namespace CppCoverage
 				if (context->coverageFilterManager_.IsSourceFileSelected(filename))
 				{
 					context->fileDebugInformation_.LoadFile(
-						context->processBaseOfImage_,
-						context->baseAddress_,
-						context->hFileModule_,
+						context->moduleInfo_,
 						filename,
 						context->coverageFilterManager_,
 						context->debugInformationEventHandler_);
@@ -116,7 +113,6 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	DebugInformation::DebugInformation(HANDLE hProcess)
 		: hProcess_(hProcess)
-		, fileDebugInformation_{hProcess}
 	{		
 		SymSetOptions(SYMOPT_DEFERRED_LOADS | SYMOPT_LOAD_LINES
 				| SYMOPT_NO_UNQUALIFIED_LOADS | SYMOPT_UNDNAME | SYMOPT_DEBUG);
@@ -161,7 +157,7 @@ namespace CppCoverage
 				THROW("UnloadModule64 ");
 		} };
 
-		Context context{ baseAddress, baseOfImage, hFile, fileDebugInformation_, 
+		Context context{ hProcess_, baseAddress, baseOfImage, hFile, fileDebugInformation_, 
 			coverageFilterManager, debugInformationEventHandler };
 
 		if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))

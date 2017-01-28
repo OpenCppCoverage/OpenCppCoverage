@@ -19,6 +19,11 @@
 #include "CppCoverageExport.hpp"
 #include <Windows.h>
 
+namespace FileFilter
+{
+	class ModuleInfo;
+}
+
 namespace CppCoverage
 {
 	class IDebugInformationEventHandler;
@@ -26,13 +31,11 @@ namespace CppCoverage
 
 	class CPPCOVERAGE_DLL FileDebugInformation
 	{
-	public:
-		explicit FileDebugInformation(HANDLE hProcess);
-	
+	public:	
+		FileDebugInformation() = default;
+
 		void LoadFile(
-			void* processBaseOfImage,
-			DWORD64 baseAddress,
-			HANDLE hFileModule,
+			const FileFilter::ModuleInfo&,
 			const std::wstring& filename,
 			ICoverageFilterManager& coverageFilterManager,
 			IDebugInformationEventHandler& debugInformationEventHandler) const;
@@ -40,8 +43,5 @@ namespace CppCoverage
 	private:
 		FileDebugInformation(const FileDebugInformation&) = delete;
 		FileDebugInformation& operator=(const FileDebugInformation&) = delete;
-
-	private:
-		HANDLE hProcess_;
 	};
 }
