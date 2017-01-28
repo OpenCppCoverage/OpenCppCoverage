@@ -19,6 +19,7 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/optional/optional.hpp>
+#include <boost/uuid/uuid_generators.hpp>
 
 #include "Tools/DbgHelp.hpp"
 #include "Tools/Tool.hpp"
@@ -41,11 +42,11 @@ namespace CppCoverage
 				HANDLE hProcess,
 				DWORD64 baseAddress,
 				void* processBaseOfImage,
-				HANDLE hFileModule,
+				const boost::uuids::uuid& moduleUniqueId,
 				const FileDebugInformation& fileDebugInformation,
 				ICoverageFilterManager& coverageFilterManager,
 				IDebugInformationEventHandler& debugInformationEventHandler)
-				: moduleInfo_{hProcess, hFileModule, processBaseOfImage, baseAddress}
+				: moduleInfo_{hProcess, moduleUniqueId, processBaseOfImage, baseAddress}
 				, fileDebugInformation_{ fileDebugInformation }
 				, coverageFilterManager_(coverageFilterManager)
 				, debugInformationEventHandler_(debugInformationEventHandler)
@@ -157,7 +158,8 @@ namespace CppCoverage
 				THROW("UnloadModule64 ");
 		} };
 
-		Context context{ hProcess_, baseAddress, baseOfImage, hFile, fileDebugInformation_, 
+		auto moduleUniqueId = boost::uuids::random_generator()();
+		Context context{ hProcess_, baseAddress, baseOfImage, moduleUniqueId, fileDebugInformation_,
 			coverageFilterManager, debugInformationEventHandler };
 
 		if (!SymEnumSourceFiles(hProcess_, baseAddress, nullptr, SymEnumSourceFilesProc, &context))

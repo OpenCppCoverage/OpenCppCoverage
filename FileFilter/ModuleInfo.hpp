@@ -17,6 +17,7 @@
 #pragma once
 
 #include <windows.h>
+#include <boost/uuid/uuid.hpp>
 
 namespace FileFilter
 {
@@ -26,17 +27,17 @@ namespace FileFilter
 		//---------------------------------------------------------------------------
 		ModuleInfo(
 				HANDLE hProcess,
-				HANDLE hFileModule,
+				const boost::uuids::uuid& uniqueId,
 				void* baseOfImage,
 				DWORD64 baseAddress)
 			: hProcess_ {hProcess}
-			, hFileModule_{ hFileModule }
+			, uniqueId_{ uniqueId }
 			, baseOfImage_{ baseOfImage }
 			, baseAddress_{ baseAddress }
 		{}
 
 		const HANDLE hProcess_;
-		const HANDLE hFileModule_;
+		const boost::uuids::uuid uniqueId_;
 		void* const  baseOfImage_;
 		const DWORD64 baseAddress_;
 	};

@@ -21,6 +21,7 @@
 #include <unordered_map>
 #include <memory>
 #include <boost/filesystem/path.hpp>
+#include <boost/uuid/uuid.hpp>
 
 namespace FileFilter
 {	
@@ -53,8 +54,8 @@ namespace FileFilter
 		std::unordered_map<int, int> addressCountByLine_;
 		std::unordered_set<DWORD64> relocations_;
 
-		HANDLE hFileModule_;
 		HANDLE hProcess_;
+		boost::uuids::uuid moduleUniqueId_;
 		boost::filesystem::path filePath_;
 	};
 }
