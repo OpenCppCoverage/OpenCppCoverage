@@ -78,6 +78,9 @@ namespace CppCoverage
 		void EnableOptimizedBuildSupport();
 		bool IsOptimizedBuildSupportEnabled() const;
 
+		void AddExcludedLineRegex(const std::wstring&);
+		const std::vector<std::wstring>& GetExcludedLineRegexes() const;
+
 		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream&, const Options&);
 
 	private:
@@ -98,5 +101,6 @@ namespace CppCoverage
 		std::vector<OptionsExport> exports_;
 		std::vector<boost::filesystem::path> inputCoveragePaths_;
 		std::vector<UnifiedDiffSettings> unifiedDiffSettingsCollection_;
+		std::vector<std::wstring> excludedLineRegexes_;
 	};
 }

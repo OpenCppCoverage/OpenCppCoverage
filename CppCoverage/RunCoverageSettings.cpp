@@ -23,7 +23,8 @@ namespace CppCoverage
 	RunCoverageSettings::RunCoverageSettings(
 			const StartInfo& startInfo,
 			const CoverageFilterSettings& settings,
-			const std::vector<UnifiedDiffSettings>& unifiedDiffSettings)
+			const std::vector<UnifiedDiffSettings>& unifiedDiffSettings,
+			const std::vector<std::wstring>& excludedLineRegexes)
 		: startInfo_{ startInfo }
 		, coverageFilterSettings_{ settings }
 		, unifiedDiffSettings_{ unifiedDiffSettings }
@@ -31,6 +32,7 @@ namespace CppCoverage
 		, continueAfterCppException_{ false }
 		, maxUnmatchPathsForWarning_{ 0 }
 		, optimizedBuildSupport_{ false }
+		, excludedLineRegexes_{ excludedLineRegexes }
 	{
 	}
 
@@ -98,5 +100,11 @@ namespace CppCoverage
 	bool RunCoverageSettings::GetOptimizedBuildSupport() const
 	{
 		return optimizedBuildSupport_;
+	}
+
+	//-------------------------------------------------------------------------
+	const std::vector<std::wstring>& RunCoverageSettings::GetExcludedLineRegexes() const
+	{
+		return excludedLineRegexes_;
 	}
 }

@@ -62,6 +62,7 @@ namespace CppCoverage
 		coverageFilterManager_ = std::make_unique<CoverageFilterManager>(
 			settings.GetCoverageFilterSettings(),
 			settings.GetUnifiedDiffSettings(), 
+			settings.GetExcludedLineRegexes(),
 			settings.GetOptimizedBuildSupport());
 		const auto& startInfo = settings.GetStartInfo();
 		int exitCode = debugger.Debug(startInfo, *this);

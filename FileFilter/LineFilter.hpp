@@ -29,14 +29,18 @@ namespace Tools
 
 namespace FileFilter
 {	
+	class FileInfo;
+	class LineInfo;
+
 	class FILEFILTER_DLL LineFilter
 	{
 	public:
 		explicit LineFilter(
-			const std::vector<std::wstring>& excludedRegexes,
+			const std::vector<std::wstring>& excludedLineRegexes,
 			bool enableLog = true);
 		~LineFilter();
 
+		bool IsLineSelected(const FileInfo&, const LineInfo&);
 		bool IsLineSelected(const boost::filesystem::path&, int lineNumber);
 		int GetFileReadCount() const;
 
@@ -49,7 +53,7 @@ namespace FileFilter
 		const std::vector<std::string>* GetLines(const boost::filesystem::path&);
 		bool IsLineSelected(const std::string& line) const;
 
-		std::vector<std::regex> excludedRegexes_;
+		std::vector<std::regex> excludedLineRegexes_;
 		boost::filesystem::path filePath_;
 		std::unique_ptr<Tools::MappedFile> mappedFileForFilePath_;
 		int fileReadCount_;

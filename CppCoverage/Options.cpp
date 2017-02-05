@@ -184,6 +184,18 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	void Options::AddExcludedLineRegex(const std::wstring& excludedRegex)
+	{
+		excludedLineRegexes_.push_back(excludedRegex);
+	}
+
+	//-------------------------------------------------------------------------
+	const std::vector<std::wstring>& Options::GetExcludedLineRegexes() const
+	{
+		return excludedLineRegexes_;
+	}
+
+	//-------------------------------------------------------------------------
 	std::wostream& operator<<(std::wostream& ostr, const Options& options)
 	{
 		if (options.optionalStartInfo_)
@@ -210,8 +222,14 @@ namespace CppCoverage
 		for (const auto& settings : options.unifiedDiffSettingsCollection_)
 		{
 			ostr << settings.GetUnifiedDiffPath() << L" Root folder: ";
-			ostr << settings.GetRootDiffFolder().get_value_or(L"") << std::endl;
+			ostr << settings.GetRootDiffFolder().get_value_or(L"") << " ";
 		}
+		ostr << std::endl;
+
+		ostr << L"Excluded line regular expressions: ";
+		for (const auto& excludedRegex : options.excludedLineRegexes_)
+			ostr << excludedRegex << L" ";
+		ostr << std::endl;
 
 		return ostr;
 	}

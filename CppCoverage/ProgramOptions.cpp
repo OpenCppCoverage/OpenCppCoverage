@@ -116,7 +116,9 @@ namespace CppCoverage
 					po::value<T_Strings>()->composing(), GetUnifiedDiffHelp().c_str())
 				(ProgramOptions::ContinueAfterCppExceptionOption.c_str(), "Try to continue after throwing a C++ exception.")
 				(ProgramOptions::OptimizedBuildOption.c_str(), 
-					"Enable heuristics to support optimized build. See documentation for restrictions.");
+					"Enable heuristics to support optimized build. See documentation for restrictions.")
+				(ProgramOptions::ExcludedLineRegexOption.c_str(), po::value<T_Strings>()->composing(),
+					"Exclude all lines match the regular expression. Regular expression must match the whole line.");
 		}
 
 		//-------------------------------------------------------------------------
@@ -155,6 +157,7 @@ namespace CppCoverage
 	const std::string ProgramOptions::UnifiedDiffOption = "unified_diff";
 	const std::string ProgramOptions::ContinueAfterCppExceptionOption = "continue_after_cpp_exception";
 	const std::string ProgramOptions::OptimizedBuildOption = "optimized_build";
+	const std::string ProgramOptions::ExcludedLineRegexOption = "excluded_line_regex";
 
 	//-------------------------------------------------------------------------
 	ProgramOptions::ProgramOptions(const std::vector<std::string>& exportTypes)

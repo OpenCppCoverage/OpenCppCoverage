@@ -140,7 +140,8 @@ namespace OpenCppCoverage
 				cov::RunCoverageSettings runCoverageSettings(
 											*startInfo, 
 											coverageFilterSettings, 
-											options.GetUnifiedDiffSettingsCollection());
+											options.GetUnifiedDiffSettingsCollection(),
+											options.GetExcludedLineRegexes());
 
 				runCoverageSettings.SetCoverChildren(options.IsCoverChildrenModeEnabled());
 				runCoverageSettings.SetContinueAfterCppException(options.IsContinueAfterCppExceptionModeEnabled());

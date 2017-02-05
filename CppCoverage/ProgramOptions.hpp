@@ -50,6 +50,7 @@ namespace CppCoverage
 		static const std::string UnifiedDiffOption;
 		static const std::string ContinueAfterCppExceptionOption;
 		static const std::string OptimizedBuildOption;
+		static const std::string ExcludedLineRegexOption;
 
 		ProgramOptions(const std::vector<std::string>& optionsExportTypes);
 

@@ -235,6 +235,18 @@ namespace CppCoverage
 				}
 			}
 		}
+
+		//----------------------------------------------------------------------------
+		void AddExcludedLineRegexes(const po::variables_map& variables, Options& options)
+		{
+			auto excludedLineRegexes = GetOptionalValue<std::vector<std::string>>(
+				variables, ProgramOptions::ExcludedLineRegexOption);
+			if (excludedLineRegexes)
+			{
+				for (const auto& excludedLineRegex : *excludedLineRegexes)
+					options.AddExcludedLineRegex(Tools::LocalToWString(excludedLineRegex));
+			}
+		}
 	}
 		
 	//-------------------------------------------------------------------------
@@ -345,6 +357,7 @@ namespace CppCoverage
 		AddExporTypes(variables, options);
 		AddInputCoverages(variables, options);
 		AddUnifiedDiff(variables, options);
+		AddExcludedLineRegexes(variables, options);
 
 		if (!options.GetStartInfo() && options.GetInputCoveragePaths().empty())
 			throw OptionsParserException("You must specify a program to execute or use --" + ProgramOptions::InputCoverageValue);

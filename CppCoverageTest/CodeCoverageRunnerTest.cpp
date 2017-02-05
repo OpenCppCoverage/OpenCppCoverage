@@ -98,7 +98,8 @@ namespace CppCoverageTest
 			const std::vector<cov::UnifiedDiffSettings>& unifiedDiffSettingsCollection = {},
 			bool coverChildren = true,
 			bool continueAfterCppException = false,
-			bool optimizedBuildSupport = false)
+			bool optimizedBuildSupport = false,
+			const std::vector<std::wstring>& excludedLineRegexes = {})
 		{
 			cov::CodeCoverageRunner codeCoverageRunner;
 			cov::Patterns modulePatterns{false};
@@ -125,7 +126,8 @@ namespace CppCoverageTest
 			cov::RunCoverageSettings settings(
 				startInfo,
 				coverageFilterSettings,
-				unifiedDiffSettingsCollection);
+				unifiedDiffSettingsCollection,
+				excludedLineRegexes);
 			settings.SetCoverChildren(coverChildren);
 			settings.SetContinueAfterCppException(continueAfterCppException);
 			settings.SetOptimizedBuildSupport(optimizedBuildSupport);
@@ -146,7 +148,8 @@ namespace CppCoverageTest
 			const std::vector<cov::UnifiedDiffSettings>& unifiedDiffSettingsCollection = {},
 			bool coverChildren = true,
 			bool continueAfterCppException = false,
-			bool optimizedBuildSupport = false)
+			bool optimizedBuildSupport = false,
+			const std::vector<std::wstring>& excludedLineRegexes = {})
 		{
 			return ComputeCoverageDataPatterns(
 				arguments, 
@@ -155,7 +158,8 @@ namespace CppCoverageTest
 				unifiedDiffSettingsCollection, 
 				coverChildren, 
 				continueAfterCppException,
-				optimizedBuildSupport);
+				optimizedBuildSupport,
+				excludedLineRegexes);
 		}
 
 		//---------------------------------------------------------------------

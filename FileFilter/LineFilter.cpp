@@ -17,6 +17,8 @@
 #include "stdafx.h"
 #include "LineFilter.hpp"
 
+#include "FileFilter/FileInfo.hpp"
+#include "FileFilter/LineInfo.hpp"
 #include "Tools/Log.hpp"
 #include "Tools/Tool.hpp"
 #include "Tools/MappedFile.hpp"
@@ -25,13 +27,21 @@ namespace FileFilter
 {
 	//-------------------------------------------------------------------------
 	LineFilter::LineFilter(
-		const std::vector<std::wstring>& excludedRegexes,
+		const std::vector<std::wstring>& excludedLineRegexes,
 		bool enableLog)
 		: fileReadCount_{0}
 		, enableLog_{ enableLog }
 	{
-		for (const auto& regex : excludedRegexes)
-			excludedRegexes_.emplace_back(Tools::ToLocalString(regex));
+		for (const auto& regex : excludedLineRegexes)
+			excludedLineRegexes_.emplace_back(Tools::ToLocalString(regex));
+	}
+
+	//-------------------------------------------------------------------------
+	bool LineFilter::IsLineSelected(
+		const FileInfo& fileInfo,
+		const LineInfo& lineInfo)
+	{
+		return IsLineSelected(fileInfo.filePath_, lineInfo.lineNumber_);
 	}
 
 	//-------------------------------------------------------------------------
@@ -61,7 +71,7 @@ namespace FileFilter
 	//-------------------------------------------------------------------------
 	bool LineFilter::IsLineSelected(const std::string& line) const
 	{
-		for (const auto& excludedRegex : excludedRegexes_)
+		for (const auto& excludedRegex : excludedLineRegexes_)
 		{
 			if (std::regex_match(line, excludedRegex))
 				return false;

@@ -22,6 +22,7 @@
 #include "WildcardCoverageFilter.hpp"
 #include "ICoverageFilterManager.hpp"
 #include "UnifiedDiffCoverageFilterManager.hpp"
+#include "FileFilter/LineFilter.hpp"
 
 namespace FileFilter
 {
@@ -39,6 +40,7 @@ namespace CppCoverage
 		explicit CoverageFilterManager(
 			const CoverageFilterSettings&,
 			const std::vector<UnifiedDiffSettings>&,
+			const std::vector<std::wstring>& excludedLineRegexes,
 			bool useReleaseCoverageFilter);
 
 		~CoverageFilterManager();
@@ -58,6 +60,7 @@ namespace CppCoverage
 
 		const WildcardCoverageFilter wildcardCoverageFilter_;
 		UnifiedDiffCoverageFilterManager unifiedDiffCoverageFilterManager_;
+		FileFilter::LineFilter lineFilter_;
 
 		const std::unique_ptr<FileFilter::ReleaseCoverageFilter> optionalReleaseCoverageFilter_;
 	};

@@ -48,6 +48,7 @@ namespace CppCoverageTest
 		ASSERT_TRUE(options->IsAggregateByFileModeEnabled());
 		ASSERT_FALSE(options->IsContinueAfterCppExceptionModeEnabled());
 		ASSERT_FALSE(options->IsOptimizedBuildSupportEnabled());
+		ASSERT_TRUE(options->GetExcludedLineRegexes().empty());
 	}
 
 	//-------------------------------------------------------------------------
@@ -213,5 +214,19 @@ namespace CppCoverageTest
 		ASSERT_TRUE(TestTools::Parse(parser,
 		{ TestTools::OptionPrefix + cov::ProgramOptions::OptimizedBuildOption })
 			->IsOptimizedBuildSupportEnabled());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, ExcludedLineRegex)
+	{
+		cov::OptionsParser parser;
+		const auto excludedLineRegex = ".*";
+		auto option = TestTools::Parse(parser, 
+			{	TestTools::OptionPrefix + cov::ProgramOptions::ExcludedLineRegexOption,
+				excludedLineRegex });
+		ASSERT_TRUE(option.is_initialized());
+		ASSERT_THAT(
+			option->GetExcludedLineRegexes(), 
+			testing::ElementsAre(Tools::LocalToWString(excludedLineRegex)));
 	}
 }

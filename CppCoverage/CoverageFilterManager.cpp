@@ -31,9 +31,11 @@ namespace CppCoverage
 	CoverageFilterManager::CoverageFilterManager(
 		const CoverageFilterSettings& settings,
 		const std::vector<UnifiedDiffSettings>& unifiedDiffSettingsCollection,
+		const std::vector<std::wstring>& excludedLineRegexes,
 		bool useReleaseCoverageFilter)
 		: wildcardCoverageFilter_{ settings }
 		, unifiedDiffCoverageFilterManager_{ unifiedDiffSettingsCollection }
+		, lineFilter_{ excludedLineRegexes }
 		, optionalReleaseCoverageFilter_{ useReleaseCoverageFilter ?
 			std::make_unique<FileFilter::ReleaseCoverageFilter>() : nullptr }		
 	{
@@ -72,6 +74,9 @@ namespace CppCoverage
 		{
 			return false;
 		}
+
+		if (!lineFilter_.IsLineSelected(fileInfo, lineInfo))
+			return false;
 
 		return unifiedDiffCoverageFilterManager_.IsLineSelected(fileInfo, lineInfo);
 	}
