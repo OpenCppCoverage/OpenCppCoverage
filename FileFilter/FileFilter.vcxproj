@@ -161,6 +161,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="LineFilter.cpp" />
     <ClCompile Include="UnifiedDiffCoverageFilter.cpp" />
     <ClCompile Include="UnifiedDiffParser.cpp" />
     <ClCompile Include="UnifiedDiffParserException.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="ReleaseCoverageFilter.hpp" />
     <ClInclude Include="RelocationsExtractor.hpp" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="LineFilter.hpp" />
     <ClInclude Include="UnifiedDiffCoverageFilter.hpp" />
     <ClInclude Include="UnifiedDiffParser.hpp" />
     <ClInclude Include="UnifiedDiffParserException.hpp" />
