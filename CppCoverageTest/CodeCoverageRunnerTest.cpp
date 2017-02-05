@@ -508,4 +508,24 @@ namespace CppCoverageTest
 		ASSERT_GT(optimizedBuildCount, count);
 #endif
 	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, ExcludedLine)
+	{
+		auto computeCoverage = [&](const std::vector<std::wstring>& excludedRegexes)
+		{
+			return ComputeCoverageData(
+				{ TestCoverageConsole::TestBasic },
+				TestCoverageConsole::GetOutputBinaryPath().wstring(),
+				TestCoverageConsole::GetTestBasicFilename().wstring(),
+				{}, false, false, false, excludedRegexes);
+		};
+		auto coverageDataWithExcludedLine = computeCoverage({ L".*ExcludedLine.*" });
+		const auto& fileWithExcludedLine = GetFirstFileCoverage(coverageDataWithExcludedLine);
+
+		auto coverageData = computeCoverage({});
+		const auto& file = GetFirstFileCoverage(coverageData);
+
+		ASSERT_EQ(file.GetLines().size(), fileWithExcludedLine.GetLines().size() + 1);
+	}
 }

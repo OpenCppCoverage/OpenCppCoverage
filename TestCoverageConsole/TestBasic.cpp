@@ -70,4 +70,6 @@ namespace TestCoverageConsole
 
 		auto fct = (void (*)())GetProcAddress(module, "TestUnloadDll");
 		fct();	}
+
+	const std::string ExcludedLine = "For CodeCoverageRunnerTest::ExcludedLine";
 }
