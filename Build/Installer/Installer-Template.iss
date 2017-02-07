@@ -47,6 +47,7 @@ Source: "{#MyAppVersion}\{#Architecture}\binaries\boost_program_options-vc140-mt
 Source: "{#MyAppVersion}\{#Architecture}\binaries\boost_regex-vc140-mt-1_59.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyAppVersion}\{#Architecture}\binaries\boost_system-vc140-mt-1_59.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyAppVersion}\{#Architecture}\binaries\boost_thread-vc140-mt-1_59.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#MyAppVersion}\{#Architecture}\binaries\boost_iostreams-vc140-mt-1_59.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyAppVersion}\{#Architecture}\binaries\CppCoverage.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyAppVersion}\{#Architecture}\binaries\Exporter.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#MyAppVersion}\{#Architecture}\binaries\libctemplate.dll"; DestDir: "{app}"; Flags: ignoreversion
