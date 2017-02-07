@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<coverage line-rate="0.66666666666666663">
+<coverage line-rate="0.66666666666666663" branch-rate="0" complexity="0" branches-covered="0" branches-valid="0" timestamp="0" lines-covered="0" lines-valid="0" version="0">
+  <sources>
+    <source/>
+  </sources>
   <packages>
-    <package name="Module" line-rate="0.66666666666666663">
+    <package name="Module" line-rate="0.66666666666666663" branch-rate="0" complexity="0">
       <classes>
-        <class name="EmptyFile" filename="EmptyFile" line-rate="1">
+        <class name="EmptyFile" filename="EmptyFile" line-rate="1" branch-rate="0" complexity="0">
+          <methods/>
           <lines/>
         </class>
-        <class name="File" filename="File" line-rate="0.5">
+        <class name="File" filename="File" line-rate="0.5" branch-rate="0" complexity="0">
+          <methods/>
           <lines>
             <line number="0" hits="1"/>
             <line number="1" hits="0"/>
           </lines>
         </class>
-        <class name="File2" filename="File2" line-rate="1">
+        <class name="File2" filename="File2" line-rate="1" branch-rate="0" complexity="0">
+          <methods/>
           <lines>
             <line number="0" hits="1"/>
           </lines>
@@ -20,7 +26,4 @@
       </classes>
     </package>
   </packages>
-  <sources>
-    <source/>
-  </sources>
 </coverage>

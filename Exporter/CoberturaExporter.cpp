@@ -53,20 +53,29 @@ namespace Exporter
 		}
 
 		//-------------------------------------------------------------------------
+		void SetCoverage(
+			property_tree::wptree& node,
+			const CppCoverage::CoverageRate& coverageRate)
+		{
+			node.put(L"<xmlattr>.line-rate", coverageRate.GetRate());
+			node.put(L"<xmlattr>.branch-rate", 0);
+			node.put(L"<xmlattr>.complexity", 0);
+		}
+
+		//-------------------------------------------------------------------------
 		void FillFileTree(
 			const cov::CoverageRateComputer& coverageRateComputer,
 			property_tree::wptree& fileTree, 
-			const cov::FileCoverage& file,
-			std::unordered_set<std::wstring>& rootPaths)
+			const cov::FileCoverage& file)
 		{
 			const auto& path = file.GetPath();
 			auto res = path.relative_path();
 			const auto& coverageRate = coverageRateComputer.GetCoverageRate(file);
 
-			rootPaths.insert(path.root_name().wstring());
 			fileTree.put(L"<xmlattr>.name", ToUft8WString(path.filename()));
 			fileTree.put(L"<xmlattr>.filename", ToUft8WString(path.relative_path()));
-			fileTree.put(L"<xmlattr>.line-rate", coverageRate.GetRate());
+			SetCoverage(fileTree, coverageRate);
+			AddChild(fileTree, L"methods");
 
 			property_tree::wptree& linesTree = AddChild(fileTree, L"lines");
 
@@ -81,13 +90,35 @@ namespace Exporter
 
 		//-------------------------------------------------------------------------
 		void WriteSourceRoots(
-			property_tree::wptree& coverageTree,
-			const std::unordered_set<std::wstring>& rootPaths)
-		{			
+			const CppCoverage::CoverageData& coverageData,
+			property_tree::wptree& coverageTree)
+		{
+			std::unordered_set<std::wstring> rootPaths;
+
+			for (const auto& module : coverageData.GetModules())
+			{
+				for (const auto& file : module->GetFiles())
+				{
+					const auto& path = file->GetPath();
+					rootPaths.insert(path.root_name().wstring());
+				}
+			}
+
 			auto& sourcesTree = AddChild(coverageTree, L"sources");
 
 			for (const auto& rootPath : rootPaths)
 				sourcesTree.add(L"source", rootPath);
+		}
+
+		//-------------------------------------------------------------------------
+		void SetCoverageAttributes(property_tree::wptree& coverageTree)
+		{
+			coverageTree.put(L"<xmlattr>.branches-covered", 0);
+			coverageTree.put(L"<xmlattr>.branches-valid", 0);
+			coverageTree.put(L"<xmlattr>.timestamp", 0);
+			coverageTree.put(L"<xmlattr>.lines-covered", 0);
+			coverageTree.put(L"<xmlattr>.lines-valid", 0);
+			coverageTree.put(L"<xmlattr>.version", 0);
 		}
 
 		//-------------------------------------------------------------------------
@@ -96,12 +127,13 @@ namespace Exporter
 			const CppCoverage::CoverageData& coverageData)
 		{
 			cov::CoverageRateComputer coverageRateComputer(coverageData);
-
 			auto& coverageTree = AddChild(root, L"coverage");
-			coverageTree.put(L"<xmlattr>.line-rate", coverageRateComputer.GetCoverageRate().GetRate());
+			SetCoverage(coverageTree, coverageRateComputer.GetCoverageRate());
+			SetCoverageAttributes(coverageTree);
+
+			WriteSourceRoots(coverageData, coverageTree);
 
 			property_tree::wptree& packagesTree = AddChild(coverageTree, L"packages");
-			std::unordered_set<std::wstring> rootPaths;			
 
 			for (const auto& module : coverageData.GetModules())
 			{
@@ -113,16 +145,15 @@ namespace Exporter
 					const auto& coverageRate = coverageRateComputer.GetCoverageRate(*module);
 
 					packageTree.put(L"<xmlattr>.name", ToUft8WString(module->GetPath()));
-					packageTree.put(L"<xmlattr>.line-rate", coverageRate.GetRate());
+					SetCoverage(packageTree, coverageRate);
 
 					for (const auto& file : module->GetFiles())
 					{
 						property_tree::wptree& fileTree = AddChild(classesTree, L"class");
-						FillFileTree(coverageRateComputer, fileTree, *file, rootPaths);
+						FillFileTree(coverageRateComputer, fileTree, *file);
 					}
 				}
 			}
-			WriteSourceRoots(coverageTree, rootPaths);
 		}
 	}
 
