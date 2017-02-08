@@ -93,7 +93,7 @@ namespace Exporter
 		//-------------------------------------------------------------------------
 		void WriteContentTo(const std::string& content, const fs::path& path)
 		{
-			std::ofstream ofs(path.string());
+			std::ofstream ofs(path.string(), std::ios::binary);
 
 			if (!ofs)
 				THROW(L"Cannot open file" << path);
