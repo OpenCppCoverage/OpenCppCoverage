@@ -18,28 +18,28 @@
 #include <windows.h>
 
 #include "FileFilter/RelocationsExtractor.hpp"
-#include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
+#include "TestCoverageOptimizedBuild/TestCoverageOptimizedBuild.hpp"
 
 namespace FileFilterTest
 {	
-	// These values are computed with Dumpbin /RELOCATIONS TestCoverageSharedLib.dll
+	// These values are computed with Dumpbin /RELOCATIONS TestCoverageOptimizedBuild.dll
 #ifdef _WIN64
 	#ifdef NDEBUG
-		const auto firstAdress = 0x180003908;
-		const auto lastAdress = 0x1800042C8;
+		const auto firstAdress = 0x180002CDC;
+		const auto lastAdress = 0x180003228;
 	#else
-		auto firstAdress = 0x180011E90;
-		auto lastAdress = 0x180011609;
+		auto firstAdress = 0x180011790;
+		auto lastAdress = 0x18001131B;
 	#endif
 	const auto baseAddress = 0x180000000;
 
 #else
 	#ifdef NDEBUG
-		const auto firstAdress = 0x100040C4;
-		const auto lastAdress = 0x10004170;
+		const auto firstAdress = 0x100030C4;
+		const auto lastAdress = 0x10003104;
 	#else
-		const auto firstAdress = 0x10024190;
-		const auto lastAdress = 0x10020C48;
+		const auto firstAdress = 0x1001D158;
+		const auto lastAdress = 0x100112B2;
 	#endif
 
 	const auto baseAddress = 0x10000000;
@@ -51,7 +51,7 @@ namespace FileFilterTest
 		FileFilter::RelocationsExtractor extractor;
 
 		auto hProcess = GetCurrentProcess();
-		auto hModule = GetModuleHandle(TestCoverageSharedLib::GetOutputBinaryPath().c_str());
+		auto hModule = GetModuleHandle(TestCoverageOptimizedBuild::GetOutputBinaryPath().c_str());
 		auto baseOfImage = reinterpret_cast<DWORD64>(hModule);
 		ASSERT_NE(0, baseOfImage);
 

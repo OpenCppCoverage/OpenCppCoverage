@@ -176,8 +176,8 @@
     <ProjectReference Include="..\FileFilter\FileFilter.vcxproj">
       <Project>{6fd7c5be-04bd-496d-a924-285a3e867814}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\TestCoverageSharedLib\TestCoverageSharedLib.vcxproj">
-      <Project>{0481b51c-98f1-4e92-a51e-162b77ecd939}</Project>
+    <ProjectReference Include="..\TestCoverageOptimizedBuild\TestCoverageOptimizedBuild.vcxproj">
+      <Project>{2fd17ba1-0e02-49e6-84c3-0a8f63fef871}</Project>
     </ProjectReference>
     <ProjectReference Include="..\TestHelper\TestHelper.vcxproj">
       <Project>{120d7bdf-3b21-48b7-8eb7-dad94f863026}</Project>
