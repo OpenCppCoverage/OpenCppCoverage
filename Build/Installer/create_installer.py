@@ -18,7 +18,7 @@ def get_opencppcoverage_version(repository_root):
 #------------------------------------------------------------------------------
 def get_options():
     parser = OptionParser()
-    parser.add_option("--out_dir", dest="out_dir", help="Destination diretory")
+    parser.add_option("--out_dir", dest="out_dir", help="Destination directory")
     (options, args) = parser.parse_args()
     return options
 
@@ -98,23 +98,11 @@ def get_child(node, child_name):
 
 
 #------------------------------------------------------------------------------
-def get_vspackage_version(repository_root):
-    manifest_path = os.path.join(repository_root, 'VSPackage', 'source.extension.vsixmanifest')
-    tree = ET.parse(manifest_path)
-    root = tree.getroot()
-    metadata = get_child(root, 'Metadata')
-    identity = get_child(metadata, 'Identity')
-    version = identity.attrib['Version']
-    return version
-
-
-#------------------------------------------------------------------------------
-def create_releases(versions, options, architectures_infos, iss_template_path):
-    for version in versions:
-        version_path = os.path.join(options.out_dir, version)
-        os.mkdir(version_path)
-        for architectures_info in architectures_infos:
-            create_release(version, architectures_info[0], version_path, architectures_info[1], iss_template_path)
+def create_releases(version, options, architectures_infos, iss_template_path):
+	version_path = os.path.join(options.out_dir, version)
+	os.mkdir(version_path)
+	for architectures_info in architectures_infos:
+		create_release(version, architectures_info[0], version_path, architectures_info[1], iss_template_path)
 
 
  #------------------------------------------------------------------------------
@@ -126,25 +114,15 @@ def create_installers(architectures_infos, options, opencppcoverage_version, iss
 
 
 #------------------------------------------------------------------------------
-def copy_vsix(options, vspackage_version, repository_root):
-    vspackage_version_path = os.path.join(options.out_dir, vspackage_version)
-    vsix_path = os.path.join(repository_root, 'VSPackage', 'bin', 'Release', 'VSPackage.vsix')
-    vsix_dest = os.path.join(vspackage_version_path, os.path.basename(vsix_path))
-    shutil.copyfile(vsix_path, vsix_dest)
-
-
-#------------------------------------------------------------------------------
 if __name__ == '__main__':
     options = get_options()
     script_directory = os.path.dirname(os.path.abspath(__file__))
     repository_root = os.path.abspath(os.path.join(script_directory, '..', '..'))
     iss_template_path = os.path.join(script_directory, 'Installer-Template.iss')
-    opencppcoverage_version = get_opencppcoverage_version(repository_root)
-    vspackage_version = 'VSPackage-' + get_vspackage_version(repository_root)
-    versions = [opencppcoverage_version, vspackage_version]
+    opencppcoverage_version = get_opencppcoverage_version(repository_root)        
     architectures_infos = [('x86', os.path.join(repository_root, 'Release')),
                           ('x64', os.path.join(repository_root, 'x64', 'Release'))]
 
-    create_releases(versions, options, architectures_infos, iss_template_path)
+    create_releases(opencppcoverage_version, options, architectures_infos, iss_template_path)
     create_installers(architectures_infos, options, opencppcoverage_version, iss_template_path)
-    copy_vsix(options, vspackage_version, repository_root)
+
