@@ -47,11 +47,17 @@ namespace Exporter
 		const std::string thirdPartyPathTemplate = "THIRD_PARTY_PATH";
 		
 		//-------------------------------------------------------------------------
+		std::string ToString(const std::wstring& str)
+		{
+			return Tools::ToUtf8String(str);
+		}
+
+		//-------------------------------------------------------------------------
 		std::string ToHtmlPath(const fs::path& path)
 		{
-			auto htmlPath = path.string();
-			boost::algorithm::replace_all(htmlPath, "\\", "/");
-			return htmlPath;
+			auto htmlPath = path.wstring();
+			boost::algorithm::replace_all(htmlPath, L"\\", L"/");
+			return ToString(htmlPath);
 		}
 
 		//-------------------------------------------------------------------------
@@ -110,7 +116,7 @@ namespace Exporter
 
 					if (linkStr)
 					{
-						auto fullPath = output.parent_path() / linkStr;
+						auto fullPath = output.parent_path() / Tools::Utf8ToWString(linkStr);
 
 						if (!fs::exists(fullPath))
 							THROW("Link: " << fullPath << " does not exists");
@@ -159,13 +165,13 @@ namespace Exporter
 		const std::wstring& title, 
 		const std::wstring& message) const
 	{
-		std::string titleStr{ Tools::ToLocalString(title) };
+		auto titleStr = ToString(title);
 		std::unique_ptr<ctemplate::TemplateDictionary> dictionary;
 
 		dictionary.reset(new ctemplate::TemplateDictionary(titleStr));
 
 		dictionary->SetValue(TitleTemplate, titleStr);
-		dictionary->SetValue(messageTemplate, Tools::ToLocalString(message));
+		dictionary->SetValue(messageTemplate, ToString(message));
 
 		return dictionary;
 	}
@@ -180,7 +186,7 @@ namespace Exporter
 		auto sectionDictionary = moduleTemplateDictionary.AddSectionDictionary(MainTemplateItemSection);
 		
 		moduleTemplateDictionary.SetValue(thirdPartyPathTemplate, "../third-party");
-		FillSection(*sectionDictionary, fileOutput, coverageRate, originalFilename.string());
+		FillSection(*sectionDictionary, fileOutput, coverageRate, originalFilename);
 	}
 	
 	//-------------------------------------------------------------------------
@@ -193,7 +199,7 @@ namespace Exporter
 		auto sectionDictionary = projectDictionary.AddSectionDictionary(MainTemplateItemSection);			
 			
 		projectDictionary.SetValue(thirdPartyPathTemplate, "third-party");
-		FillSection(*sectionDictionary, &moduleOutput, coverageRate, originalFilename.string());
+		FillSection(*sectionDictionary, &moduleOutput, coverageRate, originalFilename);
 	}				
 	
 	//-------------------------------------------------------------------------
@@ -221,7 +227,7 @@ namespace Exporter
 		bool enableCodePrettify,
 		const fs::path& output) const
 	{
-		auto titleStr = Tools::ToLocalString(title);
+		auto titleStr = ToString(title);
 		ctemplate::TemplateDictionary dictionary(titleStr);
 		std::string bodyLoad = TemplateHtmlExporter::BodyOnLoadFct;
 		std::string warning = "";
@@ -233,7 +239,7 @@ namespace Exporter
 		}
 
 		dictionary.SetValue(TitleTemplate, titleStr);
-		dictionary.SetValue(codeTemplate, Tools::ToLocalString(codeContent));
+		dictionary.SetValue(codeTemplate, ToString(codeContent));
 		dictionary.SetValue(BodyOnLoadTemplate, bodyLoad);
 		dictionary.SetValue(SourceWarningMessageTemplate, warning);
 		WriteTemplate(dictionary, fileTemplatePath_, output);
@@ -251,11 +257,11 @@ namespace Exporter
 		ctemplate::TemplateDictionary& sectionDictionary,
 		const fs::path* link,
 		const cov::CoverageRate& coverageRate,
-		const std::string& name)
+		const fs::path& originalFilename)
 	{
 		if (link)
 		{
-			auto htmlPath = ToHtmlPath(link->string());
+			auto htmlPath = ToHtmlPath(*link);
 			sectionDictionary.SetValueAndShowSection(
 				TemplateHtmlExporter::LinkTemplate, 
 				htmlPath, 
@@ -270,6 +276,7 @@ namespace Exporter
 		sectionDictionary.SetIntValue(TemplateHtmlExporter::UnExecutedLineTemplate, coverageRate.GetUnExecutedLinesCount());
 		sectionDictionary.SetIntValue(TemplateHtmlExporter::TotalLineTemplate, coverageRate.GetTotalLinesCount());
 		sectionDictionary.SetValue(idTemplate, GetUuid());
+		auto name = ToString(originalFilename.wstring());
 		sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);
 	}
 }

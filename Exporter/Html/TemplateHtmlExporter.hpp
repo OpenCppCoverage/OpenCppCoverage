@@ -98,7 +98,7 @@ namespace Exporter
 			ctemplate::TemplateDictionary&,
 			const fs::path* link,
 			const CppCoverage::CoverageRate&,
-			const std::string& name);
+			const fs::path& originalFilename);
 
 	private:
 		fs::path mainTemplatePath_;		
