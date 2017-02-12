@@ -53,7 +53,7 @@ namespace Exporter
 		explicit HtmlExporter(const boost::filesystem::path& templateFolder);
 
 		boost::filesystem::path GetDefaultPath(const std::wstring& prefix) const override;
-		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& outputFolder) const override;
+		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& outputFolder) override;
 
 	private:
 		HtmlExporter(const HtmlExporter&) = delete;
@@ -67,7 +67,7 @@ namespace Exporter
 			CppCoverage::CoverageRateComputer&,
 			const CppCoverage::ModuleCoverage& module,
 			const HtmlFolderStructure& htmlFolderStructure,
-			ctemplate::TemplateDictionary& moduleTemplateDictionary) const;
+			ctemplate::TemplateDictionary& moduleTemplateDictionary);
 
 	private:
 		TemplateHtmlExporter exporter_;

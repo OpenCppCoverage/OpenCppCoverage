@@ -27,7 +27,7 @@ namespace Exporter
 		BinaryExporter() = default;
 
 		boost::filesystem::path GetDefaultPath(const std::wstring& prefix) const override;
-		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& output) const override;
+		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& output) override;
 
 	private:
 		BinaryExporter(const BinaryExporter&) = delete;

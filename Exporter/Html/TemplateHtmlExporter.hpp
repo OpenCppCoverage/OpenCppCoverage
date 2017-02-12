@@ -19,6 +19,7 @@
 #include <memory>
 
 #include <boost/filesystem.hpp>
+#include <boost/uuid/uuid_generators.hpp>
 #include "../ExporterExport.hpp"
 
 namespace CppCoverage
@@ -67,13 +68,13 @@ namespace Exporter
 			const fs::path& originalFilename,
 			const CppCoverage::CoverageRate& coverageRate,
 			const fs::path* fileOutput,
-			ctemplate::TemplateDictionary& moduleTemplateDictionary) const;
+			ctemplate::TemplateDictionary& moduleTemplateDictionary);
 
 		void AddModuleSectionToDictionary(
 			const fs::path& originalFilename,
 			const CppCoverage::CoverageRate& coverageRate,
 			const fs::path& moduleOutput,
-			ctemplate::TemplateDictionary& projectDictionary) const;
+			ctemplate::TemplateDictionary& projectDictionary);
 
 		void GenerateModuleTemplate(
 			const ctemplate::TemplateDictionary& templateDictionary,
@@ -92,10 +93,17 @@ namespace Exporter
 	private:
 		TemplateHtmlExporter(const TemplateHtmlExporter&) = delete;
 		TemplateHtmlExporter& operator=(const TemplateHtmlExporter&) = delete;
+		std::string GetUuid();
+		void FillSection(
+			ctemplate::TemplateDictionary&,
+			const fs::path* link,
+			const CppCoverage::CoverageRate&,
+			const std::string& name);
 
 	private:
 		fs::path mainTemplatePath_;		
 		fs::path fileTemplatePath_;
+		boost::uuids::random_generator uuidGenerator_;
 	};
 }
 

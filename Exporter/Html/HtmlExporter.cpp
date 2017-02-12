@@ -77,7 +77,7 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	void HtmlExporter::Export(
 		const CppCoverage::CoverageData& coverageData, 
-		const boost::filesystem::path& outputFolderPrefix) const
+		const boost::filesystem::path& outputFolderPrefix)
 	{	
 		HtmlFolderStructure htmlFolderStructure{templateFolder_};
 		cov::CoverageRateComputer coverageRateComputer{ coverageData };
@@ -114,13 +114,17 @@ namespace Exporter
 		cov::CoverageRateComputer& coverageRateComputer,
 		const cov::ModuleCoverage& module,
 		const HtmlFolderStructure& htmlFolderStructure, 
-		ctemplate::TemplateDictionary& moduleTemplateDictionary) const
+		ctemplate::TemplateDictionary& moduleTemplateDictionary)
 	{
 		for (const auto& file : coverageRateComputer.SortFilesByCoverageRate(module))
 		{
 			const auto& fileCoverageRate = coverageRateComputer.GetCoverageRate(*file);
 			boost::optional<fs::path> generatedOutput = ExportFile(htmlFolderStructure, *file);
-			exporter_.AddFileSectionToDictionary(file->GetPath(), fileCoverageRate, generatedOutput.get_ptr(), moduleTemplateDictionary);
+			exporter_.AddFileSectionToDictionary(
+				file->GetPath(), 
+				fileCoverageRate, 
+				generatedOutput.get_ptr(), 
+				moduleTemplateDictionary);
 		}
 	}
 

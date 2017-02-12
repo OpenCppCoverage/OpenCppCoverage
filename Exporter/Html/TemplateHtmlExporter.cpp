@@ -18,11 +18,8 @@
 #include "TemplateHtmlExporter.hpp"
 
 #include <boost/filesystem.hpp>
-#include <boost/uuid/uuid.hpp>
-#include <boost/uuid/uuid_generators.hpp>
-#include <boost/uuid/uuid_io.hpp>
 #include <boost/algorithm/string.hpp>
-
+#include <boost/uuid/uuid_io.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "CTemplate.hpp"
@@ -50,44 +47,11 @@ namespace Exporter
 		const std::string thirdPartyPathTemplate = "THIRD_PARTY_PATH";
 		
 		//-------------------------------------------------------------------------
-		std::string GetUuid()
-		{
-			boost::uuids::random_generator generator;
-			boost::uuids::uuid id(generator());
-			
-			return boost::uuids::to_string(id);
-		}
-
-		//-------------------------------------------------------------------------
 		std::string ToHtmlPath(const fs::path& path)
 		{
 			auto htmlPath = path.string();
 			boost::algorithm::replace_all(htmlPath, "\\", "/");
 			return htmlPath;
-		}
-
-		//-------------------------------------------------------------------------
-		void FillSection(
-			ctemplate::TemplateDictionary& sectionDictionary,
-			const fs::path* link,
-			const cov::CoverageRate& coverageRate,
-			const std::string& name)
-		{
-			if (link)
-			{
-				auto htmlPath = ToHtmlPath(link->string());
-				sectionDictionary.SetValueAndShowSection(TemplateHtmlExporter::LinkTemplate, htmlPath, TemplateHtmlExporter::ItemLinkSection);
-			}
-			else
-				sectionDictionary.ShowSection(TemplateHtmlExporter::ItemNoLinkSection);
-
-			sectionDictionary.SetIntValue(coverRateTemplate, coverageRate.GetPercentRate());
-			sectionDictionary.SetIntValue(uncoverRateTemplate, 100 - coverageRate.GetPercentRate());
-			sectionDictionary.SetIntValue(TemplateHtmlExporter::ExecutedLineTemplate, coverageRate.GetExecutedLinesCount());
-			sectionDictionary.SetIntValue(TemplateHtmlExporter::UnExecutedLineTemplate, coverageRate.GetUnExecutedLinesCount());
-			sectionDictionary.SetIntValue(TemplateHtmlExporter::TotalLineTemplate, coverageRate.GetTotalLinesCount());
-			sectionDictionary.SetValue(idTemplate, GetUuid());
-			sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);
 		}
 
 		//-------------------------------------------------------------------------
@@ -211,7 +175,7 @@ namespace Exporter
 		const fs::path& originalFilename,
 		const cov::CoverageRate& coverageRate,
 		const fs::path* fileOutput,		
-		ctemplate::TemplateDictionary& moduleTemplateDictionary) const
+		ctemplate::TemplateDictionary& moduleTemplateDictionary)
 	{
 		auto sectionDictionary = moduleTemplateDictionary.AddSectionDictionary(MainTemplateItemSection);
 		
@@ -224,7 +188,7 @@ namespace Exporter
 		const fs::path& originalFilename,
 		const cov::CoverageRate& coverageRate,
 		const fs::path& moduleOutput,
-		ctemplate::TemplateDictionary& projectDictionary) const
+		ctemplate::TemplateDictionary& projectDictionary)
 	{
 		auto sectionDictionary = projectDictionary.AddSectionDictionary(MainTemplateItemSection);			
 			
@@ -273,5 +237,39 @@ namespace Exporter
 		dictionary.SetValue(BodyOnLoadTemplate, bodyLoad);
 		dictionary.SetValue(SourceWarningMessageTemplate, warning);
 		WriteTemplate(dictionary, fileTemplatePath_, output);
-	}		
+	}
+	//-------------------------------------------------------------------------
+	std::string TemplateHtmlExporter::GetUuid()
+	{
+		boost::uuids::uuid id(uuidGenerator_());
+
+		return boost::uuids::to_string(id);
+	}
+
+	//-------------------------------------------------------------------------
+	void TemplateHtmlExporter::FillSection(
+		ctemplate::TemplateDictionary& sectionDictionary,
+		const fs::path* link,
+		const cov::CoverageRate& coverageRate,
+		const std::string& name)
+	{
+		if (link)
+		{
+			auto htmlPath = ToHtmlPath(link->string());
+			sectionDictionary.SetValueAndShowSection(
+				TemplateHtmlExporter::LinkTemplate, 
+				htmlPath, 
+				TemplateHtmlExporter::ItemLinkSection);
+		}
+		else
+			sectionDictionary.ShowSection(TemplateHtmlExporter::ItemNoLinkSection);
+
+		sectionDictionary.SetIntValue(coverRateTemplate, coverageRate.GetPercentRate());
+		sectionDictionary.SetIntValue(uncoverRateTemplate, 100 - coverageRate.GetPercentRate());
+		sectionDictionary.SetIntValue(TemplateHtmlExporter::ExecutedLineTemplate, coverageRate.GetExecutedLinesCount());
+		sectionDictionary.SetIntValue(TemplateHtmlExporter::UnExecutedLineTemplate, coverageRate.GetUnExecutedLinesCount());
+		sectionDictionary.SetIntValue(TemplateHtmlExporter::TotalLineTemplate, coverageRate.GetTotalLinesCount());
+		sectionDictionary.SetValue(idTemplate, GetUuid());
+		sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);
+	}
 }

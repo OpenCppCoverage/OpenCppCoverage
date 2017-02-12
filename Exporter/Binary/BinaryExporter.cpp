@@ -40,7 +40,7 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	void BinaryExporter::Export(
 		const CppCoverage::CoverageData& coverageData, 
-		const boost::filesystem::path& output) const
+		const boost::filesystem::path& output)
 	{
 		CoverageDataSerializer coverageDataSerializer;
 

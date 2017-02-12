@@ -42,7 +42,7 @@ namespace Exporter
 		CoberturaExporter() ;
 
 		boost::filesystem::path GetDefaultPath(const std::wstring& runningCommandFilename) const override;
-		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& output) const override;
+		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& output) override;
 		void Export(const CppCoverage::CoverageData&, std::wostream&) const;
 
 	private:
