@@ -91,27 +91,43 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
+		struct CoverageArgs
+		{
+			CoverageArgs(
+				const std::vector<std::wstring>& arguments,
+				const std::wstring& modulePattern,
+				const std::wstring& sourcePattern)
+				: arguments_{ arguments }
+				, modulePatternCollection_{ modulePattern }
+				, sourcePatternCollection_{ sourcePattern }
+			{
+			}
+
+			std::vector<std::wstring> arguments_;
+			std::vector<std::wstring> modulePatternCollection_;
+			std::vector<std::wstring> sourcePatternCollection_;
+			std::vector<cov::UnifiedDiffSettings> unifiedDiffSettingsCollection_;
+			bool coverChildren_ = true;
+			bool continueAfterCppException_ = false;
+			bool optimizedBuildSupport_ = false;
+			std::vector<std::wstring> excludedLineRegexes_;
+		};
+
+		//---------------------------------------------------------------------
 		cov::CoverageData ComputeCoverageDataPatterns(
-			const std::vector<std::wstring>& arguments,
-			const std::vector<std::wstring>& modulePatternCollection,
-			const std::vector<std::wstring>& sourcePatternCollection,
-			const std::vector<cov::UnifiedDiffSettings>& unifiedDiffSettingsCollection = {},
-			bool coverChildren = true,
-			bool continueAfterCppException = false,
-			bool optimizedBuildSupport = false,
-			const std::vector<std::wstring>& excludedLineRegexes = {})
+			const CoverageArgs& args)
 		{
 			cov::CodeCoverageRunner codeCoverageRunner;
 			cov::Patterns modulePatterns{false};
 			cov::Patterns sourcePatterns{false};
 
-			for (auto modulePattern : modulePatternCollection)
+			for (auto modulePattern : args.modulePatternCollection_)
 			{
 				boost::to_lower(modulePattern);
 				modulePatterns.AddSelectedPatterns(modulePattern);
 			}
 
-			for (auto sourcePattern : sourcePatternCollection)
+			for (auto sourcePattern : args.sourcePatternCollection_)
 			{
 				boost::to_lower(sourcePattern);
 				sourcePatterns.AddSelectedPatterns(sourcePattern);
@@ -120,17 +136,17 @@ namespace CppCoverageTest
 			cov::CoverageFilterSettings coverageFilterSettings{modulePatterns, sourcePatterns};
 			cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath().wstring() };
 
-			for (const auto& argument: arguments)
+			for (const auto& argument: args.arguments_)
 				startInfo.AddArgument(argument);
 
 			cov::RunCoverageSettings settings(
 				startInfo,
 				coverageFilterSettings,
-				unifiedDiffSettingsCollection,
-				excludedLineRegexes);
-			settings.SetCoverChildren(coverChildren);
-			settings.SetContinueAfterCppException(continueAfterCppException);
-			settings.SetOptimizedBuildSupport(optimizedBuildSupport);
+				args.unifiedDiffSettingsCollection_,
+				args.excludedLineRegexes_);
+			settings.SetCoverChildren(args.coverChildren_);
+			settings.SetContinueAfterCppException(args.continueAfterCppException_);
+			settings.SetOptimizedBuildSupport(args.optimizedBuildSupport_);
 
 			auto coverageData = codeCoverageRunner.RunCoverage(settings);
 
@@ -144,22 +160,11 @@ namespace CppCoverageTest
 		cov::CoverageData ComputeCoverageData(
 			const std::vector<std::wstring>& arguments,
 			const std::wstring& modulePattern,
-			const std::wstring& sourcePattern,
-			const std::vector<cov::UnifiedDiffSettings>& unifiedDiffSettingsCollection = {},
-			bool coverChildren = true,
-			bool continueAfterCppException = false,
-			bool optimizedBuildSupport = false,
-			const std::vector<std::wstring>& excludedLineRegexes = {})
+			const std::wstring& sourcePattern)
 		{
-			return ComputeCoverageDataPatterns(
-				arguments, 
-				{ modulePattern }, 
-				{ sourcePattern }, 
-				unifiedDiffSettingsCollection, 
-				coverChildren, 
-				continueAfterCppException,
-				optimizedBuildSupport,
-				excludedLineRegexes);
+			CoverageArgs args{ arguments, modulePattern, sourcePattern};
+
+			return ComputeCoverageDataPatterns(args);
 		}
 
 		//---------------------------------------------------------------------
@@ -170,24 +175,15 @@ namespace CppCoverageTest
 			bool continueAfterCppException = false)
 		{
 			std::vector<std::wstring> arguments = { programArg };
+			CoverageArgs args{ arguments, modulePattern, sourcePattern };
 
-			auto coverageData = ComputeCoverageData(
-				arguments, 
-				modulePattern, 
-				sourcePattern, 
-				{},
-				true,
-				continueAfterCppException);
+			args.continueAfterCppException_ = continueAfterCppException;
+
+			auto coverageData = ComputeCoverageDataPatterns(args);
 
 			// Run child child process.
-			arguments.insert(arguments.begin(), TestCoverageConsole::TestChildProcess);
-			auto coverageDataChildProcess = ComputeCoverageData(
-				arguments, 
-				modulePattern, 
-				sourcePattern, 
-				{}, 
-				true, 
-				continueAfterCppException);
+			args.arguments_.insert(args.arguments_.begin(), TestCoverageConsole::TestChildProcess);
+			auto coverageDataChildProcess = ComputeCoverageDataPatterns(args);
 
 			if (!TestHelper::CoverageDataComparer().IsFirstCollectionContainsSecond(
 					coverageDataChildProcess.GetModules(), coverageData.GetModules()))
@@ -355,8 +351,13 @@ namespace CppCoverageTest
 		const auto modulePattern = TestCoverageConsole::GetOutputBinaryPath().wstring();
 		const auto sourcePattern = TestCoverageConsole::GetMainCppFilename().wstring();
 
-		auto rootAndChildProcess = ComputeCoverageData(arguments, modulePattern, sourcePattern, {}, true);
-		auto rootProcessOnly = ComputeCoverageData(arguments, modulePattern, sourcePattern, {}, false);
+		CoverageArgs args{ arguments, modulePattern, sourcePattern };
+
+		args.coverChildren_ = true;
+		auto rootAndChildProcess = ComputeCoverageDataPatterns(args);
+
+		args.coverChildren_ = false;
+		auto rootProcessOnly = ComputeCoverageDataPatterns(args);
 
 		const auto& rootOnlyModules = rootProcessOnly.GetModules();
 		const auto& rootAndChildModules = rootAndChildProcess.GetModules();
@@ -394,11 +395,14 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, TestFileInSeveralModules)
 	{
-		auto coverageData = ComputeCoverageDataPatterns(
+		CoverageArgs args{
 			{ TestCoverageConsole::TestFileInSeveralModules },
-			{ TestCoverageSharedLib::GetOutputBinaryPath().wstring(), TestCoverageConsole::GetOutputBinaryPath().wstring()},
-			{ TestCoverageSharedLib::GetSharedFunctionFilename().wstring() });
+			{ TestCoverageSharedLib::GetOutputBinaryPath().wstring() },
+			{ TestCoverageSharedLib::GetSharedFunctionFilename().wstring() }
+		};
 
+		args.modulePatternCollection_.push_back(TestCoverageConsole::GetOutputBinaryPath().wstring());
+		auto coverageData = ComputeCoverageDataPatterns(args);
 		const auto sharedFunctionLine = TestCoverageSharedLib::GetSharedFunctionLine();
 
 		const auto& fileFromFirstModule = *coverageData.GetModules().at(0)->GetFiles().at(0);
@@ -433,15 +437,14 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, UnifiedDiff)
 	{
-		std::vector<cov::UnifiedDiffSettings> unifiedDiffSettingsCollection;
 		auto diffPath = boost::filesystem::path(PROJECT_DIR) / "Data" / "TestDiff.diff";
 
-		unifiedDiffSettingsCollection.push_back({diffPath, boost::none});
-		auto coverageData = ComputeCoverageData(
-			{ TestCoverageConsole::TestDiff }, 
-			TestCoverageConsole::GetOutputBinaryPath().wstring(), 
-			TestCoverageConsole::GetTestDiffFilename().wstring(),
-			unifiedDiffSettingsCollection);
+		CoverageArgs args{ 
+			{ TestCoverageConsole::TestDiff },
+			TestCoverageConsole::GetOutputBinaryPath().wstring(),
+			TestCoverageConsole::GetTestDiffFilename().wstring() };
+		args.unifiedDiffSettingsCollection_.push_back({ diffPath, boost::none });
+		auto coverageData = ComputeCoverageDataPatterns(args);
 		const auto& file = GetFirstFileCoverage(coverageData);
 		ASSERT_EQ(4, file.GetLines().size());
 		
@@ -455,11 +458,12 @@ namespace CppCoverageTest
 	TEST_F(CodeCoverageRunnerTest, SpecialChars)
 	{
 		const auto fileWithSpecialChars = TestCoverageConsole::GetFileWithSpecialChars();
-
-		auto coverageData = ComputeCoverageData(
-			{L""},
+		CoverageArgs args{ 
+			{ L"" },
 			TestCoverageConsole::GetOutputBinaryPath().filename().wstring(),
-			fileWithSpecialChars.wstring(), {}, true, false);
+			fileWithSpecialChars.wstring() };
+
+		auto coverageData = ComputeCoverageDataPatterns(args);
 		const auto& file = GetFirstFileCoverage(coverageData);
 		auto filename = file.GetPath().filename().wstring();
 		ASSERT_TRUE(boost::algorithm::iequals(fileWithSpecialChars.wstring(), filename));
@@ -485,13 +489,15 @@ namespace CppCoverageTest
 	{
 		// This test works only on x86.
 #ifndef _WIN64
+		CoverageArgs args{ 
+			{ TestCoverageConsole::TestOptimizedBuild },
+			TestCoverageOptimizedBuild::GetOutputBinaryPath().wstring(),
+			TestCoverageOptimizedBuild::GetMainCppPath().wstring() };
+
 		auto computeCoverage = [&](bool optimizedBuild)
-		{
-			return ComputeCoverageData(
-				{ TestCoverageConsole::TestOptimizedBuild },
-				TestCoverageOptimizedBuild::GetOutputBinaryPath().wstring(),
-				TestCoverageOptimizedBuild::GetMainCppPath().wstring(), 
-				{}, false, false, optimizedBuild);
+		{ 
+			args.optimizedBuildSupport_ = optimizedBuild;
+			return ComputeCoverageDataPatterns(args);
 		};
 
 		auto coverageData = computeCoverage(false);
@@ -512,13 +518,16 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, ExcludedLine)
 	{
+		CoverageArgs args{
+			{ TestCoverageConsole::TestBasic },
+			TestCoverageConsole::GetOutputBinaryPath().wstring(),
+			TestCoverageConsole::GetTestBasicFilename().wstring()
+		};
+
 		auto computeCoverage = [&](const std::vector<std::wstring>& excludedRegexes)
 		{
-			return ComputeCoverageData(
-				{ TestCoverageConsole::TestBasic },
-				TestCoverageConsole::GetOutputBinaryPath().wstring(),
-				TestCoverageConsole::GetTestBasicFilename().wstring(),
-				{}, false, false, false, excludedRegexes);
+			args.excludedLineRegexes_ = excludedRegexes;
+			return ComputeCoverageDataPatterns(args);
 		};
 		auto coverageDataWithExcludedLine = computeCoverage({ L".*ExcludedLine.*" });
 		const auto& fileWithExcludedLine = GetFirstFileCoverage(coverageDataWithExcludedLine);
