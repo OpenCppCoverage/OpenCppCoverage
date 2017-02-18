@@ -25,21 +25,24 @@ namespace FileFilterTest
 	// These values are computed with Dumpbin /RELOCATIONS TestCoverageOptimizedBuild.dll
 #ifdef _WIN64
 	#ifdef NDEBUG
-		const auto firstAdress = 0x180002CDC;
-		const auto lastAdress = 0x180003228;
+		const auto firstAddress = 0x180002CDC;
+		const auto lastAddress = 0x180003228;
 	#else
-		auto firstAdress = 0x180011790;
-		auto lastAdress = 0x180011316;
+		auto firstAddress = 0x180011790;
+
+		// This the second to last address because the last one change 
+		// from one computer to another.
+		auto lastAddress = 0x18001102D; 
 	#endif
 	const auto baseAddress = 0x180000000;
 
 #else
 	#ifdef NDEBUG
-		const auto firstAdress = 0x100030C4;
-		const auto lastAdress = 0x10003104;
+		const auto firstAddress = 0x100030C4;
+		const auto lastAddress = 0x10003104;
 	#else
-		const auto firstAdress = 0x1001D158;
-		const auto lastAdress = 0x100112B2;
+		const auto firstAddress = 0x1001D158;
+		const auto lastAddress = 0x100112B2;
 	#endif
 
 	const auto baseAddress = 0x10000000;
@@ -56,7 +59,7 @@ namespace FileFilterTest
 		ASSERT_NE(0, baseOfImage);
 
 		auto relocations = extractor.Extract(hProcess, baseOfImage, baseAddress);		
-		ASSERT_EQ(1, relocations.count(firstAdress));
-		ASSERT_EQ(1, relocations.count(lastAdress));
+		ASSERT_EQ(1, relocations.count(firstAddress));
+		ASSERT_EQ(1, relocations.count(lastAddress));
 	}
 }
