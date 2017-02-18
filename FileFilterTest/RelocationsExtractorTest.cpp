@@ -29,7 +29,7 @@ namespace FileFilterTest
 		const auto lastAdress = 0x180003228;
 	#else
 		auto firstAdress = 0x180011790;
-		auto lastAdress = 0x18001131B;
+		auto lastAdress = 0x180011316;
 	#endif
 	const auto baseAddress = 0x180000000;
 

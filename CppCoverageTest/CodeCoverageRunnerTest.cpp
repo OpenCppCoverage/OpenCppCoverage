@@ -97,12 +97,14 @@ namespace CppCoverageTest
 				const std::vector<std::wstring>& arguments,
 				const std::wstring& modulePattern,
 				const std::wstring& sourcePattern)
-				: arguments_{ arguments }
+				: programToRun_{ TestCoverageConsole::GetOutputBinaryPath() }
+				, arguments_{ arguments }
 				, modulePatternCollection_{ modulePattern }
 				, sourcePatternCollection_{ sourcePattern }
 			{
 			}
 
+			boost::filesystem::path programToRun_;
 			std::vector<std::wstring> arguments_;
 			std::vector<std::wstring> modulePatternCollection_;
 			std::vector<std::wstring> sourcePatternCollection_;
@@ -134,7 +136,7 @@ namespace CppCoverageTest
 			}
 			
 			cov::CoverageFilterSettings coverageFilterSettings{modulePatterns, sourcePatterns};
-			cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath().wstring() };
+			cov::StartInfo startInfo{ args.programToRun_ };
 
 			for (const auto& argument: args.arguments_)
 				startInfo.AddArgument(argument);
@@ -487,13 +489,18 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, OptimizedBuild)
 	{
-		// This test works only on x86.
-#ifndef _WIN64
 		CoverageArgs args{ 
 			{ TestCoverageConsole::TestOptimizedBuild },
-			TestCoverageOptimizedBuild::GetOutputBinaryPath().wstring(),
+			TestCoverageOptimizedBuild::GetOutputBinaryPath().filename().wstring(),
 			TestCoverageOptimizedBuild::GetMainCppPath().wstring() };
 
+#ifdef _WIN64
+		// No special case is needed when the architecture of the program to run is 64 bits.
+		// We check instead we can read 32 bits PE format correctly.
+		auto x86Path = args.programToRun_.wstring();
+		boost::replace_last(x86Path, "x64", "");
+		args.programToRun_ = boost::filesystem::canonical(x86Path);
+#endif
 		auto computeCoverage = [&](bool optimizedBuild)
 		{ 
 			args.optimizedBuildSupport_ = optimizedBuild;
@@ -512,7 +519,6 @@ namespace CppCoverageTest
 		auto count = CountExecutedLines(file);
 
 		ASSERT_GT(optimizedBuildCount, count);
-#endif
 	}
 
 	//-------------------------------------------------------------------------

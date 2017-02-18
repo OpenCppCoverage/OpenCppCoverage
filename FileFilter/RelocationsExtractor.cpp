@@ -43,17 +43,6 @@ namespace FileFilter
 		}
 
 		//-------------------------------------------------------------------------
-		template <typename T>
-		T ReadProcessMemory(
-			HANDLE hProcess,
-			DWORD64 address)
-		{
-			T data;
-			ReadProcessMemory(hProcess, address, &data, sizeof(T));
-			return data;
-		}
-
-		//-------------------------------------------------------------------------
 		template<typename T>
 		std::unique_ptr<T> ReadStructInProcessMemory(
 			HANDLE hProcess,
@@ -71,6 +60,7 @@ namespace FileFilter
 			DWORD64 baseOfImage,
 			DWORD64 baseAddress,
 			DWORD64 imageBaseRelocationPtr,
+			int sizeOfPointer,
 			std::unordered_set<DWORD64>& relocations)
 		{
 			auto imageBaseRelocation = ReadStructInProcessMemory<IMAGE_BASE_RELOCATION>(
@@ -93,7 +83,8 @@ namespace FileFilter
 				{
 					auto rva = relocationPtr & 0x0fff;
 					auto relocationAddress = imageBaseRelocation->VirtualAddress + rva + baseOfImage;
-					auto relocationValue = ReadProcessMemory<DWORD_PTR>(hProcess, relocationAddress);
+					DWORD_PTR relocationValue = 0;
+					ReadProcessMemory(hProcess, relocationAddress, &relocationValue, sizeOfPointer);
 
 					auto relocation = relocationValue + baseAddress - baseOfImage;
 					relocations.insert(relocation);
@@ -102,6 +93,50 @@ namespace FileFilter
 
 			return sizeOfBlock;
 		}
+	}
+
+	//-------------------------------------------------------------------------
+	struct RelocationsDirectoryInfo
+	{
+		IMAGE_DATA_DIRECTORY directory;
+		int sizeOfPointer;
+	};
+
+	//-------------------------------------------------------------------------
+	template <typename T_IMAGE_NT_HEADERS>
+	std::unique_ptr<RelocationsDirectoryInfo> 
+		GetRelocationsDirectory(const T_IMAGE_NT_HEADERS& ntHeaders, int sizeOfPointer)
+	{
+		auto relocationsDirectoryInfo = std::make_unique<RelocationsDirectoryInfo>();
+
+		const auto& optionalHeader = ntHeaders.OptionalHeader;
+		relocationsDirectoryInfo->directory = 
+						optionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC];
+		relocationsDirectoryInfo->sizeOfPointer = sizeOfPointer;
+
+		return relocationsDirectoryInfo;
+	}
+
+	//-------------------------------------------------------------------------
+	std::unique_ptr<RelocationsDirectoryInfo> 
+		GetRelocationsDirectoryInfo(
+				const IMAGE_DOS_HEADER& dosHeader,
+				HANDLE hProcess,
+				DWORD64 baseOfImage)
+	{
+		auto ntHeader32 = ReadStructInProcessMemory<IMAGE_NT_HEADERS32>(
+			hProcess, baseOfImage + dosHeader.e_lfanew);
+		auto machine = ntHeader32->FileHeader.Machine;
+
+		if (machine == IMAGE_FILE_MACHINE_I386)
+			return GetRelocationsDirectory(*ntHeader32, sizeof(DWORD));
+		else if (machine == IMAGE_FILE_MACHINE_AMD64)
+		{
+			auto ntHeader64 = ReadStructInProcessMemory<IMAGE_NT_HEADERS64>(
+				hProcess, baseOfImage + dosHeader.e_lfanew);
+			return GetRelocationsDirectory(*ntHeader64, sizeof(DWORD_PTR));
+		}
+		THROW(L"PE file header machine is not supported: " + std::to_wstring(machine));
 	}
 
 	//-------------------------------------------------------------------------
@@ -114,13 +149,11 @@ namespace FileFilter
 		if (dosHeader->e_magic != IMAGE_DOS_SIGNATURE)
 			THROW("The image is not a valid DOS image.");
 
-		auto ntHeader = ReadStructInProcessMemory<IMAGE_NT_HEADERS>(
-			hProcess, baseOfImage + dosHeader->e_lfanew);
-	
-		const auto& optionalHeader = ntHeader->OptionalHeader;
-		const auto& directory = optionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC];
+		auto relocationsInfo = GetRelocationsDirectoryInfo(
+											*dosHeader, hProcess, baseOfImage);
 
 		std::unordered_set<DWORD64> relocations;
+		const auto& directory = relocationsInfo->directory;
 		auto imageBaseRelocationPtr = baseOfImage + directory.VirtualAddress;
 		auto endBaseRelocationPtr = imageBaseRelocationPtr + directory.Size;
 
@@ -131,6 +164,7 @@ namespace FileFilter
 				baseOfImage,
 				baseAddress,
 				imageBaseRelocationPtr,
+				relocationsInfo->sizeOfPointer,
 				relocations);
 		}
 
