@@ -19,11 +19,11 @@ The main usage is for unit testing coverage, but you can also use it to know the
 - Windows Vista or higher.
 - Microsoft Visual Studio 2008 or higher all editions **including Express edition**. It should also work with previous version of Visual Studio.
 
+## Download
+OpenCppCoverage can be downloaded from [here](../../releases).
+
 ## Usage
-
-Download OpenCppCoverage from [here](../../releases) and install it.
-
-Then, you can simply run the following command:
+You can simply run the following command:
 
 ```OpenCppCoverage.exe --sources MySourcePath -- YourProgram.exe arg1 arg2```
 
