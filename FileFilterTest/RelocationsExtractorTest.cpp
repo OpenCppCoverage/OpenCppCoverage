@@ -16,41 +16,124 @@
 
 #include "stdafx.h"
 #include <windows.h>
+#include <regex>
+#include <Poco/Process.h>
+#include <Poco/Pipe.h>
+#include <Poco/PipeStream.h>
+#include <boost/algorithm/string.hpp>
+#include <boost/filesystem/operations.hpp>
 
 #include "FileFilter/RelocationsExtractor.hpp"
 #include "TestCoverageOptimizedBuild/TestCoverageOptimizedBuild.hpp"
 
+namespace fs = boost::filesystem;
+
 namespace FileFilterTest
 {	
-	// These values are computed with Dumpbin /RELOCATIONS TestCoverageOptimizedBuild.dll
-#ifdef _WIN64
-	#ifdef NDEBUG
-		const auto firstAddress = 0x180002CDC;
-		const auto lastAddress = 0x180003228;
-	#else
-		auto firstAddress = 0x180011790;
+	//-------------------------------------------------------------------------
+	std::string RunProcess(
+		const fs::path& program, 
+		const std::vector<std::string>& args)
+	{
+		Poco::Pipe outPipe;		
+		auto handle = Poco::Process::launch(program.string(), args, nullptr, &outPipe, nullptr);
+		Poco::PipeInputStream istr(outPipe);
+		std::string content { std::istreambuf_iterator<char>(istr), std::istreambuf_iterator<char>() };
 
-		// This the second to last address because the last one change 
-		// from one computer to another.
-		auto lastAddress = 0x18001102D; 
-	#endif
-	const auto baseAddress = 0x180000000;
+		int exitCode = handle.wait();
+		if (exitCode)
+			throw std::runtime_error("Error when running: " + program.string() + " " + content);
+		return content;
+	}
 
-#else
-	#ifdef NDEBUG
-		const auto firstAddress = 0x100030C4;
-		const auto lastAddress = 0x10003104;
-	#else
-		const auto firstAddress = 0x1001D158;
-		const auto lastAddress = 0x100112B2;
-	#endif
+	//-------------------------------------------------------------------------
+	fs::path GetVisualStudioPath()
+	{
+		fs::path programFileX86 = std::getenv("ProgramFiles(x86)");		
+		auto vswhere = programFileX86 / "Microsoft Visual Studio" / "Installer" / "vswhere.exe";
+				
+		std::vector<std::string> args = { "-format", "value", "-property", "installationPath" };
+		std::string value = RunProcess(vswhere, args);
+		boost::trim(value);
+		fs::path installerPath{ value };
 
-	const auto baseAddress = 0x10000000;
-#endif
+		if (!fs::exists(installerPath))
+			throw std::runtime_error("Invalid Visual Studio installation path: " + value);
+		return installerPath;
+	}
+
+	//-------------------------------------------------------------------------
+	fs::path GetDumpBinPath()
+	{
+		auto msvc = GetVisualStudioPath() / "VC" / "Tools" / "MSVC";
+		fs::recursive_directory_iterator end;
+
+		const auto it = std::find_if(fs::recursive_directory_iterator(msvc), end,
+			[](const fs::directory_entry& entry) {
+			return boost::iequals(entry.path().filename().string(), "dumpbin.exe");
+		});
+		if (it == end)
+			throw std::runtime_error("Cannot find dumpbin.exe");
+		return it->path();
+	}
+	
+	//-------------------------------------------------------------------------
+	DWORD64 ToDWord64(const std::string& str)
+	{
+		return strtoll(str.c_str(), nullptr, 16);
+	}
+
+	//-------------------------------------------------------------------------
+	std::unordered_set<DWORD64> ExtractRelocations(const fs::path& dumpBinPath)
+	{		
+		std::vector<std::string> args = { 
+			"/RELOCATIONS", 
+			TestCoverageOptimizedBuild::GetOutputBinaryPath().string() };
+		const std::string value = RunProcess(dumpBinPath, args);
+		auto current = value.begin();
+		auto end = value.end();
+		std::smatch match;
+		std::unordered_set<DWORD64> relocations;
+
+		// Example: "      CCF  HIGHLOW            1001C3E8"
+		//       or "      150  DIR64      000000018001B7D0"
+		std::regex r(R"(^\s*[[:xdigit:]]*\s*(HIGHLOW|DIR64)\s*([[:xdigit:]]*))");
+
+		while (std::regex_search(current, end, match, r))
+		{			
+			if (match.size() == 3)
+			{
+				auto addressStr = match[2];
+				auto address = ToDWord64(addressStr);
+				relocations.insert(address);
+			}
+			current += match.position() + match.length();
+		}
+		return relocations;
+	}
+
+	//-------------------------------------------------------------------------
+	DWORD64 ExtractBaseAddress(const fs::path& dumpBinPath)
+	{		
+		std::vector<std::string> args = { 
+			"/HEADERS", 
+			TestCoverageOptimizedBuild::GetOutputBinaryPath().string() };
+		const std::string value = RunProcess(dumpBinPath, args);
+		std::smatch match;
+		
+		// Example: "        10000000 image base (10000000 to 1001FFFF)"		
+		std::regex r(R"(^\s*([[:xdigit:]]*) image base )");
+
+		if (!std::regex_search(value, match, r) || match.size() != 2)
+			throw std::runtime_error("Cannot extract image base");
+				
+		auto addressStr = match[1];
+		return ToDWord64(addressStr);
+	}
 
 	//-------------------------------------------------------------------------
 	TEST(RelocationsExtractorTest, Extract)
-	{						
+	{			
 		FileFilter::RelocationsExtractor extractor;
 
 		auto hProcess = GetCurrentProcess();
@@ -58,8 +141,11 @@ namespace FileFilterTest
 		auto baseOfImage = reinterpret_cast<DWORD64>(hModule);
 		ASSERT_NE(0, baseOfImage);
 
+		auto dumpBinPath = GetDumpBinPath();
+		auto baseAddress = ExtractBaseAddress(dumpBinPath);
 		auto relocations = extractor.Extract(hProcess, baseOfImage, baseAddress);		
-		ASSERT_EQ(1, relocations.count(firstAddress));
-		ASSERT_EQ(1, relocations.count(lastAddress));
+
+		auto expectedRelocations = ExtractRelocations(dumpBinPath);
+		ASSERT_EQ(relocations, expectedRelocations);
 	}
 }
