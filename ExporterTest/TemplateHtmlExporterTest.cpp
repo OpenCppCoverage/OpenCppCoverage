@@ -17,6 +17,7 @@
 #include "stdafx.h"
 
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 
 #include "Exporter/Html/CTemplate.hpp"
 #include "Exporter/Html/TemplateHtmlExporter.hpp"

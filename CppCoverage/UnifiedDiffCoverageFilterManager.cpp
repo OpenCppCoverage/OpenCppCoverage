@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
+#include <sstream>
 
 #include "UnifiedDiffCoverageFilterManager.hpp"
 #include "UnifiedDiffSettings.hpp"
@@ -67,6 +68,17 @@ namespace CppCoverage
 				return lineNumber;
 
 			return (it == executableLinesSet.begin()) ? boost::optional<int>{} : *(--it);
+		}
+
+		//-------------------------------------------------------------------------
+		template <typename Container>
+		std::wstring ToWString(const Container& values)
+		{
+			std::wostringstream ostr;
+
+			for (const auto& value : values)
+				ostr << value << ' ';
+			return ostr.str();
 		}
 	}
 
@@ -173,7 +185,7 @@ namespace CppCoverage
 			for (const auto& lineInfo : fileInfo.lineInfoColllection_)
 				executableLinesSet.insert(lineInfo.lineNumber_);
 			LOG_DEBUG << L"Executable lines for " << filePath << L": ";
-			LOG_DEBUG << executableLinesSet;
+			LOG_DEBUG << ToWString(executableLinesSet);
 			executableLineCache_.currentFilePath = filePath;
 		}
 		return executableLineCache_.executableLinesSet;

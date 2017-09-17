@@ -70,7 +70,7 @@ namespace Tools
 	}
 
 	//-------------------------------------------------------------------------
-	void SetLoggerMinSeverity(const boost::log::trivial::severity_level minSeverity)
+	void SetLoggerMinSeverity(boost::log::trivial::severity_level minSeverity)
 	{
 		auto filter = logging::trivial::severity >= minSeverity;
 
