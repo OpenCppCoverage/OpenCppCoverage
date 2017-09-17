@@ -57,9 +57,17 @@ namespace Exporter
 		static const std::string SourceWarningMessageTemplate;
 		static const std::string BodyOnLoadFct;
 		static const std::string SyntaxHighlightingDisabledMsg;
+		static const std::string MainMessageTemplate;
+		static const std::string CoverRateTemplate;
+		static const std::string UncoverRateTemplate;
+		static const std::string CodeTemplate;
+		static const std::string IdTemplate;
+		static const std::string ThirdPartyPathTemplate;
 
 	public:
-		explicit TemplateHtmlExporter(const fs::path& templateFolder);
+		explicit TemplateHtmlExporter(
+			const fs::path& mainTemplatePath,
+			const fs::path& fileTemplatePath);
 
 		std::unique_ptr<ctemplate::TemplateDictionary>	
 		CreateTemplateDictionary(const std::wstring& title, const std::wstring& message) const;

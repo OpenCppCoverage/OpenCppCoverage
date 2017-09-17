@@ -38,14 +38,7 @@ namespace fs = boost::filesystem;
 namespace Exporter
 {
 	namespace
-	{				
-		const std::string coverRateTemplate = "COVER_RATE";
-		const std::string uncoverRateTemplate = "UNCOVER_RATE";
-		const std::string codeTemplate = "CODE";				
-		const std::string messageTemplate = "MAIN_MESSAGE";
-		const std::string idTemplate = "ID";
-		const std::string thirdPartyPathTemplate = "THIRD_PARTY_PATH";
-		
+	{
 		//-------------------------------------------------------------------------
 		std::string ToString(const std::wstring& str)
 		{
@@ -83,47 +76,6 @@ namespace Exporter
 
 			return output;
 		}
-
-		//---------------------------------------------------------------------
-		std::vector<const ctemplate::TemplateDictionary*> GetSectionDictionaries(
-			const ctemplate::TemplateDictionaryPeer& peer,
-			const std::string& sectionName)
-		{
-			std::vector<const ctemplate::TemplateDictionary*> templateDictionaries;
-			peer.GetSectionDictionaries(sectionName, &templateDictionaries);
-
-			return templateDictionaries;
-		}
-		
-		//-------------------------------------------------------------------------
-		void CheckLinkExists(
-			const ctemplate::TemplateDictionary& templateDictionary,
-			const std::string& sectionName,
-			const fs::path& output)
-		{
-			ctemplate::TemplateDictionaryPeer rootPeer(&templateDictionary);			
-			auto dictionaries = GetSectionDictionaries(rootPeer, sectionName);
-
-			for (const auto& dictionary : dictionaries)
-			{
-				ctemplate::TemplateDictionaryPeer peer(dictionary);
-				auto itemLinkDictionaries = GetSectionDictionaries(peer, TemplateHtmlExporter::ItemLinkSection);
-
-				if (!itemLinkDictionaries.empty())
-				{
-					ctemplate::TemplateDictionaryPeer itemLinkPeer(itemLinkDictionaries[0]);
-					auto linkStr = itemLinkPeer.GetSectionValue(TemplateHtmlExporter::LinkTemplate);
-
-					if (linkStr)
-					{
-						auto fullPath = output.parent_path() / Tools::Utf8ToWString(linkStr);
-
-						if (!fs::exists(fullPath))
-							THROW("Link: " << fullPath << " does not exists");
-					}
-				}
-			}
-		}
 		
 		//-------------------------------------------------------------------------
 		void WriteTemplate(
@@ -151,11 +103,19 @@ namespace Exporter
 	const std::string TemplateHtmlExporter::BodyOnLoadFct = "prettyPrint()";
 	const std::string TemplateHtmlExporter::SyntaxHighlightingDisabledMsg 
 		= "Syntax highlighting has been disabled for performance reasons.";
+	const std::string TemplateHtmlExporter::MainMessageTemplate = "MAIN_MESSAGE";
+	const std::string TemplateHtmlExporter::CoverRateTemplate = "COVER_RATE";
+	const std::string TemplateHtmlExporter::UncoverRateTemplate = "UNCOVER_RATE";
+	const std::string TemplateHtmlExporter::CodeTemplate = "CODE";
+	const std::string TemplateHtmlExporter::IdTemplate = "ID";
+	const std::string TemplateHtmlExporter::ThirdPartyPathTemplate = "THIRD_PARTY_PATH";
 
 	//-------------------------------------------------------------------------
-	TemplateHtmlExporter::TemplateHtmlExporter(const fs::path& templateFolder)
-		: mainTemplatePath_(templateFolder / "MainTemplate.html")		
-		, fileTemplatePath_(templateFolder / "SourceTemplate.html")		
+	TemplateHtmlExporter::TemplateHtmlExporter(
+		const fs::path& mainTemplatePath,
+		const fs::path& fileTemplatePath)
+		: mainTemplatePath_(mainTemplatePath)
+		, fileTemplatePath_(fileTemplatePath)
 	{		
 	}
 
@@ -171,7 +131,7 @@ namespace Exporter
 		dictionary.reset(new ctemplate::TemplateDictionary(titleStr));
 
 		dictionary->SetValue(TitleTemplate, titleStr);
-		dictionary->SetValue(messageTemplate, ToString(message));
+		dictionary->SetValue(MainMessageTemplate, ToString(message));
 
 		return dictionary;
 	}
@@ -185,7 +145,7 @@ namespace Exporter
 	{
 		auto sectionDictionary = moduleTemplateDictionary.AddSectionDictionary(MainTemplateItemSection);
 		
-		moduleTemplateDictionary.SetValue(thirdPartyPathTemplate, "../third-party");
+		moduleTemplateDictionary.SetValue(ThirdPartyPathTemplate, "../third-party");
 		FillSection(*sectionDictionary, fileOutput, coverageRate, originalFilename);
 	}
 	
@@ -198,7 +158,7 @@ namespace Exporter
 	{
 		auto sectionDictionary = projectDictionary.AddSectionDictionary(MainTemplateItemSection);			
 			
-		projectDictionary.SetValue(thirdPartyPathTemplate, "third-party");
+		projectDictionary.SetValue(ThirdPartyPathTemplate, "third-party");
 		FillSection(*sectionDictionary, &moduleOutput, coverageRate, originalFilename);
 	}				
 	
@@ -207,7 +167,6 @@ namespace Exporter
 		const ctemplate::TemplateDictionary& templateDictionary,
 		const fs::path& output) const
 	{
-		CheckLinkExists(templateDictionary, MainTemplateItemSection, output);
 		WriteTemplate(templateDictionary, mainTemplatePath_, output);
 	}
 
@@ -216,7 +175,6 @@ namespace Exporter
 		const ctemplate::TemplateDictionary& templateDictionary,
 		const fs::path& output) const
 	{
-		CheckLinkExists(templateDictionary, MainTemplateItemSection, output);
 		WriteTemplate(templateDictionary, mainTemplatePath_, output);
 	}
 
@@ -229,17 +187,17 @@ namespace Exporter
 	{
 		auto titleStr = ToString(title);
 		ctemplate::TemplateDictionary dictionary(titleStr);
-		std::string bodyLoad = TemplateHtmlExporter::BodyOnLoadFct;
+		std::string bodyLoad = BodyOnLoadFct;
 		std::string warning = "";
 
 		if (!enableCodePrettify)
 		{
 			bodyLoad = "";
-			warning = TemplateHtmlExporter::SyntaxHighlightingDisabledMsg;
+			warning = SyntaxHighlightingDisabledMsg;
 		}
 
 		dictionary.SetValue(TitleTemplate, titleStr);
-		dictionary.SetValue(codeTemplate, ToString(codeContent));
+		dictionary.SetValue(CodeTemplate, ToString(codeContent));
 		dictionary.SetValue(BodyOnLoadTemplate, bodyLoad);
 		dictionary.SetValue(SourceWarningMessageTemplate, warning);
 		WriteTemplate(dictionary, fileTemplatePath_, output);
@@ -263,20 +221,20 @@ namespace Exporter
 		{
 			auto htmlPath = ToHtmlPath(*link);
 			sectionDictionary.SetValueAndShowSection(
-				TemplateHtmlExporter::LinkTemplate, 
+				LinkTemplate, 
 				htmlPath, 
-				TemplateHtmlExporter::ItemLinkSection);
+				ItemLinkSection);
 		}
 		else
-			sectionDictionary.ShowSection(TemplateHtmlExporter::ItemNoLinkSection);
+			sectionDictionary.ShowSection(ItemNoLinkSection);
 
-		sectionDictionary.SetIntValue(coverRateTemplate, coverageRate.GetPercentRate());
-		sectionDictionary.SetIntValue(uncoverRateTemplate, 100 - coverageRate.GetPercentRate());
-		sectionDictionary.SetIntValue(TemplateHtmlExporter::ExecutedLineTemplate, coverageRate.GetExecutedLinesCount());
-		sectionDictionary.SetIntValue(TemplateHtmlExporter::UnExecutedLineTemplate, coverageRate.GetUnExecutedLinesCount());
-		sectionDictionary.SetIntValue(TemplateHtmlExporter::TotalLineTemplate, coverageRate.GetTotalLinesCount());
-		sectionDictionary.SetValue(idTemplate, GetUuid());
+		sectionDictionary.SetIntValue(CoverRateTemplate, coverageRate.GetPercentRate());
+		sectionDictionary.SetIntValue(UncoverRateTemplate, 100 - coverageRate.GetPercentRate());
+		sectionDictionary.SetIntValue(ExecutedLineTemplate, coverageRate.GetExecutedLinesCount());
+		sectionDictionary.SetIntValue(UnExecutedLineTemplate, coverageRate.GetUnExecutedLinesCount());
+		sectionDictionary.SetIntValue(TotalLineTemplate, coverageRate.GetTotalLinesCount());
+		sectionDictionary.SetValue(IdTemplate, GetUuid());
 		auto name = ToString(originalFilename.wstring());
-		sectionDictionary.SetValue(TemplateHtmlExporter::NameTemplate, name);
+		sectionDictionary.SetValue(NameTemplate, name);
 	}
 }

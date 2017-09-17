@@ -56,7 +56,7 @@ namespace Exporter
 
 	//-------------------------------------------------------------------------
 	HtmlExporter::HtmlExporter(const fs::path& templateFolder)
-		: exporter_(templateFolder)
+		: exporter_(templateFolder / "MainTemplate.html", templateFolder / "SourceTemplate.html")
 		, fileCoverageExporter_()
 		, templateFolder_(templateFolder)
 	{

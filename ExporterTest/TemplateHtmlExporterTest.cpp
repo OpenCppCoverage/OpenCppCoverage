@@ -15,23 +15,14 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
-
-#include <boost/algorithm/string.hpp>
-#include <boost/filesystem.hpp>
-
-#include "Exporter/Html/CTemplate.hpp"
-#include "Exporter/Html/TemplateHtmlExporter.hpp"
-#include "Exporter/ExporterException.hpp"
-
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/CoverageRate.hpp"
-#include "Tools/Tool.hpp"
-
-#include "TestCoverageConsole/TestCoverageConsole.hpp"
+#include <fstream>
 
 #include "TestHelper/TemporaryPath.hpp"
+#include "Exporter/Html/TemplateHtmlExporter.hpp"
+#include "Exporter/Html/CTemplate.hpp"
+#include "CppCoverage/CoverageRate.hpp"
 
-namespace cov = CppCoverage;
+using namespace Exporter;
 
 namespace ExporterTest
 {
@@ -40,160 +31,175 @@ namespace ExporterTest
 	{
 	public:
 		//---------------------------------------------------------------------
-		TemplateHtmlExporterTest()
-			: templateHtmlExporter_(Tools::GetTemplateFolder())
-			, title_(L"title")
-			, fileOutput_{}
-			, filePath_{ "path" }
-		{			
-			templateDictionary_ = templateHtmlExporter_.CreateTemplateDictionary(title_, L"");
-			peer_.reset(new ctemplate::TemplateDictionaryPeer(templateDictionary_.get()));
-		}
-		
-		//---------------------------------------------------------------------
-		std::vector<const ctemplate::TemplateDictionary*> GetSectionDictionaries(
-			const ctemplate::TemplateDictionaryPeer& peer,
-			const std::string& sectionName)
+		void AddTag(std::ostream& ostr, const std::string& tag)
 		{
-			std::vector<const ctemplate::TemplateDictionary*> templateDictionaries;
-			peer.GetSectionDictionaries(sectionName, &templateDictionaries);
-
-			return templateDictionaries;
+			ostr << tag << ":{{" << tag << "}}" << std::endl;
 		}
 
 		//---------------------------------------------------------------------
-		std::unique_ptr<ctemplate::TemplateDictionaryPeer> GetSection(
-			const ctemplate::TemplateDictionaryPeer& peer,
-			const std::string& sectionName)
-		{									
-			auto dictionary = GetSectionDictionaries(peer, sectionName);
-			return std::unique_ptr<ctemplate::TemplateDictionaryPeer>{new ctemplate::TemplateDictionaryPeer{ dictionary.at(0) }};
-		}
-
-		//---------------------------------------------------------------------
-		void CheckItems()
+		void AddSection(
+			std::ostream& ostr, 
+			const std::string& tag, 
+			std::function<void ()> sectionCallback)
 		{
-			auto fileTemplatePeer = GetSection(*peer_, Exporter::TemplateHtmlExporter::MainTemplateItemSection);			
-			auto itemLink = GetSection(*fileTemplatePeer, Exporter::TemplateHtmlExporter::ItemLinkSection);
-			auto htmlPath = fileOutput_.GetPath().string();
-
-			boost::algorithm::replace_all(htmlPath, "\\", "/");
-			EXPECT_EQ(htmlPath, itemLink->GetSectionValue(
-				Exporter::TemplateHtmlExporter::LinkTemplate));
-			EXPECT_EQ(std::string("0"), fileTemplatePeer->GetSectionValue(
-				Exporter::TemplateHtmlExporter::ExecutedLineTemplate));
-			EXPECT_EQ(std::string("0"), fileTemplatePeer->GetSectionValue(
-				Exporter::TemplateHtmlExporter::UnExecutedLineTemplate));
-			EXPECT_EQ(std::string("0"), fileTemplatePeer->GetSectionValue(
-				Exporter::TemplateHtmlExporter::TotalLineTemplate));						
-			EXPECT_EQ(filePath_.string(), fileTemplatePeer->GetSectionValue(
-				Exporter::TemplateHtmlExporter::NameTemplate));
+			ostr << "{{#" << tag << "}}" << std::endl;
+			sectionCallback();
+			ostr << "{{/" << tag << "}}" << std::endl;
 		}
 
 		//---------------------------------------------------------------------
-		std::wstring GenerateSourceTemplate(
-			const std::wstring& title,
-			const std::wstring& codeContent,
-			bool enableCodePrettify) const
+		fs::path CreateMainTemplate()
 		{
-			TestHelper::TemporaryPath path;
-			templateHtmlExporter_.GenerateSourceTemplate(title, codeContent, enableCodePrettify, path);
-			std::wifstream ifs(path.GetPath().string());
+			fs::path templatePath = output_folder.GetPath() / "template";
+			std::ofstream ofs(templatePath.string());
+			
+			for (const auto& tag : {
+				TemplateHtmlExporter::TitleTemplate,
+				TemplateHtmlExporter::MainMessageTemplate})
+			{
+				AddTag(ofs, tag);
+			}
 
-			return{ std::istreambuf_iterator<wchar_t>(ifs), std::istreambuf_iterator<wchar_t>() };
+			AddSection(ofs, TemplateHtmlExporter::MainTemplateItemSection, [&]()
+			{
+				for (const auto& tag : {
+					TemplateHtmlExporter::TotalLineTemplate,
+					TemplateHtmlExporter::ExecutedLineTemplate,
+					TemplateHtmlExporter::UnExecutedLineTemplate,
+					TemplateHtmlExporter::CoverRateTemplate,
+					TemplateHtmlExporter::UncoverRateTemplate })
+				{
+					AddTag(ofs, tag);
+				}
+
+				AddSection(ofs, TemplateHtmlExporter::ItemLinkSection, [&]()
+				{
+					AddTag(ofs, TemplateHtmlExporter::NameTemplate);
+					AddTag(ofs, TemplateHtmlExporter::LinkTemplate);
+				});
+				AddSection(ofs, TemplateHtmlExporter::ItemNoLinkSection, [&]()
+				{
+					AddTag(ofs, TemplateHtmlExporter::NameTemplate);
+				});
+			});
+				
+			return templatePath;
 		}
 
-		const std::wstring title_;
-		std::unique_ptr<ctemplate::TemplateDictionaryPeer> peer_;
-		std::unique_ptr<ctemplate::TemplateDictionary> templateDictionary_;	
-		Exporter::TemplateHtmlExporter templateHtmlExporter_;	
-		TestHelper::TemporaryPath fileOutput_;
-		fs::path filePath_;
-		cov::CoverageRate coverageRate_;
+		//---------------------------------------------------------------------
+		fs::path CreateSourceTemplate()
+		{
+			fs::path templatePath = output_folder.GetPath() / "template";
+			std::ofstream ofs(templatePath.string());
+
+			for (const auto& tag : {
+				TemplateHtmlExporter::TitleTemplate,
+				TemplateHtmlExporter::BodyOnLoadTemplate,
+				TemplateHtmlExporter::SourceWarningMessageTemplate,
+				TemplateHtmlExporter::CodeTemplate })
+			{
+				AddTag(ofs, tag);
+			}
+
+			return templatePath;
+		}
+
+		//---------------------------------------------------------------------
+		std::unordered_map<std::string, std::wstring> ReadTemplate(const fs::path& p)
+		{
+			std::unordered_map<std::string, std::wstring> results;
+			std::wifstream ifs(p.string());
+			std::wstring line;
+
+			while (std::getline(ifs, line))
+			{
+				auto pos = line.find(':');
+				if (pos != std::string::npos)
+				{
+					results.emplace(
+						std::string{ line.begin(), line.begin() + pos },
+						std::wstring{ line.begin() + pos + 1, line.end() } );
+				}
+			}
+			return results;
+		}
+
+		TestHelper::TemporaryPath output_folder{ TestHelper::TemporaryPathOption::CreateAsFolder };
 	};
 
 	//-------------------------------------------------------------------------
-	TEST_F(TemplateHtmlExporterTest, CreateTemplateDictionary)
-	{		
-		ASSERT_EQ(Tools::ToLocalString(title_), peer_->GetSectionValue(
-			Exporter::TemplateHtmlExporter::TitleTemplate));
-	}
-
-	//-------------------------------------------------------------------------
-	TEST_F(TemplateHtmlExporterTest, AddFileSectionToDictionary)
-	{					
-		templateHtmlExporter_.AddFileSectionToDictionary(filePath_, coverageRate_, 
-			&fileOutput_.GetPath(), *templateDictionary_);
-		CheckItems();
-	}
-
-	//-------------------------------------------------------------------------
-	TEST_F(TemplateHtmlExporterTest, AddModuleSectionToDictionary)
-	{	
-		templateHtmlExporter_.AddModuleSectionToDictionary(filePath_, coverageRate_, 
-			fileOutput_.GetPath(), *templateDictionary_);
-		CheckItems();
-	}
-
-	//-------------------------------------------------------------------------
-	TEST_F(TemplateHtmlExporterTest, AddFileSectionToDictionaryNoLink)
-	{		
-		templateHtmlExporter_.AddFileSectionToDictionary(filePath_, coverageRate_,
-			nullptr, *templateDictionary_);
-		auto itemSection = GetSection(*peer_, Exporter::TemplateHtmlExporter::MainTemplateItemSection);
-
-		ASSERT_EQ(0, GetSectionDictionaries(*itemSection, 
-			Exporter::TemplateHtmlExporter::ItemLinkSection).size());
-		ASSERT_EQ(1, GetSectionDictionaries(*itemSection, 
-			Exporter::TemplateHtmlExporter::ItemNoLinkSection).size());
-	}
-
-	//-------------------------------------------------------------------------
-	TEST_F(TemplateHtmlExporterTest, FileExists)
-	{		
-		templateHtmlExporter_.AddModuleSectionToDictionary(filePath_, coverageRate_,
-			".", *templateDictionary_);
-		templateHtmlExporter_.GenerateModuleTemplate(*templateDictionary_, fileOutput_.GetPath());
-
-		ASSERT_TRUE(fs::exists(fileOutput_.GetPath()));
-	}
-
-	//-------------------------------------------------------------------------
-	TEST_F(TemplateHtmlExporterTest, FileNotExists)
+	TEST_F(TemplateHtmlExporterTest, ProjectTemplate)
 	{
-		templateHtmlExporter_.AddModuleSectionToDictionary(filePath_, coverageRate_,
-			"MissingFile", *templateDictionary_);
+		auto mainTemplate = CreateMainTemplate();
+		TemplateHtmlExporter exporter{ mainTemplate, mainTemplate };
+		const std::wstring title = L"Title";
+		const std::wstring message = L"Message";
+		auto project = exporter.CreateTemplateDictionary(title, message);
 
-		ASSERT_THROW(templateHtmlExporter_.GenerateModuleTemplate(*templateDictionary_, fileOutput_.GetPath()), Exporter::ExporterException);
+		CppCoverage::CoverageRate coverage{ 10, 20 };
+		const fs::path moduleName = L"ModuleName";
+		const fs::path moduleOutput = L"ModuleOutput";
+		exporter.AddModuleSectionToDictionary(moduleName, coverage, moduleOutput, *project);
+
+		auto outputFile = output_folder.GetPath() / L"project";
+		exporter.GenerateProjectTemplate(*project, outputFile);
+		auto templateValues = ReadTemplate(outputFile);
+
+		ASSERT_EQ(title, templateValues.at(TemplateHtmlExporter::TitleTemplate));
+		ASSERT_EQ(message, templateValues.at(TemplateHtmlExporter::MainMessageTemplate));
+		ASSERT_EQ(moduleName, templateValues.at(TemplateHtmlExporter::NameTemplate));
+		ASSERT_EQ(moduleOutput, templateValues.at(TemplateHtmlExporter::LinkTemplate));
+		ASSERT_EQ(coverage.GetTotalLinesCount(),
+			std::stoi(templateValues.at(TemplateHtmlExporter::TotalLineTemplate)));
+		ASSERT_EQ(coverage.GetExecutedLinesCount(), 
+			std::stoi(templateValues.at(TemplateHtmlExporter::ExecutedLineTemplate)));
+		ASSERT_EQ(coverage.GetUnExecutedLinesCount(), 
+			std::stoi(templateValues.at(TemplateHtmlExporter::UnExecutedLineTemplate)));
+		ASSERT_EQ(std::trunc(coverage.GetRate() * 100), 
+			std::stoi(templateValues.at(TemplateHtmlExporter::CoverRateTemplate)));
+		ASSERT_EQ(100 - std::trunc(coverage.GetRate() * 100), 
+			std::stoi(templateValues.at(TemplateHtmlExporter::UncoverRateTemplate)));
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(TemplateHtmlExporterTest, GenerateSourceTemplate)
+	TEST_F(TemplateHtmlExporterTest, ModuleTemplateWithNoLink)
 	{
-		const std::wstring title = L"TITLE";
-		const std::wstring codeContent = L"CODE_CONTENT";
+		auto mainTemplate = CreateMainTemplate();
+		TemplateHtmlExporter exporter{ mainTemplate, mainTemplate };		
+		auto module = exporter.CreateTemplateDictionary(L"Title", L"Message");
 		
-		auto output = GenerateSourceTemplate(title, codeContent, true);
+		const fs::path filename = "filename";
+		exporter.AddFileSectionToDictionary(filename,
+			CppCoverage::CoverageRate{ 10, 20 }, nullptr, *module);
+		auto outputFile = output_folder.GetPath() / "module";
+		exporter.GenerateModuleTemplate(*module, outputFile);
 
-		ASSERT_TRUE(boost::algorithm::contains(output, title));
-		ASSERT_TRUE(boost::algorithm::contains(output, codeContent));
+		auto templateValues = ReadTemplate(outputFile);
+
+		ASSERT_EQ(filename, templateValues.at(TemplateHtmlExporter::NameTemplate));
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(TemplateHtmlExporterTest, PrettifyEnabled)
+	TEST_F(TemplateHtmlExporterTest, FileTemplate)
 	{
-		auto output = GenerateSourceTemplate(L"", L"", true);
-		
-		ASSERT_TRUE(boost::algorithm::contains(output, Exporter::TemplateHtmlExporter::BodyOnLoadFct));
-		ASSERT_FALSE(boost::algorithm::contains(output, Exporter::TemplateHtmlExporter::SyntaxHighlightingDisabledMsg));
-	}
+		auto sourceTemplate = CreateSourceTemplate();
+		TemplateHtmlExporter exporter{ sourceTemplate, sourceTemplate };
 
-	//-------------------------------------------------------------------------
-	TEST_F(TemplateHtmlExporterTest, PrettifyDisabled)
-	{
-		auto output = GenerateSourceTemplate(L"", L"", false);
+		auto outputFile = output_folder.GetPath() / "file";
+		std::wstring sourceTitle = L"SourceTitle";
+		std::wstring sourceContent = L"SourceContent";
+		exporter.GenerateSourceTemplate(sourceTitle, sourceContent, true, outputFile);
+		auto templateValues = ReadTemplate(outputFile);
 
-		ASSERT_FALSE(boost::algorithm::contains(output, Exporter::TemplateHtmlExporter::BodyOnLoadFct));
-		ASSERT_TRUE(boost::algorithm::contains(output, Exporter::TemplateHtmlExporter::SyntaxHighlightingDisabledMsg));
+		ASSERT_EQ(sourceTitle, templateValues.at(TemplateHtmlExporter::TitleTemplate));
+		ASSERT_EQ(sourceContent, templateValues.at(TemplateHtmlExporter::CodeTemplate));
+		ASSERT_NE(L"", templateValues.at(TemplateHtmlExporter::BodyOnLoadTemplate));
+		ASSERT_EQ(L"", templateValues.at(TemplateHtmlExporter::SourceWarningMessageTemplate));
+
+		exporter.GenerateSourceTemplate(sourceTitle, sourceContent, false, outputFile);
+		templateValues = ReadTemplate(outputFile);
+
+		ASSERT_EQ(L"", templateValues.at(TemplateHtmlExporter::BodyOnLoadTemplate));
+		ASSERT_NE(L"", templateValues.at(TemplateHtmlExporter::SourceWarningMessageTemplate));
 	}
-} 
+}
