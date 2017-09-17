@@ -487,7 +487,7 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, OptimizedBuild)
+	TEST_F(CodeCoverageRunnerTest, DISABLED_OptimizedBuild)
 	{
 		CoverageArgs args{ 
 			{ TestCoverageConsole::TestOptimizedBuild },
