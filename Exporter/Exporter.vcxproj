@@ -55,7 +55,6 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\CTemplate.Debug.props" />
-    <Import Project="..\PropertySheets\ProtoBuff.Debug.props" />
     <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\Default.props" />
   </ImportGroup>
@@ -63,19 +62,16 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\CTemplate.Debug.x64.props" />
     <Import Project="..\PropertySheets\Boost.64.props" />
-    <Import Project="..\PropertySheets\ProtoBuff.Debug.X64.props" />
     <Import Project="..\PropertySheets\Default.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
-    <Import Project="..\PropertySheets\ProtoBuff.Release.props" />
     <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\CTemplate.Release.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\PropertySheets\ProtoBuff.Release.x64.props" />
     <Import Project="..\PropertySheets\Default.props" />
     <Import Project="..\PropertySheets\Boost.64.props" />
     <Import Project="..\PropertySheets\CTemplate.Release.x64.props" />
@@ -100,7 +96,7 @@
       <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>"$(PROTOC_PATH)" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
+      <Command>"$(SolutionDir)\packages\thirdparty.1.0.0\installed\x86-windows\tools\protoc.exe" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -121,7 +117,7 @@
       <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>"$(PROTOC_PATH)" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
+      <Command>"$(SolutionDir)\packages\thirdparty.1.0.0\installed\x86-windows\tools\protoc.exe" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -146,7 +142,7 @@
       <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>"$(PROTOC_PATH)" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
+      <Command>"$(SolutionDir)\packages\thirdparty.1.0.0\installed\x86-windows\tools\protoc.exe" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -171,7 +167,7 @@
       <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>"$(PROTOC_PATH)" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
+      <Command>"$(SolutionDir)\packages\thirdparty.1.0.0\installed\x86-windows\tools\protoc.exe" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -234,8 +230,16 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Html\Template\SourceTemplate.html" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\thirdparty.1.0.0\build\native\thirdparty.targets" Condition="Exists('..\packages\thirdparty.1.0.0\build\native\thirdparty.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\thirdparty.1.0.0\build\native\thirdparty.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\thirdparty.1.0.0\build\native\thirdparty.targets'))" />
+  </Target>
 </Project>

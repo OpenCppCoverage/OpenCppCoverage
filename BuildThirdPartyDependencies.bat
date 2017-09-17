@@ -18,6 +18,11 @@ IF EXIST vcpkg.exe GOTO VCPKG_EXISTS
 :VCPKG_EXISTS
 
 .\vcpkg install poco:x64-windows poco:x86-windows
+.\vcpkg install protobuf:x64-windows protobuf:x86-windows
 
-.\vcpkg export poco:x64-windows poco:x86-windows --nuget --nuget-id=ThirdParty --nuget-version=1.0.0
+.\vcpkg export ^
+	poco:x64-windows poco:x86-windows ^
+	protobuf:x64-windows protobuf:x86-windows ^
+	--nuget --nuget-id=ThirdParty --nuget-version=1.0.0
+
 downloads\nuget-4.1.0\nuget.exe install ThirdParty -Source %ROOT_FOLDER%\vcpkg -OutputDirectory ..\..\..\packages
