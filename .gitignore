@@ -18,7 +18,7 @@ TestResults/
 packages/*
 Build/Installer/VCRedist/*
 Build/Dependencies/Dependencies-vs*.zip
-
+Build/ThirdParty/vcpkg
 
 # Template file / unmanaged dll for the plugin
 VSPackage/OpenCppCoverage-x64
