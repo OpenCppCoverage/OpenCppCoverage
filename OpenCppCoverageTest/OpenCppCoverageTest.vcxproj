@@ -22,6 +22,7 @@
     <ProjectGuid>{F892B2B1-64A9-4809-BA9C-24A1F2E82979}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>OpenCppCoverage</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
