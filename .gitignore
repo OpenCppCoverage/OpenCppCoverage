@@ -1,6 +1,7 @@
 */Debug
 */Release
 */x64
+.vs
 Debug/
 Release/
 ipch/*
@@ -26,3 +27,5 @@ VSPackage/OpenCppCoverage-x86
 
 # ProtoBuff files
 *.pb.*
+
+.clang-format
