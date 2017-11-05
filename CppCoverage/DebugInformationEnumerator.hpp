@@ -33,7 +33,8 @@ namespace CppCoverage
 	{
 	  public:
 		virtual ~IDebugInformationHandler() = default;
-		virtual bool OnSourceFile(const boost::filesystem::path&) = 0;
+		virtual bool IsSourceFileSelected(const boost::filesystem::path&) = 0;
+		virtual void OnSourceFileEnds(const boost::filesystem::path&) = 0;
 		virtual void OnLine(int lineNumber, int64_t virtualAddress) = 0;
 	};
 

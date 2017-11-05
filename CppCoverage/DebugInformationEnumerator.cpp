@@ -24,13 +24,15 @@
 
 #include <boost/filesystem/path.hpp>
 
+#include "tools/Log.hpp"
+
 #include "CppCoverageException.hpp"
 
 namespace CppCoverage
 {
 	namespace
 	{
-		//-------------------------------------------------------------------------
+		//----------------------------------------------------------------------
 		class DiaString
 		{
 		  public:
@@ -74,7 +76,7 @@ namespace CppCoverage
 			BSTR str_ = nullptr;
 		};
 
-		//-------------------------------------------------------------------------
+		//----------------------------------------------------------------------
 		template <typename Value, typename Collection, typename Fct>
 		void EnumerateCollection(Collection& collection, Fct fct)
 		{
@@ -88,7 +90,7 @@ namespace CppCoverage
 			}
 		}
 
-		//-------------------------------------------------------------------------
+		//----------------------------------------------------------------------
 		CComPtr<IDiaEnumSourceFiles> GetEnumSourceFiles(IDiaSession& session)
 		{
 			CComPtr<IDiaEnumTables> tables;
@@ -113,7 +115,7 @@ namespace CppCoverage
 			return sourceFiles;
 		}
 
-		//-------------------------------------------------------------------------
+		//----------------------------------------------------------------------
 		bool IsCompilerGeneratedSymbol(IDiaSession& session,
 		                               ULONGLONG virtualAddress)
 		{
@@ -133,8 +135,9 @@ namespace CppCoverage
 			return false;
 		}
 
-		//-------------------------------------------------------------------------
-		void OnNewLine(IDiaSession& session, IDiaLineNumber& lineNumber,
+		//----------------------------------------------------------------------
+		void OnNewLine(IDiaSession& session,
+		               IDiaLineNumber& lineNumber,
 		               IDebugInformationHandler& handler)
 		{
 			DWORD linenum = 0;
@@ -149,8 +152,9 @@ namespace CppCoverage
 				handler.OnLine(linenum, virtualAddress);
 		}
 
-		//-------------------------------------------------------------------------
-		void EnumLines(IDiaSession& session, IDiaSourceFile& sourceFile,
+		//----------------------------------------------------------------------
+		void EnumLines(IDiaSession& session,
+		               IDiaSourceFile& sourceFile,
 		               IDebugInformationHandler& handler)
 		{
 			CComPtr<IDiaEnumSymbols> symbols;
@@ -173,7 +177,76 @@ namespace CppCoverage
 			});
 		}
 
-		//-------------------------------------------------------------------------
+		//----------------------------------------------------------------------
+		struct DiaLoadCallback : public IDiaLoadCallback
+		{
+			//------------------------------------------------------------------
+			HRESULT STDMETHODCALLTYPE QueryInterface(
+			    REFIID riid,
+			    _COM_Outptr_ void __RPC_FAR* __RPC_FAR* ppvObject) override
+			{
+				if (!ppvObject)
+					return E_POINTER;
+
+				if (riid == IID_IDiaLoadCallback)
+				{
+					*ppvObject = this;
+					return S_OK;
+				}
+
+				return E_NOINTERFACE;
+			}
+
+			//------------------------------------------------------------------
+			ULONG STDMETHODCALLTYPE AddRef() override
+			{
+				return 1; // On stack
+			}
+
+			//------------------------------------------------------------------
+			ULONG STDMETHODCALLTYPE Release() override
+			{
+				return 1; // On stack
+			}
+
+			//------------------------------------------------------------------
+			HRESULT STDMETHODCALLTYPE NotifyDebugDir(BOOL fExecutable,
+			                                         DWORD cbData,
+			                                         BYTE* pbData) override
+			{
+				return S_OK;
+			}
+
+			//------------------------------------------------------------------
+			HRESULT STDMETHODCALLTYPE NotifyOpenDBG(LPCOLESTR dbgPath,
+			                                        HRESULT resultCode) override
+			{
+				return S_OK;
+			}
+
+			//------------------------------------------------------------------
+			HRESULT STDMETHODCALLTYPE NotifyOpenPDB(LPCOLESTR pdbPath,
+			                                        HRESULT resultCode) override
+			{
+				LOG_DEBUG << "Try to load pdb from " << pdbPath << ": "
+				          << (resultCode == S_OK ? "Success" : "Failed");
+				return S_OK;
+			}
+
+			//------------------------------------------------------------------
+			HRESULT STDMETHODCALLTYPE RestrictRegistryAccess() override
+			{
+				return S_OK;
+			}
+
+			//------------------------------------------------------------------
+			HRESULT STDMETHODCALLTYPE RestrictSymbolServerAccess() override
+			{
+				return S_OK;
+			}
+		};
+
+		//----------------------------------------------------------------------
 		CComPtr<IDiaDataSource>
 		LoadDataForExe(const boost::filesystem::path& path)
 		{
@@ -188,16 +261,18 @@ namespace CppCoverage
 				      msDia + L" is in the current directory.");
 			}
 
+			DiaLoadCallback diaLoadCallback;
 			if (!sourcePtr ||
-			    sourcePtr->loadDataForExe(path.wstring().c_str(), nullptr,
-			                              nullptr) != S_OK)
+			    sourcePtr->loadDataForExe(path.wstring().c_str(),
+			                              nullptr,
+			                              &diaLoadCallback) != S_OK)
 			{
 				return nullptr;
 			}
 			return sourcePtr;
 		}
 
-		//-------------------------------------------------------------------------
+		//----------------------------------------------------------------------
 		boost::filesystem::path GetSourceFileName(IDiaSourceFile& sourceFile)
 		{
 			DiaString fileName;
@@ -208,7 +283,7 @@ namespace CppCoverage
 		}
 	}
 
-	//-----------------------------------------------------------------------------
+	//--------------------------------------------------------------------------
 	bool DebugInformationEnumerator::Enumerate(
 	    const boost::filesystem::path& path,
 	    IDebugInformationHandler& handler) const
@@ -229,8 +304,11 @@ namespace CppCoverage
 		EnumerateCollection<IDiaSourceFile>(
 		    *sourceFiles, [&](IDiaSourceFile& sourceFile) {
 			    auto filename = GetSourceFileName(sourceFile);
-			    if (handler.OnSourceFile(filename))
+			    if (handler.IsSourceFileSelected(filename))
+			    {
 				    EnumLines(*sessionPtr, sourceFile, handler);
+				    handler.OnSourceFileEnds(filename);
+			    }
 		    });
 		return true;
 	}

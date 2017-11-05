@@ -37,13 +37,16 @@ namespace CppCoverageTest
 			}
 
 			//--------------------------------------------------------------------------
-			bool
-			OnSourceFile(const boost::filesystem::path& sourceFile) override
+			bool IsSourceFileSelected(
+			    const boost::filesystem::path& sourceFile) override
 			{
-				if (selectedFilename_ != sourceFile.filename())
-					return false;
-				selectedFullPath_ = sourceFile;
-				return true;
+				return selectedFilename_ == sourceFile.filename();
+			}
+
+			//--------------------------------------------------------------------------
+			void OnSourceFileEnds(const boost::filesystem::path& path) override 
+			{
+				selectedFullPath_ = path;
 			}
 
 			//--------------------------------------------------------------------------
