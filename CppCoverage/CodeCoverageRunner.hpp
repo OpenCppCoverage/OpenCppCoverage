@@ -17,18 +17,15 @@
 #pragma once
 
 #include <memory>
-#include <unordered_map>
 
 #include "CoverageData.hpp"
 #include "IDebugEventsHandler.hpp"
-#include "IDebugInformationEventHandler.hpp"
 #include "CppCoverageExport.hpp"
 
 namespace CppCoverage
 {
 	class StartInfo;
 	class RunCoverageSettings;
-	class DebugInformation;
 	class DebugInformationEventHandler;
 	class ExecutedAddressManager;
 	class BreakPoint;
@@ -37,14 +34,13 @@ namespace CppCoverage
 	class UnifiedDiffSettings;
 	class MonitoredLineRegister;
 
-	class CPPCOVERAGE_DLL CodeCoverageRunner : private IDebugEventsHandler, private IDebugInformationEventHandler
+	class CPPCOVERAGE_DLL CodeCoverageRunner : private IDebugEventsHandler
 	{
 	public:
 		CodeCoverageRunner();
 		~CodeCoverageRunner();
 
 		CoverageData RunCoverage(const RunCoverageSettings&);
-		size_t GetDebugInformationCount() const;
 
 	private:
 		virtual void OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO&) override;
@@ -54,9 +50,6 @@ namespace CppCoverage
 		virtual ExceptionType OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&) override;
 
 	private:
-		virtual void OnNewLine(const std::wstring& fileName, int lineNumber, const Address&) override;
-
-	private:
 		CodeCoverageRunner(const CodeCoverageRunner&) = delete;
 		CodeCoverageRunner& operator=(const CodeCoverageRunner&) = delete;
 
@@ -64,7 +57,6 @@ namespace CppCoverage
 		bool OnBreakPoint(const EXCEPTION_DEBUG_INFO&, HANDLE hProcess, HANDLE hThread);
 
 	private:
-		std::unordered_map<HANDLE, std::unique_ptr<DebugInformation>> debugInformation_;
 		std::shared_ptr<BreakPoint> breakpoint_;
 		std::shared_ptr<ExecutedAddressManager> executedAddressManager_;
 		std::shared_ptr<CoverageFilterManager> coverageFilterManager_;

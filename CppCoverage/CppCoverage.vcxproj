@@ -167,7 +167,6 @@
     <ClInclude Include="CoverageFilterManager.hpp" />
     <ClInclude Include="DebugInformationEnumerator.hpp" />
     <ClInclude Include="MonitoredLineRegister.hpp" />
-    <ClInclude Include="FileDebugInformation.hpp" />
     <ClInclude Include="ICoverageFilterManager.hpp" />
     <ClInclude Include="RunCoverageSettings.hpp" />
     <ClInclude Include="UnifiedDiffCoverageFilterManager.hpp" />
@@ -178,7 +177,6 @@
     <ClInclude Include="CoverageFilterSettings.hpp" />
     <ClInclude Include="CppCoverageException.hpp" />
     <ClInclude Include="Debugger.hpp" />
-    <ClInclude Include="DebugInformation.hpp" />
     <ClInclude Include="ExceptionHandler.hpp" />
     <ClInclude Include="ExecutedAddressManager.hpp" />
     <ClInclude Include="CppCoverageExport.hpp" />
@@ -186,7 +184,6 @@
     <ClInclude Include="Handle.hpp" />
     <ClInclude Include="HandleInformation.hpp" />
     <ClInclude Include="IDebugEventsHandler.hpp" />
-    <ClInclude Include="IDebugInformationEventHandler.hpp" />
     <ClInclude Include="LineCoverage.hpp" />
     <ClInclude Include="ModuleCoverage.hpp" />
     <ClInclude Include="Options.hpp" />
@@ -208,7 +205,6 @@
     <ClCompile Include="CoverageFilterManager.cpp" />
     <ClCompile Include="DebugInformationEnumerator.cpp" />
     <ClCompile Include="MonitoredLineRegister.cpp" />
-    <ClCompile Include="FileDebugInformation.cpp" />
     <ClCompile Include="RunCoverageSettings.cpp" />
     <ClCompile Include="UnifiedDiffCoverageFilterManager.cpp" />
     <ClCompile Include="UnifiedDiffSettings.cpp" />
@@ -218,13 +214,11 @@
     <ClCompile Include="CoverageFilterSettings.cpp" />
     <ClCompile Include="CppCoverageException.cpp" />
     <ClCompile Include="Debugger.cpp" />
-    <ClCompile Include="DebugInformation.cpp" />
     <ClCompile Include="ExceptionHandler.cpp" />
     <ClCompile Include="ExecutedAddressManager.cpp" />
     <ClCompile Include="FileCoverage.cpp" />
     <ClCompile Include="HandleInformation.cpp" />
     <ClCompile Include="IDebugEventsHandler.cpp" />
-    <ClCompile Include="IDebugInformationEventHandler.cpp" />
     <ClCompile Include="LineCoverage.cpp" />
     <ClCompile Include="ModuleCoverage.cpp" />
     <ClCompile Include="Options.cpp" />

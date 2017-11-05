@@ -161,7 +161,6 @@
   <ItemGroup>
     <ClInclude Include="CoverageFilterManagerMock.hpp" />
     <ClInclude Include="DebugEventsMock.hpp" />
-    <ClInclude Include="DebugInformationEventHandlerMock.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TestTools.hpp" />
   </ItemGroup>
@@ -179,7 +178,6 @@
     <ClCompile Include="CppCoverageExceptionTest.cpp" />
     <ClCompile Include="CppCoverageTest.cpp" />
     <ClCompile Include="DebuggerTest.cpp" />
-    <ClCompile Include="DebugInformationTest.cpp" />
     <ClCompile Include="ExceptionHandlerTest.cpp" />
     <ClCompile Include="ExecutedAddressManagerTest.cpp" />
     <ClCompile Include="FileCoverageTest.cpp" />

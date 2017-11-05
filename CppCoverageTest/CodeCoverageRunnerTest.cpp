@@ -152,9 +152,6 @@ namespace CppCoverageTest
 
 			auto coverageData = codeCoverageRunner.RunCoverage(settings);
 
-			if (codeCoverageRunner.GetDebugInformationCount() != 0)
-				throw std::runtime_error("Invalid number of DebugInformation.");
-
 			return coverageData;
 		}
 

@@ -25,7 +25,6 @@
 
 #include "CoverageData.hpp"
 #include "Debugger.hpp"
-#include "DebugInformation.hpp"
 #include "ExecutedAddressManager.hpp"
 #include "HandleInformation.hpp"
 #include "BreakPoint.hpp"
@@ -87,7 +86,6 @@ namespace CppCoverage
 		auto hProcess = processDebugInfo.hProcess;
 		auto lpBaseOfImage = processDebugInfo.lpBaseOfImage;
 
-		debugInformation_.emplace(hProcess, std::make_unique<DebugInformation>(hProcess));
 		LoadModule(hProcess, processDebugInfo.hFile, lpBaseOfImage);
 	}
 	
@@ -96,8 +94,6 @@ namespace CppCoverage
 	{
 		exceptionHandler_->OnExitProcess(hProcess);
 		executedAddressManager_->OnExitProcess(hProcess);
-		if (debugInformation_.erase(hProcess) != 1)
-			THROW("Cannot find process for debugInformation_.");
 	}
 
 	//-------------------------------------------------------------------------
@@ -188,32 +184,8 @@ namespace CppCoverage
 		if (coverageFilterManager_->IsModuleSelected(filename))
 		{
 			executedAddressManager_->AddModule(filename, baseOfImage);
-			auto it = debugInformation_.find(hProcess);
-
-			if (it == debugInformation_.end())
-				THROW("Cannot find debug information.");
-			const auto& debugInformation = it->second;
-
 			monitoredLineRegister_->RegisterLineToMonitor(filename, hProcess,
 			                                              baseOfImage);
 		}
-	}
-	
-	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::OnNewLine(
-		const std::wstring& filename, 
-		int lineNumber, 
-		const Address& address)
-	{		
-		auto oldInstruction = breakpoint_->SetBreakPointAt(address);
-
-		if (!executedAddressManager_->RegisterAddress(address, filename, lineNumber, oldInstruction))
-			breakpoint_->RemoveBreakPoint(address, oldInstruction);
-	}
-
-	//-------------------------------------------------------------------------
-	size_t CodeCoverageRunner::GetDebugInformationCount() const
-	{
-		return debugInformation_.size();
 	}
 }
