@@ -35,6 +35,7 @@
 #include "CppCoverageException.hpp"
 #include "Address.hpp"
 #include "RunCoverageSettings.hpp"
+#include "MonitoredLineRegister.hpp"
 
 #include "tools/Tool.hpp"
 
@@ -43,9 +44,9 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	CodeCoverageRunner::CodeCoverageRunner()
 	{ 
-		executedAddressManager_.reset(new ExecutedAddressManager());
-		exceptionHandler_.reset(new ExceptionHandler());
-		breakpoint_.reset(new BreakPoint());
+		executedAddressManager_ = std::make_shared<ExecutedAddressManager>();
+		exceptionHandler_ = std::make_unique<ExceptionHandler>();
+		breakpoint_ = std::make_shared<BreakPoint>();
 	}
 	
 	//-------------------------------------------------------------------------
@@ -59,11 +60,15 @@ namespace CppCoverage
 	{
 		Debugger debugger{ settings.GetCoverChildren(), settings.GetContinueAfterCppException()};
 
-		coverageFilterManager_ = std::make_unique<CoverageFilterManager>(
+		coverageFilterManager_ = std::make_shared<CoverageFilterManager>(
 			settings.GetCoverageFilterSettings(),
 			settings.GetUnifiedDiffSettings(), 
 			settings.GetExcludedLineRegexes(),
 			settings.GetOptimizedBuildSupport());
+
+		monitoredLineRegister_ = std::make_unique<MonitoredLineRegister>(
+		    breakpoint_, executedAddressManager_, coverageFilterManager_);
+
 		const auto& startInfo = settings.GetStartInfo();
 		int exitCode = debugger.Debug(startInfo, *this);
 		const auto& path = startInfo.GetPath();
@@ -189,7 +194,8 @@ namespace CppCoverage
 				THROW("Cannot find debug information.");
 			const auto& debugInformation = it->second;
 
-			debugInformation->LoadModule(filename, hFile, baseOfImage, *coverageFilterManager_, *this);
+			monitoredLineRegister_->RegisterLineToMonitor(filename, hProcess,
+			                                              baseOfImage);
 		}
 	}
 	

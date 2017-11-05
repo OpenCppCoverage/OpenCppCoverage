@@ -166,6 +166,7 @@
     <ClInclude Include="CoverageDataMerger.hpp" />
     <ClInclude Include="CoverageFilterManager.hpp" />
     <ClInclude Include="DebugInformationEnumerator.hpp" />
+    <ClInclude Include="MonitoredLineRegister.hpp" />
     <ClInclude Include="FileDebugInformation.hpp" />
     <ClInclude Include="ICoverageFilterManager.hpp" />
     <ClInclude Include="RunCoverageSettings.hpp" />
@@ -206,6 +207,7 @@
     <ClCompile Include="CoverageDataMerger.cpp" />
     <ClCompile Include="CoverageFilterManager.cpp" />
     <ClCompile Include="DebugInformationEnumerator.cpp" />
+    <ClCompile Include="MonitoredLineRegister.cpp" />
     <ClCompile Include="FileDebugInformation.cpp" />
     <ClCompile Include="RunCoverageSettings.cpp" />
     <ClCompile Include="UnifiedDiffCoverageFilterManager.cpp" />

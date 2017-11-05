@@ -35,6 +35,7 @@ namespace CppCoverage
 	class CoverageFilterManager;
 	class ExceptionHandler;
 	class UnifiedDiffSettings;
+	class MonitoredLineRegister;
 
 	class CPPCOVERAGE_DLL CodeCoverageRunner : private IDebugEventsHandler, private IDebugInformationEventHandler
 	{
@@ -64,9 +65,10 @@ namespace CppCoverage
 
 	private:
 		std::unordered_map<HANDLE, std::unique_ptr<DebugInformation>> debugInformation_;
-		std::unique_ptr<BreakPoint> breakpoint_;
-		std::unique_ptr<ExecutedAddressManager> executedAddressManager_;
-		std::unique_ptr<CoverageFilterManager> coverageFilterManager_;
+		std::shared_ptr<BreakPoint> breakpoint_;
+		std::shared_ptr<ExecutedAddressManager> executedAddressManager_;
+		std::shared_ptr<CoverageFilterManager> coverageFilterManager_;
+		std::unique_ptr<MonitoredLineRegister> monitoredLineRegister_;
 		std::unique_ptr<ExceptionHandler> exceptionHandler_;
 	};
 }
