@@ -159,7 +159,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CoverageFilterManagerMock.hpp" />
     <ClInclude Include="DebugEventsMock.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TestTools.hpp" />
