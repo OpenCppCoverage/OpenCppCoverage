@@ -51,7 +51,7 @@ namespace FileFilter
 	{
 		UpdateCachesIfExpired(moduleInfo, fileInfo);
 
-		auto lineAddress = lineInfo.lineAddress_;
+		auto lineAddress = lineInfo.virtualAddress_;
 		if (lastSymbolAddresses_.count(lineAddress) == 0)
 			return true;
 
@@ -103,7 +103,7 @@ namespace FileFilter
 		std::unordered_map<ULONG, DWORD64> addressesBySymboleIndex;
 		for (const auto& lineData: lineDatas)
 		{
-			auto lineAddress = lineData.lineAddress_;
+			auto lineAddress = lineData.virtualAddress_;
 			auto symbolIndex = lineData.symbolIndex_;
 			auto lineNumber = lineData.lineNumber_;
 

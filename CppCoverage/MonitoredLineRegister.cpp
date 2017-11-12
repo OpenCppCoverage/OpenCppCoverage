@@ -78,7 +78,7 @@ namespace CppCoverage
 			        moduleInfo, fileInfo, lineInfo))
 			{
 				auto addressValue =
-				    lineInfo.lineAddress_ +
+				    lineInfo.virtualAddress_ +
 				    reinterpret_cast<DWORD64>(moduleInfo.baseOfImage_);
 
 				Address address{moduleInfo.hProcess_,
