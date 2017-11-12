@@ -28,17 +28,14 @@ namespace FileFilter
 		ModuleInfo(
 				HANDLE hProcess,
 				const boost::uuids::uuid& uniqueId,
-				void* baseOfImage,
-				DWORD64 baseAddress)
+				void* baseOfImage)
 			: hProcess_ {hProcess}
 			, uniqueId_{ uniqueId }
 			, baseOfImage_{ baseOfImage }
-			, baseAddress_{ baseAddress }
 		{}
 
 		const HANDLE hProcess_;
 		const boost::uuids::uuid uniqueId_;
 		void* const  baseOfImage_;
-		const DWORD64 baseAddress_;
 	};
 }

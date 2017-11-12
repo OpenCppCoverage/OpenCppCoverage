@@ -85,9 +85,8 @@ namespace FileFilter
 		if (updateRelocationsCache)
 		{
 			relocations_ = relocationsExtractor_->Extract(
-				hProcess, 
-				reinterpret_cast<DWORD64>(moduleInfo.baseOfImage_), 
-				moduleInfo.baseAddress_);
+				hProcess,
+				reinterpret_cast<DWORD64>(moduleInfo.baseOfImage_));
 		}
 		
 		if (updateLineDataCaches)

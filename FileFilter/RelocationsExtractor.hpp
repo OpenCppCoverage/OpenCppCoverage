@@ -27,10 +27,8 @@ namespace FileFilter
 
 	class FILEFILTER_DLL RelocationsExtractor: public IRelocationsExtractor
 	{
-	public:		
-		std::unordered_set<DWORD64> Extract(
-			HANDLE hProcess,
-			DWORD64 baseOfImage,
-			DWORD64 baseAddress) const;
+	public:
+	  std::unordered_set<DWORD64> Extract(HANDLE hProcess,
+		                                  DWORD64 baseOfImage) const;
 	};
 }

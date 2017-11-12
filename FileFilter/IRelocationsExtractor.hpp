@@ -26,9 +26,7 @@ namespace FileFilter
 	{
 	public:
 		~IRelocationsExtractor() {}
-		virtual std::unordered_set<DWORD64> Extract(
-			HANDLE hProcess,
-			DWORD64 baseOfImage,
-			DWORD64 baseAddress) const = 0;
+		virtual std::unordered_set<DWORD64>
+		Extract(HANDLE hProcess, DWORD64 baseOfImage) const = 0;
 	};
 }

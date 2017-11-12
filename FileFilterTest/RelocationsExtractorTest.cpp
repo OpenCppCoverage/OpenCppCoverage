@@ -143,9 +143,12 @@ namespace FileFilterTest
 
 		auto dumpBinPath = GetDumpBinPath();
 		auto baseAddress = ExtractBaseAddress(dumpBinPath);
-		auto relocations = extractor.Extract(hProcess, baseOfImage, baseAddress);		
+		auto relocations = extractor.Extract(hProcess, baseOfImage);
 
+		std::unordered_set<DWORD64> relocationsWithBaseAddress;
+		for (auto relocation : relocations)
+			relocationsWithBaseAddress.insert(relocation + baseAddress);
 		auto expectedRelocations = ExtractRelocations(dumpBinPath);
-		ASSERT_EQ(relocations, expectedRelocations);
+		ASSERT_EQ(relocationsWithBaseAddress, expectedRelocations);
 	}
 }

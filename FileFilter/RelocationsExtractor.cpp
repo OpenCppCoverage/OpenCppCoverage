@@ -58,7 +58,6 @@ namespace FileFilter
 		DWORD64 ExtractRelocations(
 			HANDLE hProcess,
 			DWORD64 baseOfImage,
-			DWORD64 baseAddress,
 			DWORD64 imageBaseRelocationPtr,
 			int sizeOfPointer,
 			std::unordered_set<DWORD64>& relocations)
@@ -86,7 +85,7 @@ namespace FileFilter
 					DWORD_PTR relocationValue = 0;
 					ReadProcessMemory(hProcess, relocationAddress, &relocationValue, sizeOfPointer);
 
-					auto relocation = relocationValue + baseAddress - baseOfImage;
+					auto relocation = relocationValue - baseOfImage;
 					relocations.insert(relocation);
 				}
 			}
@@ -142,8 +141,7 @@ namespace FileFilter
 	//-------------------------------------------------------------------------
 	std::unordered_set<DWORD64> RelocationsExtractor::Extract(
 		HANDLE hProcess,
-		DWORD64 baseOfImage,
-		DWORD64 baseAddress) const
+		DWORD64 baseOfImage) const
 	{
 		auto dosHeader = ReadStructInProcessMemory<IMAGE_DOS_HEADER>(hProcess, baseOfImage);
 		if (dosHeader->e_magic != IMAGE_DOS_SIGNATURE)
@@ -162,7 +160,6 @@ namespace FileFilter
 			imageBaseRelocationPtr += ExtractRelocations(
 				hProcess,
 				baseOfImage,
-				baseAddress,
 				imageBaseRelocationPtr,
 				relocationsInfo->sizeOfPointer,
 				relocations);

@@ -51,7 +51,7 @@ namespace CppCoverage
 	{
 		auto moduleUniqueId = boost::uuids::random_generator()();
 		moduleInfo_ = std::make_unique<FileFilter::ModuleInfo>(
-		    hProcess, moduleUniqueId, baseOfImage, 0);
+		    hProcess, moduleUniqueId, baseOfImage);
 
 		DebugInformationEnumerator debugInformationEnumerator;
 		debugInformationEnumerator.Enumerate(modulePath, *this);
