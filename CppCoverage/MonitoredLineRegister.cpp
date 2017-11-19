@@ -72,11 +72,13 @@ namespace CppCoverage
 		std::vector<FileFilter::LineInfo> lineInfos;
 
 		for (const auto& line : lines)
-			lineInfos.emplace_back(
-			    line.lineNumber_, line.virtualAddress_, 0);
+			lineInfos.emplace_back(line.lineNumber_, line.virtualAddress_, 0);
 
 		FileFilter::FileInfo fileInfo{path, std::move(lineInfos)};
 		const auto& moduleInfo = GetModuleInfo();
+
+		std::vector<DWORD64> addresses;
+		LineNumberByAddress lineNumberByAddress;
 
 		for (const auto& lineInfo : fileInfo.lineInfoColllection_)
 		{
@@ -88,15 +90,46 @@ namespace CppCoverage
 				    lineInfo.virtualAddress_ +
 				    reinterpret_cast<DWORD64>(moduleInfo.baseOfImage_);
 
-				Address address{moduleInfo.hProcess_,
+				lineNumberByAddress[addressValue].push_back(lineNumber);
+				addresses.push_back(addressValue);
+			}
+		}
+		SetBreakPoint(path,
+		              moduleInfo.hProcess_,
+		              std::move(addresses),
+		              lineNumberByAddress);
+	}
+
+	//--------------------------------------------------------------------------
+	void MonitoredLineRegister::SetBreakPoint(
+	    const boost::filesystem::path& path,
+	    HANDLE hProcess,
+	    std::vector<DWORD64>&& addressCollection,
+	    const LineNumberByAddress& lineNumberByAddress)
+	{
+		auto oldInstructions = breakPoint_->SetBreakPoints(
+		    hProcess, std::move(addressCollection));
+		for (const auto& value : oldInstructions)
+		{
+			auto oldInstruction = value.first;
+			const auto& addressValue = value.second;
+
+			auto it = lineNumberByAddress.find(addressValue);
+			if (it != lineNumberByAddress.end())
+			{
+				Address address{hProcess,
 				                reinterpret_cast<void*>(addressValue)};
-
-				auto oldInstruction = breakPoint_->SetBreakPointAt(address);
-
-				if (!executedAddressManager_->RegisterAddress(
-				        address, path.wstring(), lineNumber, oldInstruction))
+				const auto& lineNumbers = it->second;
+				for (auto lineNumber : lineNumbers)
 				{
-					breakPoint_->RemoveBreakPoint(address, oldInstruction);
+					if (!executedAddressManager_->RegisterAddress(
+					        address,
+					        path.wstring(),
+					        lineNumber,
+					        oldInstruction))
+					{
+						breakPoint_->RemoveBreakPoint(address, oldInstruction);
+					}
 				}
 			}
 		}

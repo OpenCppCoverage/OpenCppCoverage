@@ -20,57 +20,127 @@
 #include "CppCoverageException.hpp"
 #include "Address.hpp"
 
+#include "Tools/Log.hpp"
+
 namespace CppCoverage
 {
 	namespace
 	{
 		//-------------------------------------------------------------------------
-		unsigned char ReadProcessMemory(const Address& address)
+		std::vector<unsigned char>
+		ReadProcessMemory(HANDLE hProcess, void* address, size_t size)
 		{
-			unsigned char instruction = 0;
+			std::vector<unsigned char> data(size);
+			SIZE_T totalWritten = 0;
 			SIZE_T written = 0;
 
-			if (!::ReadProcessMemory(
-				address.GetProcessHandle(), address.GetValue(),
-				&instruction, sizeof(instruction), &written))
+			while (totalWritten < size)
 			{
-				THROW_LAST_ERROR("Cannot read memory:" << address, GetLastError());
+				if (!::ReadProcessMemory(hProcess,
+				                         address,
+				                         &data[totalWritten],
+				                         data.size() - totalWritten,
+				                         &written))
+				{
+					LOG_ERROR << "Cannot read memory";
+				}
+				totalWritten += written;
 			}
 
-			return instruction;
+			return data;
 		}
 
 		//-------------------------------------------------------------------------
-		void WriteProcessMemory(const Address& address, unsigned char instruction)
+		void WriteProcessMemory(HANDLE hProcess,
+		                        void* address,
+		                        void* buffer,
+		                        size_t size)
 		{
+			SIZE_T totalWritten = 0;
 			SIZE_T written = 0;
-			if (!::WriteProcessMemory(
-				address.GetProcessHandle(), address.GetValue(),
-				&instruction, sizeof(instruction), &written))
-			{
-				THROW_LAST_ERROR("Cannot write memory:" << address, GetLastError());
-			}
 
-			if (!FlushInstructionCache(address.GetProcessHandle(), address.GetValue(), sizeof(instruction)))
-				THROW_LAST_ERROR("Cannot flush memory:" << address, GetLastError());
+			while (totalWritten < size)
+			{
+				auto startBuffer = static_cast<char*>(buffer) + totalWritten;
+				if (!::WriteProcessMemory(hProcess,
+				                          address,
+				                          startBuffer,
+				                          size - totalWritten,
+				                          &written))
+				{
+					LOG_ERROR << "Cannot write memory:";
+				}
+
+				if (!FlushInstructionCache(hProcess, startBuffer, written))
+					THROW_LAST_ERROR("Cannot flush memory:" << address,
+					                 GetLastError());
+				totalWritten += written;
+			}
 		}
 	}
 
+	using Addresses = std::vector<DWORD64>;
+	using AddressesIt = Addresses::const_iterator;
+
 	//-------------------------------------------------------------------------
-	unsigned char BreakPoint::SetBreakPointAt(const Address& address) const
+	void SetBreakPointsRange(HANDLE hProcess,
+	                         AddressesIt begin,
+	                         AddressesIt end,
+	                         BreakPoint::InstructionCollection& oldInstructions)
 	{
-		auto instruction = ReadProcessMemory(address);
-		unsigned char breakPointInstruction = 0xCC;
+		if (begin == end)
+			return;
 
-		WriteProcessMemory(address, breakPointInstruction);
+		auto firstValue = *begin;
+		auto memorySpaceSize =
+		    *(end - 1) - firstValue + sizeof(BreakPoint::breakPointInstruction);
+		auto firstAddress = reinterpret_cast<void*>(firstValue);
+		auto buffer = ReadProcessMemory(
+		    hProcess, firstAddress, static_cast<size_t>(memorySpaceSize));
 
-		return instruction;
+		for (auto it = begin; it < end; ++it)
+		{
+			auto index = static_cast<size_t>(*it - firstValue);
+			auto oldInstruction = buffer[index];
+			buffer[index] = BreakPoint::breakPointInstruction;
+			oldInstructions.emplace_back(oldInstruction, *it);
+		}
+		WriteProcessMemory(hProcess, firstAddress, &buffer[0], buffer.size());
+	}
+
+	const unsigned char BreakPoint::breakPointInstruction = 0xCC;
+
+	//-------------------------------------------------------------------------
+	BreakPoint::InstructionCollection
+	BreakPoint::SetBreakPoints(HANDLE hProcess, Addresses&& addresses) const
+	{
+		InstructionCollection oldInstructions;
+
+		std::sort(addresses.begin(), addresses.end());
+		auto beginRange = addresses.cbegin();
+
+		for (auto it = beginRange; it < addresses.cend(); ++it)
+		{
+			if (*it - *beginRange > 4096)
+			{
+				SetBreakPointsRange(hProcess, beginRange, it, oldInstructions);
+				beginRange = it;
+			}
+		}
+		SetBreakPointsRange(
+		    hProcess, beginRange, addresses.end(), oldInstructions);
+
+		return oldInstructions;
 	}
 
 	//-------------------------------------------------------------------------
-	void BreakPoint::RemoveBreakPoint(const Address& address, unsigned char oldInstruction) const
+	void BreakPoint::RemoveBreakPoint(const Address& address,
+	                                  unsigned char oldInstruction) const
 	{
-		WriteProcessMemory(address, oldInstruction);		
+		WriteProcessMemory(address.GetProcessHandle(),
+		                   address.GetValue(),
+		                   &oldInstruction,
+		                   sizeof(oldInstruction));
 	}
 
 	//-------------------------------------------------------------------------
@@ -81,11 +151,11 @@ namespace CppCoverage
 		if (!GetThreadContext(hThread, &lcContext))
 			THROW_LAST_ERROR("Error in GetThreadContext", GetLastError());
 
-		#ifdef _WIN64
-			--lcContext.Rip; // Move back one byte
-		#else
-			--lcContext.Eip; // Move back one byte
-		#endif
+#ifdef _WIN64
+		--lcContext.Rip; // Move back one byte
+#else
+		--lcContext.Eip; // Move back one byte
+#endif
 		if (!SetThreadContext(hThread, &lcContext))
 			THROW_LAST_ERROR("Error in SetThreadContext", GetLastError());
 	}

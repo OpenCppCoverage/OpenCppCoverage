@@ -16,24 +16,33 @@
 
 #pragma once
 
+#include <Windows.h>
+#include "CppCoverageExport.hpp"
+
 namespace CppCoverage
 {
 	class Address;
 
-	class BreakPoint
+	class CPPCOVERAGE_DLL BreakPoint
 	{
-	public:
+	  public:
 		BreakPoint() = default;
 
-		unsigned char SetBreakPointAt(const Address&) const;
-		void RemoveBreakPoint(const Address&, unsigned char oldInstruction) const;
+		static const unsigned char breakPointInstruction;
+
+		void RemoveBreakPoint(const Address&,
+		                      unsigned char oldInstruction) const;
+
+		using InstructionCollection =
+		    std::vector<std::pair<unsigned char, DWORD64>>;
+
+		InstructionCollection
+		SetBreakPoints(HANDLE hProcess, std::vector<DWORD64>&& addresses) const;
 
 		void AdjustEipAfterBreakPointRemoval(HANDLE hThread) const;
 
-	private:
+	  private:
 		BreakPoint(const BreakPoint&) = delete;
 		BreakPoint& operator=(const BreakPoint&) = delete;
 	};
 }
-
-

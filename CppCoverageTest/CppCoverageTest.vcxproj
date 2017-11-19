@@ -164,6 +164,7 @@
     <ClInclude Include="TestTools.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BreakPointTest.cpp" />
     <ClCompile Include="CodeCoverageRunnerTest.cpp" />
     <ClCompile Include="CoverageDataMergerRandomTest.cpp" />
     <ClCompile Include="CoverageDataMergerTest.cpp" />

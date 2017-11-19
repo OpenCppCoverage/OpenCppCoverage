@@ -18,6 +18,7 @@
 
 #include "DebugInformationEnumerator.hpp"
 #include <memory>
+#include <unordered_map>
 
 namespace boost
 {
@@ -54,6 +55,13 @@ namespace CppCoverage
 		bool IsSourceFileSelected(const boost::filesystem::path&) override;
 		void OnSourceFile(const boost::filesystem::path&,
 		                  const std::vector<Line>&) override;
+
+		using LineNumberByAddress = std::unordered_map<DWORD64, std::vector<int>>;
+		void SetBreakPoint(const boost::filesystem::path&,
+		                   HANDLE hProcess,
+		                   std::vector<DWORD64>&&,
+		                   const LineNumberByAddress&);
+
 		const FileFilter::ModuleInfo& GetModuleInfo() const;
 
 		std::unique_ptr<FileFilter::ModuleInfo> moduleInfo_;
