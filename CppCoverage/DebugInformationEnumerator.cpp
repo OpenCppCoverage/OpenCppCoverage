@@ -116,26 +116,6 @@ namespace CppCoverage
 		}
 
 		//----------------------------------------------------------------------
-		bool IsCompilerGeneratedSymbol(IDiaSession& session,
-		                               ULONGLONG virtualAddress)
-		{
-			CComPtr<IDiaSymbol> symbol;
-			if (session.findSymbolByVA(
-			        virtualAddress, SymTagEnum::SymTagNull, &symbol) == S_OK &&
-			    symbol)
-			{
-				DiaString diaName;
-
-				if (symbol->get_name(&diaName) == S_OK)
-				{
-					std::wstring name = diaName;
-					return name.substr(0, 2) == L"__";
-				}
-			}
-			return false;
-		}
-
-		//----------------------------------------------------------------------
 		struct DiaLoadCallback : public IDiaLoadCallback
 		{
 			//------------------------------------------------------------------
@@ -312,7 +292,6 @@ namespace CppCoverage
 		if (lineNumber.get_virtualAddress(&virtualAddress) != S_OK)
 			THROW("DIA: Cannot get virtual address");
 
-		if (!IsCompilerGeneratedSymbol(session, virtualAddress))
-			lines_.emplace_back(linenum, virtualAddress);
+		lines_.emplace_back(linenum, virtualAddress);
 	}
 }
