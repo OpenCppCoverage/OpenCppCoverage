@@ -51,13 +51,12 @@ namespace CppCoverage
 		                           void* baseOfImage);
 
 	  private:
-		bool IsSourceFileSelected(const boost::filesystem::path& path) override;
-		void OnSourceFileEnds(const boost::filesystem::path& path) override;
-		void OnLine(int line, int64_t virtualAddress) override;
+		bool IsSourceFileSelected(const boost::filesystem::path&) override;
+		void OnSourceFile(const boost::filesystem::path&,
+		                  const std::vector<Line>&) override;
 		const FileFilter::ModuleInfo& GetModuleInfo() const;
 
 		std::unique_ptr<FileFilter::ModuleInfo> moduleInfo_;
-		std::vector<FileFilter::LineInfo> lineInfos_;
 		const std::shared_ptr<BreakPoint> breakPoint_;
 		const std::shared_ptr<ExecutedAddressManager> executedAddressManager_;
 		const std::shared_ptr<ICoverageFilterManager> coverageFilterManager_;

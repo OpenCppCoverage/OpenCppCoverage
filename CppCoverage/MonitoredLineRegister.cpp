@@ -66,9 +66,16 @@ namespace CppCoverage
 
 	//--------------------------------------------------------------------------
 	void
-	MonitoredLineRegister::OnSourceFileEnds(const boost::filesystem::path& path)
+	MonitoredLineRegister::OnSourceFile(const boost::filesystem::path& path,
+	                                    const std::vector<Line>& lines)
 	{
-		FileFilter::FileInfo fileInfo{path, std::move(lineInfos_)};
+		std::vector<FileFilter::LineInfo> lineInfos;
+
+		for (const auto& line : lines)
+			lineInfos.emplace_back(
+			    line.lineNumber_, line.virtualAddress_, 0, L"");
+
+		FileFilter::FileInfo fileInfo{path, std::move(lineInfos)};
 		const auto& moduleInfo = GetModuleInfo();
 
 		for (const auto& lineInfo : fileInfo.lineInfoColllection_)
@@ -93,12 +100,6 @@ namespace CppCoverage
 				}
 			}
 		}
-	}
-
-	//--------------------------------------------------------------------------
-	void MonitoredLineRegister::OnLine(int line, int64_t virtualAddress)
-	{
-		lineInfos_.emplace_back(line, virtualAddress, 0, L"");
 	}
 
 	//--------------------------------------------------------------------------

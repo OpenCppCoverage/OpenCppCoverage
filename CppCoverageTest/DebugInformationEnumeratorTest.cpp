@@ -44,15 +44,12 @@ namespace CppCoverageTest
 			}
 
 			//--------------------------------------------------------------------------
-			void OnSourceFileEnds(const boost::filesystem::path& path) override 
+			void OnSourceFile(const boost::filesystem::path& path,
+			                  const std::vector<Line>& lines) override
 			{
 				selectedFullPath_ = path;
-			}
-
-			//--------------------------------------------------------------------------
-			void OnLine(int line, int64_t) override
-			{
-				lines_.push_back(line);
+				for (const auto& line : lines)
+					lines_.push_back(line.lineNumber_);
 			}
 
 			const boost::filesystem::path selectedFilename_;

@@ -26,16 +26,34 @@ namespace boost
 	}
 }
 
+struct IDiaSession;
+struct IDiaLineNumber;
+struct IDiaSourceFile;
+
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
 	class IDebugInformationHandler
 	{
 	  public:
+		struct Line
+		{
+			Line(unsigned long lineNumber, int64_t virtualAddress)
+			    : lineNumber_{lineNumber}, virtualAddress_{virtualAddress}
+			{
+			}
+			Line(const Line&) = default;
+
+			Line& operator=(const Line&) = default;
+
+			unsigned long lineNumber_;
+			int64_t virtualAddress_;
+		};
+
 		virtual ~IDebugInformationHandler() = default;
 		virtual bool IsSourceFileSelected(const boost::filesystem::path&) = 0;
-		virtual void OnSourceFileEnds(const boost::filesystem::path&) = 0;
-		virtual void OnLine(int lineNumber, int64_t virtualAddress) = 0;
+		virtual void OnSourceFile(const boost::filesystem::path&,
+		                          const std::vector<Line>&) = 0;
 	};
 
 	//-------------------------------------------------------------------------
@@ -43,6 +61,14 @@ namespace CppCoverage
 	{
 	  public:
 		bool Enumerate(const boost::filesystem::path&,
-		               IDebugInformationHandler&) const;
+		               IDebugInformationHandler&);
+
+	  private:
+		void
+		EnumLines(IDiaSession&, IDiaSourceFile&, IDebugInformationHandler&);
+		void
+		OnNewLine(IDiaSession&, IDiaLineNumber&, IDebugInformationHandler&);
+
+		std::vector<IDebugInformationHandler::Line> lines_;
 	};
 }

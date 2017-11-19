@@ -120,8 +120,8 @@ namespace CppCoverage
 		                               ULONGLONG virtualAddress)
 		{
 			CComPtr<IDiaSymbol> symbol;
-			if (session.findSymbolByVA(virtualAddress, SymTagEnum::SymTagNull,
-			                           &symbol) == S_OK &&
+			if (session.findSymbolByVA(
+			        virtualAddress, SymTagEnum::SymTagNull, &symbol) == S_OK &&
 			    symbol)
 			{
 				DiaString diaName;
@@ -133,48 +133,6 @@ namespace CppCoverage
 				}
 			}
 			return false;
-		}
-
-		//----------------------------------------------------------------------
-		void OnNewLine(IDiaSession& session,
-		               IDiaLineNumber& lineNumber,
-		               IDebugInformationHandler& handler)
-		{
-			DWORD linenum = 0;
-			if (lineNumber.get_lineNumber(&linenum) != S_OK)
-				THROW("DIA: Cannot get line number");
-
-			ULONGLONG virtualAddress = 0;
-			if (lineNumber.get_virtualAddress(&virtualAddress) != S_OK)
-				THROW("DIA: Cannot get virtual address");
-
-			if (!IsCompilerGeneratedSymbol(session, virtualAddress))
-				handler.OnLine(linenum, virtualAddress);
-		}
-
-		//----------------------------------------------------------------------
-		void EnumLines(IDiaSession& session,
-		               IDiaSourceFile& sourceFile,
-		               IDebugInformationHandler& handler)
-		{
-			CComPtr<IDiaEnumSymbols> symbols;
-			if (sourceFile.get_compilands(&symbols) != S_OK || !symbols)
-				THROW("DIA: Cannot get compilands");
-
-			EnumerateCollection<IDiaSymbol>(*symbols, [&](IDiaSymbol& symbol) {
-				CComPtr<IDiaEnumLineNumbers> lines;
-
-				if (session.findLines(&symbol, &sourceFile, &lines) != S_OK ||
-				    !lines)
-				{
-					THROW("DIA: Cannot find lines");
-				}
-
-				EnumerateCollection<IDiaLineNumber>(
-				    *lines, [&](IDiaLineNumber& lineNumber) {
-					    OnNewLine(session, lineNumber, handler);
-				    });
-			});
 		}
 
 		//----------------------------------------------------------------------
@@ -253,7 +211,8 @@ namespace CppCoverage
 			CComPtr<IDiaDataSource> sourcePtr;
 
 			auto msDia = L"msdia140.dll";
-			if (NoRegCoCreate(msDia, _uuidof(DiaSourceAlt),
+			if (NoRegCoCreate(msDia,
+			                  _uuidof(DiaSourceAlt),
 			                  _uuidof(IDiaDataSource),
 			                  (void**)&sourcePtr) != S_OK)
 			{
@@ -263,9 +222,8 @@ namespace CppCoverage
 
 			DiaLoadCallback diaLoadCallback;
 			if (!sourcePtr ||
-			    sourcePtr->loadDataForExe(path.wstring().c_str(),
-			                              nullptr,
-			                              &diaLoadCallback) != S_OK)
+			    sourcePtr->loadDataForExe(
+			        path.wstring().c_str(), nullptr, &diaLoadCallback) != S_OK)
 			{
 				return nullptr;
 			}
@@ -284,9 +242,9 @@ namespace CppCoverage
 	}
 
 	//--------------------------------------------------------------------------
-	bool DebugInformationEnumerator::Enumerate(
-	    const boost::filesystem::path& path,
-	    IDebugInformationHandler& handler) const
+	bool
+	DebugInformationEnumerator::Enumerate(const boost::filesystem::path& path,
+	                                      IDebugInformationHandler& handler)
 	{
 		auto sourcePtr = LoadDataForExe(path);
 
@@ -306,10 +264,55 @@ namespace CppCoverage
 			    auto filename = GetSourceFileName(sourceFile);
 			    if (handler.IsSourceFileSelected(filename))
 			    {
+				    lines_.clear();
 				    EnumLines(*sessionPtr, sourceFile, handler);
-				    handler.OnSourceFileEnds(filename);
+				    handler.OnSourceFile(filename, lines_);
 			    }
 		    });
 		return true;
+	}
+
+	//----------------------------------------------------------------------
+	void
+	DebugInformationEnumerator::EnumLines(IDiaSession& session,
+	                                      IDiaSourceFile& sourceFile,
+	                                      IDebugInformationHandler& handler)
+	{
+		CComPtr<IDiaEnumSymbols> symbols;
+		if (sourceFile.get_compilands(&symbols) != S_OK || !symbols)
+			THROW("DIA: Cannot get compilands");
+
+		EnumerateCollection<IDiaSymbol>(*symbols, [&](IDiaSymbol& symbol) {
+			CComPtr<IDiaEnumLineNumbers> lines;
+
+			if (session.findLines(&symbol, &sourceFile, &lines) != S_OK ||
+			    !lines)
+			{
+				THROW("DIA: Cannot find lines");
+			}
+
+			EnumerateCollection<IDiaLineNumber>(
+			    *lines, [&](IDiaLineNumber& lineNumber) {
+				    OnNewLine(session, lineNumber, handler);
+			    });
+		});
+	}
+
+	//----------------------------------------------------------------------
+	void
+	DebugInformationEnumerator::OnNewLine(IDiaSession& session,
+	                                      IDiaLineNumber& lineNumber,
+	                                      IDebugInformationHandler& handler)
+	{
+		DWORD linenum = 0;
+		if (lineNumber.get_lineNumber(&linenum) != S_OK)
+			THROW("DIA: Cannot get line number");
+
+		ULONGLONG virtualAddress = 0;
+		if (lineNumber.get_virtualAddress(&virtualAddress) != S_OK)
+			THROW("DIA: Cannot get virtual address");
+
+		if (!IsCompilerGeneratedSymbol(session, virtualAddress))
+			lines_.emplace_back(linenum, virtualAddress);
 	}
 }
