@@ -43,7 +43,8 @@ namespace Tools
 				begin = it + 1;
 			}
 		}
-		lines_.push_back({ begin, end });
+		if (begin != end)
+			lines_.push_back({begin, end});
 	}
 
 	//-------------------------------------------------------------------------
