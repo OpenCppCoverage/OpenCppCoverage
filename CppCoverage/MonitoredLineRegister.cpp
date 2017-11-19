@@ -73,7 +73,7 @@ namespace CppCoverage
 
 		for (const auto& line : lines)
 			lineInfos.emplace_back(
-			    line.lineNumber_, line.virtualAddress_, 0, L"");
+			    line.lineNumber_, line.virtualAddress_, 0);
 
 		FileFilter::FileInfo fileInfo{path, std::move(lineInfos)};
 		const auto& moduleInfo = GetModuleInfo();
