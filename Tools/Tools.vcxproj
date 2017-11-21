@@ -155,6 +155,7 @@
     <ClInclude Include="ExceptionBase.hpp" />
     <ClInclude Include="Log.hpp" />
     <ClInclude Include="MappedFile.hpp" />
+    <ClInclude Include="ProcessMemory.hpp" />
     <ClInclude Include="ScopedAction.hpp" />
     <ClInclude Include="ToolsExport.hpp" />
     <ClInclude Include="stdafx.h" />
@@ -179,6 +180,7 @@
     <ClCompile Include="ExceptionBase.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="MappedFile.cpp" />
+    <ClCompile Include="ProcessMemory.cpp" />
     <ClCompile Include="ScopedAction.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -16,44 +16,14 @@
 
 #include "stdafx.h"
 #include "RelocationsExtractor.hpp"
-#include "FileFilterException.hpp"
 #include <memory>
+#include "FileFilterException.hpp"
+#include "Tools/ProcessMemory.hpp"
 
 namespace FileFilter
 {
 	namespace
 	{
-		//-------------------------------------------------------------------------
-		void ReadProcessMemory(
-			HANDLE hProcess,
-			DWORD64 address,
-			void* buffer,
-			SIZE_T size)
-		{
-			SIZE_T bytesRead = 0;
-
-			if (!::ReadProcessMemory(hProcess,
-				reinterpret_cast<void*>(address),
-				buffer,
-				size,
-				&bytesRead) || bytesRead != size)
-			{
-				THROW("Cannot read process memory");
-			}
-		}
-
-		//-------------------------------------------------------------------------
-		template<typename T>
-		std::unique_ptr<T> ReadStructInProcessMemory(
-			HANDLE hProcess,
-			DWORD64 address)
-		{
-			auto data = std::make_unique<T>();
-			ReadProcessMemory(hProcess, address, data.get(), sizeof(T));
-
-			return data;
-		}
-
 		//-------------------------------------------------------------------------
 		DWORD64 ExtractRelocations(
 			HANDLE hProcess,
@@ -62,13 +32,13 @@ namespace FileFilter
 			int sizeOfPointer,
 			std::unordered_set<DWORD64>& relocations)
 		{
-			auto imageBaseRelocation = ReadStructInProcessMemory<IMAGE_BASE_RELOCATION>(
+			auto imageBaseRelocation = Tools::ReadStructInProcessMemory<IMAGE_BASE_RELOCATION>(
 				hProcess, imageBaseRelocationPtr);
 			auto sizeOfBlock = imageBaseRelocation->SizeOfBlock;
 			auto count = (sizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(WORD);
 
 			std::vector<WORD> relocationPtrs(count);
-			ReadProcessMemory(
+			Tools::ReadProcessMemory(
 				hProcess,
 				imageBaseRelocationPtr + sizeof(IMAGE_BASE_RELOCATION),
 				&relocationPtrs[0],
@@ -83,7 +53,7 @@ namespace FileFilter
 					auto rva = relocationPtr & 0x0fff;
 					auto relocationAddress = imageBaseRelocation->VirtualAddress + rva + baseOfImage;
 					DWORD_PTR relocationValue = 0;
-					ReadProcessMemory(hProcess, relocationAddress, &relocationValue, sizeOfPointer);
+					Tools::ReadProcessMemory(hProcess, relocationAddress, &relocationValue, sizeOfPointer);
 
 					auto relocation = relocationValue - baseOfImage;
 					relocations.insert(relocation);
@@ -123,7 +93,7 @@ namespace FileFilter
 				HANDLE hProcess,
 				DWORD64 baseOfImage)
 	{
-		auto ntHeader32 = ReadStructInProcessMemory<IMAGE_NT_HEADERS32>(
+		auto ntHeader32 = Tools::ReadStructInProcessMemory<IMAGE_NT_HEADERS32>(
 			hProcess, baseOfImage + dosHeader.e_lfanew);
 		auto machine = ntHeader32->FileHeader.Machine;
 
@@ -131,7 +101,7 @@ namespace FileFilter
 			return GetRelocationsDirectory(*ntHeader32, sizeof(DWORD));
 		else if (machine == IMAGE_FILE_MACHINE_AMD64)
 		{
-			auto ntHeader64 = ReadStructInProcessMemory<IMAGE_NT_HEADERS64>(
+			auto ntHeader64 = Tools::ReadStructInProcessMemory<IMAGE_NT_HEADERS64>(
 				hProcess, baseOfImage + dosHeader.e_lfanew);
 			return GetRelocationsDirectory(*ntHeader64, sizeof(DWORD_PTR));
 		}
@@ -143,7 +113,7 @@ namespace FileFilter
 		HANDLE hProcess,
 		DWORD64 baseOfImage) const
 	{
-		auto dosHeader = ReadStructInProcessMemory<IMAGE_DOS_HEADER>(hProcess, baseOfImage);
+		auto dosHeader = Tools::ReadStructInProcessMemory<IMAGE_DOS_HEADER>(hProcess, baseOfImage);
 		if (dosHeader->e_magic != IMAGE_DOS_SIGNATURE)
 			THROW("The image is not a valid DOS image.");
 
