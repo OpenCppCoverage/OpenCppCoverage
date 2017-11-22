@@ -18,12 +18,15 @@
 
 #include <Windows.h>
 #include <memory>
+#include <vector>
 
 #include "ToolsExport.hpp"
 
 namespace Tools
 {
-	//-------------------------------------------------------------------------
+	TOOLS_DLL std::vector<unsigned char>
+	ReadProcessMemory(HANDLE hProcess, void* address, size_t size);
+
 	TOOLS_DLL void ReadProcessMemory(HANDLE hProcess,
 	                                 DWORD64 address,
 	                                 void* buffer,

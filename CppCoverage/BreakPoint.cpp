@@ -21,34 +21,12 @@
 #include "Address.hpp"
 
 #include "Tools/Log.hpp"
+#include "Tools/ProcessMemory.hpp"
 
 namespace CppCoverage
 {
 	namespace
 	{
-		//-------------------------------------------------------------------------
-		std::vector<unsigned char>
-		ReadProcessMemory(HANDLE hProcess, void* address, size_t size)
-		{
-			std::vector<unsigned char> data(size);
-			SIZE_T totalWritten = 0;
-			SIZE_T written = 0;
-
-			while (totalWritten < size)
-			{
-				if (!::ReadProcessMemory(hProcess,
-				                         address,
-				                         &data[totalWritten],
-				                         data.size() - totalWritten,
-				                         &written))
-				{
-					LOG_ERROR << "Cannot read memory";
-				}
-				totalWritten += written;
-			}
-
-			return data;
-		}
 
 		//-------------------------------------------------------------------------
 		void WriteProcessMemory(HANDLE hProcess,
@@ -95,7 +73,7 @@ namespace CppCoverage
 		auto memorySpaceSize =
 		    *(end - 1) - firstValue + sizeof(BreakPoint::breakPointInstruction);
 		auto firstAddress = reinterpret_cast<void*>(firstValue);
-		auto buffer = ReadProcessMemory(
+		auto buffer = Tools::ReadProcessMemory(
 		    hProcess, firstAddress, static_cast<size_t>(memorySpaceSize));
 
 		for (auto it = begin; it < end; ++it)

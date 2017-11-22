@@ -17,25 +17,46 @@
 #include "stdafx.h"
 #include "ProcessMemory.hpp"
 #include "ToolsException.hpp"
+#include "Log.hpp"
 
 namespace Tools
 {
+	//-------------------------------------------------------------------------
+	std::vector<unsigned char>
+	ReadProcessMemory(HANDLE hProcess, void* address, size_t size)
+	{
+		std::vector<unsigned char> data(size);
+		ReadProcessMemory(hProcess,
+		                  reinterpret_cast<DWORD64>(address),
+		                  &data[0],
+		                  data.size());
+		return data;
+	}
+
 	//-------------------------------------------------------------------------
 	void ReadProcessMemory(HANDLE hProcess,
 	                       DWORD64 address,
 	                       void* buffer,
 	                       SIZE_T size)
 	{
+		SIZE_T totalBytesRead = 0;
 		SIZE_T bytesRead = 0;
 
-		if (!::ReadProcessMemory(hProcess,
-		                         reinterpret_cast<void*>(address),
-		                         buffer,
-		                         size,
-		                         &bytesRead) ||
-		    bytesRead != size)
+		while (totalBytesRead < size)
 		{
-			THROW("Cannot read process memory");
+			if (!::ReadProcessMemory(
+			        hProcess,
+			        reinterpret_cast<void*>(address),
+			        &reinterpret_cast<char*>(buffer)[totalBytesRead],
+			        size - totalBytesRead,
+			        &bytesRead))
+			{
+				LOG_ERROR << "Cannot read memory";
+			}
+			if (bytesRead == 0)
+				THROW("Cannot ready process memory");
+
+			totalBytesRead += bytesRead;
 		}
 	}
 }
