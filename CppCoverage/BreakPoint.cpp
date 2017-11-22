@@ -25,38 +25,6 @@
 
 namespace CppCoverage
 {
-	namespace
-	{
-
-		//-------------------------------------------------------------------------
-		void WriteProcessMemory(HANDLE hProcess,
-		                        void* address,
-		                        void* buffer,
-		                        size_t size)
-		{
-			SIZE_T totalWritten = 0;
-			SIZE_T written = 0;
-
-			while (totalWritten < size)
-			{
-				auto startBuffer = static_cast<char*>(buffer) + totalWritten;
-				if (!::WriteProcessMemory(hProcess,
-				                          address,
-				                          startBuffer,
-				                          size - totalWritten,
-				                          &written))
-				{
-					LOG_ERROR << "Cannot write memory:";
-				}
-
-				if (!FlushInstructionCache(hProcess, startBuffer, written))
-					THROW_LAST_ERROR("Cannot flush memory:" << address,
-					                 GetLastError());
-				totalWritten += written;
-			}
-		}
-	}
-
 	using Addresses = std::vector<DWORD64>;
 	using AddressesIt = Addresses::const_iterator;
 
@@ -83,7 +51,8 @@ namespace CppCoverage
 			buffer[index] = BreakPoint::breakPointInstruction;
 			oldInstructions.emplace_back(oldInstruction, *it);
 		}
-		WriteProcessMemory(hProcess, firstAddress, &buffer[0], buffer.size());
+		Tools::WriteProcessMemory(
+		    hProcess, firstAddress, &buffer[0], buffer.size());
 	}
 
 	const unsigned char BreakPoint::breakPointInstruction = 0xCC;
@@ -115,10 +84,10 @@ namespace CppCoverage
 	void BreakPoint::RemoveBreakPoint(const Address& address,
 	                                  unsigned char oldInstruction) const
 	{
-		WriteProcessMemory(address.GetProcessHandle(),
-		                   address.GetValue(),
-		                   &oldInstruction,
-		                   sizeof(oldInstruction));
+		Tools::WriteProcessMemory(address.GetProcessHandle(),
+		                          address.GetValue(),
+		                          &oldInstruction,
+		                          sizeof(oldInstruction));
 	}
 
 	//-------------------------------------------------------------------------

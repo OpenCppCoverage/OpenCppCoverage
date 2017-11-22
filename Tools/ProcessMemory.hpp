@@ -24,6 +24,11 @@
 
 namespace Tools
 {
+	TOOLS_DLL void WriteProcessMemory(HANDLE hProcess,
+	                                  void* address,
+	                                  void* buffer,
+	                                  size_t size);
+
 	TOOLS_DLL std::vector<unsigned char>
 	ReadProcessMemory(HANDLE hProcess, void* address, size_t size);
 

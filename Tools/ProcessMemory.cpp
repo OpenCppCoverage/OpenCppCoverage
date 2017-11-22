@@ -59,4 +59,34 @@ namespace Tools
 			totalBytesRead += bytesRead;
 		}
 	}
+
+	//-------------------------------------------------------------------------
+	void WriteProcessMemory(HANDLE hProcess,
+	                        void* address,
+	                        void* buffer,
+	                        size_t size)
+	{
+		SIZE_T totalWritten = 0;
+		SIZE_T written = 0;
+
+		while (totalWritten < size)
+		{
+			auto startBuffer = static_cast<char*>(buffer) + totalWritten;
+			if (!::WriteProcessMemory(hProcess,
+			                          address,
+			                          startBuffer,
+			                          size - totalWritten,
+			                          &written))
+			{
+				LOG_ERROR << "Cannot write memory:";
+			}
+
+			if (written == 0)
+				THROW("Cannot write process memory");
+
+			if (!FlushInstructionCache(hProcess, startBuffer, written))
+				THROW("Cannot flush memory:");
+			totalWritten += written;
+		}
+	}
 }
