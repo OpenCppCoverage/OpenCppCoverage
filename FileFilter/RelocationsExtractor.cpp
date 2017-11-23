@@ -19,6 +19,7 @@
 #include <memory>
 #include "FileFilterException.hpp"
 #include "Tools/ProcessMemory.hpp"
+#include "Tools/PEFileHeader.hpp"
 
 namespace FileFilter
 {
@@ -62,79 +63,90 @@ namespace FileFilter
 
 			return sizeOfBlock;
 		}
-	}
 
-	//-------------------------------------------------------------------------
-	struct RelocationsDirectoryInfo
-	{
-		IMAGE_DATA_DIRECTORY directory;
-		int sizeOfPointer;
-	};
-
-	//-------------------------------------------------------------------------
-	template <typename T_IMAGE_NT_HEADERS>
-	std::unique_ptr<RelocationsDirectoryInfo> 
-		GetRelocationsDirectory(const T_IMAGE_NT_HEADERS& ntHeaders, int sizeOfPointer)
-	{
-		auto relocationsDirectoryInfo = std::make_unique<RelocationsDirectoryInfo>();
-
-		const auto& optionalHeader = ntHeaders.OptionalHeader;
-		relocationsDirectoryInfo->directory = 
-						optionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC];
-		relocationsDirectoryInfo->sizeOfPointer = sizeOfPointer;
-
-		return relocationsDirectoryInfo;
-	}
-
-	//-------------------------------------------------------------------------
-	std::unique_ptr<RelocationsDirectoryInfo> 
-		GetRelocationsDirectoryInfo(
-				const IMAGE_DOS_HEADER& dosHeader,
-				HANDLE hProcess,
-				DWORD64 baseOfImage)
-	{
-		auto ntHeader32 = Tools::ReadStructInProcessMemory<IMAGE_NT_HEADERS32>(
-			hProcess, baseOfImage + dosHeader.e_lfanew);
-		auto machine = ntHeader32->FileHeader.Machine;
-
-		if (machine == IMAGE_FILE_MACHINE_I386)
-			return GetRelocationsDirectory(*ntHeader32, sizeof(DWORD));
-		else if (machine == IMAGE_FILE_MACHINE_AMD64)
+		//-------------------------------------------------------------------------
+		struct RelocationsDirectoryInfo
 		{
-			auto ntHeader64 = Tools::ReadStructInProcessMemory<IMAGE_NT_HEADERS64>(
-				hProcess, baseOfImage + dosHeader.e_lfanew);
-			return GetRelocationsDirectory(*ntHeader64, sizeof(DWORD_PTR));
-		}
-		THROW(L"PE file header machine is not supported: " + std::to_wstring(machine));
-	}
+			IMAGE_DATA_DIRECTORY directory;
+			int sizeOfPointer;
+		};
 
-	//-------------------------------------------------------------------------
-	std::unordered_set<DWORD64> RelocationsExtractor::Extract(
-		HANDLE hProcess,
-		DWORD64 baseOfImage) const
-	{
-		auto dosHeader = Tools::ReadStructInProcessMemory<IMAGE_DOS_HEADER>(hProcess, baseOfImage);
-		if (dosHeader->e_magic != IMAGE_DOS_SIGNATURE)
-			THROW("The image is not a valid DOS image.");
-
-		auto relocationsInfo = GetRelocationsDirectoryInfo(
-											*dosHeader, hProcess, baseOfImage);
-
-		std::unordered_set<DWORD64> relocations;
-		const auto& directory = relocationsInfo->directory;
-		auto imageBaseRelocationPtr = baseOfImage + directory.VirtualAddress;
-		auto endBaseRelocationPtr = imageBaseRelocationPtr + directory.Size;
-
-		while (imageBaseRelocationPtr < endBaseRelocationPtr)
+		//-------------------------------------------------------------------------
+		template <typename T_IMAGE_NT_HEADERS>
+		std::unique_ptr<RelocationsDirectoryInfo>
+			GetRelocationsDirectory(const T_IMAGE_NT_HEADERS& ntHeaders, int sizeOfPointer)
 		{
-			imageBaseRelocationPtr += ExtractRelocations(
-				hProcess,
-				baseOfImage,
-				imageBaseRelocationPtr,
-				relocationsInfo->sizeOfPointer,
-				relocations);
+			auto relocationsDirectoryInfo = std::make_unique<RelocationsDirectoryInfo>();
+
+			const auto& optionalHeader = ntHeaders.OptionalHeader;
+			relocationsDirectoryInfo->directory =
+				optionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC];
+			relocationsDirectoryInfo->sizeOfPointer = sizeOfPointer;
+
+			return relocationsDirectoryInfo;
 		}
 
-		return relocations;
+		//-------------------------------------------------------------------------
+		struct PEFileHeaderHandler : public Tools::IPEFileHeaderHandler
+		{
+			//-----------------------------------------------------------------
+			void OnNtHeader32(HANDLE hProcess,
+			                  DWORD64 baseOfImage,
+			                  const IMAGE_NT_HEADERS32& ntHeader) override
+			{
+				FillRelocations(
+				    hProcess,
+				    baseOfImage,
+				    GetRelocationsDirectory(ntHeader, sizeof(DWORD)));
+			}
+
+			//-------------------------------------------------------------------------
+			void OnNtHeader64(HANDLE hProcess,
+			                  DWORD64 baseOfImage,
+			                  const IMAGE_NT_HEADERS64& ntHeader) override
+			{
+				FillRelocations(
+				    hProcess,
+				    baseOfImage,
+				    GetRelocationsDirectory(ntHeader, sizeof(DWORD_PTR)));
+			}
+
+			//-----------------------------------------------------------------
+			void FillRelocations(
+			    HANDLE hProcess,
+			    DWORD64 baseOfImage,
+			    std::unique_ptr<RelocationsDirectoryInfo> relocationsInfo)
+			{
+				const auto& directory = relocationsInfo->directory;
+				auto imageBaseRelocationPtr =
+				    baseOfImage + directory.VirtualAddress;
+				auto endBaseRelocationPtr =
+				    imageBaseRelocationPtr + directory.Size;
+
+				while (imageBaseRelocationPtr < endBaseRelocationPtr)
+				{
+					imageBaseRelocationPtr +=
+					    ExtractRelocations(hProcess,
+					                       baseOfImage,
+					                       imageBaseRelocationPtr,
+					                       relocationsInfo->sizeOfPointer,
+					                       relocations_);
+				}
+			}
+
+			std::unordered_set<DWORD64> relocations_;
+		};
+	}
+
+	//-------------------------------------------------------------------------
+	std::unordered_set<DWORD64>
+	RelocationsExtractor::Extract(HANDLE hProcess, DWORD64 baseOfImage) const
+	{
+		Tools::PEFileHeader peFileHeader;
+		PEFileHeaderHandler handler;
+
+		peFileHeader.Load(hProcess, baseOfImage, handler);
+
+		return std::move(handler.relocations_);
 	}
 }
