@@ -30,8 +30,57 @@
 #include "FileFilter/FileInfo.hpp"
 #include "FileFilter/LineInfo.hpp"
 
+#include "Tools/PEFileHeader.hpp"
+#include "Tools/Log.hpp"
+
 namespace CppCoverage
 {
+	namespace
+	{
+		struct ModuleKind : private Tools::IPEFileHeaderHandler
+		{
+			//----------------------------------------------------------------------------
+			bool IsNativeModule(HANDLE hProcess, DWORD64 baseOfImage)
+			{
+				Tools::PEFileHeader fileHeader;
+
+				fileHeader.Load(hProcess, baseOfImage, *this);
+				return isNativeModule_;
+			}
+
+		  private:
+			//-----------------------------------------------------------------
+			template <typename T_IMAGE_NT_HEADERS>
+			void OnNtHeader(const T_IMAGE_NT_HEADERS& ntHeaders)
+			{
+				const auto& optionalHeader = ntHeaders.OptionalHeader;
+				auto dataDirectory =
+				    optionalHeader
+				        .DataDirectory[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR];
+				isNativeModule_ = dataDirectory.VirtualAddress == 0 &&
+				            dataDirectory.Size == 0;
+			}
+
+			//-----------------------------------------------------------------
+			void OnNtHeader32(HANDLE,
+			                  DWORD64,
+			                  const IMAGE_NT_HEADERS32& ntHeader) override
+			{
+				OnNtHeader(ntHeader);
+			}
+
+			//-----------------------------------------------------------------
+			void OnNtHeader64(HANDLE,
+			                  DWORD64,
+			                  const IMAGE_NT_HEADERS64& ntHeader) override
+			{
+				OnNtHeader(ntHeader);
+			}
+
+			bool isNativeModule_ = true;
+		};
+	}
+
 	//----------------------------------------------------------------------------
 	MonitoredLineRegister::MonitoredLineRegister(
 	    std::shared_ptr<BreakPoint> breakPoint,
@@ -44,17 +93,24 @@ namespace CppCoverage
 	}
 
 	//----------------------------------------------------------------------------
-	void MonitoredLineRegister::RegisterLineToMonitor(
+	bool MonitoredLineRegister::RegisterLineToMonitor(
 	    const boost::filesystem::path& modulePath,
 	    HANDLE hProcess,
 	    void* baseOfImage)
 	{
+		if (!ModuleKind{}.IsNativeModule(hProcess, reinterpret_cast<DWORD64>(baseOfImage)))
+		{
+			LOG_INFO << modulePath.wstring() << " is skipped as it is a managed module.";
+			return false;
+		}
+
 		auto moduleUniqueId = boost::uuids::random_generator()();
 		moduleInfo_ = std::make_unique<FileFilter::ModuleInfo>(
 		    hProcess, moduleUniqueId, baseOfImage);
 
 		DebugInformationEnumerator debugInformationEnumerator;
 		debugInformationEnumerator.Enumerate(modulePath, *this);
+		return true;
 	}
 
 	//--------------------------------------------------------------------------
@@ -107,8 +163,8 @@ namespace CppCoverage
 	    std::vector<DWORD64>&& addressCollection,
 	    const LineNumberByAddress& lineNumberByAddress)
 	{
-		auto oldInstructions = breakPoint_->SetBreakPoints(
-		    hProcess, std::move(addressCollection));
+		auto oldInstructions =
+		    breakPoint_->SetBreakPoints(hProcess, std::move(addressCollection));
 		for (const auto& value : oldInstructions)
 		{
 			auto oldInstruction = value.first;

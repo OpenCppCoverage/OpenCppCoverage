@@ -47,7 +47,7 @@ namespace CppCoverage
 		                      std::shared_ptr<ExecutedAddressManager>,
 		                      std::shared_ptr<ICoverageFilterManager>);
 
-		void RegisterLineToMonitor(const boost::filesystem::path& modulePath,
+		bool RegisterLineToMonitor(const boost::filesystem::path& modulePath,
 		                           HANDLE hProcess,
 		                           void* baseOfImage);
 
