@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2D036BFA-5FAC-467B-9648-5B2BBC5B872C}"
 	ProjectSection(SolutionItems) = preProject
@@ -15,6 +15,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenCppCoverage", "OpenCppC
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppCoverageTest", "CppCoverageTest\CppCoverageTest.vcxproj", "{4360D299-2F7D-462E-B7EF-0670FD06F478}"
 	ProjectSection(ProjectDependencies) = postProject
+		{21A0DD74-91CB-485A-BACD-A18047E076D8} = {21A0DD74-91CB-485A-BACD-A18047E076D8}
 		{A50DD5A6-E85A-4E0B-9CC6-90D32503CE62} = {A50DD5A6-E85A-4E0B-9CC6-90D32503CE62}
 		{0DD16EDF-BD43-4D7B-B357-931F48F2FCC6} = {0DD16EDF-BD43-4D7B-B357-931F48F2FCC6}
 	EndProjectSection
@@ -49,6 +50,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ToolsTest", "ToolsTest\ToolsTest.vcxproj", "{42F32EB3-42B6-498A-9823-26E6E5982EE3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCoverageOptimizedBuild", "TestCoverageOptimizedBuild\TestCoverageOptimizedBuild.vcxproj", "{2FD17BA1-0E02-49E6-84C3-0A8F63FEF871}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCppCli", "TestCppCli\TestCppCli.vcxproj", "{21A0DD74-91CB-485A-BACD-A18047E076D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -170,6 +173,12 @@ Global
 		{2FD17BA1-0E02-49E6-84C3-0A8F63FEF871}.Release|Win32.Build.0 = Release|Win32
 		{2FD17BA1-0E02-49E6-84C3-0A8F63FEF871}.Release|x64.ActiveCfg = Release|x64
 		{2FD17BA1-0E02-49E6-84C3-0A8F63FEF871}.Release|x64.Build.0 = Release|x64
+		{21A0DD74-91CB-485A-BACD-A18047E076D8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{21A0DD74-91CB-485A-BACD-A18047E076D8}.Debug|Win32.Build.0 = Debug|Win32
+		{21A0DD74-91CB-485A-BACD-A18047E076D8}.Debug|x64.ActiveCfg = Debug|Win32
+		{21A0DD74-91CB-485A-BACD-A18047E076D8}.Release|Win32.ActiveCfg = Release|Win32
+		{21A0DD74-91CB-485A-BACD-A18047E076D8}.Release|Win32.Build.0 = Release|Win32
+		{21A0DD74-91CB-485A-BACD-A18047E076D8}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

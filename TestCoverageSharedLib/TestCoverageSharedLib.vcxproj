@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="TestCoverageSharedLib.hpp" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TestCppCli.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TestCoverageSharedLib.cpp" />
@@ -162,6 +163,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TestCppCli.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
