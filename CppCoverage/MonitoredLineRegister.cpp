@@ -104,6 +104,8 @@ namespace CppCoverage
 			return false;
 		}
 
+		executedAddressManager_->AddModule(modulePath.wstring(), baseOfImage);
+
 		auto moduleUniqueId = boost::uuids::random_generator()();
 		moduleInfo_ = std::make_unique<FileFilter::ModuleInfo>(
 		    hProcess, moduleUniqueId, baseOfImage);

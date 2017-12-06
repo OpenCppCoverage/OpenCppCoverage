@@ -183,7 +183,6 @@ namespace CppCoverage
 		
 		if (coverageFilterManager_->IsModuleSelected(filename))
 		{
-			executedAddressManager_->AddModule(filename, baseOfImage);
 			monitoredLineRegister_->RegisterLineToMonitor(filename, hProcess,
 			                                              baseOfImage);
 		}
