@@ -37,4 +37,10 @@ namespace TestHelper
 	boost::filesystem::path TEST_HELPER_DLL  GetOutputBinaryPath();
 
 	void TEST_HELPER_DLL CreateEmptyFile(const boost::filesystem::path&);
+
+	std::string TEST_HELPER_DLL RunProcess(
+		const boost::filesystem::path& program,
+		const std::vector<std::string>& args);
+
+	boost::filesystem::path TEST_HELPER_DLL GetVisualStudioPath();
 }

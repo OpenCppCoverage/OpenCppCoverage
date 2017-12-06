@@ -17,55 +17,22 @@
 #include "stdafx.h"
 #include <windows.h>
 #include <regex>
-#include <Poco/Process.h>
-#include <Poco/Pipe.h>
-#include <Poco/PipeStream.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
 
 #include "FileFilter/RelocationsExtractor.hpp"
 #include "TestCoverageOptimizedBuild/TestCoverageOptimizedBuild.hpp"
 
+#include "TestHelper/Tools.hpp"
+
 namespace fs = boost::filesystem;
 
 namespace FileFilterTest
 {	
 	//-------------------------------------------------------------------------
-	std::string RunProcess(
-		const fs::path& program, 
-		const std::vector<std::string>& args)
-	{
-		Poco::Pipe outPipe;		
-		auto handle = Poco::Process::launch(program.string(), args, nullptr, &outPipe, nullptr);
-		Poco::PipeInputStream istr(outPipe);
-		std::string content { std::istreambuf_iterator<char>(istr), std::istreambuf_iterator<char>() };
-
-		int exitCode = handle.wait();
-		if (exitCode)
-			throw std::runtime_error("Error when running: " + program.string() + " " + content);
-		return content;
-	}
-
-	//-------------------------------------------------------------------------
-	fs::path GetVisualStudioPath()
-	{
-		fs::path programFileX86 = std::getenv("ProgramFiles(x86)");		
-		auto vswhere = programFileX86 / "Microsoft Visual Studio" / "Installer" / "vswhere.exe";
-				
-		std::vector<std::string> args = { "-format", "value", "-property", "installationPath" };
-		std::string value = RunProcess(vswhere, args);
-		boost::trim(value);
-		fs::path installerPath{ value };
-
-		if (!fs::exists(installerPath))
-			throw std::runtime_error("Invalid Visual Studio installation path: " + value);
-		return installerPath;
-	}
-
-	//-------------------------------------------------------------------------
 	fs::path GetDumpBinPath()
 	{
-		auto msvc = GetVisualStudioPath() / "VC" / "Tools" / "MSVC";
+		auto msvc = TestHelper::GetVisualStudioPath() / "VC" / "Tools" / "MSVC";
 		fs::recursive_directory_iterator end;
 
 		const auto it = std::find_if(fs::recursive_directory_iterator(msvc), end,
@@ -89,7 +56,7 @@ namespace FileFilterTest
 		std::vector<std::string> args = { 
 			"/RELOCATIONS", 
 			TestCoverageOptimizedBuild::GetOutputBinaryPath().string() };
-		const std::string value = RunProcess(dumpBinPath, args);
+		const std::string value = TestHelper::RunProcess(dumpBinPath, args);
 		auto current = value.begin();
 		auto end = value.end();
 		std::smatch match;
@@ -118,7 +85,7 @@ namespace FileFilterTest
 		std::vector<std::string> args = { 
 			"/HEADERS", 
 			TestCoverageOptimizedBuild::GetOutputBinaryPath().string() };
-		const std::string value = RunProcess(dumpBinPath, args);
+		const std::string value = TestHelper::RunProcess(dumpBinPath, args);
 		std::smatch match;
 		
 		// Example: "        10000000 image base (10000000 to 1001FFFF)"		
