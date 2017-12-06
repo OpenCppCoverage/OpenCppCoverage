@@ -32,26 +32,55 @@ namespace boost
 	}
 }
 
+namespace CppCoverage
+{
+	class CoverageData;
+}
+
 namespace CppCoverageTest
 {
-	class TestTools
-	{	
-	public:
-		typedef std::function<void(HANDLE hProcess, HANDLE hFile)> T_HandlesFct;
+	namespace TestTools
+	{
+		using T_HandlesFct = std::function<void(HANDLE hProcess, HANDLE hFile)>;
 
-	public:
-		TestTools() = delete;
-	
-		static void GetHandles(const boost::filesystem::path&, T_HandlesFct);
+		void GetHandles(const boost::filesystem::path&, T_HandlesFct);
 
-		static boost::optional<CppCoverage::Options> Parse(
-				const CppCoverage::OptionsParser& parser,
-				const std::vector<std::string>& arguments,
-				bool appendProgramToRun = true,
-				std::wostream* emptyOptionsExplanation = nullptr);
+		boost::optional<CppCoverage::Options> Parse(
+			const CppCoverage::OptionsParser& parser,
+			const std::vector<std::string>& arguments,
+			bool appendProgramToRun = true,
+			std::wostream* emptyOptionsExplanation = nullptr);
 
-		static const std::string OptionPrefix;
-		static const std::string ProgramToRun;
-	};
+		const std::string GetOptionPrefix();
+		const std::string GetProgramToRun();
+
+		//---------------------------------------------------------------------
+		struct CoverageArgs
+		{
+			CoverageArgs(
+				const std::vector<std::wstring>& arguments,
+				const std::wstring& modulePattern,
+				const std::wstring& sourcePattern);
+
+			boost::filesystem::path programToRun_;
+			std::vector<std::wstring> arguments_;
+			std::vector<std::wstring> modulePatternCollection_;
+			std::vector<std::wstring> sourcePatternCollection_;
+			std::vector<CppCoverage::UnifiedDiffSettings> unifiedDiffSettingsCollection_;
+			bool coverChildren_ = true;
+			bool continueAfterCppException_ = false;
+			bool optimizedBuildSupport_ = false;
+			std::vector<std::wstring> excludedLineRegexes_;
+		};
+
+		//---------------------------------------------------------------------
+		CppCoverage::CoverageData ComputeCoverageData(
+			const std::vector<std::wstring>& arguments,
+			const std::wstring& modulePattern,
+			const std::wstring& sourcePattern);
+
+		//---------------------------------------------------------------------
+		CppCoverage::CoverageData ComputeCoverageDataPatterns(const CoverageArgs& args);
+	}
 }
 

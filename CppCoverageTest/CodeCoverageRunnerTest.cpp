@@ -60,6 +60,10 @@ namespace logging = boost::log;
 
 namespace CppCoverageTest
 {
+	using TestTools::CoverageArgs;
+	using TestTools::ComputeCoverageData;
+	using TestTools::ComputeCoverageDataPatterns;
+
 	//-------------------------------------------------------------------------
 	class CodeCoverageRunnerTest : public ::testing::Test
 	{
@@ -88,82 +92,6 @@ namespace CppCoverageTest
 
 			ASSERT_NE(nullptr, line);
 			ASSERT_EQ(hasBeenExecuted, line->HasBeenExecuted());
-		}
-
-		//---------------------------------------------------------------------
-		struct CoverageArgs
-		{
-			CoverageArgs(
-				const std::vector<std::wstring>& arguments,
-				const std::wstring& modulePattern,
-				const std::wstring& sourcePattern)
-				: programToRun_{ TestCoverageConsole::GetOutputBinaryPath() }
-				, arguments_{ arguments }
-				, modulePatternCollection_{ modulePattern }
-				, sourcePatternCollection_{ sourcePattern }
-			{
-			}
-
-			boost::filesystem::path programToRun_;
-			std::vector<std::wstring> arguments_;
-			std::vector<std::wstring> modulePatternCollection_;
-			std::vector<std::wstring> sourcePatternCollection_;
-			std::vector<cov::UnifiedDiffSettings> unifiedDiffSettingsCollection_;
-			bool coverChildren_ = true;
-			bool continueAfterCppException_ = false;
-			bool optimizedBuildSupport_ = false;
-			std::vector<std::wstring> excludedLineRegexes_;
-		};
-
-		//---------------------------------------------------------------------
-		cov::CoverageData ComputeCoverageDataPatterns(
-			const CoverageArgs& args)
-		{
-			cov::CodeCoverageRunner codeCoverageRunner;
-			cov::Patterns modulePatterns{false};
-			cov::Patterns sourcePatterns{false};
-
-			for (auto modulePattern : args.modulePatternCollection_)
-			{
-				boost::to_lower(modulePattern);
-				modulePatterns.AddSelectedPatterns(modulePattern);
-			}
-
-			for (auto sourcePattern : args.sourcePatternCollection_)
-			{
-				boost::to_lower(sourcePattern);
-				sourcePatterns.AddSelectedPatterns(sourcePattern);
-			}
-			
-			cov::CoverageFilterSettings coverageFilterSettings{modulePatterns, sourcePatterns};
-			cov::StartInfo startInfo{ args.programToRun_ };
-
-			for (const auto& argument: args.arguments_)
-				startInfo.AddArgument(argument);
-
-			cov::RunCoverageSettings settings(
-				startInfo,
-				coverageFilterSettings,
-				args.unifiedDiffSettingsCollection_,
-				args.excludedLineRegexes_);
-			settings.SetCoverChildren(args.coverChildren_);
-			settings.SetContinueAfterCppException(args.continueAfterCppException_);
-			settings.SetOptimizedBuildSupport(args.optimizedBuildSupport_);
-
-			auto coverageData = codeCoverageRunner.RunCoverage(settings);
-
-			return coverageData;
-		}
-
-		//---------------------------------------------------------------------
-		cov::CoverageData ComputeCoverageData(
-			const std::vector<std::wstring>& arguments,
-			const std::wstring& modulePattern,
-			const std::wstring& sourcePattern)
-		{
-			CoverageArgs args{ arguments, modulePattern, sourcePattern};
-
-			return ComputeCoverageDataPatterns(args);
 		}
 
 		//---------------------------------------------------------------------
@@ -370,7 +298,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, SeveralChildProcess)
 	{
-		auto coverageData = ComputeCoverageData(
+		auto coverageData = TestTools::ComputeCoverageData(
 			{	TestCoverageConsole::TestChildProcess,
 				TestCoverageConsole::TestThrowUnHandledCppException,
 				TestCoverageConsole::TestThrowUnHandledSEHException },

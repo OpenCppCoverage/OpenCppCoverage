@@ -62,7 +62,7 @@ namespace CppCoverageTest
 		
 		ASSERT_NE(L"", ostr.str());
 		ASSERT_FALSE(static_cast<bool>(TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::HelpOption }, false)));
+		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::HelpOption }, false)));
 	}
 
 	//-------------------------------------------------------------------------
@@ -73,7 +73,7 @@ namespace CppCoverageTest
 		ASSERT_EQ(cov::LogLevel::Verbose, TestTools::Parse(parser,
 			{ optionShortPrefix + cov::ProgramOptions::VerboseShortOption })->GetLogLevel());
 		ASSERT_EQ(cov::LogLevel::Verbose, TestTools::Parse(parser,
-			{ TestTools::OptionPrefix + cov::ProgramOptions::VerboseOption })->GetLogLevel());
+			{ TestTools::GetOptionPrefix() + cov::ProgramOptions::VerboseOption })->GetLogLevel());
 	}
 	
 	//-------------------------------------------------------------------------
@@ -84,7 +84,7 @@ namespace CppCoverageTest
 		ASSERT_EQ(cov::LogLevel::Quiet, TestTools::Parse(parser,
 		{ optionShortPrefix + cov::ProgramOptions::QuietShortOption })->GetLogLevel());
 		ASSERT_EQ(cov::LogLevel::Quiet, TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::QuietOption })->GetLogLevel());
+		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::QuietOption })->GetLogLevel());
 	}
 
 	//-------------------------------------------------------------------------
@@ -93,7 +93,7 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 
 		ASSERT_TRUE(TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::PluginOption })->IsPlugingModeEnabled());
+		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::PluginOption })->IsPlugingModeEnabled());
 	}
 
 	//-------------------------------------------------------------------------
@@ -102,7 +102,7 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 
 		ASSERT_TRUE(TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::CoverChildrenOption })->IsCoverChildrenModeEnabled());
+		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::CoverChildrenOption })->IsCoverChildrenModeEnabled());
 	}
 
 	//-------------------------------------------------------------------------
@@ -111,7 +111,7 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 
 		ASSERT_FALSE(TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::NoAggregateByFileOption })->IsAggregateByFileModeEnabled());
+		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::NoAggregateByFileOption })->IsAggregateByFileModeEnabled());
 	}
 
 	//-------------------------------------------------------------------------
@@ -120,7 +120,7 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 
 		ASSERT_TRUE(TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::ContinueAfterCppExceptionOption })
+		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::ContinueAfterCppExceptionOption })
 			->IsContinueAfterCppExceptionModeEnabled());
 	}
 
@@ -131,7 +131,7 @@ namespace CppCoverageTest
 		const std::string folder = ".";
 
 		auto options = TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::WorkingDirectoryOption, folder });
+		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::WorkingDirectoryOption, folder });
 		ASSERT_TRUE(static_cast<bool>(options));
 		ASSERT_NE(nullptr, options->GetStartInfo());
 
@@ -148,16 +148,16 @@ namespace CppCoverageTest
 		const std::string arg1 = "arg1";
 		const std::string arg2 = "arg2";
 		const std::vector<std::wstring> expectedArgs =
-			{	Tools::LocalToWString(TestTools::ProgramToRun), 
+			{	Tools::LocalToWString(TestTools::GetProgramToRun()), 
 				Tools::LocalToWString(arg1), 
 				Tools::LocalToWString(arg2) };
 
-		auto options = TestTools::Parse(parser, { TestTools::ProgramToRun, arg1, arg2 }, false);
+		auto options = TestTools::Parse(parser, { TestTools::GetProgramToRun(), arg1, arg2 }, false);
 		ASSERT_TRUE(static_cast<bool>(options));
 
 		const auto* startInfo = options->GetStartInfo();		
 		ASSERT_NE(nullptr, startInfo);
-		ASSERT_EQ(TestTools::ProgramToRun, startInfo->GetPath().string());
+		ASSERT_EQ(TestTools::GetProgramToRun(), startInfo->GetPath().string());
 		ASSERT_EQ(expectedArgs, startInfo->GetArguments());
 	}
 
@@ -174,7 +174,7 @@ namespace CppCoverageTest
 	TEST(OptionsParserTest, OptionOstream)
 	{ 
 		cov::OptionsParser parser;
-		auto options = TestTools::Parse(parser, { TestTools::OptionPrefix + cov::ProgramOptions::SelectedSourcesOption, "source1" });
+		auto options = TestTools::Parse(parser, { TestTools::GetOptionPrefix() + cov::ProgramOptions::SelectedSourcesOption, "source1" });
 		
 		std::wostringstream ostr;
 
@@ -191,7 +191,7 @@ namespace CppCoverageTest
 		auto pathStr = temporaryPath.GetPath().string();
 
 		auto options = TestTools::Parse(parser, 
-			{ TestTools::OptionPrefix + cov::ProgramOptions::InputCoverageValue, pathStr });
+			{ TestTools::GetOptionPrefix() + cov::ProgramOptions::InputCoverageValue, pathStr });
 		ASSERT_TRUE(static_cast<bool>(options));
 		ASSERT_EQ(pathStr, options->GetInputCoveragePaths().at(0).string());		
 	}
@@ -202,7 +202,7 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 		std::wostringstream ostr;
 		ASSERT_FALSE(static_cast<bool>(TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::InputCoverageValue, "invalidPath" }, true, &ostr)));
+		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::InputCoverageValue, "invalidPath" }, true, &ostr)));
 		ASSERT_NE(L"", ostr.str());		
 	}
 
@@ -212,7 +212,7 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 
 		ASSERT_TRUE(TestTools::Parse(parser,
-		{ TestTools::OptionPrefix + cov::ProgramOptions::OptimizedBuildOption })
+		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::OptimizedBuildOption })
 			->IsOptimizedBuildSupportEnabled());
 	}
 
@@ -222,7 +222,7 @@ namespace CppCoverageTest
 		cov::OptionsParser parser;
 		const auto excludedLineRegex = ".*";
 		auto option = TestTools::Parse(parser, 
-			{	TestTools::OptionPrefix + cov::ProgramOptions::ExcludedLineRegexOption,
+			{	TestTools::GetOptionPrefix() + cov::ProgramOptions::ExcludedLineRegexOption,
 				excludedLineRegex });
 		ASSERT_TRUE(option.is_initialized());
 		ASSERT_THAT(

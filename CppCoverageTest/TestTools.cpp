@@ -18,10 +18,14 @@
 #include "TestTools.hpp"
 
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "CppCoverage/StartInfo.hpp"
 #include "CppCoverage/Debugger.hpp"
 #include "CppCoverage/IDebugEventsHandler.hpp"
+#include "CppCoverage/CodeCoverageRunner.hpp"
+#include "CppCoverage/CoverageFilterSettings.hpp"
+#include "CppCoverage/RunCoverageSettings.hpp"
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 
@@ -49,36 +53,102 @@ namespace CppCoverageTest
 		};
 
 	}
-		
-	const std::string TestTools::OptionPrefix = "--";
-	const std::string TestTools::ProgramToRun = TestCoverageConsole::GetOutputBinaryPath().string();
 
-	//-------------------------------------------------------------------------
-	void TestTools::GetHandles(const boost::filesystem::path& path, T_HandlesFct action)
-	{		
-		cov::StartInfo startInfo{ path };
-		cov::Debugger debugger{ false, false };
-		DebugEventsHandler debugEventsHandler{ action };
-
-		debugger.Debug(startInfo, debugEventsHandler);
-	}				
-
-	//---------------------------------------------------------------------
-	boost::optional<cov::Options> TestTools::Parse(
-		const cov::OptionsParser& parser,
-		const std::vector<std::string>& arguments,
-		bool appendProgramToRun,
-		std::wostream* emptyOptionsExplanation)
+	namespace TestTools
 	{
-		std::vector<const char*> argv;
+		//-------------------------------------------------------------------------
+		void GetHandles(const boost::filesystem::path& path, TestTools::T_HandlesFct action)
+		{
+			cov::StartInfo startInfo{ path };
+			cov::Debugger debugger{ false, false };
+			DebugEventsHandler debugEventsHandler{ action };
 
-		argv.push_back("programName");
-		for (const auto& argument : arguments)
-			argv.push_back(argument.c_str());
+			debugger.Debug(startInfo, debugEventsHandler);
+		}
 
-		if (appendProgramToRun)
-			argv.push_back(ProgramToRun.c_str());
-		return parser.Parse(static_cast<int>(argv.size()), &argv[0], emptyOptionsExplanation);
+		//---------------------------------------------------------------------
+		boost::optional<cov::Options> Parse(
+			const cov::OptionsParser& parser,
+			const std::vector<std::string>& arguments,
+			bool appendProgramToRun,
+			std::wostream* emptyOptionsExplanation)
+		{
+			std::vector<const char*> argv;
+
+			argv.push_back("programName");
+			for (const auto& argument : arguments)
+				argv.push_back(argument.c_str());
+
+			if (appendProgramToRun)
+				argv.push_back(GetProgramToRun().c_str());
+			return parser.Parse(static_cast<int>(argv.size()), &argv[0], emptyOptionsExplanation);
+		}
+
+		const std::string GetOptionPrefix() { return "--"; }
+		const std::string GetProgramToRun() { return TestCoverageConsole::GetOutputBinaryPath().string(); }
+
+		//---------------------------------------------------------------------
+		CoverageArgs::CoverageArgs(
+			const std::vector<std::wstring>& arguments,
+			const std::wstring& modulePattern,
+			const std::wstring& sourcePattern)
+			: programToRun_{ TestCoverageConsole::GetOutputBinaryPath() },
+			arguments_{ arguments },
+			modulePatternCollection_{ modulePattern },
+			sourcePatternCollection_{ sourcePattern }
+		{
+		}
+
+		//---------------------------------------------------------------------
+		cov::CoverageData ComputeCoverageData(
+			const std::vector<std::wstring>& arguments,
+			const std::wstring& modulePattern,
+			const std::wstring& sourcePattern)
+		{
+			CoverageArgs args{ arguments, modulePattern, sourcePattern };
+
+			return ComputeCoverageDataPatterns(args);
+		}
+
+		//---------------------------------------------------------------------
+		cov::CoverageData ComputeCoverageDataPatterns(
+			const CoverageArgs& args)
+		{
+			cov::CodeCoverageRunner codeCoverageRunner;
+			cov::Patterns modulePatterns{ false };
+			cov::Patterns sourcePatterns{ false };
+
+			for (auto modulePattern : args.modulePatternCollection_)
+			{
+				boost::to_lower(modulePattern);
+				modulePatterns.AddSelectedPatterns(modulePattern);
+			}
+
+			for (auto sourcePattern : args.sourcePatternCollection_)
+			{
+				boost::to_lower(sourcePattern);
+				sourcePatterns.AddSelectedPatterns(sourcePattern);
+			}
+
+			cov::CoverageFilterSettings coverageFilterSettings{ modulePatterns, sourcePatterns };
+			cov::StartInfo startInfo{ args.programToRun_ };
+
+			for (const auto& argument : args.arguments_)
+				startInfo.AddArgument(argument);
+
+			cov::RunCoverageSettings settings(
+				startInfo,
+				coverageFilterSettings,
+				args.unifiedDiffSettingsCollection_,
+				args.excludedLineRegexes_);
+			settings.SetCoverChildren(args.coverChildren_);
+			settings.SetContinueAfterCppException(args.continueAfterCppException_);
+			settings.SetOptimizedBuildSupport(args.optimizedBuildSupport_);
+
+			auto coverageData = codeCoverageRunner.RunCoverage(settings);
+
+			return coverageData;
+		}
 	}
 }
 

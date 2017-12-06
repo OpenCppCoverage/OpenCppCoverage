@@ -47,7 +47,7 @@ namespace CppCoverageTest
 
 			for (const auto& exportTypeStr : exportTypesStr)
 			{
-				arguments.push_back(TestTools::OptionPrefix + cov::ProgramOptions::ExportTypeOption);
+				arguments.push_back(TestTools::GetOptionPrefix() + cov::ProgramOptions::ExportTypeOption);
 				arguments.push_back(exportTypeStr);
 			}
 
@@ -110,7 +110,7 @@ namespace CppCoverageTest
 
 		std::string exportStr = cov::ProgramOptions::ExportTypeHtmlValue + 
 			cov::OptionsParser::ExportSeparator + temporaryPath.GetPath().string();
-		auto options = TestTools::Parse(parser, { TestTools::OptionPrefix + cov::ProgramOptions::ExportTypeOption, 
+		auto options = TestTools::Parse(parser, { TestTools::GetOptionPrefix() + cov::ProgramOptions::ExportTypeOption, 
 								exportStr });
 		ASSERT_NE(nullptr, options.get_ptr());
 	}
@@ -120,7 +120,7 @@ namespace CppCoverageTest
 	{
 		cov::OptionsParser parser;
 
-		auto options = TestTools::Parse(parser, { TestTools::OptionPrefix + cov::ProgramOptions::ExportTypeOption, "Invalid" });
+		auto options = TestTools::Parse(parser, { TestTools::GetOptionPrefix() + cov::ProgramOptions::ExportTypeOption, "Invalid" });
 		ASSERT_FALSE(options);
 	}
 }

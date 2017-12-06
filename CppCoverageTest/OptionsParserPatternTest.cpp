@@ -37,7 +37,7 @@ namespace CppCoverageTest
 			std::function<std::wstring(const cov::Options&)> getOption)
 		{
 			cov::OptionsParser parser;
-			std::vector<std::string> arguments = { TestTools::OptionPrefix + optionName, 
+			std::vector<std::string> arguments = { TestTools::GetOptionPrefix() + optionName, 
 													Tools::ToLocalString(value) };
 
 			auto options = TestTools::Parse(parser, arguments);

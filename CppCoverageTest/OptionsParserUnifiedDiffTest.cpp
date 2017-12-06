@@ -40,7 +40,7 @@ namespace CppCoverageTest
 
 			for (const auto& unifiedDiffSettings : unifiedDiffSettingsCollection)
 			{
-				arguments.push_back(TestTools::OptionPrefix + cov::ProgramOptions::UnifiedDiffOption);
+				arguments.push_back(TestTools::GetOptionPrefix() + cov::ProgramOptions::UnifiedDiffOption);
 
 				auto value = unifiedDiffSettings.GetUnifiedDiffPath().string();
 				auto rootDiffFolder = unifiedDiffSettings.GetRootDiffFolder();

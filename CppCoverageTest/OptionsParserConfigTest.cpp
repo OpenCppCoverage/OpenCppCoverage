@@ -49,7 +49,7 @@ namespace CppCoverageTest
 
 			for (const auto& argumentValue : commandLineArguments)
 			{
-				arguments.push_back(TestTools::OptionPrefix + argumentValue.first);
+				arguments.push_back(TestTools::GetOptionPrefix() + argumentValue.first);
 				arguments.push_back(Tools::ToLocalString(argumentValue.second));
 			}
 
