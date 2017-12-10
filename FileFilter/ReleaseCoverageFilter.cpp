@@ -76,10 +76,10 @@ namespace FileFilter
 		const FileInfo& fileInfo)
 	{
 		auto hProcess = moduleInfo.hProcess_;
-		auto moduleUniqueId = moduleInfo.uniqueId_;
+		auto modulePath = moduleInfo.path_;
 		auto filePath = fileInfo.filePath_;
 
-		auto updateRelocationsCache = moduleUniqueId != moduleUniqueId_;
+		auto updateRelocationsCache = modulePath != modulePath_;
 		auto updateLineDataCaches = fileInfo.filePath_ != filePath_ || updateRelocationsCache;
 
 		if (updateRelocationsCache)
@@ -93,7 +93,7 @@ namespace FileFilter
 			UpdateLineDataCaches(fileInfo.lineInfoColllection_);
 
 		hProcess_ = hProcess;
-		moduleUniqueId_ = moduleUniqueId;
+		modulePath_ = modulePath;
 		filePath_ = filePath;
 	}
 

@@ -18,8 +18,6 @@
 
 #include "MonitoredLineRegister.hpp"
 
-#include <boost/uuid/uuid_generators.hpp>
-
 #include "ICoverageFilterManager.hpp"
 #include "Address.hpp"
 #include "BreakPoint.hpp"
@@ -106,9 +104,9 @@ namespace CppCoverage
 
 		executedAddressManager_->AddModule(modulePath.wstring(), baseOfImage);
 
-		auto moduleUniqueId = boost::uuids::random_generator()();
 		moduleInfo_ = std::make_unique<FileFilter::ModuleInfo>(
-		    hProcess, moduleUniqueId, baseOfImage);
+		    hProcess, modulePath, baseOfImage);
+
 
 		DebugInformationEnumerator debugInformationEnumerator;
 		debugInformationEnumerator.Enumerate(modulePath, *this);

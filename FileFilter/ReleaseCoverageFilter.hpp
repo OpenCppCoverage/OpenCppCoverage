@@ -55,7 +55,7 @@ namespace FileFilter
 		std::unordered_set<DWORD64> relocations_;
 
 		HANDLE hProcess_;
-		boost::uuids::uuid moduleUniqueId_;
+		boost::filesystem::path modulePath_;
 		boost::filesystem::path filePath_;
 	};
 }
