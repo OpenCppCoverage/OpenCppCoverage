@@ -412,22 +412,21 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, DISABLED_OptimizedBuild)
+	TEST_F(CodeCoverageRunnerTest, OptimizedBuild)
 	{
-		CoverageArgs args{ 
-			{ TestCoverageConsole::TestOptimizedBuild },
-			TestCoverageOptimizedBuild::GetOutputBinaryPath().filename().wstring(),
-			TestCoverageOptimizedBuild::GetMainCppPath().wstring() };
+		CoverageArgs args{{}, L"OptimizedBuildVS2013", L"OptimizedBuildVS2013"};
+		auto optimizedBuildProjectPath = fs::path{ PROJECT_DIR } / "OptimizedBuildVS2013";
+		args.programToRun_ = optimizedBuildProjectPath /
+		                     "Release" / "OptimizedBuildVS2013.exe";
 
-#ifdef _WIN64
-		// No special case is needed when the architecture of the program to run is 64 bits.
-		// We check instead we can read 32 bits PE format correctly.
-		auto x86Path = args.programToRun_.wstring();
-		boost::replace_last(x86Path, "x64", "");
-		args.programToRun_ = boost::filesystem::canonical(x86Path);
-#endif
-		auto computeCoverage = [&](bool optimizedBuild)
-		{ 
+		if (!fs::exists(args.programToRun_))
+		{
+			throw std::runtime_error(
+				"You need to compile " + optimizedBuildProjectPath.string() +
+				" in release mode with Visual Studio 2013 to run this test.");
+		}
+
+		auto computeCoverage = [&](bool optimizedBuild) {
 			args.optimizedBuildSupport_ = optimizedBuild;
 			return ComputeCoverageDataPatterns(args);
 		};
@@ -438,7 +437,8 @@ namespace CppCoverageTest
 		auto coverageDataOptimizedBuild = computeCoverage(true);
 		ASSERT_EQ(0, coverageDataOptimizedBuild.GetExitCode());
 
-		const auto& fileOptimizedBuild = GetFirstFileCoverage(coverageDataOptimizedBuild);
+		const auto& fileOptimizedBuild =
+		    GetFirstFileCoverage(coverageDataOptimizedBuild);
 		const auto& file = GetFirstFileCoverage(coverageData);
 		auto optimizedBuildCount = CountExecutedLines(fileOptimizedBuild);
 		auto count = CountExecutedLines(file);
