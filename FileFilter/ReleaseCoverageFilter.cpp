@@ -52,16 +52,17 @@ namespace FileFilter
 		UpdateCachesIfExpired(moduleInfo, fileInfo);
 
 		auto lineAddress = lineInfo.virtualAddress_;
-		if (lastSymbolAddresses_.count(lineAddress) == 0)
+		if (mModuleData_->fileData_->lastSymbolAddresses_.count(lineAddress) == 0)
 			return true;
 
-		auto it = addressCountByLine_.find(lineInfo.lineNumber_);
-		auto addressCount = (it == addressCountByLine_.end()) ? 0 : it->second;
+		auto& addressCountByLine = mModuleData_->fileData_->addressCountByLine_;
+		auto it = addressCountByLine.find(lineInfo.lineNumber_);
+		auto addressCount = (it == addressCountByLine.end()) ? 0 : it->second;
 
 		if (addressCount < 2)
 			return true;
 
-		if (relocations_.count(lineAddress) == 0)
+		if (mModuleData_->relocations_.count(lineAddress) == 0)
 			return true;
 
 		LOG_DEBUG << "Optimized build support ignores line "
@@ -75,31 +76,30 @@ namespace FileFilter
 		const ModuleInfo& moduleInfo,
 		const FileInfo& fileInfo)
 	{
-		auto hProcess = moduleInfo.hProcess_;
 		auto modulePath = moduleInfo.path_;
 		auto filePath = fileInfo.filePath_;
 
-		auto updateRelocationsCache = modulePath != modulePath_;
-		auto updateLineDataCaches = fileInfo.filePath_ != filePath_ || updateRelocationsCache;
-
-		if (updateRelocationsCache)
+		if (!mModuleData_ || mModuleData_->path_ != modulePath)
 		{
-			relocations_ = relocationsExtractor_->Extract(
-				hProcess,
+			mModuleData_ = std::make_unique<ModuleData>();
+			mModuleData_->path_ = modulePath;
+			mModuleData_->relocations_ = relocationsExtractor_->Extract(
+				moduleInfo.hProcess_,
 				reinterpret_cast<DWORD64>(moduleInfo.baseOfImage_));
 		}
 		
-		if (updateLineDataCaches)
-			UpdateLineDataCaches(fileInfo.lineInfoColllection_);
-
-		hProcess_ = hProcess;
-		modulePath_ = modulePath;
-		filePath_ = filePath;
+		if (!mModuleData_->fileData_ || mModuleData_->fileData_->path_ != filePath)
+			mModuleData_->fileData_ = UpdateLineDataCaches(filePath, fileInfo.lineInfoColllection_);
 	}
 
 	//-------------------------------------------------------------------------
-	void ReleaseCoverageFilter::UpdateLineDataCaches(const std::vector<LineInfo>& lineDatas)
+	std::unique_ptr<ReleaseCoverageFilter::FileData>
+	ReleaseCoverageFilter::UpdateLineDataCaches(
+	    const boost::filesystem::path& filePath, const std::vector<LineInfo>& lineDatas)
 	{
+		auto fileData = std::make_unique<FileData>();
+		fileData->path_ = filePath;
+
 		std::unordered_map<ULONG, DWORD64> addressesBySymboleIndex;
 		for (const auto& lineData: lineDatas)
 		{
@@ -109,10 +109,11 @@ namespace FileFilter
 
 			auto it = addressesBySymboleIndex.emplace(symbolIndex, 0).first;
 			it->second = std::max(it->second, lineAddress);	
-			++addressCountByLine_[lineNumber];
+			++fileData->addressCountByLine_[lineNumber];
 		}
 
 		for (const auto& pair: addressesBySymboleIndex)
-			lastSymbolAddresses_.insert(pair.second);
+			fileData->lastSymbolAddresses_.insert(pair.second);
+		return fileData;
 	}
 }

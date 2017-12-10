@@ -21,7 +21,6 @@
 #include <unordered_map>
 #include <memory>
 #include <boost/filesystem/path.hpp>
-#include <boost/uuid/uuid.hpp>
 
 namespace FileFilter
 {	
@@ -46,17 +45,28 @@ namespace FileFilter
 		ReleaseCoverageFilter& operator=(ReleaseCoverageFilter&&) = delete;
 
 		void UpdateCachesIfExpired(const ModuleInfo&, const FileInfo&);
-		void UpdateLineDataCaches(const std::vector<LineInfo>&);
+		struct FileData;
+		std::unique_ptr<FileData>
+		UpdateLineDataCaches(const boost::filesystem::path& filePath,
+		                     const std::vector<LineInfo>&);
 
 		const std::unique_ptr<IRelocationsExtractor> relocationsExtractor_;
-		
-		std::unordered_set<DWORD64> lastSymbolAddresses_;
-		std::unordered_map<int, int> addressCountByLine_;
-		std::unordered_set<DWORD64> relocations_;
 
-		HANDLE hProcess_;
-		boost::filesystem::path modulePath_;
-		boost::filesystem::path filePath_;
+		struct FileData
+		{
+			boost::filesystem::path path_;
+			std::unordered_set<DWORD64> lastSymbolAddresses_;
+			std::unordered_map<int, int> addressCountByLine_;
+		};
+
+		struct ModuleData
+		{
+			boost::filesystem::path path_;
+			std::unordered_set<DWORD64> relocations_;
+			std::unique_ptr<FileData> fileData_;
+		};
+
+		std::unique_ptr<ModuleData> mModuleData_;
 	};
 }
 
