@@ -128,7 +128,10 @@ namespace CppCoverage
 		std::vector<FileFilter::LineInfo> lineInfos;
 
 		for (const auto& line : lines)
-			lineInfos.emplace_back(line.lineNumber_, line.virtualAddress_, 0);
+		{
+			lineInfos.emplace_back(
+			    line.lineNumber_, line.virtualAddress_, line.symbolIndex_);
+		}
 
 		FileFilter::FileInfo fileInfo{path, std::move(lineInfos)};
 		const auto& moduleInfo = GetModuleInfo();

@@ -38,8 +38,12 @@ namespace CppCoverage
 	  public:
 		struct Line
 		{
-			Line(unsigned long lineNumber, int64_t virtualAddress)
-			    : lineNumber_{lineNumber}, virtualAddress_{virtualAddress}
+			Line(unsigned long lineNumber,
+			     int64_t virtualAddress,
+			     unsigned long symbolIndex)
+			    : lineNumber_{lineNumber},
+			      virtualAddress_{virtualAddress},
+			      symbolIndex_{symbolIndex}
 			{
 			}
 			Line(const Line&) = default;
@@ -47,6 +51,7 @@ namespace CppCoverage
 			Line& operator=(const Line&) = default;
 
 			unsigned long lineNumber_;
+			unsigned long symbolIndex_;
 			int64_t virtualAddress_;
 		};
 

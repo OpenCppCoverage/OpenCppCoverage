@@ -292,6 +292,14 @@ namespace CppCoverage
 		if (lineNumber.get_virtualAddress(&virtualAddress) != S_OK)
 			THROW("DIA: Cannot get virtual address");
 
-		lines_.emplace_back(linenum, virtualAddress);
+		CComPtr<IDiaSymbol> symbol;
+		if (session.findSymbolByVA(virtualAddress, SymTagEnum::SymTagNull, &symbol) != S_OK || !symbol)
+			THROW("DIA: Cannot find symbol");
+
+		unsigned long symIndex = 0;
+		if (symbol->get_symIndexId(&symIndex) != S_OK)
+			THROW("DIA: Cannot get symIndex");
+
+		lines_.emplace_back(linenum, virtualAddress, symIndex);
 	}
 }
