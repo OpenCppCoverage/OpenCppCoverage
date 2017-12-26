@@ -196,6 +196,18 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	void Options::AddSubstitutePdbSourcePath(SubstitutePdbSourcePath&& substitutePdbSourcePath)
+	{
+		substitutePdbSourcePaths_.push_back(std::move(substitutePdbSourcePath));
+	}
+
+	//-------------------------------------------------------------------------
+	const std::vector<SubstitutePdbSourcePath>& Options::GetSubstitutePdbSourcePaths() const
+	{
+		return substitutePdbSourcePaths_;
+	}
+
+	//-------------------------------------------------------------------------
 	std::wostream& operator<<(std::wostream& ostr, const Options& options)
 	{
 		if (options.optionalStartInfo_)
@@ -229,6 +241,14 @@ namespace CppCoverage
 		ostr << L"Excluded line regular expressions: ";
 		for (const auto& excludedRegex : options.excludedLineRegexes_)
 			ostr << excludedRegex << L" ";
+		ostr << std::endl;
+
+		ostr << L"Substitute pdb source paths: ";
+		for (const auto& substitutePdbSourcePath : options.substitutePdbSourcePaths_)
+		{
+			ostr << substitutePdbSourcePath.GetPdbStartPath() << L" => ";
+			ostr << substitutePdbSourcePath.GetLocalPath() << "  ";
+		}
 		ostr << std::endl;
 
 		return ostr;

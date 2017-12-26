@@ -23,6 +23,7 @@
 #include "Patterns.hpp"
 #include "StartInfo.hpp"
 #include "UnifiedDiffSettings.hpp"
+#include "SubstitutePdbSourcePath.hpp"
 #include "OptionsExport.hpp"
 
 namespace CppCoverage
@@ -81,6 +82,9 @@ namespace CppCoverage
 		void AddExcludedLineRegex(const std::wstring&);
 		const std::vector<std::wstring>& GetExcludedLineRegexes() const;
 
+		void AddSubstitutePdbSourcePath(SubstitutePdbSourcePath&&);
+		const std::vector<SubstitutePdbSourcePath>& GetSubstitutePdbSourcePaths() const;
+
 		friend CPPCOVERAGE_DLL std::wostream& operator<<(std::wostream&, const Options&);
 
 	private:
@@ -102,5 +106,6 @@ namespace CppCoverage
 		std::vector<boost::filesystem::path> inputCoveragePaths_;
 		std::vector<UnifiedDiffSettings> unifiedDiffSettingsCollection_;
 		std::vector<std::wstring> excludedLineRegexes_;
+		std::vector<SubstitutePdbSourcePath> substitutePdbSourcePaths_;
 	};
 }

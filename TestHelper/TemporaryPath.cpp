@@ -56,4 +56,10 @@ namespace TestHelper
 	{
 		return path_;
 	}
+
+	//-------------------------------------------------------------------------
+	const boost::filesystem::path* TemporaryPath::operator->() const
+	{
+		return &path_;
+	}
 }

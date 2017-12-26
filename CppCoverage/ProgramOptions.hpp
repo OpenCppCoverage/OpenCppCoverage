@@ -51,6 +51,7 @@ namespace CppCoverage
 		static const std::string ContinueAfterCppExceptionOption;
 		static const std::string OptimizedBuildOption;
 		static const std::string ExcludedLineRegexOption;
+		static const std::string SubstitutePdbSourcePath;
 
 		ProgramOptions(const std::vector<std::string>& optionsExportTypes);
 

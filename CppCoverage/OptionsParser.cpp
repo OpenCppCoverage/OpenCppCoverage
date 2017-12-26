@@ -197,7 +197,7 @@ namespace CppCoverage
 		std::pair<fs::path, boost::optional<fs::path>>
 			ExtractUnifiedDiffOption(const std::string& option)
 		{
-			auto pos = option.find(OptionsParser::UnifiedDiffSeparator);
+			auto pos = option.find(OptionsParser::PathSeparator);
 
 			if (pos == std::string::npos)
 				return{ option, boost::none };
@@ -247,11 +247,53 @@ namespace CppCoverage
 					options.AddExcludedLineRegex(Tools::LocalToWString(excludedLineRegex));
 			}
 		}
+
+		//---------------------------------------------------------------------
+		SubstitutePdbSourcePath CreateSubstitutePdbSourcePath(const std::string& paths)
+		{
+			auto pos = paths.find(OptionsParser::PathSeparator);
+			const auto error = "Invalid value for " +
+			                   ProgramOptions::SubstitutePdbSourcePath + ". ";
+			if (pos == std::string::npos)
+			{
+				throw OptionsParserException(error + "Cannot find " +
+				                             OptionsParser::PathSeparator +
+				                             '.');
+			}
+
+			auto pdbPath = paths.substr(0, pos);
+			auto localPath = paths.substr(pos + 1);
+			if (!fs::exists(localPath))
+			{
+				throw OptionsParserException(error + "Path \"" + localPath +
+				                             "\" does not exist.");
+			}
+
+			return SubstitutePdbSourcePath{pdbPath, localPath};
+		}
+
+		//---------------------------------------------------------------------
+		void AddSubstitutePdbSourcePaths(const po::variables_map& variables,
+		                                Options& options)
+		{
+			auto substitutePdbSourcePaths =
+			    GetOptionalValue<std::vector<std::string>>(
+			        variables, ProgramOptions::SubstitutePdbSourcePath);
+
+			if (substitutePdbSourcePaths)
+			{
+				for (const auto& paths : *substitutePdbSourcePaths)
+				{
+					options.AddSubstitutePdbSourcePath(
+					    CreateSubstitutePdbSourcePath(paths));
+				}
+			}
+		}
 	}
-		
+
 	//-------------------------------------------------------------------------
 	const char OptionsParser::ExportSeparator = ':';
-	const char OptionsParser::UnifiedDiffSeparator = '?';
+	const char OptionsParser::PathSeparator = '?';
 
 	//-------------------------------------------------------------------------
 	OptionsParser::OptionsParser()
@@ -358,6 +400,7 @@ namespace CppCoverage
 		AddInputCoverages(variables, options);
 		AddUnifiedDiff(variables, options);
 		AddExcludedLineRegexes(variables, options);
+		AddSubstitutePdbSourcePaths(variables, options);
 
 		if (!options.GetStartInfo() && options.GetInputCoveragePaths().empty())
 			throw OptionsParserException("You must specify a program to execute or use --" + ProgramOptions::InputCoverageValue);

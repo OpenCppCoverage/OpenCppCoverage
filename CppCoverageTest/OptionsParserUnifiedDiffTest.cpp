@@ -45,7 +45,7 @@ namespace CppCoverageTest
 				auto value = unifiedDiffSettings.GetUnifiedDiffPath().string();
 				auto rootDiffFolder = unifiedDiffSettings.GetRootDiffFolder();
 				if (rootDiffFolder)
-					value += cov::OptionsParser::UnifiedDiffSeparator + rootDiffFolder->string();
+					value += cov::OptionsParser::PathSeparator + rootDiffFolder->string();
 				arguments.push_back(value);
 			}
 

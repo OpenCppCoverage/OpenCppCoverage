@@ -38,6 +38,7 @@ namespace TestHelper
 
 		operator const boost::filesystem::path& () const;
 		const boost::filesystem::path& GetPath() const;
+		const boost::filesystem::path* operator->() const;
 
 	private:
 		TemporaryPath(const TemporaryPath&) = delete;

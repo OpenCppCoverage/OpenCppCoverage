@@ -49,6 +49,7 @@ namespace CppCoverageTest
 		ASSERT_FALSE(options->IsContinueAfterCppExceptionModeEnabled());
 		ASSERT_FALSE(options->IsOptimizedBuildSupportEnabled());
 		ASSERT_TRUE(options->GetExcludedLineRegexes().empty());
+		ASSERT_TRUE(options->GetSubstitutePdbSourcePaths().empty());
 	}
 
 	//-------------------------------------------------------------------------
@@ -228,5 +229,50 @@ namespace CppCoverageTest
 		ASSERT_THAT(
 			option->GetExcludedLineRegexes(), 
 			testing::ElementsAre(Tools::LocalToWString(excludedLineRegex)));
+	}
+
+	namespace
+	{
+		//-------------------------------------------------------------------------
+		boost::optional<cov::Options> ParseSubstitutePdbSourcePath(
+			TestHelper::TemporaryPath& pdbStartPath,
+			TestHelper::TemporaryPath& localPath)
+		{
+			cov::OptionsParser parser;
+
+			return TestTools::Parse(
+				parser,
+				{ TestTools::GetOptionPrefix() +
+				cov::ProgramOptions::SubstitutePdbSourcePath,
+				pdbStartPath->string() + cov::OptionsParser::PathSeparator +
+				localPath->string() });
+		}
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, SubstitutePdbSourcePath)
+	{
+		TestHelper::TemporaryPath pdbStartPath;
+		TestHelper::TemporaryPath localPath{ TestHelper::TemporaryPathOption::CreateAsFile };
+
+		const auto& option = ParseSubstitutePdbSourcePath(pdbStartPath, localPath);
+
+		ASSERT_TRUE(option.is_initialized());
+		const auto& substitutePdbSourcePaths = option->GetSubstitutePdbSourcePaths();
+		ASSERT_EQ(1, substitutePdbSourcePaths.size());
+		ASSERT_EQ(pdbStartPath.GetPath(),
+		          substitutePdbSourcePaths.at(0).GetPdbStartPath());
+		ASSERT_EQ(localPath.GetPath(),
+		          substitutePdbSourcePaths.at(0).GetLocalPath());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, SubstitutePdbSourcePathTargetNotExist)
+	{
+		TestHelper::TemporaryPath pdbStartPath;
+		TestHelper::TemporaryPath localPath;
+
+		const auto& option = ParseSubstitutePdbSourcePath(pdbStartPath, localPath);
+		ASSERT_FALSE(option.is_initialized());
 	}
 }

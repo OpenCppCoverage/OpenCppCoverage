@@ -75,7 +75,7 @@ namespace CppCoverage
 		std::string GetUnifiedDiffHelp()
 		{
 			return std::string("Format: <unifiedDiffPath>") +
-				OptionsParser::UnifiedDiffSeparator +
+				OptionsParser::PathSeparator +
 				"<rootFolder>\n" +
 				"<unifiedDiffPath> path of the unified diff file. " +
 				"Git users can use git diff output.\n" +
@@ -85,11 +85,11 @@ namespace CppCoverage
 
 		//---------------------------------------------------------------------
 		void FillConfigurationOptions(
-			po::options_description& options, 
+			po::options_description& options,
 			const std::vector<std::string>& exportTypes)
 		{
 			const std::string all = "*";
-			
+
 			options.add_options()
 				(ProgramOptions::SelectedModulesOption.c_str(),
 				po::value<T_Strings>()->default_value({ all }, all)->composing(),
@@ -118,7 +118,10 @@ namespace CppCoverage
 				(ProgramOptions::OptimizedBuildOption.c_str(), 
 					"Enable heuristics to support optimized build. See documentation for restrictions.")
 				(ProgramOptions::ExcludedLineRegexOption.c_str(), po::value<T_Strings>()->composing(),
-					"Exclude all lines match the regular expression. Regular expression must match the whole line.");
+					"Exclude all lines match the regular expression. Regular expression must match the whole line.")
+				(ProgramOptions::SubstitutePdbSourcePath.c_str(), po::value<T_Strings>()->composing(),
+					"Substitute the starting path defined in the pdb by a local path. Format:pdbStartPath?localPath." 
+					"Can have multiple occurrences.");
 		}
 
 		//-------------------------------------------------------------------------
@@ -158,6 +161,7 @@ namespace CppCoverage
 	const std::string ProgramOptions::ContinueAfterCppExceptionOption = "continue_after_cpp_exception";
 	const std::string ProgramOptions::OptimizedBuildOption = "optimized_build";
 	const std::string ProgramOptions::ExcludedLineRegexOption = "excluded_line_regex";
+	const std::string ProgramOptions::SubstitutePdbSourcePath = "substitute_pdb_source_path";
 
 	//-------------------------------------------------------------------------
 	ProgramOptions::ProgramOptions(const std::vector<std::string>& exportTypes)
