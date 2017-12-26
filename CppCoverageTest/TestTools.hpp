@@ -23,6 +23,7 @@
 
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/Options.hpp"
+#include "CppCoverage/SubstitutePdbSourcePath.hpp"
 
 namespace boost
 {
@@ -71,6 +72,7 @@ namespace CppCoverageTest
 			bool continueAfterCppException_ = false;
 			bool optimizedBuildSupport_ = false;
 			std::vector<std::wstring> excludedLineRegexes_;
+			std::vector<CppCoverage::SubstitutePdbSourcePath> substitutePdbSourcePath_;
 		};
 
 		//---------------------------------------------------------------------

@@ -21,18 +21,20 @@ namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
 	RunCoverageSettings::RunCoverageSettings(
-			const StartInfo& startInfo,
-			const CoverageFilterSettings& settings,
-			const std::vector<UnifiedDiffSettings>& unifiedDiffSettings,
-			const std::vector<std::wstring>& excludedLineRegexes)
-		: startInfo_{ startInfo }
-		, coverageFilterSettings_{ settings }
-		, unifiedDiffSettings_{ unifiedDiffSettings }
-		, coverChildren_{ false }
-		, continueAfterCppException_{ false }
-		, maxUnmatchPathsForWarning_{ 0 }
-		, optimizedBuildSupport_{ false }
-		, excludedLineRegexes_{ excludedLineRegexes }
+	    const StartInfo& startInfo,
+	    const CoverageFilterSettings& settings,
+	    const std::vector<UnifiedDiffSettings>& unifiedDiffSettings,
+	    const std::vector<std::wstring>& excludedLineRegexes,
+	    const std::vector<SubstitutePdbSourcePath>& substitutePdbSourcePath)
+	    : startInfo_{startInfo},
+	      coverageFilterSettings_{settings},
+	      unifiedDiffSettings_{unifiedDiffSettings},
+	      coverChildren_{false},
+	      continueAfterCppException_{false},
+	      maxUnmatchPathsForWarning_{0},
+	      optimizedBuildSupport_{false},
+	      excludedLineRegexes_{excludedLineRegexes},
+	      substitutePdbSourcePath_{substitutePdbSourcePath}
 	{
 	}
 
@@ -106,5 +108,11 @@ namespace CppCoverage
 	const std::vector<std::wstring>& RunCoverageSettings::GetExcludedLineRegexes() const
 	{
 		return excludedLineRegexes_;
+	}
+
+	//-------------------------------------------------------------------------
+	const std::vector<SubstitutePdbSourcePath>& RunCoverageSettings::GetSubstitutePdbSourcePaths() const
+	{
+		return substitutePdbSourcePath_;
 	}
 }

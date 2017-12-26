@@ -136,12 +136,13 @@ namespace OpenCppCoverage
 			{
 				size_t maxUnmatchPathsForWarning = (options.GetLogLevel() == cov::LogLevel::Verbose) 
 					? std::numeric_limits<size_t>::max() : 30;
-		
+
 				cov::RunCoverageSettings runCoverageSettings(
-											*startInfo, 
-											coverageFilterSettings, 
-											options.GetUnifiedDiffSettingsCollection(),
-											options.GetExcludedLineRegexes());
+				    *startInfo,
+				    coverageFilterSettings,
+				    options.GetUnifiedDiffSettingsCollection(),
+				    options.GetExcludedLineRegexes(),
+				    options.GetSubstitutePdbSourcePaths());
 
 				runCoverageSettings.SetCoverChildren(options.IsCoverChildrenModeEnabled());
 				runCoverageSettings.SetContinueAfterCppException(options.IsContinueAfterCppExceptionModeEnabled());

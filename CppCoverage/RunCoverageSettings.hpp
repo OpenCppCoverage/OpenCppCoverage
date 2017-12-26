@@ -22,6 +22,7 @@
 #include "CoverageFilterSettings.hpp"
 
 #include "CppCoverageExport.hpp"
+#include "SubstitutePdbSourcePath.hpp"
 
 namespace CppCoverage
 {
@@ -32,7 +33,9 @@ namespace CppCoverage
 			const StartInfo&,
 			const CoverageFilterSettings&,
 			const std::vector<UnifiedDiffSettings>&,
-			const std::vector<std::wstring>& excludedLineRegexes);
+			const std::vector<std::wstring>& excludedLineRegexes,
+			const std::vector<SubstitutePdbSourcePath>&);
+
 		RunCoverageSettings(const RunCoverageSettings&) = delete;
 		RunCoverageSettings& operator=(const RunCoverageSettings&) = delete;
 
@@ -49,6 +52,7 @@ namespace CppCoverage
 		size_t GetMaxUnmatchPathsForWarning() const;
 		bool GetOptimizedBuildSupport() const;
 		const std::vector<std::wstring>& GetExcludedLineRegexes() const;
+		const std::vector<SubstitutePdbSourcePath>& GetSubstitutePdbSourcePaths() const;
 
 	private:
 		StartInfo startInfo_;
@@ -59,5 +63,6 @@ namespace CppCoverage
 		size_t maxUnmatchPathsForWarning_;
 		bool optimizedBuildSupport_;
 		std::vector<std::wstring> excludedLineRegexes_;
+		std::vector<SubstitutePdbSourcePath> substitutePdbSourcePath_;
 	};
 }

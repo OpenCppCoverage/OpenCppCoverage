@@ -84,7 +84,7 @@ namespace CppCoverageTest
 		DebugInformationHandlerMock debugInformationHandler{
 		    selectedPath.filename()};
 
-		CppCoverage::DebugInformationEnumerator debugInformationEnumerator;
+		CppCoverage::DebugInformationEnumerator debugInformationEnumerator{ {} };
 
 		auto binary = TestCoverageConsole::GetOutputBinaryPath();
 		ASSERT_TRUE(debugInformationEnumerator.Enumerate(

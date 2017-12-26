@@ -66,7 +66,10 @@ namespace CppCoverage
 			settings.GetOptimizedBuildSupport());
 
 		monitoredLineRegister_ = std::make_unique<MonitoredLineRegister>(
-		    breakpoint_, executedAddressManager_, coverageFilterManager_);
+		    breakpoint_,
+		    executedAddressManager_,
+		    coverageFilterManager_,
+		    std::make_unique<DebugInformationEnumerator>(settings.GetSubstitutePdbSourcePaths()));
 
 		const auto& startInfo = settings.GetStartInfo();
 		int exitCode = debugger.Debug(startInfo, *this);

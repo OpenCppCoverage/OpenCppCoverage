@@ -23,6 +23,7 @@
 #include <atlbase.h>
 
 #include <boost/filesystem/path.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include "tools/Log.hpp"
 
@@ -209,19 +210,16 @@ namespace CppCoverage
 			}
 			return sourcePtr;
 		}
-
-		//----------------------------------------------------------------------
-		boost::filesystem::path GetSourceFileName(IDiaSourceFile& sourceFile)
-		{
-			DiaString fileName;
-			if (sourceFile.get_fileName(&fileName) != S_OK)
-				THROW("DIA: Cannot get filename");
-
-			return fileName;
-		}
 	}
 
 	//--------------------------------------------------------------------------
+	DebugInformationEnumerator::DebugInformationEnumerator(
+	    const std::vector<SubstitutePdbSourcePath>& substitutePdbSourcePaths)
+		: substitutePdbSourcePaths_{ substitutePdbSourcePaths }
+	{
+	}
+
+	//-------------------------------------------------------------------------
 	bool
 	DebugInformationEnumerator::Enumerate(const boost::filesystem::path& path,
 	                                      IDebugInformationHandler& handler)
@@ -301,5 +299,28 @@ namespace CppCoverage
 			THROW("DIA: Cannot get symIndex");
 
 		lines_.emplace_back(linenum, virtualAddress, symIndex);
+	}
+
+	//----------------------------------------------------------------------
+	boost::filesystem::path DebugInformationEnumerator::GetSourceFileName(
+	    IDiaSourceFile& sourceFile) const
+	{
+		DiaString fileName;
+		if (sourceFile.get_fileName(&fileName) != S_OK)
+			THROW("DIA: Cannot get filename");
+		std::wstring filenameStr = fileName;
+
+		for (const auto& paths : substitutePdbSourcePaths_)
+		{
+			auto pdbStartPath = paths.GetPdbStartPath().wstring();
+
+			if (boost::istarts_with(filenameStr, pdbStartPath))
+			{
+				auto remainingPath = filenameStr.substr(pdbStartPath.size());
+				filenameStr = (paths.GetLocalPath() / remainingPath).wstring();
+			}
+		}
+
+		return filenameStr;
 	}
 }

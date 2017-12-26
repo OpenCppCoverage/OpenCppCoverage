@@ -17,6 +17,7 @@
 #pragma once
 
 #include "CppCoverageExport.hpp"
+#include "SubstitutePdbSourcePath.hpp"
 
 namespace boost
 {
@@ -65,6 +66,7 @@ namespace CppCoverage
 	class CPPCOVERAGE_DLL DebugInformationEnumerator
 	{
 	  public:
+		explicit DebugInformationEnumerator(const std::vector<SubstitutePdbSourcePath>&);
 		bool Enumerate(const boost::filesystem::path&,
 		               IDebugInformationHandler&);
 
@@ -74,6 +76,10 @@ namespace CppCoverage
 		void
 		OnNewLine(IDiaSession&, IDiaLineNumber&, IDebugInformationHandler&);
 
+		boost::filesystem::path
+		GetSourceFileName(IDiaSourceFile&) const;
+
 		std::vector<IDebugInformationHandler::Line> lines_;
+		const std::vector<SubstitutePdbSourcePath> substitutePdbSourcePaths_;
 	};
 }

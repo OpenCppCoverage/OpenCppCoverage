@@ -141,7 +141,8 @@ namespace CppCoverageTest
 				startInfo,
 				coverageFilterSettings,
 				args.unifiedDiffSettingsCollection_,
-				args.excludedLineRegexes_);
+				args.excludedLineRegexes_,
+				args.substitutePdbSourcePath_);
 			settings.SetCoverChildren(args.coverChildren_);
 			settings.SetContinueAfterCppException(args.continueAfterCppException_);
 			settings.SetOptimizedBuildSupport(args.optimizedBuildSupport_);

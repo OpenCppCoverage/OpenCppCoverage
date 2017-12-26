@@ -41,6 +41,7 @@
 
 #include "TestHelper/CoverageDataComparer.hpp"
 #include "TestHelper/Tools.hpp"
+#include "TestHelper/TemporaryPath.hpp"
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "TestCoverageConsole/TestBasic.hpp"
@@ -467,5 +468,32 @@ namespace CppCoverageTest
 		const auto& file = GetFirstFileCoverage(coverageData);
 
 		ASSERT_EQ(file.GetLines().size(), fileWithExcludedLine.GetLines().size() + 1);
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CodeCoverageRunnerTest, SubstitutePdbSourcePath)
+	{
+		const auto filename = TestCoverageConsole::GetMainCppFilename();
+		CoverageArgs args{
+		    {},
+		    TestCoverageConsole::GetOutputBinaryPath().filename().wstring(),
+		    filename.wstring()};
+		auto originalCoverageData = ComputeCoverageDataPatterns(args);
+		auto originalPath =
+		    GetFirstFileCoverage(originalCoverageData).GetPath();
+
+		ASSERT_EQ(filename, originalPath.filename());
+
+		TestHelper::TemporaryPath folder{
+		    TestHelper::TemporaryPathOption::CreateAsFolder};
+		const auto expectedPath = folder.GetPath() / filename;
+
+		args.sourcePatternCollection_.clear();
+		args.sourcePatternCollection_.push_back(expectedPath.wstring());
+		args.substitutePdbSourcePath_.push_back(
+		    {originalPath.parent_path().wstring(), folder->wstring()});
+		auto coverageData = ComputeCoverageDataPatterns(args);
+		const auto& file = GetFirstFileCoverage(coverageData);
+		ASSERT_EQ(expectedPath, file.GetPath());
 	}
 }

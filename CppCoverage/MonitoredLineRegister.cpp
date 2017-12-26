@@ -56,7 +56,7 @@ namespace CppCoverage
 				    optionalHeader
 				        .DataDirectory[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR];
 				isNativeModule_ = dataDirectory.VirtualAddress == 0 &&
-				            dataDirectory.Size == 0;
+				                  dataDirectory.Size == 0;
 			}
 
 			//-----------------------------------------------------------------
@@ -83,10 +83,12 @@ namespace CppCoverage
 	MonitoredLineRegister::MonitoredLineRegister(
 	    std::shared_ptr<BreakPoint> breakPoint,
 	    std::shared_ptr<ExecutedAddressManager> executedAddressManager,
-	    std::shared_ptr<ICoverageFilterManager> coverageFilterManager)
+	    std::shared_ptr<ICoverageFilterManager> coverageFilterManager,
+	    std::unique_ptr<DebugInformationEnumerator> debugInformationEnumerator)
 	    : breakPoint_{breakPoint},
 	      executedAddressManager_{executedAddressManager},
-	      coverageFilterManager_{coverageFilterManager}
+	      coverageFilterManager_{coverageFilterManager},
+	      debugInformationEnumerator_{std::move(debugInformationEnumerator)}
 	{
 	}
 
@@ -96,9 +98,11 @@ namespace CppCoverage
 	    HANDLE hProcess,
 	    void* baseOfImage)
 	{
-		if (!ModuleKind{}.IsNativeModule(hProcess, reinterpret_cast<DWORD64>(baseOfImage)))
+		if (!ModuleKind{}.IsNativeModule(
+		        hProcess, reinterpret_cast<DWORD64>(baseOfImage)))
 		{
-			LOG_INFO << modulePath.wstring() << " is skipped as it is a managed module.";
+			LOG_INFO << modulePath.wstring()
+			         << " is skipped as it is a managed module.";
 			return false;
 		}
 
@@ -107,9 +111,7 @@ namespace CppCoverage
 		moduleInfo_ = std::make_unique<FileFilter::ModuleInfo>(
 		    hProcess, modulePath, baseOfImage);
 
-
-		DebugInformationEnumerator debugInformationEnumerator;
-		debugInformationEnumerator.Enumerate(modulePath, *this);
+		debugInformationEnumerator_->Enumerate(modulePath, *this);
 		return true;
 	}
 

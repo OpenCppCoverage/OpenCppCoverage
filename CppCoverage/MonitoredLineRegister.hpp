@@ -45,7 +45,8 @@ namespace CppCoverage
 	  public:
 		MonitoredLineRegister(std::shared_ptr<BreakPoint>,
 		                      std::shared_ptr<ExecutedAddressManager>,
-		                      std::shared_ptr<ICoverageFilterManager>);
+		                      std::shared_ptr<ICoverageFilterManager>,
+		                      std::unique_ptr<DebugInformationEnumerator>);
 
 		bool RegisterLineToMonitor(const boost::filesystem::path& modulePath,
 		                           HANDLE hProcess,
@@ -56,7 +57,8 @@ namespace CppCoverage
 		void OnSourceFile(const boost::filesystem::path&,
 		                  const std::vector<Line>&) override;
 
-		using LineNumberByAddress = std::unordered_map<DWORD64, std::vector<int>>;
+		using LineNumberByAddress =
+		    std::unordered_map<DWORD64, std::vector<int>>;
 		void SetBreakPoint(const boost::filesystem::path&,
 		                   HANDLE hProcess,
 		                   std::vector<DWORD64>&&,
@@ -68,5 +70,7 @@ namespace CppCoverage
 		const std::shared_ptr<BreakPoint> breakPoint_;
 		const std::shared_ptr<ExecutedAddressManager> executedAddressManager_;
 		const std::shared_ptr<ICoverageFilterManager> coverageFilterManager_;
+		const std::unique_ptr<DebugInformationEnumerator>
+		    debugInformationEnumerator_;
 	};
 }
