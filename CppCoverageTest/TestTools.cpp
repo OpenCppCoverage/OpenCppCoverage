@@ -79,8 +79,9 @@ namespace CppCoverageTest
 			for (const auto& argument : arguments)
 				argv.push_back(argument.c_str());
 
+			auto programToRun = GetProgramToRun();
 			if (appendProgramToRun)
-				argv.push_back(GetProgramToRun().c_str());
+				argv.push_back(programToRun.c_str());
 			return parser.Parse(static_cast<int>(argv.size()), &argv[0], emptyOptionsExplanation);
 		}
 
