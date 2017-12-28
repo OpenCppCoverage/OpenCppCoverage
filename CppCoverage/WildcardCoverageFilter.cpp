@@ -82,9 +82,15 @@ namespace CppCoverage
 	bool WildcardCoverageFilter::IsModuleSelected(const std::wstring& filename) const
 	{
 		std::wostringstream ostr;
+
+		ostr << L"Module";
 		bool isSelected = Match(filename, *moduleFilter_, ostr);
 
-		LOG_INFO << L"Module" << ostr.str();
+		if (isSelected)
+			LOG_INFO << ostr.str();
+		else
+			LOG_DEBUG << ostr.str();
+
 		return isSelected;
 	}
 
