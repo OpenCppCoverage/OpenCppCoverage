@@ -253,7 +253,7 @@ namespace CppCoverage
 		{
 			auto pos = paths.find(OptionsParser::PathSeparator);
 			const auto error = "Invalid value for " +
-			                   ProgramOptions::SubstitutePdbSourcePath + ". ";
+			                   ProgramOptions::SubstitutePdbSourcePathOption + ". ";
 			if (pos == std::string::npos)
 			{
 				throw OptionsParserException(error + "Cannot find " +
@@ -278,7 +278,7 @@ namespace CppCoverage
 		{
 			auto substitutePdbSourcePaths =
 			    GetOptionalValue<std::vector<std::string>>(
-			        variables, ProgramOptions::SubstitutePdbSourcePath);
+			        variables, ProgramOptions::SubstitutePdbSourcePathOption);
 
 			if (substitutePdbSourcePaths)
 			{

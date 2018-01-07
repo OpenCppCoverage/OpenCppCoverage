@@ -119,7 +119,7 @@ namespace CppCoverage
 					"Enable heuristics to support optimized build. See documentation for restrictions.")
 				(ProgramOptions::ExcludedLineRegexOption.c_str(), po::value<T_Strings>()->composing(),
 					"Exclude all lines match the regular expression. Regular expression must match the whole line.")
-				(ProgramOptions::SubstitutePdbSourcePath.c_str(), po::value<T_Strings>()->composing(),
+				(ProgramOptions::SubstitutePdbSourcePathOption.c_str(), po::value<T_Strings>()->composing(),
 					"Substitute the starting path defined in the pdb by a local path. Format:pdbStartPath?localPath." 
 					"Can have multiple occurrences.");
 		}
@@ -161,7 +161,7 @@ namespace CppCoverage
 	const std::string ProgramOptions::ContinueAfterCppExceptionOption = "continue_after_cpp_exception";
 	const std::string ProgramOptions::OptimizedBuildOption = "optimized_build";
 	const std::string ProgramOptions::ExcludedLineRegexOption = "excluded_line_regex";
-	const std::string ProgramOptions::SubstitutePdbSourcePath = "substitute_pdb_source_path";
+	const std::string ProgramOptions::SubstitutePdbSourcePathOption = "substitute_pdb_source_path";
 
 	//-------------------------------------------------------------------------
 	ProgramOptions::ProgramOptions(const std::vector<std::string>& exportTypes)

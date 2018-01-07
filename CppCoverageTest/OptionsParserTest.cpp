@@ -243,7 +243,7 @@ namespace CppCoverageTest
 			return TestTools::Parse(
 				parser,
 				{ TestTools::GetOptionPrefix() +
-				cov::ProgramOptions::SubstitutePdbSourcePath,
+				cov::ProgramOptions::SubstitutePdbSourcePathOption,
 				pdbStartPath->string() + cov::OptionsParser::PathSeparator +
 				localPath->string() });
 		}
