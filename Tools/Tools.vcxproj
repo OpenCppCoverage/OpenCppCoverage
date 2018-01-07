@@ -162,6 +162,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tool.hpp" />
     <ClInclude Include="UniquePath.hpp" />
+    <ClInclude Include="WarningManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -192,6 +193,7 @@
     </ClCompile>
     <ClCompile Include="Tool.cpp" />
     <ClCompile Include="UniquePath.cpp" />
+    <ClCompile Include="WarningManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

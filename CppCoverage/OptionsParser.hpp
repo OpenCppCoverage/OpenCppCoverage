@@ -23,6 +23,11 @@
 
 #include "CppCoverageExport.hpp"
 
+namespace Tools
+{
+	class WarningManager;
+}
+
 namespace boost
 {
 	namespace program_options
@@ -43,12 +48,16 @@ namespace CppCoverage
 	public:
 		static const char ExportSeparator;
 		static const char PathSeparator;
+		static const int DosCommandLineMaxSize;
 
 		OptionsParser();
+		explicit OptionsParser(std::shared_ptr<Tools::WarningManager>);
 		~OptionsParser();
 
 		boost::optional<Options> Parse(int argc, const char** argv, std::wostream* emptyOptionsExplanation) const;
 				
+		static std::wstring GetTooLongCommandLineMessage();
+
 	private:
 		OptionsParser(const OptionsParser&) = delete;
 		OptionsParser& operator=(const OptionsParser&) = delete;
@@ -63,7 +72,8 @@ namespace CppCoverage
 		OptionsExport CreateExport(const std::string&) const;
 
 		std::map<std::string, OptionsExportType> exportTypes_;
-		std::unique_ptr<ProgramOptions> programOptions_;		
+		std::unique_ptr<ProgramOptions> programOptions_;
+		std::shared_ptr<Tools::WarningManager> optionalWarningManager_;
 	};
 }
 

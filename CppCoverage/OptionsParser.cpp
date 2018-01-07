@@ -29,6 +29,7 @@
 #include "CppCoverageException.hpp"
 #include "ProgramOptions.hpp"
 #include "OptionsExport.hpp"
+#include "Tools/WarningManager.hpp"
 
 namespace po = boost::program_options;
 namespace cov = CppCoverage;
@@ -289,18 +290,52 @@ namespace CppCoverage
 				}
 			}
 		}
+		//---------------------------------------------------------------------------
+		void CheckArgumentsSize(int argc,
+		                        const char** argv,
+		                        Tools::WarningManager& warningManager)
+		{
+			auto estimatedSize = 0;
+			for (int i = 0; i < argc; ++i)
+			{
+				auto argument = argv[i];
+				if (argument)
+					estimatedSize += strlen(argument);
+			}
+
+			estimatedSize += argc - 1; // separators for arguments.
+			if (estimatedSize >= OptionsParser::DosCommandLineMaxSize * 3 / 4)
+			{
+				warningManager.AddWarning(
+					OptionsParser::GetTooLongCommandLineMessage());
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------
 	const char OptionsParser::ExportSeparator = ':';
 	const char OptionsParser::PathSeparator = '?';
+	const int OptionsParser::DosCommandLineMaxSize = 8191;
+
+	//-------------------------------------------------------------------------
+	OptionsParser::OptionsParser(
+	    std::shared_ptr<Tools::WarningManager> warningManager)
+	    : OptionsParser()
+	{
+		optionalWarningManager_ = std::move(warningManager);
+		if (!optionalWarningManager_)
+			THROW("OptinalWarningManager is null");
+	}
 
 	//-------------------------------------------------------------------------
 	OptionsParser::OptionsParser()
 	{
-		exportTypes_.emplace(ProgramOptions::ExportTypeHtmlValue, OptionsExportType::Html);
-		exportTypes_.emplace(ProgramOptions::ExportTypeCoberturaValue, OptionsExportType::Cobertura);
-		exportTypes_.emplace(ProgramOptions::ExportTypeBinaryValue, OptionsExportType::Binary);
+		exportTypes_.emplace(ProgramOptions::ExportTypeHtmlValue,
+		                     OptionsExportType::Html);
+		exportTypes_.emplace(ProgramOptions::ExportTypeCoberturaValue,
+		                     OptionsExportType::Cobertura);
+		exportTypes_.emplace(ProgramOptions::ExportTypeBinaryValue,
+		                     OptionsExportType::Binary);
 
 		std::vector<std::string> optionsExportTypes;
 
@@ -359,6 +394,8 @@ namespace CppCoverage
 	{
 		po::variables_map variables;
 
+		if (optionalWarningManager_)
+			CheckArgumentsSize(argc, argv, *optionalWarningManager_);
 		programOptions_->FillVariableMap(argc, argv, variables);
 		const auto* configFile = GetOptionalValue<std::string>(variables, ProgramOptions::ConfigFileOption);
 
@@ -439,5 +476,16 @@ namespace CppCoverage
 			return OptionsExport{ type, exportOutputPath };
 
 		return OptionsExport{ type };
+	}
+
+	//-------------------------------------------------------------------------
+	std::wstring OptionsParser::GetTooLongCommandLineMessage()
+	{
+		return L"You have a very long command line. It might be truncated "
+		       "as DOS maximum command line size is " +
+		       std::to_wstring(DosCommandLineMaxSize) +
+		       L". Please consider using --" +
+		       Tools::LocalToWString(ProgramOptions::ConfigFileOption) +
+		       L" instead.";
 	}
 }

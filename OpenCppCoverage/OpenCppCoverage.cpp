@@ -35,6 +35,7 @@
 
 #include "Tools/Tool.hpp"
 #include "Tools/Log.hpp"
+#include "Tools/WarningManager.hpp"
 
 namespace cov = CppCoverage;
 namespace logging = boost::log;
@@ -172,7 +173,8 @@ namespace OpenCppCoverage
 		const char** argv,
 		std::wostream* emptyOptionsExplanation) const
 	{
-		cov::OptionsParser optionsParser;
+		auto warningManager = std::make_shared<Tools::WarningManager>();
+		cov::OptionsParser optionsParser{ warningManager };
 
 		auto options = optionsParser.Parse(argc, argv, emptyOptionsExplanation);
 
@@ -190,6 +192,7 @@ namespace OpenCppCoverage
 			status = 1;
 		}
 
+		warningManager->DisplayWarnings();
 		if (options->IsPlugingModeEnabled())
 		{
 			std::cout << "Press any key to continue... ";

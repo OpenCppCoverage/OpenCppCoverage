@@ -19,6 +19,8 @@
 
 #include <boost/filesystem.hpp>
 #include <Poco/Process.h>
+#include <Poco/Pipe.h>
+#include <Poco/PipeStream.h>
 
 #include "Tools/Tool.hpp"
 #include "CppCoverage/OptionsParser.hpp"
@@ -61,10 +63,11 @@ namespace OpenCppCoverageTest
 	int RunCoverageFor(
 		const std::vector<std::pair<std::string, std::string>>& coverageArguments,
 		const boost::filesystem::path& programToRun,
-		const std::vector<std::wstring>& arguments)
+		const std::vector<std::wstring>& arguments,
+		std::string* optionalStdOut)
 	{
 		std::vector<std::string> allCoverageArguments;
-			
+
 		for (const auto& keyValue : coverageArguments)
 		{
 			allCoverageArguments.push_back("--" + keyValue.first);
@@ -73,7 +76,7 @@ namespace OpenCppCoverageTest
 			if (!value.empty())
 				allCoverageArguments.push_back(value);
 		}
-				
+
 		allCoverageArguments.push_back(programToRun.string());
 		for (const auto& argument : arguments)
 			allCoverageArguments.push_back(Tools::ToLocalString(argument));
@@ -84,7 +87,21 @@ namespace OpenCppCoverageTest
 		boost::filesystem::path openCppCoverage(OUT_DIR);
 
 		openCppCoverage /= "OpenCppCoverage.exe";
-		auto handle = Poco::Process::launch(openCppCoverage.string(), allCoverageArguments, ".", nullptr, nullptr, nullptr);
+
+		auto outPipe = optionalStdOut ? std::make_unique<Poco::Pipe>() : nullptr;
+		auto handle = Poco::Process::launch(openCppCoverage.string(),
+		                                    allCoverageArguments,
+		                                    ".",
+		                                    nullptr,
+											outPipe.get(),
+		                                    nullptr);
+		if (outPipe)
+		{
+			Poco::PipeInputStream istr{*outPipe};
+			*optionalStdOut = {std::istreambuf_iterator<char>(istr),
+			                   std::istreambuf_iterator<char>()};
+		}
+
 		int exitCode = handle.wait();
 
 		return exitCode;
