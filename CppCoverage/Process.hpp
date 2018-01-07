@@ -27,6 +27,9 @@ namespace CppCoverage
 	class CPPCOVERAGE_DLL Process
 	{
 	public:
+		static const std::wstring CannotFindPathMessage;
+		static const std::wstring CheckIfValidExecutableMessage;
+
 		Process(const StartInfo& startInfo);
 		~Process();
 		

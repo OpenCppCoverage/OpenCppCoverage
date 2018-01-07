@@ -16,11 +16,14 @@
 
 #include "stdafx.h"
 
+#include <boost/algorithm/string/predicate.hpp>
+
 #include "CppCoverage/StartInfo.hpp"
 #include "CppCoverage/Process.hpp"
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
+#include "TestHelper/Tools.hpp"
 
 namespace cov = CppCoverage;
 
@@ -38,10 +41,39 @@ namespace CppCoverageTest
 
 	//-------------------------------------------------------------------------
 	TEST(Process, InvalidProgram)
-	{		
-		cov::StartInfo startInfo{ TestCoverageSharedLib::GetOutputBinaryPath() };
+	{
+		cov::StartInfo startInfo{TestCoverageSharedLib::GetOutputBinaryPath()};
+
+		cov::Process process{startInfo};
+		TestHelper::AssertThrow<std::runtime_error>(
+		    [&]() { process.Start(0); },
+		    [](const auto& e) {
+			    return boost::algorithm::contains(
+			        e.what(), cov::Process::CheckIfValidExecutableMessage);
+		    });
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(Process, FileNotExists)
+	{
+		cov::StartInfo startInfo{"Does not exist."};
+
+		cov::Process process{startInfo};
+		TestHelper::AssertThrow<std::runtime_error>(
+		    [&]() { process.Start(0); },
+		    [](const auto& e) {
+			    return boost::algorithm::contains(
+			        e.what(), cov::Process::CannotFindPathMessage);
+		    });
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(Process, ProgramInPath)
+	{
+		cov::StartInfo startInfo{ L"cmd.exe" };
+		startInfo.AddArgument(L"/C");	
 
 		cov::Process process{ startInfo };
-		ASSERT_THROW(process.Start(0), std::runtime_error);
+		ASSERT_NO_THROW(process.Start(0));
 	}
 }

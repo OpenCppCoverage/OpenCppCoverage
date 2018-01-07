@@ -43,4 +43,23 @@ namespace TestHelper
 		const std::vector<std::string>& args);
 
 	boost::filesystem::path TEST_HELPER_DLL GetVisualStudioPath();
+
+	//-------------------------------------------------------------------------
+	template <typename ExceptionType, typename Fct>
+	void
+	AssertThrow(Fct fct,
+	            std::function<bool(const ExceptionType&)> exceptionPredicate)
+	{
+		try
+		{
+			fct();
+		}
+		catch (const ExceptionType& e)
+		{
+			if (exceptionPredicate(e))
+				return;
+			throw std::runtime_error("Expected exception does not match predicate.");
+		}
+		throw std::runtime_error("Expected exception not found.");
+	}
 }

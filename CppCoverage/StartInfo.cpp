@@ -40,7 +40,6 @@ namespace CppCoverage
 	StartInfo::StartInfo(const fs::path& path)
 		: path_(path)
 	{
-		CheckPathExists("Program to run", path);
 		AddArgument(path.wstring());
 	}
 

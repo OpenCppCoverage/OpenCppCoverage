@@ -55,6 +55,10 @@ namespace CppCoverage
 		}		
 	}
 
+	const std::wstring Process::CannotFindPathMessage = L"Cannot find path: ";
+	const std::wstring Process::CheckIfValidExecutableMessage =
+	    L"Cannot run process, check if it is a valid executable:";
+
 	//-------------------------------------------------------------------------
 	Process::Process(const StartInfo& startInfo)
 		: startInfo_(startInfo)
@@ -91,7 +95,7 @@ namespace CppCoverage
 
 		processInformation_ = PROCESS_INFORMATION{};
 		if (!CreateProcess(
-			startInfo_.GetPath().c_str(),
+			nullptr,
 			commandLine,
 			nullptr,
 			nullptr,
@@ -104,13 +108,22 @@ namespace CppCoverage
 			))
 		{
 			std::wostringstream ostr;
-			
-			ostr << L"Cannot run process, check if it is a valid executable:" << std::endl;
 
-			#ifndef _WIN64
-			ostr << L"\n*** This version support only 32 bits executable ***.\n\n";
-			#endif
-			ostr << startInfo_ << CppCoverage::GetErrorMessage(GetLastError());
+			if (!boost::filesystem::exists(startInfo_.GetPath()))
+				ostr << CannotFindPathMessage + startInfo_.GetPath().wstring();
+			else
+			{
+				ostr
+				    << CheckIfValidExecutableMessage
+				    << std::endl;
+
+#ifndef _WIN64
+				ostr << L"\n*** This version support only 32 bits executable "
+				        L"***.\n\n";
+#endif
+				ostr << startInfo_
+				     << CppCoverage::GetErrorMessage(GetLastError());
+			}
 			throw std::runtime_error(Tools::ToLocalString(ostr.str()));
 		}		
 	}
