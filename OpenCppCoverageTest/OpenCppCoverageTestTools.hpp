@@ -45,7 +45,7 @@ namespace OpenCppCoverageTest
 		const std::vector<std::pair<std::string, std::string>>& coverageArguments,
 		const boost::filesystem::path& programToRun,
 		const std::vector<std::wstring>& arguments,
-		std::string* optionalStdOut = nullptr);
+		std::string* optionalOutput = nullptr);
 
 	std::string GetSolutionFolderName();
 }

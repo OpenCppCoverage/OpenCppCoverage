@@ -170,35 +170,38 @@ namespace OpenCppCoverage
 
 	//-----------------------------------------------------------------------------
 	int OpenCppCoverage::Run(int argc,
-		const char** argv,
-		std::wostream* emptyOptionsExplanation) const
+	                         const char** argv,
+	                         std::wostream* emptyOptionsExplanation) const
 	{
 		auto warningManager = std::make_shared<Tools::WarningManager>();
-		cov::OptionsParser optionsParser{ warningManager };
+		cov::OptionsParser optionsParser{warningManager};
 
 		auto options = optionsParser.Parse(argc, argv, emptyOptionsExplanation);
+		auto status = FailureExitCode;
 
-		if (!options)
-			return 1;
-		
-		auto status = 0;
-		try
+		if (options)
 		{
-			status = ::OpenCppCoverage::Run(*options);
-		}
-		catch (const std::exception& e)
-		{
-			std::cerr << "Error: " << e.what() << std::endl;
-			status = 1;
+			try
+			{
+				status = ::OpenCppCoverage::Run(*options);
+			}
+			catch (const std::exception& e)
+			{
+				LOG_ERROR << "Error: " << e.what();
+			}
+			catch (...)
+			{
+				LOG_ERROR << "Unkown Error";
+			}
+
+			warningManager->DisplayWarnings();
+			if (options->IsPlugingModeEnabled())
+			{
+				std::cout << "Press any key to continue... ";
+				std::cin.get();
+			}
 		}
 
-		warningManager->DisplayWarnings();
-		if (options->IsPlugingModeEnabled())
-		{
-			std::cout << "Press any key to continue... ";
-			std::cin.get();
-		}
-
-		return status;		
+		return status;
 	}
 }

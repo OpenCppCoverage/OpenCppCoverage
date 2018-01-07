@@ -20,6 +20,8 @@
 
 namespace OpenCppCoverage
 {
+	const int FailureExitCode = 0x9F8C8E5C;
+
 	class OpenCppCoverage
 	{
 	public:

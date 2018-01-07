@@ -41,6 +41,10 @@ int main(int argc, const char* argv[])
 	{
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
+	catch (...)
+	{
+		std::cerr << "Unknown error" << std::endl;
+	}
 
-	return 1;
+	return OpenCppCoverage::FailureExitCode;
 }

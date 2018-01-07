@@ -64,7 +64,7 @@ namespace OpenCppCoverageTest
 		const std::vector<std::pair<std::string, std::string>>& coverageArguments,
 		const boost::filesystem::path& programToRun,
 		const std::vector<std::wstring>& arguments,
-		std::string* optionalStdOut)
+		std::string* optionalOutput)
 	{
 		std::vector<std::string> allCoverageArguments;
 
@@ -88,17 +88,17 @@ namespace OpenCppCoverageTest
 
 		openCppCoverage /= "OpenCppCoverage.exe";
 
-		auto outPipe = optionalStdOut ? std::make_unique<Poco::Pipe>() : nullptr;
+		auto pipe = optionalOutput ? std::make_unique<Poco::Pipe>() : nullptr;
 		auto handle = Poco::Process::launch(openCppCoverage.string(),
 		                                    allCoverageArguments,
 		                                    ".",
 		                                    nullptr,
-											outPipe.get(),
-		                                    nullptr);
-		if (outPipe)
+		                                    pipe.get(),
+		                                    pipe.get());
+		if (pipe)
 		{
-			Poco::PipeInputStream istr{*outPipe};
-			*optionalStdOut = {std::istreambuf_iterator<char>(istr),
+			Poco::PipeInputStream istr{*pipe};
+			*optionalOutput = {std::istreambuf_iterator<char>(istr),
 			                   std::istreambuf_iterator<char>()};
 		}
 

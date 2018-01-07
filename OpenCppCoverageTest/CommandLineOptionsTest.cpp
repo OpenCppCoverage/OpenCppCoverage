@@ -60,7 +60,7 @@ namespace OpenCppCoverageTest
 		{
 		public:
 			//-----------------------------------------------------------------
-			void RunCoverageOnProgram(
+			int RunCoverageOnProgramWithExitCode(
 				std::vector<std::pair<std::string, std::string>> coverageArguments,
 				bool useSourceInSolutionDir = true)
 			{
@@ -69,7 +69,17 @@ namespace OpenCppCoverageTest
 				coverageArguments.push_back({ cov::ProgramOptions::ExcludedSourcesOption, "packages" });
 				AddDefaultHtmlExport(coverageArguments, GetTempPath());
 				coverageArguments.emplace_back(cov::ProgramOptions::QuietOption, "");
-				int exitCode = RunCoverageFor(coverageArguments, testCoverageConsole, {});
+				std::string ignoreOutput;
+				return RunCoverageFor(coverageArguments, testCoverageConsole, {}, &ignoreOutput);
+			}
+
+			//-----------------------------------------------------------------
+			void RunCoverageOnProgram(
+				std::vector<std::pair<std::string, std::string>> coverageArguments,
+				bool useSourceInSolutionDir = true)
+			{
+				int exitCode = RunCoverageOnProgramWithExitCode(coverageArguments,
+					useSourceInSolutionDir);
 
 				ASSERT_EQ(0, exitCode);
 			}
@@ -143,5 +153,24 @@ namespace OpenCppCoverageTest
 		RunCoverageOnProgram({});
 		CheckFilenameExistsInOutput(testCoverageConsole, true);
 		CheckFilenameExistsInOutput(testCoverageSharedLib, true);
-	}	
+	}
+
+	//-------------------------------------------------------------------------
+	TEST_F(CommandLineOptionsTest, FailureExitCode)
+	{
+		std::vector<std::pair<std::string, std::string>> coverageArguments;
+
+		ASSERT_EQ(0, RunCoverageOnProgramWithExitCode(coverageArguments));
+
+		coverageArguments.emplace_back("Invalid option", "Invalid value");
+		ASSERT_EQ(OpenCppCoverage::FailureExitCode,
+		          RunCoverageOnProgramWithExitCode(coverageArguments));
+
+		// This should failed at runtime
+		coverageArguments.clear();
+		coverageArguments.emplace_back(cov::ProgramOptions::InputCoverageValue,
+		                               __FILE__);
+		ASSERT_EQ(OpenCppCoverage::FailureExitCode,
+		          RunCoverageOnProgramWithExitCode(coverageArguments));
+	}
 }
