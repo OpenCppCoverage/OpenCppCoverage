@@ -132,7 +132,8 @@ namespace OpenCppCoverage
 
 			cov::CodeCoverageRunner codeCoverageRunner;
 			cov::CoverageFilterSettings coverageFilterSettings{ options.GetModulePatterns(), options.GetSourcePatterns() };
-			
+			auto exitCode = 0;
+
 			if (startInfo)
 			{
 				size_t maxUnmatchPathsForWarning = (options.GetLogLevel() == cov::LogLevel::Verbose) 
@@ -149,7 +150,9 @@ namespace OpenCppCoverage
 				runCoverageSettings.SetContinueAfterCppException(options.IsContinueAfterCppExceptionModeEnabled());
 				runCoverageSettings.SetMaxUnmatchPathsForWarning(maxUnmatchPathsForWarning);
 				runCoverageSettings.SetOptimizedBuildSupport(options.IsOptimizedBuildSupportEnabled());
-				coveraDatas.push_back(codeCoverageRunner.RunCoverage(runCoverageSettings));
+				auto coverageData = codeCoverageRunner.RunCoverage(runCoverageSettings);
+				exitCode = coverageData.GetExitCode();
+				coveraDatas.push_back(std::move(coverageData));
 			}
 			cov::CoverageDataMerger	coverageDataMerger;
 
@@ -159,8 +162,6 @@ namespace OpenCppCoverage
 				coverageDataMerger.MergeFileCoverage(coverageData);
 
 			Export(options, coverageData);
-
-			auto exitCode = coverageData.GetExitCode();
 
 			if (exitCode)
 				LOG_ERROR << L"Your program stop with error code: " << exitCode;
