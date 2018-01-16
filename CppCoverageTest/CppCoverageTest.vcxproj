@@ -160,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DebugEventsMock.hpp" />
+    <ClInclude Include="FileSystemMock.hpp" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TestTools.hpp" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClCompile Include="CppCliTest.cpp" />
     <ClCompile Include="DebugInformationEnumeratorTest.cpp" />
     <None Include="OptimizedBuildVS2013\OptimizedBuildVS2013\OptimizedBuildVS2013.cpp" />
+    <ClCompile Include="FilterAssistantTest.cpp" />
     <ClCompile Include="UnifiedDiffCoverageFilterManagerTest.cpp" />
     <ClCompile Include="OptionsParserUnifiedDiffTest.cpp" />
     <ClCompile Include="WildcardCoverageFilterTest.cpp" />
