@@ -31,7 +31,7 @@ namespace CppCoverage
 	{
 		//-------------------------------------------------------------------------
 		std::wstring
-		GetAdviceMessage(const std::wstring& name,
+		GetAdviceMessage(const std::wstring& noFileSelectedMessage,
 		                 const std::string& selectedOption,
 		                 const std::string& excludedOption,
 		                 const boost::filesystem::path& suggestedFilter)
@@ -40,8 +40,7 @@ namespace CppCoverage
 			auto excludedOptionFlag =
 			    L"--" + Tools::LocalToWString(excludedOption);
 
-			return L"No " + name +
-			       L" were selected. Please check the values of " +
+			return noFileSelectedMessage + L" Please check the values of " +
 			       selectOptionFlag + L" and " + excludedOptionFlag +
 			       L".\n"
 			       L"You can try to remove all " +
@@ -105,6 +104,12 @@ namespace CppCoverage
 	};
 
 	//-------------------------------------------------------------------------
+	const std::wstring FilterAssistant::NoModulesSelectedMsg =
+	    L"No modules were selected.";
+	const std::wstring FilterAssistant::NoSourceFilesSelectedMsg =
+	    L"No source files were selected.";
+
+	//-------------------------------------------------------------------------
 	FilterAssistant::FilterAssistant(std::shared_ptr<IFileSystem> fileSystem)
 	    : suggestedModuleFilter_{std::make_unique<SuggestedFilter>(fileSystem)},
 	      suggestedSourceFileFilter_{std::make_unique<SuggestedFilter>(fileSystem)}
@@ -150,21 +155,22 @@ namespace CppCoverage
 		if (suggestedModule)
 		{
 			return CppCoverage::GetAdviceMessage(
-			    L"modules",
+			    FilterAssistant::NoModulesSelectedMsg,
 			    ProgramOptions::SelectedModulesOption,
 			    ProgramOptions::ExcludedModulesOption,
 			    *suggestedModule);
 		}
 		if (!suggestedModuleFilter_->foundFile_)
 		{
-			return L"No modules with PDB were found. Please check your PDB files."; 
+			return L"No modules with PDB were found. Please check your PDB "
+			       L"files.";
 		}
 
 		auto suggestedSourceFile = ComputeSuggestedSourceFileFilter();
 		if (suggestedSourceFile)
 		{
 			return CppCoverage::GetAdviceMessage(
-			    L"source files",
+			    FilterAssistant::NoSourceFilesSelectedMsg,
 			    ProgramOptions::SelectedSourcesOption,
 			    ProgramOptions::ExcludedSourcesOption,
 			    *suggestedSourceFile);

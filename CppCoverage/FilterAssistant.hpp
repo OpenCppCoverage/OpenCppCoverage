@@ -48,6 +48,9 @@ namespace CppCoverage
 
 		boost::optional<std::wstring> GetAdviceMessage() const;
 
+		static const std::wstring NoModulesSelectedMsg;
+		static const std::wstring NoSourceFilesSelectedMsg;
+
 	  private:
 		class SuggestedFilter;
 

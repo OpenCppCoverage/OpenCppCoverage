@@ -18,11 +18,13 @@
 
 #include <Windows.h>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "OpenCppCoverage/OpenCppCoverage.hpp"
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
+#include "CppCoverage/FilterAssistant.hpp"
 
 #include "Tools/ScopedAction.hpp"
 #include "Tools/Tool.hpp"
@@ -73,6 +75,21 @@ namespace OpenCppCoverageTest
 
 			CheckOutputDirectory(tempFolder);
 			return exitCode;
+		}
+
+		//---------------------------------------------------------------------
+		std::wstring
+		GetOutput(const std::pair<std::string, std::string>& coverageArgument)
+		{
+			std::string output;
+			auto exitCode =
+			    RunCoverageFor({coverageArgument},
+			                   TestCoverageConsole::GetOutputBinaryPath(),
+			                   {},
+			                   &output);
+			if (exitCode != 0)
+				throw std::runtime_error("Exit code invalid");
+			return Tools::LocalToWString(output);
 		}
 	}
 
@@ -144,5 +161,21 @@ namespace OpenCppCoverageTest
 		    testCoverageConsole,
 		    {TestCoverageConsole::TestBasic});
 		ASSERT_EQ(0, exitCode);
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OpenCppCoverageConsoleTest, FilterAssistantNoModules)
+	{
+		ASSERT_TRUE(boost::algorithm::contains(
+		    GetOutput({cov::ProgramOptions::SelectedModulesOption, "No match"}),
+		    cov::FilterAssistant::NoModulesSelectedMsg));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OpenCppCoverageConsoleTest, FilterAssistantNoSourceFiles)
+	{
+		ASSERT_TRUE(boost::algorithm::contains(
+		    GetOutput({cov::ProgramOptions::SelectedSourcesOption, "No match"}),
+		    cov::FilterAssistant::NoSourceFilesSelectedMsg));
 	}
 }
