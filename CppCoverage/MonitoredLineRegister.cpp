@@ -23,6 +23,7 @@
 #include "BreakPoint.hpp"
 #include "ExecutedAddressManager.hpp"
 #include "CppCoverageException.hpp"
+#include "FilterAssistant.hpp"
 
 #include "FileFilter/ModuleInfo.hpp"
 #include "FileFilter/FileInfo.hpp"
@@ -84,13 +85,18 @@ namespace CppCoverage
 	    std::shared_ptr<BreakPoint> breakPoint,
 	    std::shared_ptr<ExecutedAddressManager> executedAddressManager,
 	    std::shared_ptr<ICoverageFilterManager> coverageFilterManager,
-	    std::unique_ptr<DebugInformationEnumerator> debugInformationEnumerator)
+	    std::unique_ptr<DebugInformationEnumerator> debugInformationEnumerator,
+	    std::shared_ptr<FilterAssistant> filterAssistant)
 	    : breakPoint_{breakPoint},
 	      executedAddressManager_{executedAddressManager},
 	      coverageFilterManager_{coverageFilterManager},
-	      debugInformationEnumerator_{std::move(debugInformationEnumerator)}
+	      debugInformationEnumerator_{std::move(debugInformationEnumerator)},
+	      filterAssistant_{std::move(filterAssistant)}
 	{
 	}
+
+	//----------------------------------------------------------------------------
+	MonitoredLineRegister::~MonitoredLineRegister() = default;
 
 	//----------------------------------------------------------------------------
 	bool MonitoredLineRegister::RegisterLineToMonitor(
@@ -111,15 +117,16 @@ namespace CppCoverage
 		moduleInfo_ = std::make_unique<FileFilter::ModuleInfo>(
 		    hProcess, modulePath, baseOfImage);
 
-		debugInformationEnumerator_->Enumerate(modulePath, *this);
-		return true;
+		return debugInformationEnumerator_->Enumerate(modulePath, *this);
 	}
 
 	//--------------------------------------------------------------------------
 	bool MonitoredLineRegister::IsSourceFileSelected(
 	    const boost::filesystem::path& path)
 	{
-		return coverageFilterManager_->IsSourceFileSelected(path.wstring());
+		auto isSelected = coverageFilterManager_->IsSourceFileSelected(path.wstring());
+		filterAssistant_->OnNewSourceFile(path, isSelected);
+		return isSelected;
 	}
 
 	//--------------------------------------------------------------------------

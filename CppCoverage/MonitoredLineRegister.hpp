@@ -39,6 +39,7 @@ namespace CppCoverage
 	class ICoverageFilterManager;
 	class BreakPoint;
 	class ExecutedAddressManager;
+	class FilterAssistant;
 
 	class MonitoredLineRegister : private IDebugInformationHandler
 	{
@@ -46,7 +47,9 @@ namespace CppCoverage
 		MonitoredLineRegister(std::shared_ptr<BreakPoint>,
 		                      std::shared_ptr<ExecutedAddressManager>,
 		                      std::shared_ptr<ICoverageFilterManager>,
-		                      std::unique_ptr<DebugInformationEnumerator>);
+		                      std::unique_ptr<DebugInformationEnumerator>,
+		                      std::shared_ptr<FilterAssistant>);
+		~MonitoredLineRegister();
 
 		bool RegisterLineToMonitor(const boost::filesystem::path& modulePath,
 		                           HANDLE hProcess,
@@ -72,5 +75,6 @@ namespace CppCoverage
 		const std::shared_ptr<ICoverageFilterManager> coverageFilterManager_;
 		const std::unique_ptr<DebugInformationEnumerator>
 		    debugInformationEnumerator_;
+		const std::shared_ptr<FilterAssistant> filterAssistant_;
 	};
 }

@@ -35,14 +35,21 @@
 #include "Address.hpp"
 #include "RunCoverageSettings.hpp"
 #include "MonitoredLineRegister.hpp"
+#include "FilterAssistant.hpp"
+#include "FileSystem.hpp"
 
-#include "tools/Tool.hpp"
+#include "Tools/WarningManager.hpp"
+#include "Tools/Tool.hpp"
 
 namespace CppCoverage
-{			
+{
 	//-------------------------------------------------------------------------
-	CodeCoverageRunner::CodeCoverageRunner()
-	{ 
+	CodeCoverageRunner::CodeCoverageRunner(
+	    std::shared_ptr<Tools::WarningManager> warningManager)
+	    : warningManager_{warningManager},
+	      filterAssistant_{
+	          std::make_shared<FilterAssistant>(std::make_shared<FileSystem>())}
+	{
 		executedAddressManager_ = std::make_shared<ExecutedAddressManager>();
 		exceptionHandler_ = std::make_unique<ExceptionHandler>();
 		breakpoint_ = std::make_shared<BreakPoint>();
@@ -69,7 +76,8 @@ namespace CppCoverage
 		    breakpoint_,
 		    executedAddressManager_,
 		    coverageFilterManager_,
-		    std::make_unique<DebugInformationEnumerator>(settings.GetSubstitutePdbSourcePaths()));
+		    std::make_unique<DebugInformationEnumerator>(settings.GetSubstitutePdbSourcePaths()),
+			filterAssistant_);
 
 		const auto& startInfo = settings.GetStartInfo();
 		int exitCode = debugger.Debug(startInfo, *this);
@@ -78,8 +86,10 @@ namespace CppCoverage
 		auto warningMessageLines = coverageFilterManager_->ComputeWarningMessageLines(
 			settings.GetMaxUnmatchPathsForWarning());
 		for (const auto& line : warningMessageLines)
-				LOG_WARNING << line;			
-
+				LOG_WARNING << line;
+		auto filterAdviceMessage = filterAssistant_->GetAdviceMessage();
+		if (filterAdviceMessage)
+			warningManager_->AddWarning(*filterAdviceMessage);
 		return executedAddressManager_->CreateCoverageData(path.filename().wstring(), exitCode);
 	}
 
@@ -178,16 +188,20 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::LoadModule(HANDLE hProcess, HANDLE hFile, void* baseOfImage)
+	void CodeCoverageRunner::LoadModule(HANDLE hProcess,
+	                                    HANDLE hFile,
+	                                    void* baseOfImage)
 	{
 		HandleInformation handleInformation;
 
 		std::wstring filename = handleInformation.ComputeFilename(hFile);
-		
-		if (coverageFilterManager_->IsModuleSelected(filename))
+
+		auto isSelected = coverageFilterManager_->IsModuleSelected(filename);
+		if (isSelected)
 		{
-			monitoredLineRegister_->RegisterLineToMonitor(filename, hProcess,
-			                                              baseOfImage);
+			isSelected = monitoredLineRegister_->RegisterLineToMonitor(
+			    filename, hProcess, baseOfImage);
 		}
+		filterAssistant_->OnNewModule(filename, isSelected);
 	}
 }

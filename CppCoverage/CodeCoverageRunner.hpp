@@ -22,6 +22,11 @@
 #include "IDebugEventsHandler.hpp"
 #include "CppCoverageExport.hpp"
 
+namespace Tools
+{
+	class WarningManager;
+}
+
 namespace CppCoverage
 {
 	class StartInfo;
@@ -33,11 +38,12 @@ namespace CppCoverage
 	class ExceptionHandler;
 	class UnifiedDiffSettings;
 	class MonitoredLineRegister;
+	class FilterAssistant;
 
 	class CPPCOVERAGE_DLL CodeCoverageRunner : private IDebugEventsHandler
 	{
 	public:
-		CodeCoverageRunner();
+		explicit CodeCoverageRunner(std::shared_ptr<Tools::WarningManager>);
 		~CodeCoverageRunner();
 
 		CoverageData RunCoverage(const RunCoverageSettings&);
@@ -62,6 +68,8 @@ namespace CppCoverage
 		std::shared_ptr<CoverageFilterManager> coverageFilterManager_;
 		std::unique_ptr<MonitoredLineRegister> monitoredLineRegister_;
 		std::unique_ptr<ExceptionHandler> exceptionHandler_;
+		std::shared_ptr<Tools::WarningManager> warningManager_;
+		std::shared_ptr<FilterAssistant> filterAssistant_;
 	};
 }
 

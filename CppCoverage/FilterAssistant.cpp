@@ -22,9 +22,35 @@
 #include <boost/optional/optional.hpp>
 #include <boost/filesystem/path.hpp>
 #include <memory>
+#include "ProgramOptions.hpp"
+#include "Tools/Tool.hpp"
 
 namespace CppCoverage
 {
+	namespace
+	{
+		//-------------------------------------------------------------------------
+		std::wstring
+		GetAdviceMessage(const std::wstring& name,
+		                 const std::string& selectedOption,
+		                 const std::string& excludedOption,
+		                 const boost::filesystem::path& suggestedFilter)
+		{
+			auto selectOptionFlag = L"--" + Tools::LocalToWString(selectedOption);
+			auto excludedOptionFlag =
+			    L"--" + Tools::LocalToWString(excludedOption);
+
+			return L"No " + name +
+			       L" were selected. Please check the values of " +
+			       selectOptionFlag + L" and " + excludedOptionFlag +
+			       L".\n"
+			       L"You can try to remove all " +
+			       selectOptionFlag + L" and " + excludedOptionFlag +
+			       L" and use " + selectOptionFlag + L'=' +
+			       suggestedFilter.wstring() + L" instead.";
+		}
+	}
+
 	//-------------------------------------------------------------------------
 	class FilterAssistant::SuggestedFilter
 	{
@@ -71,10 +97,11 @@ namespace CppCoverage
 			return suggestedFilter;
 		}
 
+		bool foundFile_ = false;
+
 	  private:
 		std::shared_ptr<IFileSystem> fileSystem_;
 		std::vector<boost::filesystem::path> files_;
-		bool foundFile_ = false;
 	};
 
 	//-------------------------------------------------------------------------
@@ -114,5 +141,35 @@ namespace CppCoverage
 	FilterAssistant::ComputeSuggestedSourceFileFilter() const
 	{
 		return suggestedSourceFileFilter_->ComputeSuggestedFilter();
+	}
+
+	//-------------------------------------------------------------------------
+	boost::optional<std::wstring> FilterAssistant::GetAdviceMessage() const
+	{
+		auto suggestedModule = ComputeSuggestedModuleFilter();
+		if (suggestedModule)
+		{
+			return CppCoverage::GetAdviceMessage(
+			    L"modules",
+			    ProgramOptions::SelectedModulesOption,
+			    ProgramOptions::ExcludedModulesOption,
+			    *suggestedModule);
+		}
+		if (!suggestedModuleFilter_->foundFile_)
+		{
+			return L"No modules with PDB were found. Please check your PDB files."; 
+		}
+
+		auto suggestedSourceFile = ComputeSuggestedSourceFileFilter();
+		if (suggestedSourceFile)
+		{
+			return CppCoverage::GetAdviceMessage(
+			    L"source files",
+			    ProgramOptions::SelectedSourcesOption,
+			    ProgramOptions::ExcludedSourcesOption,
+			    *suggestedSourceFile);
+		}
+
+		return boost::none;
 	}
 }

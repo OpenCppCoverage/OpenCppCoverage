@@ -29,6 +29,8 @@
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 
+#include "Tools/WarningManager.hpp"
+
 namespace bfs = boost::filesystem;
 namespace cov = CppCoverage;
 
@@ -115,8 +117,9 @@ namespace CppCoverageTest
 		cov::CoverageData ComputeCoverageDataPatterns(
 			const CoverageArgs& args)
 		{
-			cov::CodeCoverageRunner codeCoverageRunner;
-			cov::Patterns modulePatterns{ false };
+			cov::CodeCoverageRunner codeCoverageRunner{
+			    std::make_shared<Tools::WarningManager>()};
+			cov::Patterns modulePatterns{false};
 			cov::Patterns sourcePatterns{ false };
 
 			for (auto modulePattern : args.modulePatternCollection_)

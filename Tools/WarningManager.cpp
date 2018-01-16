@@ -16,14 +16,13 @@
 
 #include "stdafx.h"
 #include "WarningManager.hpp"
-#include <Tools/Log.hpp>
+#include "Tools/Log.hpp"
 
 namespace Tools
 {
 	//-------------------------------------------------------------------------
 	void WarningManager::AddWarning(const std::wstring& warning)
 	{
-		LOG_WARNING << warning;
 		warnings_.push_back(warning);
 	}
 

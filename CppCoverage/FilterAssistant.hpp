@@ -46,6 +46,8 @@ namespace CppCoverage
 		boost::optional<boost::filesystem::path>
 		ComputeSuggestedSourceFileFilter() const;
 
+		boost::optional<std::wstring> GetAdviceMessage() const;
+
 	  private:
 		class SuggestedFilter;
 

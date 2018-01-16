@@ -30,6 +30,7 @@
 #include "ProgramOptions.hpp"
 #include "OptionsExport.hpp"
 #include "Tools/WarningManager.hpp"
+#include "Tools/Log.hpp"
 
 namespace po = boost::program_options;
 namespace cov = CppCoverage;
@@ -306,8 +307,9 @@ namespace CppCoverage
 			estimatedSize += argc - 1; // separators for arguments.
 			if (estimatedSize >= OptionsParser::DosCommandLineMaxSize * 3 / 4)
 			{
-				warningManager.AddWarning(
-					OptionsParser::GetTooLongCommandLineMessage());
+				auto tooLongCmd = OptionsParser::GetTooLongCommandLineMessage();
+				LOG_WARNING << tooLongCmd;
+				warningManager.AddWarning(tooLongCmd);
 			}
 		}
 	}

@@ -119,7 +119,8 @@ namespace OpenCppCoverage
 		}
 
 		//-----------------------------------------------------------------------------
-		int Run(const cov::Options& options)
+		int Run(const cov::Options& options,
+		        std::shared_ptr<Tools::WarningManager> warningManager)
 		{
 			InitLogger(options);
 
@@ -130,7 +131,7 @@ namespace OpenCppCoverage
 			ostr << std::endl << options;
 			LOG_INFO << L"Start Program:" << ostr.str();
 
-			cov::CodeCoverageRunner codeCoverageRunner;
+			cov::CodeCoverageRunner codeCoverageRunner{ warningManager };
 			cov::CoverageFilterSettings coverageFilterSettings{ options.GetModulePatterns(), options.GetSourcePatterns() };
 			auto exitCode = 0;
 
@@ -184,7 +185,7 @@ namespace OpenCppCoverage
 		{
 			try
 			{
-				status = ::OpenCppCoverage::Run(*options);
+				status = ::OpenCppCoverage::Run(*options, warningManager);
 			}
 			catch (const std::exception& e)
 			{
