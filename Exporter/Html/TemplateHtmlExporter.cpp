@@ -98,6 +98,7 @@ namespace Exporter
 	const std::string TemplateHtmlExporter::NameTemplate = "NAME";
 	const std::string TemplateHtmlExporter::ItemLinkSection = "ITEM_LINK";
 	const std::string TemplateHtmlExporter::ItemNoLinkSection = "ITEM_NO_LINK";
+	const std::string TemplateHtmlExporter::ItemSimpleText = "ITEM_SIMPLE_TEXT";
 	const std::string TemplateHtmlExporter::BodyOnLoadTemplate = "BODY_ON_LOAD";
 	const std::string TemplateHtmlExporter::SourceWarningMessageTemplate = "SOURCE_WARNING_MESSAGE";
 	const std::string TemplateHtmlExporter::BodyOnLoadFct = "prettyPrint()";
@@ -140,26 +141,28 @@ namespace Exporter
 	void TemplateHtmlExporter::AddFileSectionToDictionary(
 		const fs::path& originalFilename,
 		const cov::CoverageRate& coverageRate,
+		bool isSimpleText,
 		const fs::path* fileOutput,		
 		ctemplate::TemplateDictionary& moduleTemplateDictionary)
 	{
 		auto sectionDictionary = moduleTemplateDictionary.AddSectionDictionary(MainTemplateItemSection);
 		
 		moduleTemplateDictionary.SetValue(ThirdPartyPathTemplate, "../third-party");
-		FillSection(*sectionDictionary, fileOutput, coverageRate, originalFilename);
+		FillSection(*sectionDictionary, isSimpleText, fileOutput, coverageRate, originalFilename);
 	}
 	
 	//-------------------------------------------------------------------------
 	void TemplateHtmlExporter::AddModuleSectionToDictionary(			
 		const fs::path& originalFilename,
 		const cov::CoverageRate& coverageRate,
-		const fs::path& moduleOutput,
+		bool isSimpleText,
+		const fs::path* moduleOutput,
 		ctemplate::TemplateDictionary& projectDictionary)
 	{
 		auto sectionDictionary = projectDictionary.AddSectionDictionary(MainTemplateItemSection);			
 			
 		projectDictionary.SetValue(ThirdPartyPathTemplate, "third-party");
-		FillSection(*sectionDictionary, &moduleOutput, coverageRate, originalFilename);
+		FillSection(*sectionDictionary, isSimpleText, moduleOutput, coverageRate, originalFilename);
 	}				
 	
 	//-------------------------------------------------------------------------
@@ -213,6 +216,7 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	void TemplateHtmlExporter::FillSection(
 		ctemplate::TemplateDictionary& sectionDictionary,
+		bool isSimpleText,
 		const fs::path* link,
 		const cov::CoverageRate& coverageRate,
 		const fs::path& originalFilename)
@@ -226,7 +230,10 @@ namespace Exporter
 				ItemLinkSection);
 		}
 		else
-			sectionDictionary.ShowSection(ItemNoLinkSection);
+		{
+			sectionDictionary.ShowSection(isSimpleText ? ItemSimpleText
+			                                           : ItemNoLinkSection);
+		}
 
 		sectionDictionary.SetIntValue(CoverRateTemplate, coverageRate.GetPercentRate());
 		sectionDictionary.SetIntValue(UncoverRateTemplate, 100 - coverageRate.GetPercentRate());

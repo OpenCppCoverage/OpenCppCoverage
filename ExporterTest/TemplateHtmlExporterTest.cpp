@@ -139,7 +139,7 @@ namespace ExporterTest
 		CppCoverage::CoverageRate coverage{ 10, 20 };
 		const fs::path moduleName = L"ModuleName";
 		const fs::path moduleOutput = L"ModuleOutput";
-		exporter.AddModuleSectionToDictionary(moduleName, coverage, moduleOutput, *project);
+		exporter.AddModuleSectionToDictionary(moduleName, coverage, false, &moduleOutput, *project);
 
 		auto outputFile = output_folder.GetPath() / L"project";
 		exporter.GenerateProjectTemplate(*project, outputFile);
@@ -170,7 +170,7 @@ namespace ExporterTest
 		
 		const fs::path filename = "filename";
 		exporter.AddFileSectionToDictionary(filename,
-			CppCoverage::CoverageRate{ 10, 20 }, nullptr, *module);
+			CppCoverage::CoverageRate{ 10, 20 }, false, nullptr, *module);
 		auto outputFile = output_folder.GetPath() / "module";
 		exporter.GenerateModuleTemplate(*module, outputFile);
 

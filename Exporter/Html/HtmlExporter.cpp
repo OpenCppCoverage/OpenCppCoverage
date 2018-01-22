@@ -87,6 +87,13 @@ namespace Exporter
 		auto projectDictionary = exporter_.CreateTemplateDictionary(coverageData.GetName(), mainMessage);
 		auto outputFolder = htmlFolderStructure.CreateCurrentRoot(outputFolderPrefix);
 
+		exporter_.AddModuleSectionToDictionary(
+		    coverageData.GetName(),
+		    coverageRateComputer.GetCoverageRate(),
+			true,
+			nullptr,
+		    *projectDictionary);
+
 		for (const auto& module : coverageRateComputer.SortModulesByCoverageRate())
 		{			
 			const auto& moduleCoverageRate = coverageRateComputer.GetCoverageRate(*module);
@@ -100,8 +107,13 @@ namespace Exporter
 				auto htmlModulePath = htmlFolderStructure.CreateCurrentModule(modulePath);
 				ExportFiles(coverageRateComputer, *module, htmlFolderStructure, *moduleTemplateDictionary);
 
-				exporter_.GenerateModuleTemplate(*moduleTemplateDictionary, htmlModulePath.GetAbsolutePath());				
-				exporter_.AddModuleSectionToDictionary(module->GetPath(), moduleCoverageRate, htmlModulePath.GetRelativeLinkPath(), *projectDictionary);
+				exporter_.GenerateModuleTemplate(*moduleTemplateDictionary, htmlModulePath.GetAbsolutePath());
+				exporter_.AddModuleSectionToDictionary(
+				    module->GetPath(),
+				    moduleCoverageRate,
+					false,
+				    &htmlModulePath.GetRelativeLinkPath(),
+				    *projectDictionary);
 			}
 		}
 
@@ -116,6 +128,13 @@ namespace Exporter
 		const HtmlFolderStructure& htmlFolderStructure, 
 		ctemplate::TemplateDictionary& moduleTemplateDictionary)
 	{
+		exporter_.AddFileSectionToDictionary(
+			module.GetPath(),
+			coverageRateComputer.GetCoverageRate(module),
+			true,
+			nullptr, 
+			moduleTemplateDictionary);
+
 		for (const auto& file : coverageRateComputer.SortFilesByCoverageRate(module))
 		{
 			const auto& fileCoverageRate = coverageRateComputer.GetCoverageRate(*file);
@@ -123,6 +142,7 @@ namespace Exporter
 			exporter_.AddFileSectionToDictionary(
 				file->GetPath(), 
 				fileCoverageRate, 
+				false,
 				generatedOutput.get_ptr(), 
 				moduleTemplateDictionary);
 		}

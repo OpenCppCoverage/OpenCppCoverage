@@ -53,6 +53,7 @@ namespace Exporter
 		static const std::string NameTemplate;
 		static const std::string ItemLinkSection;
 		static const std::string ItemNoLinkSection;
+		static const std::string ItemSimpleText;
 		static const std::string BodyOnLoadTemplate;
 		static const std::string SourceWarningMessageTemplate;
 		static const std::string BodyOnLoadFct;
@@ -75,13 +76,15 @@ namespace Exporter
 		void AddFileSectionToDictionary(
 			const fs::path& originalFilename,
 			const CppCoverage::CoverageRate& coverageRate,
+			bool isSimpleText,
 			const fs::path* fileOutput,
 			ctemplate::TemplateDictionary& moduleTemplateDictionary);
 
 		void AddModuleSectionToDictionary(
 			const fs::path& originalFilename,
 			const CppCoverage::CoverageRate& coverageRate,
-			const fs::path& moduleOutput,
+			bool isSimpleText,
+			const fs::path* moduleOutput,
 			ctemplate::TemplateDictionary& projectDictionary);
 
 		void GenerateModuleTemplate(
@@ -104,6 +107,7 @@ namespace Exporter
 		std::string GetUuid();
 		void FillSection(
 			ctemplate::TemplateDictionary&,
+			bool isSimpleText,
 			const fs::path* link,
 			const CppCoverage::CoverageRate&,
 			const fs::path& originalFilename);
