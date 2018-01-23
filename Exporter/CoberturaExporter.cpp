@@ -178,6 +178,12 @@ namespace Exporter
 		Tools::CreateParentFolderIfNeeded(output);
 		std::wofstream ofs{ output.string().c_str() };
 
+		if (!ofs)
+		{
+			throw std::runtime_error(
+			    "Cannot write cobertura export to the file: " +
+			    output.string());
+		}
 		Export(coverageData, ofs);
 		Tools::ShowOutputMessage(L"Cobertura report generated: ", output);
 	}

@@ -99,7 +99,13 @@ namespace Exporter
 		pb::CoverageData coverageDataProtoBuff;
 		Tools::CreateParentFolderIfNeeded(output);
 
-		std::ofstream ofs(output.string(), std::ios::binary);		
+		std::ofstream ofs(output.string(), std::ios::binary);
+		if (!ofs)
+		{
+			throw std::runtime_error(
+			    "Cannot write binary export to the file: " + output.string());
+		}
+
 		google::protobuf::io::OstreamOutputStream outputStream(&ofs);
 		google::protobuf::io::CodedOutputStream codedOutputStream(&outputStream);
 

@@ -111,4 +111,16 @@ namespace ExporterTest
 		
 		ASSERT_NO_THROW(Exporter::CoberturaExporter().Export(coverageData, outputPath));
 	}
+
+	//-------------------------------------------------------------------------
+	TEST(CoberturaExporterTest, InvalidFile)
+	{
+		cov::CoverageData coverageData{L"", 0};
+		TestHelper::TemporaryPath outputPath{
+		    TestHelper::TemporaryPathOption::CreateAsFolder};
+
+		ASSERT_THROW(Exporter::CoberturaExporter().Export(
+		                 coverageData, outputPath.GetPath() / "InvalidFile/"),
+		             std::runtime_error);
+	}
 }
