@@ -339,12 +339,7 @@ namespace CppCoverage
 		exportTypes_.emplace(ProgramOptions::ExportTypeBinaryValue,
 		                     OptionsExportType::Binary);
 
-		std::vector<std::string> optionsExportTypes;
-
-		for (const auto& pair : exportTypes_)
-			optionsExportTypes.push_back(pair.first);
-
-		programOptions_.reset(new ProgramOptions(optionsExportTypes));
+		programOptions_ = std::make_unique<ProgramOptions>();
 	}
 
 	//-------------------------------------------------------------------------

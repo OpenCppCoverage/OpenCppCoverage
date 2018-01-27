@@ -32,21 +32,6 @@ namespace CppCoverage
 	{
 		using T_Strings = std::vector<std::string>;
 		
-		//-------------------------------------------------------------------------
-		std::string GetExportTypesAsString(const std::vector<std::string>& optionsExportTypes)
-		{
-			std::string possibleExportType;
-
-			for (const auto& exportType : optionsExportTypes)
-			{
-				if (!possibleExportType.empty())
-					possibleExportType += ", ";
-				possibleExportType += exportType;				
-			}
-
-			return possibleExportType;
-		}
-
 		//---------------------------------------------------------------------
 		void FillGenericOptions(po::options_description& options)
 		{			
@@ -58,17 +43,20 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
-		std::string GetExportTypeText(const std::vector<std::string>& exportTypes)
+		std::string GetExportTypeText()
 		{
-			std::string exportTypeText{ "Format: <exportType>:<outputPath>.\n" };
-			
-			exportTypeText += "<exportType> can be: ";
-			exportTypeText += GetExportTypesAsString(exportTypes) + "\n";
-			exportTypeText += "<outputPath> (optional) output file or directory for the export.\n";
-			exportTypeText += "Example: html:MyFolder\\MySubFolder\n";
-			exportTypeText += "This flag can have multiple occurrences.";
-
-			return exportTypeText;
+			return "Format: <exportType>:<outputPath>.\n"
+			       "<exportType> can be: " +
+			       ProgramOptions::ExportTypeHtmlValue + ", " +
+			       ProgramOptions::ExportTypeCoberturaValue + " or " +
+			       ProgramOptions::ExportTypeBinaryValue +
+			       "\n<outputPath> (optional) export output path.\n"
+			       "Must be a folder for " +
+			       ProgramOptions::ExportTypeHtmlValue + " and a file for " +
+			       ProgramOptions::ExportTypeCoberturaValue + " or " +
+			       ProgramOptions::ExportTypeBinaryValue +
+			       ".\nExample: html:MyFolder\\MySubFolder\n"
+			       "This flag can have multiple occurrences.";
 		}
 
 		//---------------------------------------------------------------------
@@ -84,9 +72,7 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
-		void FillConfigurationOptions(
-			po::options_description& options,
-			const std::vector<std::string>& exportTypes)
+		void FillConfigurationOptions(po::options_description& options)
 		{
 			const std::string all = "*";
 
@@ -108,7 +94,7 @@ namespace CppCoverage
 				". This coverage data will be merged with the current one. Can have multiple occurrences.").c_str())
 				(ProgramOptions::ExportTypeOption.c_str(),
 				po::value<T_Strings>()->default_value({ ProgramOptions::ExportTypeHtmlValue }, ProgramOptions::ExportTypeHtmlValue),
-				GetExportTypeText(exportTypes).c_str())
+				GetExportTypeText().c_str())
 				(ProgramOptions::WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")
 				(ProgramOptions::CoverChildrenOption.c_str(), "Enable code coverage for children processes.")
 				(ProgramOptions::NoAggregateByFileOption.c_str(), "Do not aggregate coverage for same file path.")
@@ -164,14 +150,14 @@ namespace CppCoverage
 	const std::string ProgramOptions::SubstitutePdbSourcePathOption = "substitute_pdb_source_path";
 
 	//-------------------------------------------------------------------------
-	ProgramOptions::ProgramOptions(const std::vector<std::string>& exportTypes)
+	ProgramOptions::ProgramOptions()
 		: visibleOptions_{ "Usage: [options] -- program_to_run optional_arguments" }
 		, configurationOptions_{"Command line and configuration file"}
 		, hiddenOptions_{"Hidden"}
 		, genericOptions_{"Command line only"}
 	{				
 		FillGenericOptions(genericOptions_);
-		FillConfigurationOptions(configurationOptions_, exportTypes);
+		FillConfigurationOptions(configurationOptions_);
 		FillHiddenOptions(hiddenOptions_);
 
 		positionalOptions_.add(ProgramToRunOption.c_str(), 1);

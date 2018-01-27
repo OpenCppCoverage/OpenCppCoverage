@@ -53,7 +53,7 @@ namespace CppCoverage
 		static const std::string ExcludedLineRegexOption;
 		static const std::string SubstitutePdbSourcePathOption;
 
-		ProgramOptions(const std::vector<std::string>& optionsExportTypes);
+		ProgramOptions();
 
 		void FillVariableMap(
 			int argc,
