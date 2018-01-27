@@ -21,6 +21,8 @@
 #include <vector>
 #include <sstream>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 
 #include "Tools/Tool.hpp"
 #include "CppCoverage/Patterns.hpp"
@@ -70,6 +72,47 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
+		struct OptionsParserException : std::runtime_error
+		{
+			OptionsParserException(const std::string& message)
+				: std::runtime_error(message.c_str())
+			{
+			}
+		};
+
+		//---------------------------------------------------------------------
+		void CheckPattern(const std::string& name, const std::string& value)
+		{
+			auto notWindowsPathSeparator = '/';
+
+			if (value.find(notWindowsPathSeparator) != std::string::npos)
+			{
+				throw OptionsParserException(
+				    "Error: Invalid value \""
+				    "--" +
+				    name + ' ' + value + "\". " +
+				    "Please use Windows path separator '\\'.");
+			}
+
+			// Do not iterate over path: path{"Folder\\"}.filename() == '.'
+			std::vector<std::string> parts;
+			boost::split(parts, value, boost::is_any_of("\\"));
+
+			for (const auto& part : parts)
+			{
+				if (part == "." || part == "..")
+				{
+					throw OptionsParserException(
+						"Error: \""
+						"--" +
+						name + ' ' + value +
+						"\": Cannot contain \".\" (current folder) or \"..\" "
+						"(parent folder).");
+				}
+			}
+		}
+
+		//---------------------------------------------------------------------
 		cov::Patterns GetPatterns(
 			const po::variables_map& variables, 
 			const std::string& selected, 
@@ -79,26 +122,23 @@ namespace CppCoverage
 
 			auto selectedPatterns = GetValue<std::vector<std::string>>(variables, selected);
 			for (const auto& pattern : selectedPatterns)
+			{
+				CheckPattern(selected, pattern);
 				patterns.AddSelectedPatterns(Tools::LocalToWString(pattern));
+			}
 
 			auto excludedPatterns = GetOptionalValue<std::vector<std::string>>(variables, excluded);
 			if (excludedPatterns)
 			{
 				for (const auto& pattern : *excludedPatterns)
+				{
+					CheckPattern(excluded, pattern);
 					patterns.AddExcludedPatterns(Tools::LocalToWString(pattern));
+				}
 			}
 
 			return patterns;
 		}
-
-		//---------------------------------------------------------------------
-		struct OptionsParserException: std::runtime_error
-		{
-			OptionsParserException(const std::string& message)
-				: std::runtime_error(message.c_str())
-			{
-			}			
-		};
 
 		//---------------------------------------------------------------------
 		boost::optional<cov::StartInfo> GetStartInfo(const po::variables_map& variables)

@@ -31,16 +31,24 @@ namespace CppCoverageTest
 	namespace
 	{
 		//-------------------------------------------------------------------------
-		void CheckPatternOption(
+		boost::optional<cov::Options> Parse(
 			const std::string& optionName,
-			const std::wstring& value,
-			std::function<std::wstring(const cov::Options&)> getOption)
+			const std::wstring& value)
 		{
 			cov::OptionsParser parser;
 			std::vector<std::string> arguments = { TestTools::GetOptionPrefix() + optionName, 
 													Tools::ToLocalString(value) };
 
-			auto options = TestTools::Parse(parser, arguments);
+			return TestTools::Parse(parser, arguments);
+		}
+
+		//-------------------------------------------------------------------------
+		void CheckPatternOption(
+			const std::string& optionName,
+			const std::wstring& value,
+			std::function<std::wstring(const cov::Options&)> getOption)
+		{
+			auto options = Parse(optionName, value);
 			auto option = getOption(*options);
 
 			ASSERT_EQ(value, option);
@@ -77,5 +85,23 @@ namespace CppCoverageTest
 		CheckPatternOption(cov::ProgramOptions::ExcludedSourcesOption, L"source",
 			[](const cov::Options& options) { return options.GetSourcePatterns().GetExcludedPatterns().front(); }
 		);
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserPatternTest, CheckPattern)
+	{
+		for (const auto& optionName: {
+		         cov::ProgramOptions::SelectedSourcesOption,
+				 cov::ProgramOptions::ExcludedSourcesOption,
+				 cov::ProgramOptions::SelectedModulesOption,
+				 cov::ProgramOptions::ExcludedModulesOption })
+		{
+			for (const auto& value : {L".", L"..", L"\\.", L"\\.\\"})
+				ASSERT_EQ(boost::none, Parse(optionName, value));
+			for (const auto& value : {L"test.txt", L"test\\test.txt"})
+				ASSERT_NE(boost::none, Parse(optionName, value));
+
+			ASSERT_EQ(boost::none, Parse(optionName, L"SubFolder//Folder"));
+		}
 	}
 }
