@@ -3,6 +3,10 @@ setlocal
 
 SET ROOT_FOLDER=%~dp0/Build/ThirdParty/
 
+IF EXIST "%ROOT_FOLDER%" GOTO THIRD_PARTY_EXISTS
+mkdir "%ROOT_FOLDER%"
+:THIRD_PARTY_EXISTS
+
 cd Build/ThirdParty
 
 IF EXIST vcpkg GOTO REPO_EXISTS
