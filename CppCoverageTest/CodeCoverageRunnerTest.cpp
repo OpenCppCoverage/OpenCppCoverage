@@ -17,7 +17,6 @@
 #include "stdafx.h"
 
 #include <boost/filesystem.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/range/algorithm/count_if.hpp>
 

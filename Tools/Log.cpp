@@ -23,8 +23,6 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/support/date_time.hpp>
 
-#include <boost/date_time.hpp>
-#include <boost/shared_array.hpp>
 #include <boost/locale.hpp>
 
 namespace logging = boost::log;

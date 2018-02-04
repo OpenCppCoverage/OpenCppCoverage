@@ -21,8 +21,6 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
 
-#include <boost/shared_ptr.hpp>
-
 #include "ToolsExport.hpp"
 
 // Define the logger

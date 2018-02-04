@@ -20,7 +20,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/uuid/uuid_io.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include "CTemplate.hpp"
 #include "Tools/Tool.hpp"

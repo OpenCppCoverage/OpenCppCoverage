@@ -17,8 +17,6 @@
 #include "stdafx.h"
 #include "ProgramOptions.hpp"
 
-#include <boost/make_shared.hpp>
-
 #include "Tools/Tool.hpp"
 
 #include "CppCoverageException.hpp"
