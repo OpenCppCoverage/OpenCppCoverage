@@ -66,7 +66,10 @@ namespace OpenCppCoverageTest
 			{
 				if (useSourceInSolutionDir)
 					coverageArguments.push_back({ cov::ProgramOptions::SelectedSourcesOption, GetSolutionFolderName()});
-				coverageArguments.push_back({ cov::ProgramOptions::ExcludedSourcesOption, "packages" });
+				auto thirdParties = { "Build", "packages" };
+				for (const auto& thirdParty: thirdParties)
+					coverageArguments.push_back({ cov::ProgramOptions::ExcludedSourcesOption, thirdParty });
+
 				AddDefaultHtmlExport(coverageArguments, GetTempPath());
 				coverageArguments.emplace_back(cov::ProgramOptions::QuietOption, "");
 				std::string ignoreOutput;

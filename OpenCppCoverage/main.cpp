@@ -20,7 +20,6 @@
 #include "stdafx.h"
 
 #include <iostream>
-#include <boost/filesystem.hpp>
 
 #include "Tools/Tool.hpp"
 
