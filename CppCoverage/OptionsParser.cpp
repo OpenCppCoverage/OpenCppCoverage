@@ -336,7 +336,7 @@ namespace CppCoverage
 		                        const char** argv,
 		                        Tools::WarningManager& warningManager)
 		{
-			auto estimatedSize = 0;
+			size_t estimatedSize = 0;
 			for (int i = 0; i < argc; ++i)
 			{
 				auto argument = argv[i];
@@ -345,7 +345,7 @@ namespace CppCoverage
 			}
 
 			estimatedSize += argc - 1; // separators for arguments.
-			if (estimatedSize >= OptionsParser::DosCommandLineMaxSize * 3 / 4)
+			if (estimatedSize >= static_cast<size_t>(OptionsParser::DosCommandLineMaxSize * 3 / 4))
 			{
 				auto tooLongCmd = OptionsParser::GetTooLongCommandLineMessage();
 				LOG_WARNING << tooLongCmd;

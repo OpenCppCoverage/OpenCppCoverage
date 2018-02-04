@@ -81,7 +81,7 @@ namespace CppCoverageTest
 		BreakPoint breakPoint;
 
 		auto values = GenerateValues(20000, 100);
-		auto randomIndexes = GetRandomIndexes(100, values.size() - 1);
+		auto randomIndexes = GetRandomIndexes(100, static_cast<int>(values.size() - 1));
 
 		std::vector<DWORD64> addresses;
 		for (auto index : randomIndexes)
