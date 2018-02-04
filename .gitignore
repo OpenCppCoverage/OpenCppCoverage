@@ -26,6 +26,7 @@ VSPackage/OpenCppCoverage-x64
 VSPackage/OpenCppCoverage-x86
 
 # ProtoBuff files
-*.pb.*
+CoverageData.pb.h
+CoverageData.pb.cc
 
 .clang-format

@@ -17,7 +17,7 @@
 #include "stdafx.h"
 #include "CoverageDataSerializer.hpp"
 
-#include "CoverageData.pb.h"
+#include "CoverageData.pb.hpp"
 
 #include "CppCoverage/CoverageData.hpp"
 #include "CppCoverage/ModuleCoverage.hpp"

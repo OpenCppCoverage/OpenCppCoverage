@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="Binary\BinaryExporter.hpp" />
     <ClInclude Include="Binary\CoverageData.pb.h" />
+    <ClInclude Include="Binary\CoverageData.pb.hpp" />
     <ClInclude Include="Binary\ProtoBuff.hpp" />
     <ClInclude Include="CoberturaExporter.hpp" />
     <ClInclude Include="Binary\CoverageDataSerializer.hpp" />
