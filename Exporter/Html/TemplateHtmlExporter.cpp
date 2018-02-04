@@ -21,7 +21,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-#include <ctemplate/template.h>
+#include "CTemplate.hpp"
 #include "Tools/Tool.hpp"
 
 #include "CppCoverage/CoverageData.hpp"

@@ -181,6 +181,7 @@
     <ClInclude Include="Binary\CoverageDataDeserializer.hpp" />
     <ClInclude Include="ExporterException.hpp" />
     <ClInclude Include="ExporterExport.hpp" />
+    <ClInclude Include="Html\CTemplate.hpp" />
     <ClInclude Include="Html\HtmlExporter.hpp" />
     <ClInclude Include="Html\HtmlFile.hpp" />
     <ClInclude Include="Html\HtmlFileCoverageExporter.hpp" />
