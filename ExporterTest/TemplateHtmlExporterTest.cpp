@@ -19,7 +19,7 @@
 
 #include "TestHelper/TemporaryPath.hpp"
 #include "Exporter/Html/TemplateHtmlExporter.hpp"
-#include "Exporter/Html/CTemplate.hpp"
+#include <ctemplate/template.h>
 #include "CppCoverage/CoverageRate.hpp"
 
 using namespace Exporter;

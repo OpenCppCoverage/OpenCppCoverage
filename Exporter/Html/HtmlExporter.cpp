@@ -19,7 +19,7 @@
 
 #include <sstream>
 #include <iomanip>
-#include "CTemplate.hpp"
+#include <ctemplate/template.h>
 
 #include "CppCoverage/CoverageData.hpp"
 #include "CppCoverage/ModuleCoverage.hpp"
