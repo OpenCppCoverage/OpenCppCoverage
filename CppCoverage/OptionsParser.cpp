@@ -96,7 +96,7 @@ namespace CppCoverage
 
 			// Do not iterate over path: path{"Folder\\"}.filename() == '.'
 			std::vector<std::string> parts;
-			boost::split(parts, value, boost::is_any_of("\\"));
+			boost::split(parts, value, [](char c) { return c == '\\'; });
 
 			for (const auto& part : parts)
 			{
