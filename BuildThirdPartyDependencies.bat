@@ -11,24 +11,50 @@ git clone https://github.com/Microsoft/vcpkg.git
 
 cd vcpkg
 git fetch
-git checkout 45d9d68a5825c78d71d8508ff9554d2552049138 .
+git checkout 5c9c1bde53f562c11a5248090ad2c63e7e481633 .
 
 IF EXIST vcpkg.exe GOTO VCPKG_EXISTS
-	.\bootstrap-vcpkg.bat
+	call .\bootstrap-vcpkg.bat
 :VCPKG_EXISTS
 
 .\vcpkg install poco:x64-windows poco:x86-windows
 .\vcpkg install protobuf:x64-windows protobuf:x86-windows
 .\vcpkg install gtest:x64-windows gtest:x86-windows
-.\vcpkg install boost:x64-windows boost:x86-windows
 .\vcpkg install ctemplate:x64-windows ctemplate:x86-windows
-
+.\vcpkg install boost-optional:x64-windows boost-optional:x86-windows
+.\vcpkg install boost-filesystem:x64-windows boost-filesystem:x86-windows
+.\vcpkg install boost-algorithm:x64-windows boost-algorithm:x86-windows
+.\vcpkg install boost-container:x64-windows boost-container:x86-windows
+.\vcpkg install boost-program-options:x64-windows boost-program-options:x86-windows
+.\vcpkg install boost-regex:x64-windows boost-regex:x86-windows
+.\vcpkg install boost-range:x64-windows boost-range:x86-windows
+.\vcpkg install boost-log:x64-windows boost-log:x86-windows
+.\vcpkg install boost-property-tree:x64-windows boost-property-tree:x86-windows
+.\vcpkg install boost-spirit:x64-windows boost-spirit:x86-windows
+.\vcpkg install boost-uuid:x64-windows boost-uuid:x86-windows
+.\vcpkg install boost-locale:x64-windows boost-locale:x86-windows
+.\vcpkg install boost-iostreams:x64-windows boost-iostreams:x86-windows
+.\vcpkg install range-v3:x64-windows range-v3:x86-windows
+  
 .\vcpkg export ^
 	poco:x64-windows poco:x86-windows ^
 	protobuf:x64-windows protobuf:x86-windows ^
 	gtest:x64-windows gtest:x86-windows ^
-	boost:x64-windows boost:x86-windows ^
 	ctemplate:x64-windows ctemplate:x86-windows ^
-	--nuget --nuget-id=ThirdParty --nuget-version=1.0.0
+	boost-optional:x64-windows boost-optional:x86-windows ^
+	boost-filesystem:x64-windows boost-filesystem:x86-windows ^
+	boost-algorithm:x64-windows boost-algorithm:x86-windows ^
+	boost-container:x64-windows boost-container:x86-windows ^
+	boost-program-options:x64-windows boost-program-options:x86-windows ^
+	boost-regex:x64-windows boost-regex:x86-windows ^
+	boost-range:x64-windows boost-range:x86-windows ^
+	boost-log:x64-windows boost-log:x86-windows ^
+	boost-property-tree:x64-windows boost-property-tree:x86-windows ^
+	boost-spirit:x64-windows boost-spirit:x86-windows ^
+	boost-uuid:x64-windows boost-uuid:x86-windows ^
+	boost-locale:x64-windows boost-locale:x86-windows ^
+	boost-iostreams:x64-windows boost-iostreams:x86-windows ^
+	range-v3:x64-windows range-v3:x86-windows ^
+	--nuget --nuget-id=ThirdParty --nuget-version=1.1.0
 
-downloads\nuget-4.1.0\nuget.exe install ThirdParty -Source %ROOT_FOLDER%\vcpkg -OutputDirectory ..\..\..\packages
+downloads\nuget-4.4.0\nuget.exe install ThirdParty -Source %ROOT_FOLDER%\vcpkg -OutputDirectory ..\..\..\packages
