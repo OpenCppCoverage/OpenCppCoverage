@@ -29,6 +29,7 @@
 #include "Tools/Tool.hpp"
 
 #include "ProtoBuff.hpp"
+#include "../InvalidOutputFileException.hpp"
 
 namespace pb = ProtoBuff;
 namespace cov = CppCoverage;
@@ -101,10 +102,7 @@ namespace Exporter
 
 		std::ofstream ofs(output.string(), std::ios::binary);
 		if (!ofs)
-		{
-			throw std::runtime_error(
-			    "Cannot write binary export to the file: " + output.string());
-		}
+			throw InvalidOutputFileException(output, "binary");
 
 		google::protobuf::io::OstreamOutputStream outputStream(&ofs);
 		google::protobuf::io::CodedOutputStream codedOutputStream(&outputStream);

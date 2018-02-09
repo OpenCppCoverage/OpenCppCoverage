@@ -229,7 +229,7 @@ namespace Tools
 	//---------------------------------------------------------------------
 	void CreateParentFolderIfNeeded(const boost::filesystem::path& path)
 	{
-		if (path.has_parent_path())
+		if (path.has_parent_path() && !path.filename_is_dot())
 		{
 			auto parentPath = path.parent_path();
 			boost::system::error_code er;

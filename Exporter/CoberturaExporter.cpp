@@ -27,6 +27,7 @@
 #include "CppCoverage/FileCoverage.hpp"
 #include "CppCoverage/LineCoverage.hpp"
 #include "CppCoverage/CoverageRateComputer.hpp"
+#include "InvalidOutputFileException.hpp"
 
 #include "Tools/Tool.hpp"
 
@@ -179,11 +180,7 @@ namespace Exporter
 		std::wofstream ofs{ output.string().c_str() };
 
 		if (!ofs)
-		{
-			throw std::runtime_error(
-			    "Cannot write cobertura export to the file: " +
-			    output.string());
-		}
+			throw InvalidOutputFileException(output, "cobertura");
 		Export(coverageData, ofs);
 		Tools::ShowOutputMessage(L"Cobertura report generated: ", output);
 	}

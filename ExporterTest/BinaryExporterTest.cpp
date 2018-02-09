@@ -18,6 +18,7 @@
 
 #include "CppCoverage/CoverageData.hpp"
 #include "Exporter/Binary/BinaryExporter.hpp"
+#include "Exporter/InvalidOutputFileException.hpp"
 #include "TestHelper/TemporaryPath.hpp"
 
 namespace cov = CppCoverage;
@@ -58,6 +59,6 @@ namespace ExporterTest
 
 		ASSERT_THROW(Exporter::BinaryExporter().Export(
 		                 coverageData, outputPath.GetPath() / "InvalidFile/"),
-		             std::exception);
+		             Exporter::InvalidOutputFileException);
 	}
 }

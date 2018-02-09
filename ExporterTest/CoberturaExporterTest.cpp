@@ -23,6 +23,7 @@
 #include "CppCoverage/ModuleCoverage.hpp"
 #include "CppCoverage/FileCoverage.hpp"
 
+#include "Exporter/InvalidOutputFileException.hpp"
 #include "Exporter/CoberturaExporter.hpp"
 #include "tools/Tool.hpp"
 
@@ -121,6 +122,6 @@ namespace ExporterTest
 
 		ASSERT_THROW(Exporter::CoberturaExporter().Export(
 		                 coverageData, outputPath.GetPath() / "InvalidFile/"),
-		             std::runtime_error);
+		             Exporter::InvalidOutputFileException);
 	}
 }
