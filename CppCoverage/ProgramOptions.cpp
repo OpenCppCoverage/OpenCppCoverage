@@ -104,7 +104,7 @@ namespace CppCoverage
 				(ProgramOptions::ExcludedLineRegexOption.c_str(), po::value<T_Strings>()->composing(),
 					"Exclude all lines match the regular expression. Regular expression must match the whole line.")
 				(ProgramOptions::SubstitutePdbSourcePathOption.c_str(), po::value<T_Strings>()->composing(),
-					"Substitute the starting path defined in the pdb by a local path. Format:pdbStartPath?localPath." 
+					"Substitute the starting path defined in the pdb by a local path.\nFormat: <pdbStartPath>?<localPath>. " 
 					"Can have multiple occurrences.");
 		}
 
