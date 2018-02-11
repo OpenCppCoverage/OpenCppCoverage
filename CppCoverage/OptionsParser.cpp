@@ -366,7 +366,7 @@ namespace CppCoverage
 	{
 		optionalWarningManager_ = std::move(warningManager);
 		if (!optionalWarningManager_)
-			THROW("OptinalWarningManager is null");
+			THROW("OptionalWarningManager is null");
 	}
 
 	//-------------------------------------------------------------------------
