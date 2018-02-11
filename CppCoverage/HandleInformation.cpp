@@ -94,6 +94,15 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	std::wstring HandleInformation::ComputeFilename(HANDLE hfile) const
 	{
+		if (hfile == nullptr)
+		{
+			THROW(L"OpenCppCoverage cannot find the name of the module.\n"
+			      L"See "
+			      L"https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/"
+			      L"FAQ#error-opencppcoverage-cannot-find-the-name-of-the-"
+			      L"module for more information.");
+		}
+
 		auto mappedFileName = GetFinalPathName(hfile);
 		auto queryDosDevicesMapping = GetQueryDosDevicesMapping();
 
