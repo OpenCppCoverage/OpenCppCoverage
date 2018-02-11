@@ -17,6 +17,7 @@
 #include "stdafx.h"
 #include "ExceptionBase.hpp"
 #include "Tool.hpp"
+#include <boost/filesystem/path.hpp>
 
 namespace Tools
 {
@@ -24,5 +25,11 @@ namespace Tools
 	ExceptionBase::ExceptionBase(const std::wstring& message)
 		: std::exception(ToLocalString(message).c_str())
 	{
+	}
+
+	//-------------------------------------------------------------------------
+	std::wstring GetFilename(const char* path)
+	{
+		return boost::filesystem::path{ path }.filename().wstring();
 	}
 }

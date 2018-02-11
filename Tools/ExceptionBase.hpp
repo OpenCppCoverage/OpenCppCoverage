@@ -33,6 +33,8 @@ namespace Tools
 	protected:
 		ExceptionBase(const std::wstring& message);
 	};
+
+	TOOLS_DLL std::wstring GetFilename(const char*);
 }
 
 #pragma warning(pop)
@@ -48,15 +50,13 @@ namespace namespaceName											\
 		{														\
 		}														\
 	};															\
-}																\
+}
 
-#define THROW_BASE(namespaceName, className, message)		\
-do															\
-{															\
-	std::wostringstream ostr;								\
-	ostr << __FILE__ << ':' << __LINE__ << ' ' << message;	\
-	throw namespaceName::className(ostr.str());				\
-} while (false)												\
-
-
-
+#define THROW_BASE(namespaceName, className, message)                          \
+	do                                                                         \
+	{                                                                          \
+		std::wostringstream ostr;                                              \
+		ostr << Tools::GetFilename(__FILE__) << ':' << __LINE__ << ' '         \
+		     << message;                                                       \
+		throw namespaceName::className(ostr.str());                            \
+	} while (false)
