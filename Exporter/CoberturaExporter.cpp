@@ -112,13 +112,16 @@ namespace Exporter
 		}
 
 		//-------------------------------------------------------------------------
-		void SetCoverageAttributes(property_tree::wptree& coverageTree)
+		void SetCoverageAttributes(property_tree::wptree& coverageTree,
+		                           const cov::CoverageRate& coverageRate)
 		{
 			coverageTree.put(L"<xmlattr>.branches-covered", 0);
 			coverageTree.put(L"<xmlattr>.branches-valid", 0);
 			coverageTree.put(L"<xmlattr>.timestamp", 0);
-			coverageTree.put(L"<xmlattr>.lines-covered", 0);
-			coverageTree.put(L"<xmlattr>.lines-valid", 0);
+			coverageTree.put(L"<xmlattr>.lines-covered",
+			                 coverageRate.GetExecutedLinesCount());
+			coverageTree.put(L"<xmlattr>.lines-valid",
+			                 coverageRate.GetTotalLinesCount());
 			coverageTree.put(L"<xmlattr>.version", 0);
 		}
 
@@ -129,8 +132,9 @@ namespace Exporter
 		{
 			cov::CoverageRateComputer coverageRateComputer(coverageData);
 			auto& coverageTree = AddChild(root, L"coverage");
-			SetCoverage(coverageTree, coverageRateComputer.GetCoverageRate());
-			SetCoverageAttributes(coverageTree);
+			const auto& coverageRate = coverageRateComputer.GetCoverageRate();
+			SetCoverage(coverageTree, coverageRate);
+			SetCoverageAttributes(coverageTree, coverageRate);
 
 			WriteSourceRoots(coverageData, coverageTree);
 
