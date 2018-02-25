@@ -304,6 +304,13 @@ namespace CppCoverage
 			}
 
 			auto pdbPath = paths.substr(0, pos);
+			if (pdbPath.find('/') != std::string::npos)
+			{
+				throw OptionsParserException(
+				    error + "Path \"" + pdbPath +
+				    "\" contains '/' which is not the Windows path separator. "
+				    "Please use '\\' instead.");
+			}
 			auto localPath = paths.substr(pos + 1);
 			if (!fs::exists(localPath))
 			{

@@ -235,8 +235,8 @@ namespace CppCoverageTest
 	{
 		//-------------------------------------------------------------------------
 		boost::optional<cov::Options> ParseSubstitutePdbSourcePath(
-			TestHelper::TemporaryPath& pdbStartPath,
-			TestHelper::TemporaryPath& localPath)
+			const fs::path& pdbStartPath,
+			const fs::path& localPath)
 		{
 			cov::OptionsParser parser;
 
@@ -244,8 +244,8 @@ namespace CppCoverageTest
 				parser,
 				{ TestTools::GetOptionPrefix() +
 				cov::ProgramOptions::SubstitutePdbSourcePathOption,
-				pdbStartPath->string() + cov::OptionsParser::PathSeparator +
-				localPath->string() });
+				pdbStartPath.string() + cov::OptionsParser::PathSeparator +
+				localPath.string() });
 		}
 	}
 
@@ -272,7 +272,16 @@ namespace CppCoverageTest
 		TestHelper::TemporaryPath pdbStartPath;
 		TestHelper::TemporaryPath localPath;
 
-		const auto& option = ParseSubstitutePdbSourcePath(pdbStartPath, localPath);
-		ASSERT_FALSE(option.is_initialized());
+		ASSERT_FALSE(ParseSubstitutePdbSourcePath(pdbStartPath, localPath));
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, SubstitutePdbSourcePathPdbStartPathInvalid)
+	{
+		TestHelper::TemporaryPath validPath;
+		TestHelper::TemporaryPath localPath{ TestHelper::TemporaryPathOption::CreateAsFile };
+
+		ASSERT_TRUE(ParseSubstitutePdbSourcePath(validPath, localPath));
+		ASSERT_FALSE(ParseSubstitutePdbSourcePath("C:\\Dev/Invalid", localPath));
 	}
 }
