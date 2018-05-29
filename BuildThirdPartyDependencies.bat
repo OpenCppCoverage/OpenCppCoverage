@@ -15,7 +15,7 @@ git clone https://github.com/Microsoft/vcpkg.git
 
 cd vcpkg
 git fetch
-git checkout 5c9c1bde53f562c11a5248090ad2c63e7e481633 .
+git checkout 2ac7527b40b1dbeb7856b9f763362c1e139e2ca9 .
 
 IF EXIST vcpkg.exe GOTO VCPKG_EXISTS
 	call .\bootstrap-vcpkg.bat
@@ -59,6 +59,6 @@ IF EXIST vcpkg.exe GOTO VCPKG_EXISTS
 	boost-locale:x64-windows boost-locale:x86-windows ^
 	boost-iostreams:x64-windows boost-iostreams:x86-windows ^
 	range-v3:x64-windows range-v3:x86-windows ^
-	--nuget --nuget-id=ThirdParty --nuget-version=1.1.0
+	--nuget --nuget-id=ThirdParty --nuget-version=1.2.0
 
-downloads\nuget-4.4.0\nuget.exe install ThirdParty -Source %ROOT_FOLDER%\vcpkg -OutputDirectory ..\..\..\packages
+downloads\tools\nuget-4.6.2-windows\nuget.exe install ThirdParty -Source %ROOT_FOLDER%\vcpkg -OutputDirectory ..\..\..\packages
