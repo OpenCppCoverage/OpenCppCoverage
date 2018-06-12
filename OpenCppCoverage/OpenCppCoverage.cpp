@@ -149,7 +149,8 @@ namespace OpenCppCoverage
 
 				runCoverageSettings.SetCoverChildren(options.IsCoverChildrenModeEnabled());
 				runCoverageSettings.SetContinueAfterCppException(options.IsContinueAfterCppExceptionModeEnabled());
-				runCoverageSettings.SetMaxUnmatchPathsForWarning(maxUnmatchPathsForWarning);
+                runCoverageSettings.SetStopOnAssert(options.IsStopOnAssertModeEnabled());
+                runCoverageSettings.SetMaxUnmatchPathsForWarning(maxUnmatchPathsForWarning);
 				runCoverageSettings.SetOptimizedBuildSupport(options.IsOptimizedBuildSupportEnabled());
 				auto coverageData = codeCoverageRunner.RunCoverage(runCoverageSettings);
 				exitCode = coverageData.GetExitCode();

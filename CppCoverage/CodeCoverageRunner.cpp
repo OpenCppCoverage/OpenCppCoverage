@@ -64,7 +64,7 @@ namespace CppCoverage
 	CoverageData CodeCoverageRunner::RunCoverage(
 		const RunCoverageSettings& settings)
 	{
-		Debugger debugger{ settings.GetCoverChildren(), settings.GetContinueAfterCppException()};
+		Debugger debugger{ settings.GetCoverChildren(), settings.GetContinueAfterCppException(), settings.GetStopOnAssert()};
 
 		coverageFilterManager_ = std::make_shared<CoverageFilterManager>(
 			settings.GetCoverageFilterSettings(),
