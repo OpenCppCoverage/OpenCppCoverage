@@ -189,6 +189,7 @@
     <ClCompile Include="HtmlExporterTest.cpp" />
     <ClCompile Include="HtmlFileCoverageExporterTest.cpp" />
     <ClCompile Include="HtmlFolderStructureTest.cpp" />
+    <ClCompile Include="SonarQubeExporterTest.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -215,6 +216,7 @@
     <Xml Include="Data\CoberturaExporterExpectedResult.xml">
       <SubType>Designer</SubType>
     </Xml>
+    <Xml Include="Data\SonarQubeExporterExpectedResult.xml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

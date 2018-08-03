@@ -16,39 +16,35 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <boost/filesystem.hpp>
+#include <iosfwd>
 
-#include "CppCoverageExport.hpp"
+#include "ExporterExport.hpp"
+#include "IExporter.hpp"
 
 namespace CppCoverage
 {
-	enum class OptionsExportType
-	{
-		Html,
-		Cobertura,
-		SonarQube,
-		Binary
-	};
-
-	class CPPCOVERAGE_DLL OptionsExport
-	{
-	public:
-		explicit OptionsExport(OptionsExportType type);
-		OptionsExport(OptionsExportType type, const boost::filesystem::path&);
-
-		OptionsExport(const OptionsExport&) = default;
-		OptionsExport& operator=(const OptionsExport&) = default;
-		
-		OptionsExportType GetType() const;
-		const std::wstring& GetTypeString() const;
-		const boost::optional<boost::filesystem::path>& GetOutputPath() const;
-
-		friend std::wostream& operator<<(std::wostream& ostr, const OptionsExport&);
-
-	private:
-		OptionsExportType type_;
-		boost::optional<boost::filesystem::path> outputPath_;
-	};
+	class CoverageData;
 }
 
+namespace boost
+{
+	namespace filesystem
+	{
+		class path;
+	}
+}
+
+namespace Exporter
+{
+	class EXPORTER_DLL SonarQubeExporter : public IExporter
+	{
+	public:
+		SonarQubeExporter();
+		boost::filesystem::path GetDefaultPath(const std::wstring& runningCommandFilename) const override;
+		void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& output) override;
+		void Export(const CppCoverage::CoverageData&, std::wostream&) const;
+	private:
+		SonarQubeExporter(const SonarQubeExporter&) = delete;
+		SonarQubeExporter& operator=(const SonarQubeExporter&) = delete;
+	};
+}

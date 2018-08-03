@@ -86,6 +86,12 @@ namespace OpenCppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
+	TEST(ImportExportTest, ExportSonarQube)
+	{
+		RunCoverage(cov::ProgramOptions::ExportTypeSonarQubeValue);
+	}
+
+	//-------------------------------------------------------------------------
 	TEST(ImportExportTest, ExportImportBinary)
 	{
 		TestHelper::TemporaryPath initialOutput;

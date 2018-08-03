@@ -189,6 +189,7 @@
     <ClInclude Include="Html\TemplateHtmlExporter.hpp" />
     <ClInclude Include="IExporter.hpp" />
     <ClInclude Include="InvalidOutputFileException.hpp" />
+    <ClInclude Include="SonarQubeExporter.hpp" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +218,7 @@
     <ClCompile Include="Html\HtmlFolderStructure.cpp" />
     <ClCompile Include="Html\TemplateHtmlExporter.cpp" />
     <ClCompile Include="InvalidOutputFileException.cpp" />
+    <ClCompile Include="SonarQubeExporter.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

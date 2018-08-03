@@ -30,6 +30,7 @@
 
 #include "Exporter/Html/HtmlExporter.hpp"
 #include "Exporter/CoberturaExporter.hpp"
+#include "Exporter/SonarQubeExporter.hpp"
 #include "Exporter/Binary/BinaryExporter.hpp"
 #include "Exporter/Binary/CoverageDataDeserializer.hpp"
 
@@ -70,8 +71,10 @@ namespace OpenCppCoverage
 			
 			exporters.emplace(cov::OptionsExportType::Html, 
 				std::unique_ptr<Exporter::IExporter>(new Exporter::HtmlExporter{ Tools::GetTemplateFolder() }));
-			exporters.emplace(cov::OptionsExportType::Cobertura, 
+			exporters.emplace(cov::OptionsExportType::Cobertura,
 				std::unique_ptr<Exporter::IExporter>(new Exporter::CoberturaExporter{}));
+			exporters.emplace(cov::OptionsExportType::SonarQube,
+				std::unique_ptr<Exporter::IExporter>(new Exporter::SonarQubeExporter{}));
 			exporters.emplace(cov::OptionsExportType::Binary,
 				std::unique_ptr<Exporter::IExporter>(new Exporter::BinaryExporter{}));
 			

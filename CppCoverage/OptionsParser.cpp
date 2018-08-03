@@ -383,6 +383,8 @@ namespace CppCoverage
 		                     OptionsExportType::Html);
 		exportTypes_.emplace(ProgramOptions::ExportTypeCoberturaValue,
 		                     OptionsExportType::Cobertura);
+		exportTypes_.emplace(ProgramOptions::ExportTypeSonarQubeValue,
+		                     OptionsExportType::SonarQube);
 		exportTypes_.emplace(ProgramOptions::ExportTypeBinaryValue,
 		                     OptionsExportType::Binary);
 

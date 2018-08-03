@@ -86,11 +86,43 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST(OptionsParserExportTest, ExportTypesBoth)
+	TEST(OptionsParserExportTest, ExportTypesSonarQubeValue)
+	{
+		TestExportTypes(
+			{ cov::ProgramOptions::ExportTypeSonarQubeValue },
+			{ cov::OptionsExport{ cov::OptionsExportType::SonarQube } });
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserExportTest, ExportTypesHtmlAndCobertura)
 	{
 		TestExportTypes(
 		{ cov::ProgramOptions::ExportTypeHtmlValue, cov::ProgramOptions::ExportTypeCoberturaValue },
 		{ cov::OptionsExport{ cov::OptionsExportType::Html }, cov::OptionsExport{ cov::OptionsExportType::Cobertura } });
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserExportTest, ExportTypesHtmlAndSonarQube)
+	{
+		TestExportTypes(
+			{ cov::ProgramOptions::ExportTypeHtmlValue, cov::ProgramOptions::ExportTypeSonarQubeValue },
+			{ cov::OptionsExport{ cov::OptionsExportType::Html }, cov::OptionsExport{ cov::OptionsExportType::SonarQube } });
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserExportTest, ExportTypesCoberturaAndSonarQube)
+	{
+		TestExportTypes(
+			{ cov::ProgramOptions::ExportTypeCoberturaValue, cov::ProgramOptions::ExportTypeSonarQubeValue },
+			{ cov::OptionsExport{ cov::OptionsExportType::Cobertura }, cov::OptionsExport{ cov::OptionsExportType::SonarQube } });
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserExportTest, ExportTypesAll)
+	{
+		TestExportTypes(
+			{ cov::ProgramOptions::ExportTypeHtmlValue, cov::ProgramOptions::ExportTypeCoberturaValue, cov::ProgramOptions::ExportTypeSonarQubeValue },
+			{ cov::OptionsExport{ cov::OptionsExportType::Html }, cov::OptionsExport{ cov::OptionsExportType::Cobertura }, cov::OptionsExport{ cov::OptionsExportType::SonarQube } });
 	}
 
 	//-------------------------------------------------------------------------

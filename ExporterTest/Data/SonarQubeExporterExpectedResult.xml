@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<coverage version="1">
+  <file path="File">
+    <lineToCover lineNumber="0" covered="true"/>
+    <lineToCover lineNumber="1" covered="false"/>
+  </file>
+  <file path="Directory/File2">
+    <lineToCover lineNumber="0" covered="true"/>
+  </file>
+</coverage>

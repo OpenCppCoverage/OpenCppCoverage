@@ -46,12 +46,14 @@ namespace CppCoverage
 			return "Format: <exportType>:<outputPath>.\n"
 			       "<exportType> can be: " +
 			       ProgramOptions::ExportTypeHtmlValue + ", " +
-			       ProgramOptions::ExportTypeCoberturaValue + " or " +
+			       ProgramOptions::ExportTypeCoberturaValue + ", " +
+			       ProgramOptions::ExportTypeSonarQubeValue + " or " +
 			       ProgramOptions::ExportTypeBinaryValue +
 			       "\n<outputPath> (optional) export output path.\n"
 			       "Must be a folder for " +
 			       ProgramOptions::ExportTypeHtmlValue + " and a file for " +
-			       ProgramOptions::ExportTypeCoberturaValue + " or " +
+			       ProgramOptions::ExportTypeCoberturaValue + ", " +
+			       ProgramOptions::ExportTypeSonarQubeValue + " or " +
 			       ProgramOptions::ExportTypeBinaryValue +
 			       ".\nExample: html:MyFolder\\MySubFolder\n"
 			       "This flag can have multiple occurrences.";
@@ -139,6 +141,7 @@ namespace CppCoverage
 	const std::string ProgramOptions::ExportTypeOption = "export_type";
 	const std::string ProgramOptions::ExportTypeHtmlValue = "html";
 	const std::string ProgramOptions::ExportTypeCoberturaValue = "cobertura";
+	const std::string ProgramOptions::ExportTypeSonarQubeValue = "sonarqube";
 	const std::string ProgramOptions::ExportTypeBinaryValue = "binary";
 	const std::string ProgramOptions::InputCoverageValue = "input_coverage";
 	const std::string ProgramOptions::UnifiedDiffOption = "unified_diff";

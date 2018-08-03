@@ -44,7 +44,8 @@ namespace CppCoverage
 		static const std::string ProgramToRunArgOption;
 		static const std::string ExportTypeOption;
 		static const std::string ExportTypeHtmlValue;
-		static const std::string ExportTypeCoberturaValue;	
+		static const std::string ExportTypeCoberturaValue;
+		static const std::string ExportTypeSonarQubeValue;
 		static const std::string ExportTypeBinaryValue;
 		static const std::string InputCoverageValue;
 		static const std::string UnifiedDiffOption;
