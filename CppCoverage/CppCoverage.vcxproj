@@ -169,6 +169,7 @@
     <ClInclude Include="CoverageData.hpp" />
     <ClInclude Include="CoverageDataMerger.hpp" />
     <ClInclude Include="CoverageFilterManager.hpp" />
+    <ClInclude Include="DebugHider.hpp" />
     <ClInclude Include="DebugInformationEnumerator.hpp" />
     <ClInclude Include="FileSystem.hpp" />
     <ClInclude Include="FilterAssistant.hpp" />

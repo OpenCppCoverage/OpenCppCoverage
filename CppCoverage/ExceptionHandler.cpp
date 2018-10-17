@@ -20,6 +20,7 @@
 
 #include "Tools/ScopedAction.hpp"
 #include "Tools/Tool.hpp"
+#include "DebugHider.hpp"
 
 namespace CppCoverage
 {
@@ -84,7 +85,10 @@ namespace CppCoverage
 				auto& processHandles = it->second;
 				// Breakpoint exception need to be ignore the first time by process.
 				if (std::find(processHandles.begin(), processHandles.end(), hProcess) == processHandles.end())
+				{
+					HidePebInProcess(hProcess);
 					processHandles.push_back(hProcess);
+				}
 				else
 					return ExceptionHandlerStatus::BreakPoint;
 			}
