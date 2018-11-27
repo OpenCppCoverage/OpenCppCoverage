@@ -125,7 +125,17 @@ namespace CppCoverageTest
 			->IsContinueAfterCppExceptionModeEnabled());
 	}
 
-	//-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    TEST(OptionsParserTest, StopOnAssert)
+    {
+      cov::OptionsParser parser;
+
+      ASSERT_TRUE(TestTools::Parse(parser,
+        { TestTools::GetOptionPrefix() + cov::ProgramOptions::StopOnAssertOption })
+        ->IsStopOnAssertModeEnabled());
+    }
+    
+    //-------------------------------------------------------------------------
 	TEST(OptionsParserTest, WorkingDirectory)
 	{
 		cov::OptionsParser parser;

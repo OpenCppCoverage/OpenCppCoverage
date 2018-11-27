@@ -129,13 +129,25 @@ namespace CppCoverage
 		isContinueAfterCppExceptionModeEnabled_ = true;
 	}
 	
-	//-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
 	bool Options::IsContinueAfterCppExceptionModeEnabled() const
 	{
 		return isContinueAfterCppExceptionModeEnabled_;
 	}
 
-	//-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    void Options::EnableStopOnAssertMode()
+    {
+      isStopOnAssertModeEnabled_ = true;
+    }
+    
+    //-------------------------------------------------------------------------
+    bool Options::IsStopOnAssertModeEnabled() const
+    {
+      return isStopOnAssertModeEnabled_;
+    }
+
+    //-------------------------------------------------------------------------
 	void Options::AddExport(const OptionsExport& optionExport)
 	{
 		exports_.push_back(optionExport);

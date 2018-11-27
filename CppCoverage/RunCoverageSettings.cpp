@@ -50,7 +50,13 @@ namespace CppCoverage
 		continueAfterCppException_ = continueAfterCppException;
 	}
 	
-	//-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    void RunCoverageSettings::SetStopOnAssert(bool stopOnAssert)
+    {
+      stopOnAssert_ = stopOnAssert;
+    }
+
+    //-------------------------------------------------------------------------
 	void RunCoverageSettings::SetMaxUnmatchPathsForWarning(size_t maxUnmatchPathsForWarning)
 	{
 		maxUnmatchPathsForWarning_ = maxUnmatchPathsForWarning;
@@ -92,7 +98,13 @@ namespace CppCoverage
 		return continueAfterCppException_;
 	}
 	
-	//-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    bool RunCoverageSettings::GetStopOnAssert() const
+    {
+      return stopOnAssert_;
+    }
+    
+    //-------------------------------------------------------------------------
 	size_t RunCoverageSettings::GetMaxUnmatchPathsForWarning() const
 	{
 		return maxUnmatchPathsForWarning_;

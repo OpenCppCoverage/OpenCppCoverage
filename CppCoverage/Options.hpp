@@ -61,6 +61,9 @@ namespace CppCoverage
 		void EnableCoverChildrenMode();
 		bool IsCoverChildrenModeEnabled() const;
 
+        void EnableStopOnAssertMode();
+        bool IsStopOnAssertModeEnabled() const;
+
 		void DisableAggregateByFileMode();
 		bool IsAggregateByFileModeEnabled() const;
 
@@ -101,8 +104,9 @@ namespace CppCoverage
 		bool isCoverChildrenModeEnabled_;
 		bool isAggregateByFileModeEnabled_;
 		bool isContinueAfterCppExceptionModeEnabled_;
-		bool isOptimizedBuildSupportEnabled_;
-		std::vector<OptionsExport> exports_;
+        bool isStopOnAssertModeEnabled_;
+        bool isOptimizedBuildSupportEnabled_;
+        std::vector<OptionsExport> exports_;
 		std::vector<boost::filesystem::path> inputCoveragePaths_;
 		std::vector<UnifiedDiffSettings> unifiedDiffSettingsCollection_;
 		std::vector<std::wstring> excludedLineRegexes_;
