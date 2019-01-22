@@ -478,6 +478,8 @@ namespace CppCoverage
 			options.EnableOptimizedBuildSupport();
         if (IsOptionSelected(variables, ProgramOptions::StopOnAssertOption))
           options.EnableStopOnAssertMode();
+		if (IsOptionSelected(variables, ProgramOptions::AllowManagedModules))
+			options.EnableManagedModulesSupport();
 
 		AddExporTypes(variables, options);
 		AddInputCoverages(variables, options);

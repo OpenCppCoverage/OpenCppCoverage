@@ -71,6 +71,7 @@ namespace CppCoverageTest
 			bool coverChildren_ = true;
 			bool continueAfterCppException_ = false;
 			bool optimizedBuildSupport_ = false;
+			bool managedModulesSupport_ = false;
 			std::vector<std::wstring> excludedLineRegexes_;
 			std::vector<CppCoverage::SubstitutePdbSourcePath> substitutePdbSourcePath_;
 		};

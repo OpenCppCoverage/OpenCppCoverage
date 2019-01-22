@@ -53,6 +53,7 @@ namespace CppCoverage
 		static const std::string OptimizedBuildOption;
 		static const std::string ExcludedLineRegexOption;
 		static const std::string SubstitutePdbSourcePathOption;
+		static const std::string AllowManagedModules;
 
 		ProgramOptions();
 
