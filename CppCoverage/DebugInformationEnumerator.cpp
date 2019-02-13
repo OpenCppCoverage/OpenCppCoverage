@@ -286,19 +286,27 @@ namespace CppCoverage
 		if (lineNumber.get_lineNumber(&linenum) != S_OK)
 			THROW("DIA: Cannot get line number");
 
-		ULONGLONG virtualAddress = 0;
-		if (lineNumber.get_virtualAddress(&virtualAddress) != S_OK)
-			THROW("DIA: Cannot get virtual address");
+		const auto invalidLine = 0x00f00f00;
+		if (linenum != invalidLine)
+		{
+			ULONGLONG virtualAddress = 0;
+			if (lineNumber.get_virtualAddress(&virtualAddress) != S_OK)
+				THROW("DIA: Cannot get virtual address");
 
-		CComPtr<IDiaSymbol> symbol;
-		if (session.findSymbolByVA(virtualAddress, SymTagEnum::SymTagNull, &symbol) != S_OK || !symbol)
-			THROW("DIA: Cannot find symbol");
+			CComPtr<IDiaSymbol> symbol;
+			if (session.findSymbolByVA(
+			        virtualAddress, SymTagEnum::SymTagNull, &symbol) != S_OK ||
+			    !symbol)
+			{
+				THROW("DIA: Cannot find symbol");
+			}
 
-		unsigned long symIndex = 0;
-		if (symbol->get_symIndexId(&symIndex) != S_OK)
-			THROW("DIA: Cannot get symIndex");
+			unsigned long symIndex = 0;
+			if (symbol->get_symIndexId(&symIndex) != S_OK)
+				THROW("DIA: Cannot get symIndex");
 
-		lines_.emplace_back(linenum, virtualAddress, symIndex);
+			lines_.emplace_back(linenum, virtualAddress, symIndex);
+		}
 	}
 
 	//----------------------------------------------------------------------
