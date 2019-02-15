@@ -19,6 +19,9 @@
 #include <memory>
 
 #include <boost/filesystem.hpp>
+
+// Disable: This header is deprecated. Use <boost/integer/integer_log2.hpp> instead.
+#define BOOST_ALLOW_DEPRECATED_HEADERS
 #include <boost/uuid/uuid_generators.hpp>
 #include "../ExporterExport.hpp"
 

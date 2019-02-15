@@ -162,8 +162,9 @@ namespace CppCoverage
 		}
 		if (!suggestedModuleFilter_->foundFile_)
 		{
-			return L"No modules with PDB were found. Please check your PDB "
-			       L"files.";
+			return std::wstring{
+			    L"No modules with PDB were found. Please check your PDB "
+			    L"files."};
 		}
 
 		auto suggestedSourceFile = ComputeSuggestedSourceFileFilter();

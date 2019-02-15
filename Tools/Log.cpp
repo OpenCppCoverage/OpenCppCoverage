@@ -86,7 +86,7 @@ namespace Tools
 	{
 		typedef sinks::synchronous_sink<sinks::text_ostream_backend> text_sink;
 		auto sink = boost::make_shared<text_sink>();
-		auto& backend = sink->locked_backend();
+		auto backend = sink->locked_backend();
 
 		backend->add_stream(ostr);
 		backend->auto_flush(true);

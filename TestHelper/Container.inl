@@ -43,7 +43,7 @@ namespace TestHelper
 		const Container& container2,
 		const CompareFct& compareFct)
 	{
-		using ValueType = Container::value_type;
+		using ValueType = typename Container::value_type;
 		AssertContainerEqual(container1, container2,
 			[&](const ValueType& value1, const ValueType& value2)
 		{
@@ -61,7 +61,7 @@ namespace TestHelper
 		const std::function<Key (const typename Container::value_type&)>& getKeyFct,
 		const CompareFct& compareFct)
 	{
-		std::map<Key, typename const Container::value_type*> container1ByKey;
+		std::map<Key, const typename Container::value_type*> container1ByKey;
 
 		for (const auto& object : container1)
 			container1ByKey.emplace(getKeyFct(object), &object);

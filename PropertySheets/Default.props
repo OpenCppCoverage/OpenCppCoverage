@@ -9,6 +9,8 @@
       <PreprocessorDefinitions>OPENCPPCOVERAGE_VERSION="0.9.7.0";_CRT_SECURE_NO_WARNINGS;PROJECT_DIR=R"|($(ProjectDir))|";SOLUTION_DIR=R"|($(SolutionDir))|";TARGET_FILE_NAME=R"|($(TargetFileName))|";OUT_DIR=R"|($(OutDir))|";NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>true</UseFullPaths>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />

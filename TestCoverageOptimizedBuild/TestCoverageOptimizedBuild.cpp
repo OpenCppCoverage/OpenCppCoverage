@@ -54,6 +54,6 @@ namespace TestCoverageOptimizedBuild
 	//-------------------------------------------------------------------------
 	void TestOptimizedBuild()
 	{
-		std::make_unique<CrashInOptimizedBuild>(0);
+		auto crashInOptimizedBuild = std::make_unique<CrashInOptimizedBuild>(0);
 	}
 }

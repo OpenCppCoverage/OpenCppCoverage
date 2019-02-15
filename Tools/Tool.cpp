@@ -195,7 +195,7 @@ namespace Tools
 		}
 		catch (...)
 		{
-			return L"Unkown exception";
+			return std::wstring{L"Unkown exception"};
 		}
 
 		return boost::none;
