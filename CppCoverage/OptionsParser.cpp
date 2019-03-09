@@ -31,6 +31,8 @@
 #include "CppCoverageException.hpp"
 #include "ProgramOptions.hpp"
 #include "OptionsExport.hpp"
+#include "ProgramOptionsVariablesMap.hpp"
+
 #include "Tools/WarningManager.hpp"
 #include "Tools/Log.hpp"
 
@@ -42,34 +44,6 @@ namespace CppCoverage
 {
 	namespace
 	{
-		//---------------------------------------------------------------------
-		template <typename T>
-		const T* GetOptionalValue(const po::variables_map& variables,
-		                          const std::string& optionName)
-		{
-			auto it = variables.find(optionName);
-
-			if (it == variables.end())
-				return nullptr;
-			const auto& variable = it->second;
-
-			return &variable.as<T>();
-		}
-
-		//---------------------------------------------------------------------
-		template <typename T>
-		const T& GetValue(const po::variables_map& variables,
-		                  const std::string& optionName)
-		{
-			auto* optionalValue = GetOptionalValue<T>(variables, optionName);
-
-			if (!optionalValue)
-				THROW(L"Cannot find option:" +
-				      Tools::LocalToWString(optionName));
-
-			return *optionalValue;
-		}
-
 		//---------------------------------------------------------------------
 		struct OptionsParserException : std::runtime_error
 		{
@@ -112,14 +86,15 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
-		cov::Patterns GetPatterns(const po::variables_map& variables,
-		                          const std::string& selected,
-		                          const std::string& excluded)
+		cov::Patterns
+		GetPatterns(const ProgramOptionsVariablesMap& variablesMap,
+		            const std::string& selected,
+		            const std::string& excluded)
 		{
 			cov::Patterns patterns{false};
 
 			auto selectedPatterns =
-			    GetValue<std::vector<std::string>>(variables, selected);
+			    variablesMap.GetValue<std::vector<std::string>>(selected);
 			for (const auto& pattern : selectedPatterns)
 			{
 				CheckPattern(selected, pattern);
@@ -127,7 +102,8 @@ namespace CppCoverage
 			}
 
 			auto excludedPatterns =
-			    GetOptionalValue<std::vector<std::string>>(variables, excluded);
+			    variablesMap.GetOptionalValue<std::vector<std::string>>(
+			        excluded);
 			if (excludedPatterns)
 			{
 				for (const auto& pattern : *excludedPatterns)
@@ -143,42 +119,38 @@ namespace CppCoverage
 
 		//---------------------------------------------------------------------
 		boost::optional<cov::StartInfo>
-		GetStartInfo(const po::variables_map& variables)
+		GetStartInfo(const ProgramOptionsVariablesMap& variablesMap)
 		{
-			const auto* programToRun = GetOptionalValue<std::string>(
-			    variables, ProgramOptions::ProgramToRunOption);
+			const auto* programToRun =
+			    variablesMap.GetOptionalValue<std::string>(
+			        ProgramOptions::ProgramToRunOption);
 
 			if (!programToRun)
 				return boost::none;
 
 			cov::StartInfo startInfo{*programToRun};
 
-			const auto* arguments = GetOptionalValue<std::vector<std::string>>(
-			    variables, ProgramOptions::ProgramToRunArgOption);
+			const auto* arguments =
+			    variablesMap.GetOptionalValue<std::vector<std::string>>(
+			        ProgramOptions::ProgramToRunArgOption);
 			if (arguments)
 			{
 				for (const auto& arg : *arguments)
 					startInfo.AddArgument(Tools::LocalToWString(arg));
 			}
 
-			const auto* workingDirectory = GetOptionalValue<std::string>(
-			    variables, ProgramOptions::WorkingDirectoryOption);
+			const auto* workingDirectory =
+			    variablesMap.GetOptionalValue<std::string>(
+			        ProgramOptions::WorkingDirectoryOption);
 
 			if (workingDirectory)
 				startInfo.SetWorkingDirectory(*workingDirectory);
 			return startInfo;
 		}
 
-		//---------------------------------------------------------------------
-		bool IsOptionSelected(const po::variables_map& variables,
-		                      const std::string& optionName)
-		{
-			return variables.find(optionName) != variables.end();
-		}
-
 		//-------------------------------------------------------------------------
 		void ParseConfigFile(const ProgramOptions& programOptions,
-		                     po::variables_map& variables,
+		                     ProgramOptionsVariablesMap& variablesMap,
 		                     const std::string& path)
 		{
 			std::ifstream ifs(path.c_str());
@@ -187,7 +159,7 @@ namespace CppCoverage
 				throw OptionsParserException("Cannot open config file: " +
 				                             path);
 
-			programOptions.FillVariableMap(ifs, variables);
+			programOptions.FillVariableMap(ifs, variablesMap.GetVariablesMap());
 		}
 
 		//---------------------------------------------------------------------
@@ -215,12 +187,12 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
-		void AddInputCoverages(const po::variables_map& variables,
+		void AddInputCoverages(const ProgramOptionsVariablesMap& variablesMap,
 		                       Options& options)
 		{
 			auto inputCoveragePaths =
-			    GetOptionalValue<std::vector<std::string>>(
-			        variables, ProgramOptions::InputCoverageValue);
+			    variablesMap.GetOptionalValue<std::vector<std::string>>(
+			        ProgramOptions::InputCoverageValue);
 
 			if (inputCoveragePaths)
 			{
@@ -252,12 +224,12 @@ namespace CppCoverage
 		}
 
 		//----------------------------------------------------------------------------
-		void AddUnifiedDiff(const po::variables_map& variables,
+		void AddUnifiedDiff(const ProgramOptionsVariablesMap& variablesMap,
 		                    Options& options)
 		{
 			auto unifiedDiffCollection =
-			    GetOptionalValue<std::vector<std::string>>(
-			        variables, ProgramOptions::UnifiedDiffOption);
+			    variablesMap.GetOptionalValue<std::vector<std::string>>(
+			        ProgramOptions::UnifiedDiffOption);
 
 			if (unifiedDiffCollection)
 			{
@@ -289,12 +261,13 @@ namespace CppCoverage
 		}
 
 		//----------------------------------------------------------------------------
-		void AddExcludedLineRegexes(const po::variables_map& variables,
-		                            Options& options)
+		void
+		AddExcludedLineRegexes(const ProgramOptionsVariablesMap& variablesMap,
+		                       Options& options)
 		{
 			auto excludedLineRegexes =
-			    GetOptionalValue<std::vector<std::string>>(
-			        variables, ProgramOptions::ExcludedLineRegexOption);
+			    variablesMap.GetOptionalValue<std::vector<std::string>>(
+			        ProgramOptions::ExcludedLineRegexOption);
 			if (excludedLineRegexes)
 			{
 				for (const auto& excludedLineRegex : *excludedLineRegexes)
@@ -323,7 +296,8 @@ namespace CppCoverage
 			{
 				throw OptionsParserException(
 				    error + "Path \"" + pdbPath +
-				    "\" contains '/' which is not the Windows path separator. "
+				    "\" contains '/' which is not the Windows "
+				    "path separator. "
 				    "Please use '\\' instead.");
 			}
 			auto localPath = paths.substr(pos + 1);
@@ -337,12 +311,12 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
-		void AddSubstitutePdbSourcePaths(const po::variables_map& variables,
-		                                 Options& options)
+		void AddSubstitutePdbSourcePaths(
+		    const ProgramOptionsVariablesMap& variablesMap, Options& options)
 		{
 			auto substitutePdbSourcePaths =
-			    GetOptionalValue<std::vector<std::string>>(
-			        variables, ProgramOptions::SubstitutePdbSourcePathOption);
+			    variablesMap.GetOptionalValue<std::vector<std::string>>(
+			        ProgramOptions::SubstitutePdbSourcePathOption);
 
 			if (substitutePdbSourcePaths)
 			{
@@ -453,36 +427,38 @@ namespace CppCoverage
 	boost::optional<Options> OptionsParser::Parse(int argc,
 	                                              const char** argv) const
 	{
-		po::variables_map variables;
+		ProgramOptionsVariablesMap variablesMap;
 
 		if (optionalWarningManager_)
 			CheckArgumentsSize(argc, argv, *optionalWarningManager_);
-		programOptions_->FillVariableMap(argc, argv, variables);
-		const auto* configFile = GetOptionalValue<std::string>(
-		    variables, ProgramOptions::ConfigFileOption);
+		programOptions_->FillVariableMap(
+		    argc, argv, variablesMap.GetVariablesMap());
+		const auto* configFile = variablesMap.GetOptionalValue<std::string>(
+		    ProgramOptions::ConfigFileOption);
 
 		if (configFile)
-			ParseConfigFile(*programOptions_, variables, *configFile);
+			ParseConfigFile(*programOptions_, variablesMap, *configFile);
 
-		if (IsOptionSelected(variables, ProgramOptions::HelpOption))
+		if (variablesMap.IsOptionSelected(ProgramOptions::HelpOption))
 			return boost::none;
 
 		auto modulePatterns =
-		    GetPatterns(variables,
+		    GetPatterns(variablesMap,
 		                ProgramOptions::SelectedModulesOption,
 		                ProgramOptions::ExcludedModulesOption);
 		auto sourcePatterns =
-		    GetPatterns(variables,
+		    GetPatterns(variablesMap,
 		                ProgramOptions::SelectedSourcesOption,
 		                ProgramOptions::ExcludedSourcesOption);
 
-		auto optionalStartInfo = GetStartInfo(variables);
+		auto optionalStartInfo = GetStartInfo(variablesMap);
 		Options options{
 		    modulePatterns, sourcePatterns, optionalStartInfo.get_ptr()};
 
 		bool isVerbose =
-		    IsOptionSelected(variables, ProgramOptions::VerboseOption);
-		bool isQuiet = IsOptionSelected(variables, ProgramOptions::QuietOption);
+		    variablesMap.IsOptionSelected(ProgramOptions::VerboseOption);
+		bool isQuiet =
+		    variablesMap.IsOptionSelected(ProgramOptions::QuietOption);
 
 		if (isVerbose && isQuiet)
 			throw OptionsParserException("--" + ProgramOptions::VerboseOption +
@@ -495,26 +471,26 @@ namespace CppCoverage
 		if (isQuiet)
 			options.SetLogLevel(LogLevel::Quiet);
 
-		if (IsOptionSelected(variables, ProgramOptions::CoverChildrenOption))
+		if (variablesMap.IsOptionSelected(ProgramOptions::CoverChildrenOption))
 			options.EnableCoverChildrenMode();
-		if (IsOptionSelected(variables, ProgramOptions::PluginOption))
+		if (variablesMap.IsOptionSelected(ProgramOptions::PluginOption))
 			options.EnablePlugingMode();
-		if (IsOptionSelected(variables,
-		                     ProgramOptions::NoAggregateByFileOption))
+		if (variablesMap.IsOptionSelected(
+		        ProgramOptions::NoAggregateByFileOption))
 			options.DisableAggregateByFileMode();
-		if (IsOptionSelected(variables,
-		                     ProgramOptions::ContinueAfterCppExceptionOption))
+		if (variablesMap.IsOptionSelected(
+		        ProgramOptions::ContinueAfterCppExceptionOption))
 			options.EnableContinueAfterCppExceptionMode();
-		if (IsOptionSelected(variables, ProgramOptions::OptimizedBuildOption))
+		if (variablesMap.IsOptionSelected(ProgramOptions::OptimizedBuildOption))
 			options.EnableOptimizedBuildSupport();
-		if (IsOptionSelected(variables, ProgramOptions::StopOnAssertOption))
+		if (variablesMap.IsOptionSelected(ProgramOptions::StopOnAssertOption))
 			options.EnableStopOnAssertMode();
 
-		AddExporTypes(variables, options);
-		AddInputCoverages(variables, options);
-		AddUnifiedDiff(variables, options);
-		AddExcludedLineRegexes(variables, options);
-		AddSubstitutePdbSourcePaths(variables, options);
+		AddExporTypes(variablesMap, options);
+		AddInputCoverages(variablesMap, options);
+		AddUnifiedDiff(variablesMap, options);
+		AddExcludedLineRegexes(variablesMap, options);
+		AddSubstitutePdbSourcePaths(variablesMap, options);
 
 		if (!options.GetStartInfo() && options.GetInputCoveragePaths().empty())
 			throw OptionsParserException(
@@ -525,11 +501,13 @@ namespace CppCoverage
 	}
 
 	//----------------------------------------------------------------------------
-	void OptionsParser::AddExporTypes(const po::variables_map& variables,
-	                                  Options& options) const
+	void
+	OptionsParser::AddExporTypes(const ProgramOptionsVariablesMap& variablesMap,
+	                             Options& options) const
 	{
-		auto exportTypeStrCollection = GetValue<std::vector<std::string>>(
-		    variables, ProgramOptions::ExportTypeOption);
+		auto exportTypeStrCollection =
+		    variablesMap.GetValue<std::vector<std::string>>(
+		        ProgramOptions::ExportTypeOption);
 
 		for (const auto& exportTypeStr : exportTypeStrCollection)
 		{

@@ -42,6 +42,7 @@ namespace CppCoverage
 	class ProgramOptions;
 	enum class OptionsExportType;
 	class OptionsExport;
+	class ProgramOptionsVariablesMap;
 
 	class CPPCOVERAGE_DLL OptionsParser
 	{
@@ -66,7 +67,7 @@ namespace CppCoverage
 		void ShowExplanation(std::wostream* emptyOptionsExplanation, const char* message) const;
 		
 		void AddExporTypes(
-			const boost::program_options::variables_map& variables,
+			const ProgramOptionsVariablesMap&,
 			Options& options) const;
 
 		OptionsExport CreateExport(const std::string&) const;

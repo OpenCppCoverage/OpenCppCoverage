@@ -175,6 +175,7 @@
     <ClInclude Include="IFileSystem.hpp" />
     <ClInclude Include="MonitoredLineRegister.hpp" />
     <ClInclude Include="ICoverageFilterManager.hpp" />
+    <ClInclude Include="ProgramOptionsVariablesMap.hpp" />
     <ClInclude Include="RunCoverageSettings.hpp" />
     <ClInclude Include="SubstitutePdbSourcePath.hpp" />
     <ClInclude Include="UnifiedDiffCoverageFilterManager.hpp" />
