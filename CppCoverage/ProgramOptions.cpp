@@ -21,6 +21,7 @@
 
 #include "CppCoverageException.hpp"
 #include "OptionsParser.hpp"
+#include "ExportOptionParser.hpp"
 
 namespace po = boost::program_options;
 
@@ -41,23 +42,6 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
-		std::string GetExportTypeText()
-		{
-			return "Format: <exportType>:<outputPath>.\n"
-			       "<exportType> can be: " +
-			       ProgramOptions::ExportTypeHtmlValue + ", " +
-			       ProgramOptions::ExportTypeCoberturaValue + " or " +
-			       ProgramOptions::ExportTypeBinaryValue +
-			       "\n<outputPath> (optional) export output path.\n"
-			       "Must be a folder for " +
-			       ProgramOptions::ExportTypeHtmlValue + " and a file for " +
-			       ProgramOptions::ExportTypeCoberturaValue + " or " +
-			       ProgramOptions::ExportTypeBinaryValue +
-			       ".\nExample: html:MyFolder\\MySubFolder\n"
-			       "This flag can have multiple occurrences.";
-		}
-
-		//---------------------------------------------------------------------
 		std::string GetUnifiedDiffHelp()
 		{
 			return std::string("Format: <unifiedDiffPath>") +
@@ -70,7 +54,9 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
-		void FillConfigurationOptions(po::options_description& options)
+		void
+		FillConfigurationOptions(po::options_description& options,
+			const std::vector<std::unique_ptr<IOptionParser>>& optionParsers)
 		{
 			const std::string all = "*";
 
@@ -88,11 +74,8 @@ namespace CppCoverage
 				po::value<T_Strings>()->composing(),
 				"The pattern that source's paths should NOT match. Can have multiple occurrences.")
 				(ProgramOptions::InputCoverageValue.c_str(), po::value<T_Strings>()->composing(),
-				("A output path of " + ProgramOptions::ExportTypeOption + "=" + ProgramOptions::ExportTypeBinaryValue +
+				("A output path of " + ExportOptionParser::ExportTypeOption + "=" + ExportOptionParser::ExportTypeBinaryValue +
 				". This coverage data will be merged with the current one. Can have multiple occurrences.").c_str())
-				(ProgramOptions::ExportTypeOption.c_str(),
-				po::value<T_Strings>()->default_value({ ProgramOptions::ExportTypeHtmlValue }, ProgramOptions::ExportTypeHtmlValue),
-				GetExportTypeText().c_str())
 				(ProgramOptions::WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")
 				(ProgramOptions::CoverChildrenOption.c_str(), "Enable code coverage for children processes.")
 				(ProgramOptions::NoAggregateByFileOption.c_str(), "Do not aggregate coverage for same file path.")
@@ -107,6 +90,8 @@ namespace CppCoverage
 				(ProgramOptions::SubstitutePdbSourcePathOption.c_str(), po::value<T_Strings>()->composing(),
 					"Substitute the starting path defined in the pdb by a local path.\nFormat: <pdbStartPath>?<localPath>. " 
 					"Can have multiple occurrences.");
+				for (const auto& optionParser : optionParsers)
+					optionParser->AddOption(options);
 		}
 
 		//-------------------------------------------------------------------------
@@ -137,10 +122,6 @@ namespace CppCoverage
 	const std::string ProgramOptions::NoAggregateByFileOption = "no_aggregate_by_file";
 	const std::string ProgramOptions::ProgramToRunOption = "programToRun";
 	const std::string ProgramOptions::ProgramToRunArgOption = "programToRunArg";
-	const std::string ProgramOptions::ExportTypeOption = "export_type";
-	const std::string ProgramOptions::ExportTypeHtmlValue = "html";
-	const std::string ProgramOptions::ExportTypeCoberturaValue = "cobertura";
-	const std::string ProgramOptions::ExportTypeBinaryValue = "binary";
 	const std::string ProgramOptions::InputCoverageValue = "input_coverage";
 	const std::string ProgramOptions::UnifiedDiffOption = "unified_diff";
 	const std::string ProgramOptions::ContinueAfterCppExceptionOption = "continue_after_cpp_exception";
@@ -150,14 +131,15 @@ namespace CppCoverage
     const std::string ProgramOptions::StopOnAssertOption = "stop_on_assert";
 
 	//-------------------------------------------------------------------------
-	ProgramOptions::ProgramOptions()
+	ProgramOptions::ProgramOptions(
+	    const std::vector<std::unique_ptr<IOptionParser>>& optionParsers)
 		: visibleOptions_{ "Usage: [options] -- program_to_run optional_arguments" }
 		, configurationOptions_{"Command line and configuration file"}
 		, hiddenOptions_{"Hidden"}
 		, genericOptions_{"Command line only"}
 	{				
 		FillGenericOptions(genericOptions_);
-		FillConfigurationOptions(configurationOptions_);
+		FillConfigurationOptions(configurationOptions_, optionParsers);
 		FillHiddenOptions(hiddenOptions_);
 
 		positionalOptions_.add(ProgramToRunOption.c_str(), 1);

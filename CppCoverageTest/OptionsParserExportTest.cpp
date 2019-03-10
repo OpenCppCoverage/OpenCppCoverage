@@ -17,7 +17,7 @@
 #include "stdafx.h"
 
 #include "CppCoverage/OptionsParser.hpp"
-#include "CppCoverage/ProgramOptions.hpp"
+#include "CppCoverage/ExportOptionParser.hpp"
 #include "CppCoverage/OptionsExport.hpp"
 
 #include "CppCoverageTest/TestTools.hpp"
@@ -38,20 +38,30 @@ namespace CppCoverageTest
 		}
 
 		//-------------------------------------------------------------------------
+		std::unique_ptr<cov::OptionsParser> CreateOptionParser()
+		{
+			std::vector<std::unique_ptr<cov::IOptionParser>> optionParsers;
+
+			optionParsers.push_back(std::make_unique<cov::ExportOptionParser>());
+			return std::make_unique<cov::OptionsParser>(
+			    nullptr, std::move(optionParsers));
+		}
+
+		//-------------------------------------------------------------------------
 		void TestExportTypes(
 			const std::vector<std::string>& exportTypesStr,
 			const std::vector<cov::OptionsExport>& expectedValue)
 		{
-			cov::OptionsParser parser;
+			auto parser = CreateOptionParser();
 			std::vector<std::string> arguments;
 
 			for (const auto& exportTypeStr : exportTypesStr)
 			{
-				arguments.push_back(TestTools::GetOptionPrefix() + cov::ProgramOptions::ExportTypeOption);
+				arguments.push_back(TestTools::GetOptionPrefix() + cov::ExportOptionParser::ExportTypeOption);
 				arguments.push_back(exportTypeStr);
 			}
 
-			auto options = TestTools::Parse(parser, arguments);
+			auto options = TestTools::Parse(*parser, arguments);
 
 			ASSERT_TRUE(static_cast<bool>(options));
 			const auto& exports = options->GetExports();
@@ -73,7 +83,7 @@ namespace CppCoverageTest
 	TEST(OptionsParserExportTest, ExportTypesHtml)
 	{
 		TestExportTypes(
-		{ cov::ProgramOptions::ExportTypeHtmlValue },
+		{ cov::ExportOptionParser::ExportTypeHtmlValue },
 		{ cov::OptionsExport{ cov::OptionsExportType::Html } });
 	}
 
@@ -81,7 +91,7 @@ namespace CppCoverageTest
 	TEST(OptionsParserExportTest, ExportTypesCoberturaValue)
 	{
 		TestExportTypes(
-		{ cov::ProgramOptions::ExportTypeCoberturaValue }, 
+		{ cov::ExportOptionParser::ExportTypeCoberturaValue }, 
 		{ cov::OptionsExport{ cov::OptionsExportType::Cobertura } });
 	}
 
@@ -89,7 +99,7 @@ namespace CppCoverageTest
 	TEST(OptionsParserExportTest, ExportTypesBoth)
 	{
 		TestExportTypes(
-		{ cov::ProgramOptions::ExportTypeHtmlValue, cov::ProgramOptions::ExportTypeCoberturaValue },
+		{ cov::ExportOptionParser::ExportTypeHtmlValue, cov::ExportOptionParser::ExportTypeCoberturaValue },
 		{ cov::OptionsExport{ cov::OptionsExportType::Html }, cov::OptionsExport{ cov::OptionsExportType::Cobertura } });
 	}
 
@@ -98,19 +108,19 @@ namespace CppCoverageTest
 	{
 		const std::string path = "path";
 		TestExportTypes(
-		{ cov::ProgramOptions::ExportTypeHtmlValue + cov::OptionsParser::ExportSeparator + path},
+		{ cov::ExportOptionParser::ExportTypeHtmlValue + cov::ExportOptionParser::ExportSeparator + path},
 		{ cov::OptionsExport{ cov::OptionsExportType::Html, path } });
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserExportTest, ExistingExportPath)
 	{	
-		cov::OptionsParser parser;
+		auto parser = CreateOptionParser();
 		TestHelper::TemporaryPath temporaryPath{ TestHelper::TemporaryPathOption::CreateAsFile };
 
-		std::string exportStr = cov::ProgramOptions::ExportTypeHtmlValue + 
-			cov::OptionsParser::ExportSeparator + temporaryPath.GetPath().string();
-		auto options = TestTools::Parse(parser, { TestTools::GetOptionPrefix() + cov::ProgramOptions::ExportTypeOption, 
+		std::string exportStr = cov::ExportOptionParser::ExportTypeHtmlValue + 
+			cov::ExportOptionParser::ExportSeparator + temporaryPath.GetPath().string();
+		auto options = TestTools::Parse(*parser, { TestTools::GetOptionPrefix() + cov::ExportOptionParser::ExportTypeOption, 
 								exportStr });
 		ASSERT_NE(nullptr, options.get_ptr());
 	}
@@ -118,9 +128,9 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserExportTest, InvalidExportTypes)
 	{
-		cov::OptionsParser parser;
+		auto parser = CreateOptionParser();
 
-		auto options = TestTools::Parse(parser, { TestTools::GetOptionPrefix() + cov::ProgramOptions::ExportTypeOption, "Invalid" });
+		auto options = TestTools::Parse(*parser, { TestTools::GetOptionPrefix() + cov::ExportOptionParser::ExportTypeOption, "Invalid" });
 		ASSERT_FALSE(options);
 	}
 }

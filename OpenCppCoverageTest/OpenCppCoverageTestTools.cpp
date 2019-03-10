@@ -25,6 +25,7 @@
 #include "Tools/Tool.hpp"
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
+#include "CppCoverage/ExportOptionParser.hpp"
 
 namespace cov = CppCoverage;
 
@@ -45,8 +46,8 @@ namespace OpenCppCoverageTest
 		const boost::filesystem::path& outputFolder)
 	{
 		coverageArguments.push_back(
-		{ cov::ProgramOptions::ExportTypeOption, cov::ProgramOptions::ExportTypeHtmlValue
-		+ cov::OptionsParser::ExportSeparator + outputFolder.string() });		
+		{ cov::ExportOptionParser::ExportTypeOption, cov::ExportOptionParser::ExportTypeHtmlValue
+		+ cov::ExportOptionParser::ExportSeparator + outputFolder.string() });		
 	}
 
 	//---------------------------------------------------------------------
@@ -55,8 +56,8 @@ namespace OpenCppCoverageTest
 		const boost::filesystem::path& output)
 	{
 		return{
-			cov::ProgramOptions::ExportTypeOption,
-			exportType + cov::OptionsParser::ExportSeparator + output.string() };
+			cov::ExportOptionParser::ExportTypeOption,
+			exportType + cov::ExportOptionParser::ExportSeparator + output.string() };
 	}
 
 	//-------------------------------------------------------------------------

@@ -25,6 +25,7 @@
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
 #include "CppCoverage/FilterAssistant.hpp"
+#include "CppCoverage/ExportOptionParser.hpp"
 
 #include "Tools/ScopedAction.hpp"
 #include "Tools/Tool.hpp"
@@ -68,7 +69,7 @@ namespace OpenCppCoverageTest
 			TestHelper::TemporaryPath tempFolder;
 
 			int exitCode = RunCoverageForProgram(
-			{ BuildExportTypeString(cov::ProgramOptions::ExportTypeHtmlValue,
+			{ BuildExportTypeString(cov::ExportOptionParser::ExportTypeHtmlValue,
 									  tempFolder.GetPath()) },
 			    programToRun,
 			    arguments);
@@ -144,7 +145,7 @@ namespace OpenCppCoverageTest
 		    TestCoverageConsole::GetOutputBinaryPath();
 		std::vector<std::pair<std::string, std::string>>
 		    additionalCoverageArguments = {BuildExportTypeString(
-		        cov::ProgramOptions::ExportTypeBinaryValue,
+		        cov::ExportOptionParser::ExportTypeBinaryValue,
 		        tempFolder.GetPath())};
 
 		int exitCode = RunCoverageForProgram(

@@ -27,6 +27,7 @@
 #include "CppCoverage/CoverageDataMerger.hpp"
 #include "CppCoverage/OptionsExport.hpp"
 #include "CppCoverage/RunCoverageSettings.hpp"
+#include "CppCoverage/ExportOptionParser.hpp"
 
 #include "Exporter/Html/HtmlExporter.hpp"
 #include "Exporter/CoberturaExporter.hpp"
@@ -177,7 +178,10 @@ namespace OpenCppCoverage
 	                         std::wostream* emptyOptionsExplanation) const
 	{
 		auto warningManager = std::make_shared<Tools::WarningManager>();
-		cov::OptionsParser optionsParser{warningManager};
+		std::vector<std::unique_ptr<cov::IOptionParser>> optionParsers;
+
+		optionParsers.push_back(std::make_unique<cov::ExportOptionParser>());
+		cov::OptionsParser optionsParser{warningManager, std::move(optionParsers)};
 
 		auto options = optionsParser.Parse(argc, argv, emptyOptionsExplanation);
 		auto status = FailureExitCode;

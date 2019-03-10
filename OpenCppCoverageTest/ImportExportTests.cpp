@@ -21,6 +21,7 @@
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "TestHelper/TemporaryPath.hpp"
 
+#include "CppCoverage/ExportOptionParser.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
 #include "CppCoverage/CoverageData.hpp"
 #include "CppCoverage/OptionsParser.hpp"
@@ -76,26 +77,26 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(ImportExportTest, ExportHtml)
 	{
-		RunCoverage(cov::ProgramOptions::ExportTypeHtmlValue);
+		RunCoverage(cov::ExportOptionParser::ExportTypeHtmlValue);
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(ImportExportTest, ExportCobertura)
 	{
-		RunCoverage(cov::ProgramOptions::ExportTypeCoberturaValue);
+		RunCoverage(cov::ExportOptionParser::ExportTypeCoberturaValue);
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(ImportExportTest, ExportImportBinary)
 	{
 		TestHelper::TemporaryPath initialOutput;
-		RunCoverage({ BuildExportTypeString(cov::ProgramOptions::ExportTypeBinaryValue, initialOutput) }, initialOutput);
+		RunCoverage({ BuildExportTypeString(cov::ExportOptionParser::ExportTypeBinaryValue, initialOutput) }, initialOutput);
 
 		TestHelper::TemporaryPath finalOutput;
 
 		RunCoverage(
 		{ { cov::ProgramOptions::InputCoverageValue, initialOutput.GetPath().string() },
-		{ BuildExportTypeString(cov::ProgramOptions::ExportTypeBinaryValue, finalOutput )} },
+		{ BuildExportTypeString(cov::ExportOptionParser::ExportTypeBinaryValue, finalOutput )} },
 		finalOutput);	
 
 		auto initialCoverage = ReadCoverageDataFromFile(initialOutput);

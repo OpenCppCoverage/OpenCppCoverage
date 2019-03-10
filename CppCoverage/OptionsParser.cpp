@@ -35,6 +35,8 @@
 
 #include "Tools/WarningManager.hpp"
 #include "Tools/Log.hpp"
+#include "IOptionParser.hpp"
+#include "OptionsParserException.hpp"
 
 namespace po = boost::program_options;
 namespace cov = CppCoverage;
@@ -44,15 +46,6 @@ namespace CppCoverage
 {
 	namespace
 	{
-		//---------------------------------------------------------------------
-		struct OptionsParserException : std::runtime_error
-		{
-			OptionsParserException(const std::string& message)
-			    : std::runtime_error(message.c_str())
-			{
-			}
-		};
-
 		//---------------------------------------------------------------------
 		void CheckPattern(const std::string& name, const std::string& value)
 		{
@@ -160,30 +153,6 @@ namespace CppCoverage
 				                             path);
 
 			programOptions.FillVariableMap(ifs, variablesMap.GetVariablesMap());
-		}
-
-		//---------------------------------------------------------------------
-		struct ExportString
-		{
-			std::string exportOutputPath;
-			std::string exportType;
-		};
-
-		//---------------------------------------------------------------------
-		ExportString ParseExportString(const std::string& exportStr)
-		{
-			ExportString exportString;
-			auto pos = exportStr.find(OptionsParser::ExportSeparator);
-
-			if (pos != std::string::npos)
-			{
-				exportString.exportType = exportStr.substr(0, pos);
-				exportString.exportOutputPath = exportStr.substr(pos + 1);
-			}
-			else
-				exportString.exportType = exportStr;
-
-			return exportString;
 		}
 
 		//---------------------------------------------------------------------
@@ -353,31 +322,22 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	const char OptionsParser::ExportSeparator = ':';
 	const char OptionsParser::PathSeparator = '?';
 	const int OptionsParser::DosCommandLineMaxSize = 8191;
 
 	//-------------------------------------------------------------------------
 	OptionsParser::OptionsParser(
-	    std::shared_ptr<Tools::WarningManager> warningManager)
-	    : OptionsParser()
+	    std::shared_ptr<Tools::WarningManager> warningManager,
+	    std::vector<std::unique_ptr<IOptionParser>>&& optionParsers)
+	    : programOptions_{std::make_unique<ProgramOptions>(optionParsers)},
+	      optionalWarningManager_{std::move(warningManager)}
 	{
-		optionalWarningManager_ = std::move(warningManager);
-		if (!optionalWarningManager_)
-			THROW("OptionalWarningManager is null");
+		optionParsers_ = std::move(optionParsers);
 	}
 
 	//-------------------------------------------------------------------------
-	OptionsParser::OptionsParser()
+	OptionsParser::OptionsParser() : OptionsParser({}, {})
 	{
-		exportTypes_.emplace(ProgramOptions::ExportTypeHtmlValue,
-		                     OptionsExportType::Html);
-		exportTypes_.emplace(ProgramOptions::ExportTypeCoberturaValue,
-		                     OptionsExportType::Cobertura);
-		exportTypes_.emplace(ProgramOptions::ExportTypeBinaryValue,
-		                     OptionsExportType::Binary);
-
-		programOptions_ = std::make_unique<ProgramOptions>();
 	}
 
 	//-------------------------------------------------------------------------
@@ -486,7 +446,6 @@ namespace CppCoverage
 		if (variablesMap.IsOptionSelected(ProgramOptions::StopOnAssertOption))
 			options.EnableStopOnAssertMode();
 
-		AddExporTypes(variablesMap, options);
 		AddInputCoverages(variablesMap, options);
 		AddUnifiedDiff(variablesMap, options);
 		AddExcludedLineRegexes(variablesMap, options);
@@ -497,44 +456,9 @@ namespace CppCoverage
 			    "You must specify a program to execute or use --" +
 			    ProgramOptions::InputCoverageValue);
 
+		for (const auto& optionParser : optionParsers_)
+			optionParser->ParseOption(variablesMap, options);
 		return options;
-	}
-
-	//----------------------------------------------------------------------------
-	void
-	OptionsParser::AddExporTypes(const ProgramOptionsVariablesMap& variablesMap,
-	                             Options& options) const
-	{
-		auto exportTypeStrCollection =
-		    variablesMap.GetValue<std::vector<std::string>>(
-		        ProgramOptions::ExportTypeOption);
-
-		for (const auto& exportTypeStr : exportTypeStrCollection)
-		{
-			auto optionExport = CreateExport(exportTypeStr);
-
-			options.AddExport(optionExport);
-		}
-	}
-
-	//-------------------------------------------------------------------------
-	OptionsExport
-	OptionsParser::CreateExport(const std::string& exportStr) const
-	{
-		auto exportString = ParseExportString(exportStr);
-		auto it = exportTypes_.find(exportString.exportType);
-
-		if (it == exportTypes_.end())
-			throw OptionsParserException(exportString.exportType +
-			                             " is not a valid export type.");
-
-		OptionsExportType type = it->second;
-		auto exportOutputPath = exportString.exportOutputPath;
-
-		if (!exportOutputPath.empty())
-			return OptionsExport{type, exportOutputPath};
-
-		return OptionsExport{type};
 	}
 
 	//-------------------------------------------------------------------------
