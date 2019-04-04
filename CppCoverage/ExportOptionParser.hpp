@@ -16,9 +16,12 @@
 
 #pragma once
 
+#include <map>
+
 #include "CppCoverageExport.hpp"
 #include "IOptionParser.hpp"
 #include "OptionsExport.hpp"
+#include "ExportPluginDescription.hpp"
 
 namespace CppCoverage
 {
@@ -31,12 +34,18 @@ namespace CppCoverage
 		static const std::string ExportTypeCoberturaValue;
 		static const std::string ExportTypeBinaryValue;
 
-		ExportOptionParser();
+		explicit ExportOptionParser(std::vector<ExportPluginDescription>&&);
+
+		ExportOptionParser(const ExportOptionParser&) = delete;
+		ExportOptionParser& operator=(const ExportOptionParser&) = delete;
 
 		void ParseOption(const ProgramOptionsVariablesMap&, Options&) override;
 		void AddOption(boost::program_options::options_description&) override;
 
 	  private:
-		std::map<std::string, OptionsExportType> exportTypes_;
+		std::wstring GetExportTypeText() const;
+
+		std::map<std::wstring, OptionsExportType> exportTypes_;
+		std::vector<ExportPluginDescription> exportPluginDescriptions_;
 	};
 }

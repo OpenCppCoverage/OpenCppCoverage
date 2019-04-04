@@ -81,8 +81,8 @@ namespace OpenCppCoverage
 			for (const auto& singleExport : exports)
 			{
 				const auto& exporter = exporters.at(singleExport.GetType());
-				auto optionalOutputPath = singleExport.GetOutputPath();
-				auto output = (optionalOutputPath) ? *optionalOutputPath : exporter->GetDefaultPath(defaultPathPrefix);
+				auto parameter = singleExport.GetParameter();
+				auto output = (parameter) ? fs::path{ *parameter } : exporter->GetDefaultPath(defaultPathPrefix);
 
 				exporter->Export(coverage, output);
 			}
@@ -180,7 +180,8 @@ namespace OpenCppCoverage
 		auto warningManager = std::make_shared<Tools::WarningManager>();
 		std::vector<std::unique_ptr<cov::IOptionParser>> optionParsers;
 
-		optionParsers.push_back(std::make_unique<cov::ExportOptionParser>());
+		optionParsers.push_back(std::make_unique<cov::ExportOptionParser>(
+		    std::vector<cov::ExportPluginDescription>{}));
 		cov::OptionsParser optionsParser{warningManager, std::move(optionParsers)};
 
 		auto options = optionsParser.Parse(argc, argv, emptyOptionsExplanation);

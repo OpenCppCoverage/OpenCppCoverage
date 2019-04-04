@@ -17,10 +17,12 @@
 #include "stdafx.h"
 #include "ExportOptionParser.hpp"
 #include <boost/program_options/options_description.hpp>
-
+#include <range/v3/algorithm/find_if.hpp>
 #include "ProgramOptionsVariablesMap.hpp"
 #include "Options.hpp"
 #include "OptionsParserException.hpp"
+#include "ExportPluginDescription.hpp"
+#include "Tools/Tool.hpp"
 
 namespace CppCoverage
 {
@@ -29,17 +31,17 @@ namespace CppCoverage
 		//---------------------------------------------------------------------
 		struct ExportData
 		{
-			std::string argument;
-			std::string exportType;
+			std::wstring argument;
+			std::wstring exportType;
 		};
 
 		//---------------------------------------------------------------------
-		ExportData ParseExportData(const std::string& exportStr)
+		ExportData ParseExportData(const std::wstring& exportStr)
 		{
 			ExportData exportData;
 			auto pos = exportStr.find(ExportOptionParser::ExportSeparator);
 
-			if (pos != std::string::npos)
+			if (pos != std::wstring::npos)
 			{
 				exportData.exportType = exportStr.substr(0, pos);
 				exportData.argument = exportStr.substr(pos + 1);
@@ -52,7 +54,7 @@ namespace CppCoverage
 
 		//-------------------------------------------------------------------------
 		boost::optional<OptionsExport> CreateExport(
-		    const std::map<std::string, OptionsExportType>& exportTypes,
+		    const std::map<std::wstring, OptionsExportType>& exportTypes,
 		    const ExportData& exportData)
 		{
 			auto it = exportTypes.find(exportData.exportType);
@@ -62,30 +64,37 @@ namespace CppCoverage
 				OptionsExportType type = it->second;
 				auto exportOutputPath = exportData.argument;
 
-				if (!exportOutputPath.empty())
-					return OptionsExport{type, exportOutputPath};
-				return OptionsExport{type};
+				return OptionsExport{
+				    type,
+				    std::wstring{exportData.exportType},
+				    exportOutputPath.empty()
+				        ? std::nullopt
+				        : std::make_optional(exportOutputPath)};
 			}
 
 			return boost::none;
 		}
 
-		//---------------------------------------------------------------------
-		std::string GetExportTypeText()
+		//-------------------------------------------------------------------------
+		bool TryAddExportPlugin(const std::vector<ExportPluginDescription>&
+		                            exportPluginDescriptions,
+		                        const ExportData& exportData,
+		                        Options& options)
 		{
-			return "Format: <exportType>:<outputPath>.\n"
-			       "<exportType> can be: " +
-			       ExportOptionParser::ExportTypeHtmlValue + ", " +
-			       ExportOptionParser::ExportTypeCoberturaValue + " or " +
-			       ExportOptionParser::ExportTypeBinaryValue +
-			       "\n<outputPath> (optional) export output path.\n"
-			       "Must be a folder for " +
-			       ExportOptionParser::ExportTypeHtmlValue +
-			       " and a file for " +
-			       ExportOptionParser::ExportTypeCoberturaValue + " or " +
-			       ExportOptionParser::ExportTypeBinaryValue +
-			       ".\nExample: html:MyFolder\\MySubFolder\n"
-			       "This flag can have multiple occurrences.";
+			auto it = ranges::find_if(
+			    exportPluginDescriptions, [&](const auto& plugin) {
+				    return plugin.GetPluginName() == exportData.exportType;
+			    });
+			if (it == ranges::end(exportPluginDescriptions))
+				return false;
+
+			auto argument = exportData.argument;
+			it->CheckArgument(argument);
+
+			options.AddExport(OptionsExport{OptionsExportType::Plugin,
+			                                std::wstring{exportData.exportType},
+			                                std::move(argument)});
+			return true;
 		}
 	}
 
@@ -97,14 +106,19 @@ namespace CppCoverage
 	const std::string ExportOptionParser::ExportTypeBinaryValue = "binary";
 
 	//-------------------------------------------------------------------------
-	ExportOptionParser::ExportOptionParser()
+	ExportOptionParser::ExportOptionParser(
+	    std::vector<ExportPluginDescription>&& exportPluginDescriptions)
+	    : exportPluginDescriptions_{std::move(exportPluginDescriptions)}
 	{
-		exportTypes_.emplace(ExportOptionParser::ExportTypeHtmlValue,
-		                     OptionsExportType::Html);
-		exportTypes_.emplace(ExportOptionParser::ExportTypeCoberturaValue,
-		                     OptionsExportType::Cobertura);
-		exportTypes_.emplace(ExportOptionParser::ExportTypeBinaryValue,
-		                     OptionsExportType::Binary);
+		exportTypes_.emplace(
+		    Tools::LocalToWString(ExportOptionParser::ExportTypeHtmlValue),
+		    OptionsExportType::Html);
+		exportTypes_.emplace(
+		    Tools::LocalToWString(ExportOptionParser::ExportTypeCoberturaValue),
+		    OptionsExportType::Cobertura);
+		exportTypes_.emplace(
+		    Tools::LocalToWString(ExportOptionParser::ExportTypeBinaryValue),
+		    OptionsExportType::Binary);
 	}
 
 	//----------------------------------------------------------------------------
@@ -117,15 +131,18 @@ namespace CppCoverage
 
 		for (const auto& exportTypeStr : exportTypeStrCollection)
 		{
-			auto exportData = ParseExportData(exportTypeStr);
+			auto exportData =
+			    ParseExportData(Tools::LocalToWString(exportTypeStr));
 			auto optionExport = CreateExport(exportTypes_, exportData);
 
 			if (optionExport)
-				options.AddExport(*optionExport);
-			else
+				options.AddExport(std::move(*optionExport));
+			else if (!TryAddExportPlugin(
+			             exportPluginDescriptions_, exportData, options))
 			{
-				throw OptionsParserException(exportData.exportType +
-				                             " is not a valid export type.");
+				throw OptionsParserException(
+				    Tools::ToLocalString(exportData.exportType) +
+				    " is not a valid export type.");
 			}
 		}
 	}
@@ -139,6 +156,38 @@ namespace CppCoverage
 		    boost::program_options::value<std::vector<std::string>>()
 		        ->default_value({ExportOptionParser::ExportTypeHtmlValue},
 		                        ExportOptionParser::ExportTypeHtmlValue),
-		    GetExportTypeText().c_str());
+		    Tools::ToLocalString(GetExportTypeText()).c_str());
+	}
+
+	//----------------------------------------------------------------------------
+	std::wstring ExportOptionParser::GetExportTypeText() const
+	{
+		const auto separator = ", ";
+		std::vector<std::pair<std::wstring, std::wstring>> exportArgumentInfos =
+		    {{Tools::LocalToWString(ExportOptionParser::ExportTypeHtmlValue),
+		      L"output folder (optional)"},
+		     {Tools::LocalToWString(
+		          ExportOptionParser::ExportTypeCoberturaValue),
+		      L"output file (optional)"},
+		     {Tools::LocalToWString(ExportOptionParser::ExportTypeBinaryValue),
+		      L"output file (optional)"}};
+		for (const auto& description : exportPluginDescriptions_)
+		{
+			exportArgumentInfos.push_back(
+			    {description.GetPluginName(),
+			     description.GetParameterDescription()});
+		}
+
+		std::wstring exports;
+		for (const auto& argumentInfos : exportArgumentInfos)
+		{
+			exports += L"   " + argumentInfos.first + L": " +
+			           argumentInfos.second + L'\n';
+		}
+		return L"Format: <exportType>[:<parameter>].\n"
+		       "<exportType> can be:\n" +
+		       exports +
+		       L"Example: html:MyFolder\\MySubFolder\n"
+		       "This flag can have multiple occurrences.";
 	}
 }

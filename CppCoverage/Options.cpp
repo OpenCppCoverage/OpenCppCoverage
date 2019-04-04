@@ -148,9 +148,9 @@ namespace CppCoverage
     }
 
     //-------------------------------------------------------------------------
-	void Options::AddExport(const OptionsExport& optionExport)
+	void Options::AddExport(OptionsExport&& optionExport)
 	{
-		exports_.push_back(optionExport);
+		exports_.push_back(std::move(optionExport));
 	}
 	
 	//-------------------------------------------------------------------------

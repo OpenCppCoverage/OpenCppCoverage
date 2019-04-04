@@ -16,8 +16,7 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <boost/filesystem.hpp>
+#include <optional>
 
 #include "CppCoverageExport.hpp"
 
@@ -27,27 +26,33 @@ namespace CppCoverage
 	{
 		Html,
 		Cobertura,
-		Binary
+		Binary,
+		Plugin
 	};
 
 	class CPPCOVERAGE_DLL OptionsExport
 	{
-	public:
-		explicit OptionsExport(OptionsExportType type);
-		OptionsExport(OptionsExportType type, const boost::filesystem::path&);
+	  public:
+		explicit OptionsExport(OptionsExportType type,
+		                       std::wstring&& text,
+		                       std::optional<std::wstring>&& argument);
 
-		OptionsExport(const OptionsExport&) = default;
-		OptionsExport& operator=(const OptionsExport&) = default;
+		OptionsExport(OptionsExport&&) = default;
+		OptionsExport& operator=(OptionsExport&&) = default;
+
+		OptionsExport(const OptionsExport&) = delete;
+		OptionsExport& operator=(const OptionsExport&) = delete;
 		
 		OptionsExportType GetType() const;
-		const std::wstring& GetTypeString() const;
-		const boost::optional<boost::filesystem::path>& GetOutputPath() const;
+		const std::wstring& GetText() const;
+		const std::optional<std::wstring>& GetParameter() const;
 
-		friend std::wostream& operator<<(std::wostream& ostr, const OptionsExport&);
+		friend std::wostream& operator<<(std::wostream& ostr,
+		                                 const OptionsExport&);
 
-	private:
+	  private:
 		OptionsExportType type_;
-		boost::optional<boost::filesystem::path> outputPath_;
+		std::wstring text_;
+		std::optional<std::wstring> parameter_;
 	};
 }
-

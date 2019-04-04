@@ -70,7 +70,7 @@ namespace CppCoverage
 		void EnableContinueAfterCppExceptionMode();
 		bool IsContinueAfterCppExceptionModeEnabled() const;
 
-		void AddExport(const OptionsExport&);
+		void AddExport(OptionsExport&&);
 		const std::vector<OptionsExport>& GetExports() const;
 		
 		void AddInputCoveragePath(const boost::filesystem::path&);

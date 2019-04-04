@@ -22,17 +22,11 @@
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	OptionsExport::OptionsExport(OptionsExportType type)
-		: type_{type}
-	{
-	}
+	OptionsExport::OptionsExport(OptionsExportType type,
+	                             std::wstring&& text,
+	                             std::optional<std::wstring>&& parameter)
+	    : type_{type}, text_{std::move(text)}, parameter_{std::move(parameter)}
 
-	//-------------------------------------------------------------------------
-	OptionsExport::OptionsExport(
-		OptionsExportType type, 
-		const boost::filesystem::path& outputPath)
-		: type_{type}
-		, outputPath_{ outputPath }
 	{
 	}
 
@@ -43,33 +37,27 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	const std::wstring& OptionsExport::GetTypeString() const
+	const std::wstring& OptionsExport::GetText() const
 	{
-		static const std::map<OptionsExportType, std::wstring> optionsExportTypeTexts =
-		{ { OptionsExportType::Html, L"Html" },
-		{ OptionsExportType::Cobertura, L"Cobertura" },
-		{ OptionsExportType::Binary, L"Binary" } };
-
-		return optionsExportTypeTexts.at(type_);
+		return text_;
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::optional<boost::filesystem::path>& OptionsExport::GetOutputPath() const
+	const std::optional<std::wstring>& OptionsExport::GetParameter() const
 	{
-		return outputPath_;
+		return parameter_;
 	}
 
 	//-------------------------------------------------------------------------
-	std::wostream& operator<<(
-		std::wostream& ostr,
-		const OptionsExport& optionsExport)
+	std::wostream& operator<<(std::wostream& ostr,
+	                          const OptionsExport& optionsExport)
 	{
-		ostr << optionsExport.GetTypeString();
+		ostr << optionsExport.GetText();
 
-		auto outputPath = optionsExport.GetOutputPath();
+		auto parameter = optionsExport.GetParameter();
 
-		if (outputPath)
-			ostr << " " << outputPath->wstring();
+		if (parameter)
+			ostr << " " << *parameter;
 		return ostr;
 	}
 }

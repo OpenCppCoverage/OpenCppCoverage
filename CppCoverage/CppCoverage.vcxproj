@@ -171,6 +171,7 @@
     <ClInclude Include="CoverageFilterManager.hpp" />
     <ClInclude Include="DebugInformationEnumerator.hpp" />
     <ClInclude Include="ExportOptionParser.hpp" />
+    <ClInclude Include="ExportPluginDescription.hpp" />
     <ClInclude Include="FileSystem.hpp" />
     <ClInclude Include="FilterAssistant.hpp" />
     <ClInclude Include="IOptionParser.hpp" />
