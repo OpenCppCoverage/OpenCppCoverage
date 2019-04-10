@@ -23,10 +23,9 @@ namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
 	OptionsExport::OptionsExport(OptionsExportType type,
-	                             std::wstring&& text,
+	                             std::wstring&& name,
 	                             std::optional<std::wstring>&& parameter)
-	    : type_{type}, text_{std::move(text)}, parameter_{std::move(parameter)}
-
+	    : type_{type}, name_{std::move(name)}, parameter_{std::move(parameter)}
 	{
 	}
 
@@ -37,9 +36,9 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	const std::wstring& OptionsExport::GetText() const
+	const std::wstring& OptionsExport::GetName() const
 	{
-		return text_;
+		return name_;
 	}
 
 	//-------------------------------------------------------------------------
@@ -52,7 +51,7 @@ namespace CppCoverage
 	std::wostream& operator<<(std::wostream& ostr,
 	                          const OptionsExport& optionsExport)
 	{
-		ostr << optionsExport.GetText();
+		ostr << optionsExport.GetName();
 
 		auto parameter = optionsExport.GetParameter();
 

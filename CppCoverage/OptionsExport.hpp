@@ -34,7 +34,7 @@ namespace CppCoverage
 	{
 	  public:
 		explicit OptionsExport(OptionsExportType type,
-		                       std::wstring&& text,
+		                       std::wstring&& name,
 		                       std::optional<std::wstring>&& argument);
 
 		OptionsExport(OptionsExport&&) = default;
@@ -44,7 +44,7 @@ namespace CppCoverage
 		OptionsExport& operator=(const OptionsExport&) = delete;
 		
 		OptionsExportType GetType() const;
-		const std::wstring& GetText() const;
+		const std::wstring& GetName() const;
 		const std::optional<std::wstring>& GetParameter() const;
 
 		friend std::wostream& operator<<(std::wostream& ostr,
@@ -52,7 +52,7 @@ namespace CppCoverage
 
 	  private:
 		OptionsExportType type_;
-		std::wstring text_;
+		std::wstring name_;
 		std::optional<std::wstring> parameter_;
 	};
 }
