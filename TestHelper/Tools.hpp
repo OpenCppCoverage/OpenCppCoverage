@@ -46,9 +46,8 @@ namespace TestHelper
 
 	//-------------------------------------------------------------------------
 	template <typename ExceptionType, typename Fct>
-	void
-	AssertThrow(Fct fct,
-	            std::function<bool(const ExceptionType&)> exceptionPredicate)
+	void AssertThrow(Fct fct,
+	                 std::function<void(const ExceptionType&)> exceptionCheck)
 	{
 		try
 		{
@@ -56,10 +55,13 @@ namespace TestHelper
 		}
 		catch (const ExceptionType& e)
 		{
-			if (exceptionPredicate(e))
-				return;
-			throw std::runtime_error("Expected exception does not match predicate.");
+			exceptionCheck(e);
+			return;
 		}
-		throw std::runtime_error("Expected exception not found.");
+		catch (...)
+		{
+			throw std::runtime_error("Expected exception not raised.");
+		}
+		throw std::runtime_error("No exception raised.");
 	}
 }
