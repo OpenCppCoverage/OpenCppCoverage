@@ -32,7 +32,7 @@ namespace Tools
 	TOOLS_DLL std::string ToUtf8String(const std::wstring&);
 
 	TOOLS_DLL boost::optional<std::wstring> Try(std::function<void()>);	
-	TOOLS_DLL boost::filesystem::path GetTemplateFolder();
+	TOOLS_DLL boost::filesystem::path GetExecutableFolder();
 	
 	TOOLS_DLL void CreateMiniDumpOnUnHandledException();
 

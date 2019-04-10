@@ -61,6 +61,12 @@ namespace OpenCppCoverage
 			return L"CoverageOutput";
 		}
 
+		//-------------------------------------------------------------------------
+		boost::filesystem::path GetTemplateFolder()
+		{
+			return Tools::GetExecutableFolder() / "Template";
+		}
+
 		//-----------------------------------------------------------------------------
 		void Export(
 			const cov::Options& options, 
@@ -70,11 +76,11 @@ namespace OpenCppCoverage
 			std::map<cov::OptionsExportType, std::unique_ptr<Exporter::IExporter>> exporters;
 			
 			exporters.emplace(cov::OptionsExportType::Html, 
-				std::unique_ptr<Exporter::IExporter>(new Exporter::HtmlExporter{ Tools::GetTemplateFolder() }));
+				std::unique_ptr<Exporter::IExporter>(std::make_unique<Exporter::HtmlExporter>( GetTemplateFolder() )));
 			exporters.emplace(cov::OptionsExportType::Cobertura, 
-				std::unique_ptr<Exporter::IExporter>(new Exporter::CoberturaExporter{}));
+				std::unique_ptr<Exporter::IExporter>(std::make_unique<Exporter::CoberturaExporter>()));
 			exporters.emplace(cov::OptionsExportType::Binary,
-				std::unique_ptr<Exporter::IExporter>(new Exporter::BinaryExporter{}));
+				std::unique_ptr<Exporter::IExporter>(std::make_unique<Exporter::BinaryExporter>()));
 			
 			auto defaultPathPrefix = GetDefaultPathPrefix(options);
 

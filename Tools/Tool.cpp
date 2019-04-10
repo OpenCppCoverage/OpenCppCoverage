@@ -46,14 +46,6 @@ namespace Tools
 		}
 
 		//-----------------------------------------------------------------------------
-		fs::path GetExecutableFolder()
-		{
-			fs::path executablePath = GetExecutablePath();
-
-			return executablePath.parent_path();
-		}
-
-		//-----------------------------------------------------------------------------
 		MINIDUMP_TYPE GetMiniDumpDefaultType()
 		{
 			return static_cast<MINIDUMP_TYPE>(MiniDumpWithDataSegs |
@@ -152,6 +144,14 @@ namespace Tools
 		}
 	}
 
+	//-----------------------------------------------------------------------------
+	fs::path GetExecutableFolder()
+	{
+		fs::path executablePath = GetExecutablePath();
+
+		return executablePath.parent_path();
+	}
+
 	//-------------------------------------------------------------------------
 	std::string ToLocalString(const std::wstring& str)
 	{
@@ -174,12 +174,6 @@ namespace Tools
 	std::wstring Utf8ToWString(const std::string& str)
 	{
 		return ToWString(CP_UTF8, str);
-	}
-
-	//-------------------------------------------------------------------------
-	boost::filesystem::path GetTemplateFolder()
-	{
-		return GetExecutableFolder() / "Template";
 	}
 
 	//-------------------------------------------------------------------------
