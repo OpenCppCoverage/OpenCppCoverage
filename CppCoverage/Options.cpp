@@ -49,6 +49,7 @@ namespace CppCoverage
 		, isAggregateByFileModeEnabled_{true}
 		, isContinueAfterCppExceptionModeEnabled_{false}
 		, isOptimizedBuildSupportEnabled_{false}
+		, isHideDebuggerModeEnabled_{false}
 	{
 		if (startInfo)
 			optionalStartInfo_ = *startInfo;
@@ -133,6 +134,18 @@ namespace CppCoverage
 	bool Options::IsContinueAfterCppExceptionModeEnabled() const
 	{
 		return isContinueAfterCppExceptionModeEnabled_;
+	}
+
+	//-------------------------------------------------------------------------
+	void Options::EnableHideDebuggerMode()
+	{
+		isHideDebuggerModeEnabled_ = true;
+	}
+
+	//-------------------------------------------------------------------------
+	bool Options::IsHideDebuggerModeEnabled() const
+	{
+		return isHideDebuggerModeEnabled_;
 	}
 
     //-------------------------------------------------------------------------
@@ -231,6 +244,7 @@ namespace CppCoverage
 		ostr << L"Aggregate by file: " << options.isAggregateByFileModeEnabled_ << std::endl;
 		ostr << L"Continue after C++ exception: " << options.isContinueAfterCppExceptionModeEnabled_ << std::endl;
 		ostr << L"Optimized build support: " << options.isOptimizedBuildSupportEnabled_ << std::endl;
+		ostr << L"Hide debugger: " << options.isHideDebuggerModeEnabled_ << std::endl;
 
 		ostr << L"Export: ";
 		for (const auto& optionExport : options.exports_)

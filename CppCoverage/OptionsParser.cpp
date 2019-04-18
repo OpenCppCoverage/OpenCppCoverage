@@ -445,6 +445,8 @@ namespace CppCoverage
 			options.EnableOptimizedBuildSupport();
 		if (variablesMap.IsOptionSelected(ProgramOptions::StopOnAssertOption))
 			options.EnableStopOnAssertMode();
+		if (IsOptionSelected(variables, ProgramOptions::HideDebuggerOption))
+			options.EnableHideDebuggerMode();
 
 		AddInputCoverages(variablesMap, options);
 		AddUnifiedDiff(variablesMap, options);

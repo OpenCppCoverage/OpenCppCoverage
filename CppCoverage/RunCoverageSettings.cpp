@@ -34,7 +34,8 @@ namespace CppCoverage
 	      maxUnmatchPathsForWarning_{0},
 	      optimizedBuildSupport_{false},
 	      excludedLineRegexes_{excludedLineRegexes},
-	      substitutePdbSourcePath_{substitutePdbSourcePath}
+	      substitutePdbSourcePath_{substitutePdbSourcePath},
+		  hideDebugger_{false}
 	{
 	}
 
@@ -66,6 +67,12 @@ namespace CppCoverage
 	void RunCoverageSettings::SetOptimizedBuildSupport(bool optimizedBuildSupport)
 	{
 		optimizedBuildSupport_ = optimizedBuildSupport;
+	}
+
+	//-------------------------------------------------------------------------
+	void RunCoverageSettings::SetHideDebugger(bool hideDebugger)
+	{
+		hideDebugger_ = hideDebugger;
 	}
 
 	//-------------------------------------------------------------------------
@@ -126,5 +133,11 @@ namespace CppCoverage
 	const std::vector<SubstitutePdbSourcePath>& RunCoverageSettings::GetSubstitutePdbSourcePaths() const
 	{
 		return substitutePdbSourcePath_;
+	}
+
+	//-------------------------------------------------------------------------
+	bool RunCoverageSettings::GetHideDebugger() const
+	{
+		return hideDebugger_;
 	}
 }
