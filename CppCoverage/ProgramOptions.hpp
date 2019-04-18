@@ -51,6 +51,7 @@ namespace CppCoverage
 		static const std::string OptimizedBuildOption;
 		static const std::string ExcludedLineRegexOption;
 		static const std::string SubstitutePdbSourcePathOption;
+		static const std::string HideDebuggerOption;
 
 		explicit ProgramOptions(const std::vector<std::unique_ptr<IOptionParser>>&);
 

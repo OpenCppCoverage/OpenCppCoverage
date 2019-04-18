@@ -20,6 +20,7 @@
 
 #include "Tools/ScopedAction.hpp"
 #include "Tools/Tool.hpp"
+#include "DebugHider.hpp"
 
 namespace CppCoverage
 {
@@ -33,6 +34,7 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	ExceptionHandler::ExceptionHandler()
+		: hideDebugger_{ false }
 	{
 		breakPointExceptionCode_.emplace(EXCEPTION_BREAKPOINT, std::vector<HANDLE>{});
 		breakPointExceptionCode_.emplace(ExceptionEmulationX86ErrorCode, std::vector<HANDLE>{});
@@ -84,7 +86,11 @@ namespace CppCoverage
 				auto& processHandles = it->second;
 				// Breakpoint exception need to be ignore the first time by process.
 				if (std::find(processHandles.begin(), processHandles.end(), hProcess) == processHandles.end())
+				{
+					if (hideDebugger_)
+						HidePebInProcess(hProcess);
 					processHandles.push_back(hProcess);
+				}
 				else
 					return ExceptionHandlerStatus::BreakPoint;
 			}
@@ -116,6 +122,12 @@ namespace CppCoverage
 			if (it != processes.end())
 				processes.erase(it);
 		}
+	}
+
+	//-------------------------------------------------------------------------
+	void ExceptionHandler::SetHideDebugger(bool hideDebugger)
+	{
+		hideDebugger_ = hideDebugger;
 	}
 
 	//-------------------------------------------------------------------------

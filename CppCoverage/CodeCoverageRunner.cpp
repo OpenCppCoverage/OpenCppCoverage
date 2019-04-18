@@ -79,6 +79,8 @@ namespace CppCoverage
 		    std::make_unique<DebugInformationEnumerator>(settings.GetSubstitutePdbSourcePaths()),
 			filterAssistant_);
 
+		exceptionHandler_->SetHideDebugger(settings.GetHideDebugger());
+
 		const auto& startInfo = settings.GetStartInfo();
 		int exitCode = debugger.Debug(startInfo, *this);
 		const auto& path = startInfo.GetPath();
