@@ -19,14 +19,7 @@
 #include "DebugInformationEnumerator.hpp"
 #include <memory>
 #include <unordered_map>
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
+#include <filesystem>
 
 namespace FileFilter
 {
@@ -51,18 +44,18 @@ namespace CppCoverage
 		                      std::shared_ptr<FilterAssistant>);
 		~MonitoredLineRegister();
 
-		bool RegisterLineToMonitor(const boost::filesystem::path& modulePath,
+		bool RegisterLineToMonitor(const std::filesystem::path& modulePath,
 		                           HANDLE hProcess,
 		                           void* baseOfImage);
 
 	  private:
-		bool IsSourceFileSelected(const boost::filesystem::path&) override;
-		void OnSourceFile(const boost::filesystem::path&,
+		bool IsSourceFileSelected(const std::filesystem::path&) override;
+		void OnSourceFile(const std::filesystem::path&,
 		                  const std::vector<Line>&) override;
 
 		using LineNumberByAddress =
 		    std::unordered_map<DWORD64, std::vector<int>>;
-		void SetBreakPoint(const boost::filesystem::path&,
+		void SetBreakPoint(const std::filesystem::path&,
 		                   HANDLE hProcess,
 		                   std::vector<DWORD64>&&,
 		                   const LineNumberByAddress&);

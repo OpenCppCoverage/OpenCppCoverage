@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "../ExporterExport.hpp"
 
@@ -26,18 +26,18 @@ namespace Exporter
 	{
 	public:
 		HtmlFile(
-			boost::filesystem::path absolutePath,
-			boost::filesystem::path relativeLinkPath);
+			std::filesystem::path absolutePath,
+			std::filesystem::path relativeLinkPath);
 		HtmlFile(const HtmlFile&) = default;
 
-		const boost::filesystem::path& GetAbsolutePath() const;
-		const boost::filesystem::path& GetRelativeLinkPath() const;
+		const std::filesystem::path& GetAbsolutePath() const;
+		const std::filesystem::path& GetRelativeLinkPath() const;
 
 	private:		
 		HtmlFile& operator=(const HtmlFile&) = delete;
 
-		boost::filesystem::path absolutePath_;
-		boost::filesystem::path relativeLinkPath_;
+		std::filesystem::path absolutePath_;
+		std::filesystem::path relativeLinkPath_;
 	};
 }
 

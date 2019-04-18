@@ -24,9 +24,9 @@
 #include "Tools.hpp"
 
 using namespace FileFilter;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
-namespace boost
+namespace std
 {
 	namespace filesystem
 	{

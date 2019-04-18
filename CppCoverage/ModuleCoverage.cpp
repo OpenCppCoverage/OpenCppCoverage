@@ -22,7 +22,7 @@
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	ModuleCoverage::ModuleCoverage(const boost::filesystem::path& path)
+	ModuleCoverage::ModuleCoverage(const std::filesystem::path& path)
 		: path_(path)
 	{
 	}
@@ -33,7 +33,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	FileCoverage& ModuleCoverage::AddFile(const boost::filesystem::path& filePath)
+	FileCoverage& ModuleCoverage::AddFile(const std::filesystem::path& filePath)
 	{
 		files_.push_back(std::unique_ptr<FileCoverage>(new FileCoverage(filePath)));
 
@@ -41,7 +41,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path& ModuleCoverage::GetPath() const
+	const std::filesystem::path& ModuleCoverage::GetPath() const
 	{
 		return path_;
 	}

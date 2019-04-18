@@ -17,14 +17,7 @@
 #pragma once
 
 #include <string>
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
+#include <filesystem>
 
 namespace CppCoverage
 {
@@ -38,8 +31,8 @@ namespace Exporter
 	public:
 		IExporter() = default;
 
-		virtual boost::filesystem::path GetDefaultPath(const std::wstring& prefix) const = 0;
-		virtual void Export(const CppCoverage::CoverageData&, const boost::filesystem::path& output) = 0;
+		virtual std::filesystem::path GetDefaultPath(const std::wstring& prefix) const = 0;
+		virtual void Export(const CppCoverage::CoverageData&, const std::filesystem::path& output) = 0;
 
 	private:
 		IExporter(const IExporter&) = delete;

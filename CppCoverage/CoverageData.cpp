@@ -52,7 +52,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	ModuleCoverage& CoverageData::AddModule(const boost::filesystem::path& path)
+	ModuleCoverage& CoverageData::AddModule(const std::filesystem::path& path)
 	{
 		modules_.push_back(std::unique_ptr<ModuleCoverage>(new ModuleCoverage(path)));
 

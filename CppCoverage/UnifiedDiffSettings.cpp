@@ -21,21 +21,21 @@ namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
 	UnifiedDiffSettings::UnifiedDiffSettings(
-		const boost::filesystem::path& unifiedDiffPath,
-		const boost::optional<boost::filesystem::path>& rootDiffFolder)
+		const std::filesystem::path& unifiedDiffPath,
+		const boost::optional<std::filesystem::path>& rootDiffFolder)
 		: unifiedDiffPath_{unifiedDiffPath}
 		, rootDiffFolder_{rootDiffFolder}
 	{
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path& UnifiedDiffSettings::GetUnifiedDiffPath() const
+	const std::filesystem::path& UnifiedDiffSettings::GetUnifiedDiffPath() const
 	{
 		return unifiedDiffPath_;
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::optional<boost::filesystem::path>& UnifiedDiffSettings::GetRootDiffFolder() const
+	const boost::optional<std::filesystem::path>& UnifiedDiffSettings::GetRootDiffFolder() const
 	{
 		return rootDiffFolder_;
 	}

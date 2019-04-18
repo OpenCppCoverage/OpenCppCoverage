@@ -18,7 +18,7 @@
 #include "HtmlFileCoverageExporter.hpp"
 
 #include <fstream>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <boost/spirit/include/classic.hpp>
 #include <boost/spirit/include/classic_tree_to_xml.hpp>
 
@@ -26,7 +26,7 @@
 
 #include "../ExporterException.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 namespace cov = CppCoverage;
 
 namespace Exporter

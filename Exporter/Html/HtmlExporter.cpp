@@ -63,7 +63,7 @@ namespace Exporter
 	}
 
 	//-------------------------------------------------------------------------
-	boost::filesystem::path HtmlExporter::GetDefaultPath(const std::wstring&) const
+	std::filesystem::path HtmlExporter::GetDefaultPath(const std::wstring&) const
 	{
 		auto now = std::time(nullptr);
 		auto localNow = std::localtime(&now);
@@ -77,7 +77,7 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	void HtmlExporter::Export(
 		const CppCoverage::CoverageData& coverageData, 
-		const boost::filesystem::path& outputFolderPrefix)
+		const std::filesystem::path& outputFolderPrefix)
 	{	
 		HtmlFolderStructure htmlFolderStructure{templateFolder_};
 		cov::CoverageRateComputer coverageRateComputer{ coverageData };

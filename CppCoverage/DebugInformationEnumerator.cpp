@@ -22,7 +22,7 @@
 #include <dia2.h>
 #include <atlbase.h>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <boost/algorithm/string.hpp>
 
 #include "tools/Log.hpp"
@@ -187,7 +187,7 @@ namespace CppCoverage
 
 		//----------------------------------------------------------------------
 		CComPtr<IDiaDataSource>
-		LoadDataForExe(const boost::filesystem::path& path)
+		LoadDataForExe(const std::filesystem::path& path)
 		{
 			CComPtr<IDiaDataSource> sourcePtr;
 
@@ -221,7 +221,7 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	bool
-	DebugInformationEnumerator::Enumerate(const boost::filesystem::path& path,
+	DebugInformationEnumerator::Enumerate(const std::filesystem::path& path,
 	                                      IDebugInformationHandler& handler)
 	{
 		auto sourcePtr = LoadDataForExe(path);
@@ -310,7 +310,7 @@ namespace CppCoverage
 	}
 
 	//----------------------------------------------------------------------
-	boost::filesystem::path DebugInformationEnumerator::GetSourceFileName(
+	std::filesystem::path DebugInformationEnumerator::GetSourceFileName(
 	    IDiaSourceFile& sourceFile) const
 	{
 		DiaString fileName;

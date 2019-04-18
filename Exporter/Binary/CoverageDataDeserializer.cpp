@@ -17,6 +17,8 @@
 #include "stdafx.h"
 #include "CoverageDataDeserializer.hpp"
 
+#include <fstream>
+
 #include "CoverageData.pb.hpp"
 
 #include "CppCoverage/CoverageData.hpp"
@@ -107,7 +109,7 @@ namespace Exporter
 		
 	//-------------------------------------------------------------------------
 	CppCoverage::CoverageData CoverageDataDeserializer::Deserialize(
-		const boost::filesystem::path& path, 
+		const std::filesystem::path& path, 
 		const std::string& errorIfNotCorrectFormat) const
 	{
 		std::ifstream ifs(path.string(), std::ios::binary);

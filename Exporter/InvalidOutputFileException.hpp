@@ -17,16 +17,9 @@
 #pragma once
 
 #include <stdexcept>
+#include <filesystem>
 
 #include "ExporterExport.hpp"
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
 
 namespace Exporter
 {
@@ -38,7 +31,7 @@ namespace Exporter
 	class EXPORTER_DLL InvalidOutputFileException : public std::runtime_error
 	{
 	  public:
-		InvalidOutputFileException(const boost::filesystem::path& output,
+		InvalidOutputFileException(const std::filesystem::path& output,
 		                           const std::string& outputKind);
 	};
 #pragma warning(pop)

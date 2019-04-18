@@ -18,14 +18,7 @@
 
 #include <boost/optional/optional_fwd.hpp>
 #include <ctime>
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
+#include <filesystem>
 
 namespace CppCoverage
 {
@@ -34,7 +27,7 @@ namespace CppCoverage
 	  public:
 		virtual ~IFileSystem() = default;
 
-		virtual boost::optional<std::time_t>
-		GetLastWriteTime(const boost::filesystem::path&) const = 0;
+		virtual boost::optional<std::filesystem::file_time_type>
+		GetLastWriteTime(const std::filesystem::path&) const = 0;
 	};
 }

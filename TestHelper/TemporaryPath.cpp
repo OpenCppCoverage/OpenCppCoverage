@@ -15,19 +15,31 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
+#include <system_error>
+#include <random>
+
 #include "TemporaryPath.hpp"
 
 #include "Tools/Log.hpp"
 #include "TestHelper/Tools.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace TestHelper
 {
 	//-------------------------------------------------------------------------	
 	TemporaryPath::TemporaryPath(TemporaryPathOption temporaryPathOption)
 	{
-		path_ = fs::absolute(fs::temp_directory_path() / fs::unique_path());
+		auto now = std::chrono::system_clock::now().time_since_epoch();
+		auto seed = static_cast<unsigned int>(now.count());
+		std::default_random_engine generator(seed);
+		std::uniform_int_distribution<int> distribution;
+		auto temp_directory = fs::temp_directory_path();
+
+		do
+		{
+			path_ = fs::absolute(temp_directory / std::to_string(distribution(generator)));
+		} while (fs::exists(path_));
 
 		if (temporaryPathOption == TemporaryPathOption::CreateAsFolder)
 			fs::create_directories(path_);
@@ -38,7 +50,7 @@ namespace TestHelper
 	//-------------------------------------------------------------------------
 	TemporaryPath::~TemporaryPath()
 	{
-		boost::system::error_code error;
+		std::error_code error;
 		if (!fs::remove_all(path_, error))
 		{
 			LOG_ERROR << error;
@@ -46,19 +58,19 @@ namespace TestHelper
 	}
 
 	//-------------------------------------------------------------------------
-	TemporaryPath::operator const boost::filesystem::path& () const
+	TemporaryPath::operator const std::filesystem::path& () const
 	{
 		return GetPath();
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path& TemporaryPath::GetPath() const
+	const std::filesystem::path& TemporaryPath::GetPath() const
 	{
 		return path_;
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path* TemporaryPath::operator->() const
+	const std::filesystem::path* TemporaryPath::operator->() const
 	{
 		return &path_;
 	}

@@ -21,15 +21,15 @@
 namespace TestCoverageOptimizedBuild
 {
 	//-------------------------------------------------------------------------
-	boost::filesystem::path GetMainCppPath()
+	std::filesystem::path GetMainCppPath()
 	{
 		return __FILE__;
 	}
 
 	//-------------------------------------------------------------------------
-	boost::filesystem::path GetOutputBinaryPath()
+	std::filesystem::path GetOutputBinaryPath()
 	{
-		return boost::filesystem::path(OUT_DIR) / TARGET_FILE_NAME;
+		return std::filesystem::path(OUT_DIR) / TARGET_FILE_NAME;
 	}
 
 	//-------------------------------------------------------------------------

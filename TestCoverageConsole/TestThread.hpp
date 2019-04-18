@@ -16,15 +16,15 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 namespace TestCoverageConsole
 {
 	void RunThread();	
 
 	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetTestThreadFilename()
+	inline std::filesystem::path GetTestThreadFilename()
 	{
-		return boost::filesystem::path(__FILE__).replace_extension("cpp").filename();
+		return std::filesystem::path(__FILE__).replace_extension("cpp").filename();
 	}
 }

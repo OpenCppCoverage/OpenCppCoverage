@@ -22,7 +22,7 @@
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	FileCoverage::FileCoverage(const boost::filesystem::path& path)
+	FileCoverage::FileCoverage(const std::filesystem::path& path)
 		: path_(path)
 	{
 	}
@@ -46,7 +46,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path& FileCoverage::GetPath() const
+	const std::filesystem::path& FileCoverage::GetPath() const
 	{
 		return path_;
 	}

@@ -16,6 +16,8 @@
 
 #include "stdafx.h"
 
+#include <fstream>
+
 #include <boost/algorithm/string.hpp>
 #include "CppCoverage/FileCoverage.hpp"
 #include "Exporter/Html/HtmlFileCoverageExporter.hpp"

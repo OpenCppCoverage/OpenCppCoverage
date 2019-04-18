@@ -17,7 +17,7 @@
 #pragma once
 
 #include <boost/optional.hpp>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <map>
 
 #include "LineCoverage.hpp"
@@ -28,12 +28,12 @@ namespace CppCoverage
 	class CPPCOVERAGE_DLL FileCoverage
 	{
 	public:
-		explicit FileCoverage(const boost::filesystem::path& path);
+		explicit FileCoverage(const std::filesystem::path& path);
 
 		void AddLine(unsigned int lineNumber, bool hasBeenExecuted);
 		void UpdateLine(unsigned int lineNumber, bool hasBeenExecuted);
 
-		const boost::filesystem::path& GetPath() const;
+		const std::filesystem::path& GetPath() const;
 		const LineCoverage* operator[](unsigned int line) const;
 		std::vector<LineCoverage> GetLines() const;
 
@@ -43,7 +43,7 @@ namespace CppCoverage
 		FileCoverage(const FileCoverage&) = delete;
 			
 	private:
-		boost::filesystem::path path_;
+		std::filesystem::path path_;
 		std::map<unsigned int, LineCoverage> lines_;	
 	};
 }

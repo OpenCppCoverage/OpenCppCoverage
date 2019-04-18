@@ -17,7 +17,8 @@
 #include "stdafx.h"
 #include "TemplateHtmlExporter.hpp"
 
-#include <boost/filesystem.hpp>
+#include <fstream>
+#include <filesystem>
 #include <boost/algorithm/string.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
@@ -32,7 +33,7 @@
 #include "../ExporterException.hpp"
 
 namespace cov = CppCoverage;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace Exporter
 {

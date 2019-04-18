@@ -19,7 +19,7 @@
 #include <unordered_set>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "CoberturaExporter.hpp"
 #include "CppCoverage/CoverageData.hpp"
@@ -33,7 +33,7 @@
 
 namespace cov = CppCoverage;
 namespace property_tree = boost::property_tree;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace Exporter
 {
@@ -166,9 +166,9 @@ namespace Exporter
 	CoberturaExporter::CoberturaExporter() = default;
 
 	//-------------------------------------------------------------------------
-	boost::filesystem::path CoberturaExporter::GetDefaultPath(const std::wstring& prefix) const
+	std::filesystem::path CoberturaExporter::GetDefaultPath(const std::wstring& prefix) const
 	{
-		boost::filesystem::path path{ prefix };
+		std::filesystem::path path{ prefix };
 		
 		path += "Coverage.xml";
 
@@ -178,7 +178,7 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	void CoberturaExporter::Export(
 		const CppCoverage::CoverageData& coverageData, 
-		const boost::filesystem::path& output)
+		const std::filesystem::path& output)
 	{
 		Tools::CreateParentFolderIfNeeded(output);
 		std::wofstream ofs{ output.string().c_str() };

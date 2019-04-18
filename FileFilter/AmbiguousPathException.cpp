@@ -21,9 +21,9 @@ namespace FileFilter
 {	
 	//-------------------------------------------------------------------------
 	AmbiguousPathException::AmbiguousPathException(
-		const boost::filesystem::path& postFixPath,
-		const boost::filesystem::path& firstPossiblePath,
-		const boost::filesystem::path& secondPossiblePath)
+		const std::filesystem::path& postFixPath,
+		const std::filesystem::path& firstPossiblePath,
+		const std::filesystem::path& secondPossiblePath)
 		: std::runtime_error{"AmbiguousPathException"}
 		, postFixPath_{ postFixPath }
 		, firstPossiblePath_{ firstPossiblePath }
@@ -32,19 +32,19 @@ namespace FileFilter
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path& AmbiguousPathException::GetPostFixPath() const
+	const std::filesystem::path& AmbiguousPathException::GetPostFixPath() const
 	{
 		return postFixPath_;
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path& AmbiguousPathException::GetFirstPossiblePath() const
+	const std::filesystem::path& AmbiguousPathException::GetFirstPossiblePath() const
 	{
 		return firstPossiblePath_;
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path& AmbiguousPathException::GetSecondPossiblePath() const
+	const std::filesystem::path& AmbiguousPathException::GetSecondPossiblePath() const
 	{
 		return secondPossiblePath_;
 	}

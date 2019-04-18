@@ -19,7 +19,7 @@
 #include <vector>
 #include <memory>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "CppCoverageExport.hpp"
 
@@ -33,12 +33,12 @@ namespace CppCoverage
 		typedef std::vector<std::unique_ptr<FileCoverage>> T_FileCoverageCollection;
 
 	public:
-		explicit ModuleCoverage(const boost::filesystem::path& path);
+		explicit ModuleCoverage(const std::filesystem::path& path);
 		~ModuleCoverage();
 
-		FileCoverage& AddFile(const boost::filesystem::path& filename);
+		FileCoverage& AddFile(const std::filesystem::path& filename);
 		
-		const boost::filesystem::path& GetPath() const;
+		const std::filesystem::path& GetPath() const;
 		const T_FileCoverageCollection& GetFiles() const;
 
 	private:
@@ -47,7 +47,7 @@ namespace CppCoverage
 		
 	private:
 		T_FileCoverageCollection files_;
-		boost::filesystem::path path_;		
+		std::filesystem::path path_;		
 	};
 }
 

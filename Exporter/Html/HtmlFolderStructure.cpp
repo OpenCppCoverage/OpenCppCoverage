@@ -24,7 +24,7 @@
 #include "Tools/Tool.hpp"
 #include "Tools/UniquePath.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace Exporter
 {
@@ -48,7 +48,7 @@ namespace Exporter
 				if (fs::is_directory(path))
 					fs::create_directories(destination);
 				else
-					fs::copy_file(path, destination, fs::copy_option::overwrite_if_exists);
+					fs::copy_file(path, destination, fs::copy_options::overwrite_existing);
 			}
 		}
 	}
@@ -56,13 +56,13 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	struct HtmlFolderStructure::Hierarchy
 	{
-		explicit Hierarchy(const boost::filesystem::path& path)
+		explicit Hierarchy(const std::filesystem::path& path)
 			: path_{ path } 
 		{
 			fs::create_directories(path);
 		}
 
-		boost::filesystem::path path_;
+		std::filesystem::path path_;
 		Tools::UniquePath uniqueChildrenPath_;
 	};
 
@@ -71,7 +71,7 @@ namespace Exporter
 	const std::wstring HtmlFolderStructure::FolderModules = L"Modules";
 
 	//-------------------------------------------------------------------------
-	HtmlFolderStructure::HtmlFolderStructure(const boost::filesystem::path& templateFolder)
+	HtmlFolderStructure::HtmlFolderStructure(const std::filesystem::path& templateFolder)
 		: templateFolder_(templateFolder)
 	{
 	}
@@ -80,7 +80,7 @@ namespace Exporter
 	HtmlFolderStructure::~HtmlFolderStructure() = default;
 
 	//-------------------------------------------------------------------------
-	boost::filesystem::path HtmlFolderStructure::CreateCurrentRoot(const boost::filesystem::path& outputFolder)
+	std::filesystem::path HtmlFolderStructure::CreateCurrentRoot(const std::filesystem::path& outputFolder)
 	{
 		auto root{ fs::absolute(outputFolder) };
 		optionalCurrentRoot_ = std::make_unique<Hierarchy>(root);
@@ -92,7 +92,7 @@ namespace Exporter
 	}
 
 	//-------------------------------------------------------------------------
-	HtmlFile HtmlFolderStructure::CreateCurrentModule(const boost::filesystem::path& modulePath)
+	HtmlFile HtmlFolderStructure::CreateCurrentModule(const std::filesystem::path& modulePath)
 	{
 		if (!optionalCurrentRoot_)
 			THROW(L"No root is selected");
@@ -112,7 +112,7 @@ namespace Exporter
 	}	
 	
 	//---------------------------------------------------------------------
-	HtmlFile HtmlFolderStructure::GetHtmlFilePath(const boost::filesystem::path& filePath) const
+	HtmlFile HtmlFolderStructure::GetHtmlFilePath(const std::filesystem::path& filePath) const
 	{
 		if (!optionalCurrentModule_)
 			THROW(L"No root module selected");

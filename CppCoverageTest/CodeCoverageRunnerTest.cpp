@@ -16,7 +16,7 @@
 
 #include "stdafx.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <boost/algorithm/string.hpp>
 #include <boost/range/algorithm/count_if.hpp>
 
@@ -55,7 +55,7 @@
 #include "TestTools.hpp"
 
 namespace cov = CppCoverage;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 namespace logging = boost::log;
 
 namespace CppCoverageTest
@@ -364,7 +364,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST_F(CodeCoverageRunnerTest, UnifiedDiff)
 	{
-		auto diffPath = boost::filesystem::path(PROJECT_DIR) / "Data" / "TestDiff.diff";
+		auto diffPath = std::filesystem::path(PROJECT_DIR) / "Data" / "TestDiff.diff";
 
 		CoverageArgs args{ 
 			{ TestCoverageConsole::TestDiff },

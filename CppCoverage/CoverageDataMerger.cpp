@@ -22,7 +22,7 @@
 #include "FileCoverage.hpp"
 #include "LineCoverage.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace CppCoverage
 {
@@ -156,7 +156,7 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	void CoverageDataMerger::MergeFileCoverage(CoverageData& coverageData) const
 	{
-		std::map<boost::filesystem::path, std::vector<FileCoverage*>> fileCoveragesByPath;
+		std::map<std::filesystem::path, std::vector<FileCoverage*>> fileCoveragesByPath;
 
 		for (const auto& module : coverageData.GetModules())
 		{

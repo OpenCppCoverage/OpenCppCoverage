@@ -160,13 +160,13 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void Options::AddInputCoveragePath(const boost::filesystem::path& path)
+	void Options::AddInputCoveragePath(const std::filesystem::path& path)
 	{
 		inputCoveragePaths_.push_back(path);
 	}
 
 	//-------------------------------------------------------------------------
-	const std::vector<boost::filesystem::path>& Options::GetInputCoveragePaths() const
+	const std::vector<std::filesystem::path>& Options::GetInputCoveragePaths() const
 	{
 		return inputCoveragePaths_;
 	}

@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 #include "Tools/MappedFile.hpp"
+#include <fstream>
 
 #include "TestHelper/TemporaryPath.hpp"
 
@@ -35,7 +36,7 @@ namespace ToolsTests
 		}
 
 		//---------------------------------------------------------------------
-		std::vector<std::string> GetLines(const boost::filesystem::path& path)
+		std::vector<std::string> GetLines(const std::filesystem::path& path)
 		{
 			std::ifstream ifs(path.wstring());
 			std::vector<std::string> lines;

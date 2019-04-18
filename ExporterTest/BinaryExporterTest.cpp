@@ -22,7 +22,7 @@
 #include "TestHelper/TemporaryPath.hpp"
 
 namespace cov = CppCoverage;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace ExporterTest
 {

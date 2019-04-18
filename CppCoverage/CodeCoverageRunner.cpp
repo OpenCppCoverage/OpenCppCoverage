@@ -19,7 +19,6 @@
 
 #include <sstream>
 #include <boost/optional.hpp>
-#include <boost/filesystem.hpp>
 
 #include "tools/Log.hpp"
 

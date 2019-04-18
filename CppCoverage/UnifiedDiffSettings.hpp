@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <boost/optional/optional.hpp>
 
 #include "CppCoverageExport.hpp"
@@ -27,18 +27,18 @@ namespace CppCoverage
 	{
 	public:
 		UnifiedDiffSettings(
-			const boost::filesystem::path& unifiedDiffPath,
-			const boost::optional<boost::filesystem::path>& rootDiffFolder);
+			const std::filesystem::path& unifiedDiffPath,
+			const boost::optional<std::filesystem::path>& rootDiffFolder);
 		UnifiedDiffSettings(const UnifiedDiffSettings&) = default;
 		UnifiedDiffSettings(UnifiedDiffSettings&&) = default;
 
-		const boost::filesystem::path& GetUnifiedDiffPath() const;
-		const boost::optional<boost::filesystem::path>& GetRootDiffFolder() const;
+		const std::filesystem::path& GetUnifiedDiffPath() const;
+		const boost::optional<std::filesystem::path>& GetRootDiffFolder() const;
 
 		UnifiedDiffSettings& operator=(const UnifiedDiffSettings&) = default;
 
 	private:
-		boost::filesystem::path unifiedDiffPath_;
-		boost::optional<boost::filesystem::path> rootDiffFolder_;
+		std::filesystem::path unifiedDiffPath_;
+		boost::optional<std::filesystem::path> rootDiffFolder_;
 	};
 }

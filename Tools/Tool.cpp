@@ -21,13 +21,15 @@
 #include <cvt/wstring>
 #include <iostream>
 #include <codecvt>
+#include <filesystem>
+#include <system_error>
 
 #include "DbgHelp.hpp"
 #include "Log.hpp"
 #include "ToolsException.hpp"
 #include "ScopedAction.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace Tools
 {
@@ -207,7 +209,7 @@ namespace Tools
 	//-------------------------------------------------------------------------
 	void ShowOutputMessage(
 		const std::wstring& message, 
-		const boost::filesystem::path& path)
+		const std::filesystem::path& path)
 	{
 		LOG_INFO << GetSeparatorLine();
 		LOG_INFO << message << path.wstring();
@@ -221,14 +223,14 @@ namespace Tools
 	}
 	
 	//---------------------------------------------------------------------
-	void CreateParentFolderIfNeeded(const boost::filesystem::path& path)
+	void CreateParentFolderIfNeeded(const std::filesystem::path& path)
 	{
-		if (path.has_parent_path() && !path.filename_is_dot())
+		if (path.has_parent_path())
 		{
 			auto parentPath = path.parent_path();
-			boost::system::error_code er;
+			std::error_code er;
 
-			boost::filesystem::create_directories(parentPath, er);
+			std::filesystem::create_directories(parentPath, er);
 			if (er)
 			{
 				THROW(L"Error when creating folder " << parentPath.wstring()

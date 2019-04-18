@@ -16,7 +16,7 @@
 
 #include "stdafx.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <boost/algorithm/string/case_conv.hpp>
 
 #include "TestHelper/TemporaryPath.hpp"
@@ -28,7 +28,7 @@
 
 #include "OpenCppCoverageTestTools.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 namespace cov = CppCoverage;
 
 namespace OpenCppCoverageTest

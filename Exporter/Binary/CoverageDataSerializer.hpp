@@ -16,19 +16,12 @@
 
 #pragma once
 
+#include <filesystem>
 #include "../ExporterExport.hpp"
 
 namespace CppCoverage
 {
 	class CoverageData;
-}
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
 }
 
 namespace Exporter
@@ -40,7 +33,7 @@ namespace Exporter
 
 		CoverageDataSerializer() = default;
 
-		void Serialize(const CppCoverage::CoverageData&, const boost::filesystem::path&) const;
+		void Serialize(const CppCoverage::CoverageData&, const std::filesystem::path&) const;
 
 	private:
 		CoverageDataSerializer(const CoverageDataSerializer&) = delete;

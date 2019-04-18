@@ -20,7 +20,7 @@
 
 #include <ctime>
 #include <boost/optional/optional.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <memory>
 #include "ProgramOptions.hpp"
 #include "Tools/Tool.hpp"
@@ -34,7 +34,7 @@ namespace CppCoverage
 		GetAdviceMessage(const std::wstring& noFileSelectedMessage,
 		                 const std::string& selectedOption,
 		                 const std::string& excludedOption,
-		                 const boost::filesystem::path& suggestedFilter)
+		                 const std::filesystem::path& suggestedFilter)
 		{
 			auto selectOptionFlag = L"--" + Tools::LocalToWString(selectedOption);
 			auto excludedOptionFlag =
@@ -61,7 +61,7 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
-		void OnNewFile(const boost::filesystem::path& file, bool isSelected)
+		void OnNewFile(const std::filesystem::path& file, bool isSelected)
 		{
 			if (isSelected)
 			{
@@ -74,13 +74,13 @@ namespace CppCoverage
 		}
 
 		//-------------------------------------------------------------------------
-		boost::optional<boost::filesystem::path> ComputeSuggestedFilter() const
+		boost::optional<std::filesystem::path> ComputeSuggestedFilter() const
 		{
 			if (foundFile_)
 				return boost::none;
 
-			boost::optional<boost::filesystem::path> suggestedFilter;
-			std::time_t newest_modification_time = 0;
+			boost::optional<std::filesystem::path> suggestedFilter;
+			std::filesystem::file_time_type newest_modification_time;
 			for (const auto& file : files_)
 			{
 				auto time = fileSystem_->GetLastWriteTime(file);
@@ -100,7 +100,7 @@ namespace CppCoverage
 
 	  private:
 		std::shared_ptr<IFileSystem> fileSystem_;
-		std::vector<boost::filesystem::path> files_;
+		std::vector<std::filesystem::path> files_;
 	};
 
 	//-------------------------------------------------------------------------
@@ -120,14 +120,14 @@ namespace CppCoverage
 	FilterAssistant::~FilterAssistant() = default;
 
 	//-------------------------------------------------------------------------
-	void FilterAssistant::OnNewModule(const boost::filesystem::path& module,
+	void FilterAssistant::OnNewModule(const std::filesystem::path& module,
 	                                  bool isSelected)
 	{
 		suggestedModuleFilter_->OnNewFile(module, isSelected);
 	}
 
 	//-------------------------------------------------------------------------
-	boost::optional<boost::filesystem::path>
+	boost::optional<std::filesystem::path>
 	FilterAssistant::ComputeSuggestedModuleFilter() const
 	{
 		return suggestedModuleFilter_->ComputeSuggestedFilter();
@@ -135,14 +135,14 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	void
-	FilterAssistant::OnNewSourceFile(const boost::filesystem::path& sourceFile,
+	FilterAssistant::OnNewSourceFile(const std::filesystem::path& sourceFile,
 	                              bool isSelected)
 	{
 		suggestedSourceFileFilter_->OnNewFile(sourceFile, isSelected);
 	}
 
 	//-------------------------------------------------------------------------
-	boost::optional<boost::filesystem::path>
+	boost::optional<std::filesystem::path>
 	FilterAssistant::ComputeSuggestedSourceFileFilter() const
 	{
 		return suggestedSourceFileFilter_->ComputeSuggestedFilter();

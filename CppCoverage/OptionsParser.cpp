@@ -20,7 +20,9 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <boost/filesystem.hpp>
+#include <fstream>
+#include <filesystem>
+
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
@@ -40,7 +42,7 @@
 
 namespace po = boost::program_options;
 namespace cov = CppCoverage;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace CppCoverage
 {

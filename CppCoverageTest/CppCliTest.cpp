@@ -23,7 +23,7 @@
 
 #include "TestHelper/Tools.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace CppCoverageTest
 {

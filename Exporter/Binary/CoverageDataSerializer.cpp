@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 #include "CoverageDataSerializer.hpp"
+#include <fstream>
 
 #include "CoverageData.pb.hpp"
 
@@ -95,7 +96,7 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	void CoverageDataSerializer::Serialize(
 		const cov::CoverageData& coverageData,
-		const boost::filesystem::path& output) const
+		const std::filesystem::path& output) const
 	{		
 		pb::CoverageData coverageDataProtoBuff;
 		Tools::CreateParentFolderIfNeeded(output);

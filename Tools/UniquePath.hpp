@@ -19,14 +19,7 @@
 #include "ToolsExport.hpp"
 
 #include <set>
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
+#include <filesystem>
 
 namespace Tools
 {
@@ -43,9 +36,9 @@ namespace Tools
 		// GetUniquePath returns "path" if there was no previous 
 		// call to GetUniquePath with this value else it returns an unique
 		// path starting with "path".
-		boost::filesystem::path GetUniquePath(const boost::filesystem::path& path);
+		std::filesystem::path GetUniquePath(const std::filesystem::path& path);
 
 	private:
-		std::set<boost::filesystem::path> existingPathSet_;
+		std::set<std::filesystem::path> existingPathSet_;
 	};
 }

@@ -17,6 +17,8 @@
 #include "stdafx.h"
 #include "Log.hpp"
 
+#include <filesystem>
+
 #include <boost/log/expressions.hpp>
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/log/utility/setup/console.hpp>
@@ -43,7 +45,7 @@ namespace Tools
 	}
 
 	//-------------------------------------------------------------------------
-	void InitConsoleAndFileLog(const boost::filesystem::path& logPath)
+	void InitConsoleAndFileLog(const std::filesystem::path& logPath)
 	{		
 		boost::log::add_common_attributes();
 

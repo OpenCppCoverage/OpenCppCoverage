@@ -17,7 +17,7 @@
 #pragma once
 
 #include <windows.h>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace FileFilter
 {
@@ -26,14 +26,14 @@ namespace FileFilter
 	public:
 		//---------------------------------------------------------------------------
 	  ModuleInfo(HANDLE hProcess,
-		         const boost::filesystem::path& path,
+		         const std::filesystem::path& path,
 		         void* baseOfImage)
 		  : hProcess_{hProcess}, path_{path}, baseOfImage_{baseOfImage}
 	  {
 	  }
 
 	  const HANDLE hProcess_;
-	  const boost::filesystem::path path_;
+	  const std::filesystem::path path_;
 	  void* const baseOfImage_;
 	};
 }

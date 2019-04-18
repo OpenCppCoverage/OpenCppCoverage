@@ -18,7 +18,7 @@
 
 #include <memory>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 // Disable: This header is deprecated. Use <boost/integer/integer_log2.hpp> instead.
 #define BOOST_ALLOW_DEPRECATED_HEADERS
@@ -38,7 +38,7 @@ namespace ctemplate
 	class TemplateDictionary;
 }
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace Exporter
 {

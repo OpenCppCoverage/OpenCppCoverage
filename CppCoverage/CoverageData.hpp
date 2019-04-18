@@ -19,16 +19,9 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <filesystem>
 
 #include "CppCoverageExport.hpp"
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
 
 namespace CppCoverage
 {
@@ -45,7 +38,7 @@ namespace CppCoverage
 
 		CoverageData(CoverageData&&);			
 		CoverageData& operator=(CoverageData&&);
-		ModuleCoverage& AddModule(const boost::filesystem::path& name);
+		ModuleCoverage& AddModule(const std::filesystem::path& name);
 		
 		void SetName(const std::wstring&);
 		void SetExitCode(int);

@@ -17,7 +17,7 @@
 #include "stdafx.h"
 
 #include <Windows.h>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
@@ -33,7 +33,7 @@
 
 #include "OpenCppCoverageTestTools.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 namespace cov = CppCoverage;
 
 namespace OpenCppCoverageTest

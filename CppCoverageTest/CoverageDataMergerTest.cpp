@@ -17,7 +17,7 @@
 #include "stdafx.h"
 
 #include <random>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "CppCoverage/CoverageDataMerger.hpp"
 #include "CppCoverage/CoverageData.hpp" 
@@ -26,7 +26,7 @@
 #include "CppCoverage/LineCoverage.hpp" 
 
 namespace cov = CppCoverage;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace CppCoverageTest
 {	

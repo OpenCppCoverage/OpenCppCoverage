@@ -30,7 +30,7 @@ namespace FileFilter
 	namespace
 	{
 		//---------------------------------------------------------------------
-		std::vector<File> ParseUnifiedDiff(const boost::filesystem::path& unifiedDiffPath)
+		std::vector<File> ParseUnifiedDiff(const std::filesystem::path& unifiedDiffPath)
 		{
 			std::wifstream ifs(unifiedDiffPath.wstring());
 
@@ -50,8 +50,8 @@ namespace FileFilter
 
 	//-------------------------------------------------------------------------
 	UnifiedDiffCoverageFilter::UnifiedDiffCoverageFilter(
-		const boost::filesystem::path& unifiedDiffPath,
-		const boost::optional<boost::filesystem::path>& rootDiffFolder)
+		const std::filesystem::path& unifiedDiffPath,
+		const boost::optional<std::filesystem::path>& rootDiffFolder)
 		: UnifiedDiffCoverageFilter{ ParseUnifiedDiff(unifiedDiffPath), rootDiffFolder }
 	{
 	}
@@ -59,20 +59,20 @@ namespace FileFilter
 	//-------------------------------------------------------------------------
 	UnifiedDiffCoverageFilter::UnifiedDiffCoverageFilter(
 		std::vector<File>&& files,
-		const boost::optional<boost::filesystem::path>& rootDiffFolder)
+		const boost::optional<std::filesystem::path>& rootDiffFolder)
 		: pathMatcher_{ std::move(files), rootDiffFolder }
 		, lastFile_ {nullptr}
 	{
 	}
 
 	//-------------------------------------------------------------------------
-	bool UnifiedDiffCoverageFilter::IsSourceFileSelected(const boost::filesystem::path& path)
+	bool UnifiedDiffCoverageFilter::IsSourceFileSelected(const std::filesystem::path& path)
 	{
 		return SearchFile(path) != nullptr;
 	}
 
 	//-------------------------------------------------------------------------
-	bool UnifiedDiffCoverageFilter::IsLineSelected(const boost::filesystem::path& path, int lineNumber)
+	bool UnifiedDiffCoverageFilter::IsLineSelected(const std::filesystem::path& path, int lineNumber)
 	{
 		auto file = SearchFile(path);
 
@@ -83,7 +83,7 @@ namespace FileFilter
 	}
 
 	//-------------------------------------------------------------------------
-	File* UnifiedDiffCoverageFilter::SearchFile(const boost::filesystem::path& path)
+	File* UnifiedDiffCoverageFilter::SearchFile(const std::filesystem::path& path)
 	{
 		if (path == lastPath_)
 			return lastFile_;
@@ -110,7 +110,7 @@ namespace FileFilter
 	}
 
 	//-------------------------------------------------------------------------
-	std::vector<boost::filesystem::path> UnifiedDiffCoverageFilter::GetUnmatchedPaths() const
+	std::vector<std::filesystem::path> UnifiedDiffCoverageFilter::GetUnmatchedPaths() const
 	{
 		return pathMatcher_.GetUnmatchedPaths();
 	}

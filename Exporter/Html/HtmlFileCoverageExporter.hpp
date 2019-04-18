@@ -25,14 +25,6 @@ namespace CppCoverage
 	class FileCoverage;
 }
 
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
-
 namespace Exporter
 {
 	class EXPORTER_DLL HtmlFileCoverageExporter

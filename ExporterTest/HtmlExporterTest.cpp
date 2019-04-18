@@ -21,7 +21,8 @@
 #include "CppCoverage/FileCoverage.hpp"
 #include "TestHelper/TemporaryPath.hpp"
 
-#include <boost/filesystem.hpp>
+#include <fstream>
+#include <filesystem>
 
 #include "Exporter/Html/HtmlExporter.hpp"
 #include "Exporter/Html/HtmlFolderStructure.hpp"
@@ -29,7 +30,7 @@
 #include "TestHelper/TemporaryPath.hpp"
 
 namespace cov = CppCoverage;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace ExporterTest
 {

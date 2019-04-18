@@ -62,7 +62,7 @@ namespace OpenCppCoverage
 		}
 
 		//-------------------------------------------------------------------------
-		boost::filesystem::path GetTemplateFolder()
+		std::filesystem::path GetTemplateFolder()
 		{
 			return Tools::GetExecutableFolder() / "Template";
 		}

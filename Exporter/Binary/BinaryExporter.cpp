@@ -19,7 +19,7 @@
 
 #include <fstream>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "CoverageDataSerializer.hpp"
 
@@ -28,9 +28,9 @@
 namespace Exporter
 {
 	//-------------------------------------------------------------------------
-	boost::filesystem::path BinaryExporter::GetDefaultPath(const std::wstring& prefix) const
+	std::filesystem::path BinaryExporter::GetDefaultPath(const std::wstring& prefix) const
 	{
-		boost::filesystem::path path{ prefix };
+		std::filesystem::path path{ prefix };
 
 		path += ".cov";
 
@@ -40,7 +40,7 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	void BinaryExporter::Export(
 		const CppCoverage::CoverageData& coverageData, 
-		const boost::filesystem::path& output)
+		const std::filesystem::path& output)
 	{
 		CoverageDataSerializer coverageDataSerializer;
 

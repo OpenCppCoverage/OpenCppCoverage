@@ -17,7 +17,7 @@
 #pragma once
 
 #include <boost/optional.hpp>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "CppCoverageExport.hpp"
 #include "Patterns.hpp"
@@ -73,8 +73,8 @@ namespace CppCoverage
 		void AddExport(OptionsExport&&);
 		const std::vector<OptionsExport>& GetExports() const;
 		
-		void AddInputCoveragePath(const boost::filesystem::path&);
-		const std::vector<boost::filesystem::path>& GetInputCoveragePaths() const;
+		void AddInputCoveragePath(const std::filesystem::path&);
+		const std::vector<std::filesystem::path>& GetInputCoveragePaths() const;
 
 		void AddUnifiedDiffSettings(UnifiedDiffSettings&&);
 		const std::vector<UnifiedDiffSettings>& GetUnifiedDiffSettingsCollection() const;
@@ -107,7 +107,7 @@ namespace CppCoverage
         bool isStopOnAssertModeEnabled_;
         bool isOptimizedBuildSupportEnabled_;
         std::vector<OptionsExport> exports_;
-		std::vector<boost::filesystem::path> inputCoveragePaths_;
+		std::vector<std::filesystem::path> inputCoveragePaths_;
 		std::vector<UnifiedDiffSettings> unifiedDiffSettingsCollection_;
 		std::vector<std::wstring> excludedLineRegexes_;
 		std::vector<SubstitutePdbSourcePath> substitutePdbSourcePaths_;

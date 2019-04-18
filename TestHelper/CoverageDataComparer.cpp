@@ -101,7 +101,7 @@ namespace TestHelper
 		if (module1->GetPath() != module2->GetPath())
 			return false;
 
-		return IsFirstContainsSecond<boost::filesystem::path>(
+		return IsFirstContainsSecond<std::filesystem::path>(
 			module1->GetFiles(), module2->GetFiles(),
 			[](const FileCoveragePtr& file) { return file->GetPath(); },
 			[](const FileCoveragePtr& file1, const FileCoveragePtr& file2)
@@ -124,7 +124,7 @@ namespace TestHelper
 		const ModuleCoverageCollection& container1,
 		const ModuleCoverageCollection& container2) const
 	{
-		return IsFirstContainsSecond<boost::filesystem::path>(
+		return IsFirstContainsSecond<std::filesystem::path>(
 			container1, container2,
 			[](const ModuleCoveragePtr& module) { return module->GetPath(); },
 			[=](const ModuleCoveragePtr& module1,

@@ -18,32 +18,25 @@
 
 #include <vector>
 #include <string>
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
+#include <filesystem>
 
 namespace OpenCppCoverageTest
 {	
 	void AddDefaultFilters(
 		std::vector<std::pair<std::string, std::string>>& coverageArguments,
-		const boost::filesystem::path& programToRun);
+		const std::filesystem::path& programToRun);
 
 	void AddDefaultHtmlExport(
 		std::vector<std::pair<std::string, std::string>>& coverageArguments,
-		const boost::filesystem::path& outputFolder);
+		const std::filesystem::path& outputFolder);
 	
 	std::pair<std::string, std::string> BuildExportTypeString(
 		const std::string& exportType,
-		const boost::filesystem::path& output);
+		const std::filesystem::path& output);
 	
 	int RunCoverageFor(
 		const std::vector<std::pair<std::string, std::string>>& coverageArguments,
-		const boost::filesystem::path& programToRun,
+		const std::filesystem::path& programToRun,
 		const std::vector<std::wstring>& arguments,
 		std::string* optionalOutput = nullptr);
 

@@ -18,6 +18,7 @@
 
 #include <sstream>
 #include <random>
+#include <fstream>
 
 #include "CppCoverage/CoverageData.hpp"
 #include "CppCoverage/ModuleCoverage.hpp"

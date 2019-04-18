@@ -16,15 +16,8 @@
 
 #pragma once
 
+#include <filesystem>
 #include "TestHelperExport.hpp"
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
 
 extern "C"
 {
@@ -33,16 +26,16 @@ extern "C"
 
 namespace TestHelper
 {
-	boost::filesystem::path TEST_HELPER_DLL  GetTestUnloadDllFilename();
-	boost::filesystem::path TEST_HELPER_DLL  GetOutputBinaryPath();
+	std::filesystem::path TEST_HELPER_DLL  GetTestUnloadDllFilename();
+	std::filesystem::path TEST_HELPER_DLL  GetOutputBinaryPath();
 
-	void TEST_HELPER_DLL CreateEmptyFile(const boost::filesystem::path&);
+	void TEST_HELPER_DLL CreateEmptyFile(const std::filesystem::path&);
 
 	std::string TEST_HELPER_DLL RunProcess(
-		const boost::filesystem::path& program,
+		const std::filesystem::path& program,
 		const std::vector<std::string>& args);
 
-	boost::filesystem::path TEST_HELPER_DLL GetVisualStudioPath();
+	std::filesystem::path TEST_HELPER_DLL GetVisualStudioPath();
 
 	//-------------------------------------------------------------------------
 	template <typename ExceptionType, typename Fct>
