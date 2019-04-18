@@ -50,6 +50,7 @@ namespace CppCoverageTest
 		ASSERT_FALSE(options->IsOptimizedBuildSupportEnabled());
 		ASSERT_TRUE(options->GetExcludedLineRegexes().empty());
 		ASSERT_TRUE(options->GetSubstitutePdbSourcePaths().empty());
+		ASSERT_FALSE(options->IsHideDebuggerModeEnabled());
 	}
 
 	//-------------------------------------------------------------------------
@@ -123,6 +124,15 @@ namespace CppCoverageTest
 		ASSERT_TRUE(TestTools::Parse(parser,
 		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::ContinueAfterCppExceptionOption })
 			->IsContinueAfterCppExceptionModeEnabled());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, HideDebugger)
+	{
+		cov::OptionsParser parser;
+
+		ASSERT_TRUE(TestTools::Parse(parser,
+			{ TestTools::GetOptionPrefix() + cov::ProgramOptions::HideDebuggerOption })->IsHideDebuggerModeEnabled());
 	}
 
 	//-------------------------------------------------------------------------

@@ -476,6 +476,8 @@ namespace CppCoverage
 			options.EnableContinueAfterCppExceptionMode();
 		if (IsOptionSelected(variables, ProgramOptions::OptimizedBuildOption))
 			options.EnableOptimizedBuildSupport();
+		if (IsOptionSelected(variables, ProgramOptions::HideDebuggerOption))
+			options.EnableHideDebuggerMode();
 
 		AddExporTypes(variables, options);
 		AddInputCoverages(variables, options);

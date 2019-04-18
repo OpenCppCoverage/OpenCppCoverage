@@ -34,6 +34,7 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	ExceptionHandler::ExceptionHandler()
+		: hideDebugger_{ false }
 	{
 		breakPointExceptionCode_.emplace(EXCEPTION_BREAKPOINT, std::vector<HANDLE>{});
 		breakPointExceptionCode_.emplace(ExceptionEmulationX86ErrorCode, std::vector<HANDLE>{});
@@ -86,7 +87,8 @@ namespace CppCoverage
 				// Breakpoint exception need to be ignore the first time by process.
 				if (std::find(processHandles.begin(), processHandles.end(), hProcess) == processHandles.end())
 				{
-					HidePebInProcess(hProcess);
+					if (hideDebugger_)
+						HidePebInProcess(hProcess);
 					processHandles.push_back(hProcess);
 				}
 				else
@@ -120,6 +122,12 @@ namespace CppCoverage
 			if (it != processes.end())
 				processes.erase(it);
 		}
+	}
+
+	//-------------------------------------------------------------------------
+	void ExceptionHandler::SetHideDebugger(bool hideDebugger)
+	{
+		hideDebugger_ = hideDebugger;
 	}
 
 	//-------------------------------------------------------------------------

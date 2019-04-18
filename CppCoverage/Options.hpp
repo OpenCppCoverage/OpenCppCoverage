@@ -67,6 +67,9 @@ namespace CppCoverage
 		void EnableContinueAfterCppExceptionMode();
 		bool IsContinueAfterCppExceptionModeEnabled() const;
 
+		void EnableHideDebuggerMode();
+		bool IsHideDebuggerModeEnabled() const;
+
 		void AddExport(const OptionsExport&);
 		const std::vector<OptionsExport>& GetExports() const;
 		
@@ -102,6 +105,7 @@ namespace CppCoverage
 		bool isAggregateByFileModeEnabled_;
 		bool isContinueAfterCppExceptionModeEnabled_;
 		bool isOptimizedBuildSupportEnabled_;
+		bool isHideDebuggerModeEnabled_;
 		std::vector<OptionsExport> exports_;
 		std::vector<boost::filesystem::path> inputCoveragePaths_;
 		std::vector<UnifiedDiffSettings> unifiedDiffSettingsCollection_;

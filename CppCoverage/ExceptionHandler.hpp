@@ -47,6 +47,7 @@ namespace CppCoverage
 
 		ExceptionHandlerStatus HandleException(HANDLE hProcess, const EXCEPTION_DEBUG_INFO&, std::wostream&);
 		void OnExitProcess(HANDLE hProcess);
+		void SetHideDebugger(bool hideDebugger);
 
 	private:
 		ExceptionHandler(const ExceptionHandler&) = delete;
@@ -57,6 +58,7 @@ namespace CppCoverage
 
 		std::unordered_map<DWORD, std::wstring> exceptionCode_;
 		std::map<DWORD, std::vector<HANDLE>> breakPointExceptionCode_;
+		bool hideDebugger_;
 	};
 }
 

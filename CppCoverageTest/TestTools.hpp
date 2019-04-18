@@ -73,6 +73,7 @@ namespace CppCoverageTest
 			bool optimizedBuildSupport_ = false;
 			std::vector<std::wstring> excludedLineRegexes_;
 			std::vector<CppCoverage::SubstitutePdbSourcePath> substitutePdbSourcePath_;
+			bool hideDebugger_ = false;
 		};
 
 		//---------------------------------------------------------------------

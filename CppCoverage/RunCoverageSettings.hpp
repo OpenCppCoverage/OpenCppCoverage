@@ -43,6 +43,7 @@ namespace CppCoverage
 		void SetContinueAfterCppException(bool);
 		void SetMaxUnmatchPathsForWarning(size_t);
 		void SetOptimizedBuildSupport(bool);
+		void SetHideDebugger(bool);
 
 		const StartInfo& GetStartInfo() const;
 		const CoverageFilterSettings& GetCoverageFilterSettings() const;
@@ -53,6 +54,7 @@ namespace CppCoverage
 		bool GetOptimizedBuildSupport() const;
 		const std::vector<std::wstring>& GetExcludedLineRegexes() const;
 		const std::vector<SubstitutePdbSourcePath>& GetSubstitutePdbSourcePaths() const;
+		bool GetHideDebugger() const;
 
 	private:
 		StartInfo startInfo_;
@@ -64,5 +66,6 @@ namespace CppCoverage
 		bool optimizedBuildSupport_;
 		std::vector<std::wstring> excludedLineRegexes_;
 		std::vector<SubstitutePdbSourcePath> substitutePdbSourcePath_;
+		bool hideDebugger_;
 	};
 }
