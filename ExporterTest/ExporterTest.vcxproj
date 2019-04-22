@@ -185,6 +185,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="ExporterPluginManagerTest.cpp" />
     <ClCompile Include="ExporterTest.cpp" />
     <ClCompile Include="HtmlExporterTest.cpp" />
     <ClCompile Include="HtmlFileCoverageExporterTest.cpp" />

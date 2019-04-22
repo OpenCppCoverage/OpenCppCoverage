@@ -193,6 +193,11 @@
     <ClInclude Include="Html\TemplateHtmlExporter.hpp" />
     <ClInclude Include="IExporter.hpp" />
     <ClInclude Include="InvalidOutputFileException.hpp" />
+    <ClInclude Include="Plugin\ExporterPluginManager.hpp" />
+    <ClInclude Include="Plugin\IExportPlugin.hpp" />
+    <ClInclude Include="Plugin\IPluginLoader.hpp" />
+    <ClInclude Include="Plugin\Plugin.hpp" />
+    <ClInclude Include="Plugin\PluginLoader.hpp" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -221,6 +226,7 @@
     <ClCompile Include="Html\HtmlFolderStructure.cpp" />
     <ClCompile Include="Html\TemplateHtmlExporter.cpp" />
     <ClCompile Include="InvalidOutputFileException.cpp" />
+    <ClCompile Include="Plugin\ExporterPluginManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
