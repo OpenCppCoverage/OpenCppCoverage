@@ -324,8 +324,12 @@ namespace CppCoverage
 
 			if (boost::istarts_with(filenameStr, pdbStartPath))
 			{
-				auto remainingPath = filenameStr.substr(pdbStartPath.size());
+				auto startIndex = pdbStartPath.size();
+				if (startIndex < filenameStr.size() && filenameStr[startIndex] == '\\')
+					++startIndex;
+				auto remainingPath = filenameStr.substr(startIndex);
 				filenameStr = (paths.GetLocalPath() / remainingPath).wstring();
+				break;
 			}
 		}
 
