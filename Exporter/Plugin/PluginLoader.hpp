@@ -18,6 +18,9 @@
 
 #include "IPluginLoader.hpp"
 #include "Plugin.hpp"
+
+#include "Tools/Tool.hpp"
+
 #include <Windows.h>
 
 namespace Exporter
@@ -34,24 +37,29 @@ namespace Exporter
 			auto libModule = LoadLibrary(pluginPath.c_str());
 
 			if (!libModule)
-				throw InvalidPluginException("LoadLibrary failed.");
+				throw std::runtime_error("LoadLibrary failed.");
 
 			auto plugin = std::make_unique<Plugin<T>>(libModule);
 
-			using PluginFactoryFct = T* (*)();
+			auto address =
+			    GetProcAddress(libModule, pluginFactoryFctName.c_str());
+			if (!address)
+				throw std::runtime_error("Cannot find C function " +
+				                         pluginFactoryFctName + '.');
+			auto pluginFactory = reinterpret_cast<T* (*)()>(address);
 
-			auto pluginFactory = reinterpret_cast<PluginFactoryFct>(
-			    GetProcAddress(libModule, pluginFactoryFctName.c_str()));
-			if (!pluginFactory)
-				throw InvalidPluginException("Cannot find C function " +
-				                             pluginFactoryFctName + '.');
-
-			T* rawPlugin = pluginFactory();
+			T* rawPlugin = Tools::Try<std::runtime_error>(
+			    [&]() { return pluginFactory(); },
+			    [&](const auto& error) {
+				    return "Error when calling " + pluginFactoryFctName + ": " +
+				           error;
+			    });
 
 			if (!rawPlugin)
-				throw InvalidPluginException(pluginFactoryFctName +
-				                             " returns null.");
-			plugin->Set(std::unique_ptr<T>(rawPlugin));
+				throw std::runtime_error(pluginFactoryFctName +
+				                         " returns null.");
+
+			plugin->Set(std::unique_ptr<T>{rawPlugin});
 
 			return plugin;
 		}

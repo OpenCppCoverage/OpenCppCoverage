@@ -32,6 +32,28 @@ namespace Tools
 	TOOLS_DLL std::string ToUtf8String(const std::wstring&);
 
 	TOOLS_DLL boost::optional<std::wstring> Try(std::function<void()>);	
+	
+	template <typename Exception, typename Fct>
+	decltype(auto)
+	Try(Fct fct, std::function<std::string(const std::string&)> buildErrorMsg)
+	{
+		std::string error;
+		try
+		{
+			return fct();
+		}
+		catch (const std::exception& e)
+		{
+			error = e.what();
+		}
+		catch (...)
+		{
+			error = "Unknow";
+		}
+
+		throw Exception(buildErrorMsg(error));
+	}
+
 	TOOLS_DLL std::filesystem::path GetExecutableFolder();
 	
 	TOOLS_DLL void CreateMiniDumpOnUnHandledException();

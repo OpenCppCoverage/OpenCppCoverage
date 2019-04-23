@@ -25,11 +25,6 @@ namespace Exporter
 	template <typename T>
 	class Plugin;
 
-	class InvalidPluginException : public std::runtime_error
-	{
-		using std::runtime_error::runtime_error;
-	};
-
 	template <typename T>
 	class IPluginLoader
 	{

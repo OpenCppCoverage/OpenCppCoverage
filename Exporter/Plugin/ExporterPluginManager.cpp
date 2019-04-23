@@ -16,25 +16,35 @@
 
 #include "stdafx.h"
 #include "ExporterPluginManager.hpp"
+
+#include <optional>
+
 #include "IPluginLoader.hpp"
 #include "Plugin.hpp"
 #include "IExportPlugin.hpp"
 #include "../ExporterException.hpp"
+#include "Tools/Tool.hpp"
 
 namespace Exporter
 {
 	namespace
 	{
 		//---------------------------------------------------------------------
-		std::string InvalidPluginError(const std::string& functionName,
-		                               const std::string& additionalInformation,
-		                               const std::filesystem::path& pluginPath)
+		std::string
+		InvalidPluginError(const std::optional<std::string>& functionName,
+		                   const std::string& additionalInformation,
+		                   const std::filesystem::path& pluginPath)
 		{
 			std::string fullMessage =
 			    "There was an error when trying to load the export plugin " +
 			    pluginPath.string() + '\n';
-			fullMessage += "Error: Function " + functionName + " failed: ";
+
+			if (functionName)
+				fullMessage += "Error: Function " + *functionName + " failed: ";
 			fullMessage += additionalInformation;
+			fullMessage +=
+			    "Removing " + pluginPath.string() + " may fix the problem.";
+
 			return fullMessage;
 		}
 
@@ -46,22 +56,11 @@ namespace Exporter
 		                   const std::filesystem::path& pluginPath,
 		                   Args&&... args)
 		{
-			std::string error;
-
-			try
-			{
-				return pluginFct(std::forward<Args>(args)...);
-			}
-			catch (const std::exception& e)
-			{
-				error = e.what();
-			}
-			catch (...)
-			{
-				error = "Unknown";
-			}
-			throw std::runtime_error(
-			    InvalidPluginError(functionName, error, pluginPath));
+			return Tools::Try<std::runtime_error>(
+			    [&]() { return pluginFct(std::forward<Args>(args)...); },
+			    [&](const auto& error) {
+				    return InvalidPluginError(functionName, error, pluginPath);
+			    });
 		}
 	}
 
@@ -80,32 +79,16 @@ namespace Exporter
 				continue;
 
 			auto pluginName = path.stem().wstring();
-			std::shared_ptr<Plugin<IExportPlugin>> plugin;
 			const std::string pluginFactoryFctName = "CreatePlugin";
-			std::string error;
-			try
-			{
-				plugin = pluginLoader.TryLoadPlugin(pluginPath,
-				                                    pluginFactoryFctName);
-			}
-			catch (const InvalidPluginException&)
-			{
-				throw;
-			}
-			catch (const std::exception& e)
-			{
-				error = e.what();
-			}
-			catch (...)
-			{
-				error = "Unknown";
-			}
 
-			if (!error.empty())
-			{
-				throw std::runtime_error(InvalidPluginError(
-				    pluginFactoryFctName, error, pluginPath));
-			}
+			auto plugin = Tools::Try<std::runtime_error>(
+			    [&]() {
+				    return pluginLoader.TryLoadPlugin(pluginPath,
+				                                      pluginFactoryFctName);
+			    },
+			    [&](const auto& error) {
+				    return InvalidPluginError(std::nullopt, error, path);
+			    });
 
 			plugins_.emplace(pluginName, std::move(plugin));
 		}

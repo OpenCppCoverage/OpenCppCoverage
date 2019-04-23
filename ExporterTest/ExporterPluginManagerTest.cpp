@@ -145,19 +145,12 @@ namespace ExporterTest
 			    throw 42;
 			    return nullptr;
 		    }))
-		    .WillOnce(testing::Invoke([](const auto&, const auto&) {
-			    throw Exporter::InvalidPluginException("");
-			    return nullptr;
-		    }))
-
 		    .WillOnce(testing::Invoke([&](const auto&, const auto&) {
 			    throw std::runtime_error(errorMessage);
 			    return nullptr;
 		    }));
 
 		ASSERT_THROW(CreateManager(pluginLoader), std::runtime_error);
-		ASSERT_THROW(CreateManager(pluginLoader),
-		             Exporter::InvalidPluginException);
 
 		TestHelper::AssertThrow<std::runtime_error>(
 		    [&]() { CreateManager(pluginLoader); },
