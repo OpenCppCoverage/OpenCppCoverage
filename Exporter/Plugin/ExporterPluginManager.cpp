@@ -71,7 +71,7 @@ namespace Exporter
 	    : pluginFolder_{std::move(pluginFolder)}
 	{
 		for (auto pluginPath :
-		     std::filesystem::directory_iterator(pluginFolder))
+		     std::filesystem::directory_iterator(pluginFolder_))
 		{
 			auto path = pluginPath.path();
 
