@@ -19,7 +19,7 @@
 
 #include "FileCoverage.hpp"
 
-namespace CppCoverage
+namespace Plugin
 {
 	//-------------------------------------------------------------------------
 	ModuleCoverage::ModuleCoverage(const std::filesystem::path& path)

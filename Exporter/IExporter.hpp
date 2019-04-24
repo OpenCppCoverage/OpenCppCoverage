@@ -19,7 +19,7 @@
 #include <string>
 #include <filesystem>
 
-namespace CppCoverage
+namespace Plugin
 {
 	class CoverageData;
 }
@@ -32,7 +32,7 @@ namespace Exporter
 		IExporter() = default;
 
 		virtual std::filesystem::path GetDefaultPath(const std::wstring& prefix) const = 0;
-		virtual void Export(const CppCoverage::CoverageData&, const std::filesystem::path& output) = 0;
+		virtual void Export(const Plugin::CoverageData&, const std::filesystem::path& output) = 0;
 
 	private:
 		IExporter(const IExporter&) = delete;

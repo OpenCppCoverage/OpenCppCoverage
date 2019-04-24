@@ -20,7 +20,7 @@
 
 #include "../ExporterExport.hpp"
 
-namespace CppCoverage
+namespace Plugin
 {
 	class FileCoverage;
 }
@@ -41,7 +41,7 @@ namespace Exporter
 			int maxStyleChangesCount = 2000);
 
 		bool Export(
-			const CppCoverage::FileCoverage&,
+			const Plugin::FileCoverage&,
 			std::wostream& output) const;
 		
 		bool MustEnableCodePrettify(int lineCount, int styleChangedCount) const;

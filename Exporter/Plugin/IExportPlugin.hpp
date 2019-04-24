@@ -19,7 +19,7 @@
 #include "../ExporterExport.hpp"
 #include <string>
 
-namespace CppCoverage
+namespace Plugin
 {
 	class CoverageData;
 }
@@ -30,7 +30,7 @@ namespace Exporter
 	{
 	  public:
 		virtual ~IExportPlugin() = default;
-		virtual void Export(const CppCoverage::CoverageData&,
+		virtual void Export(const Plugin::CoverageData&,
 		                    const std::wstring& argument) = 0;
 		virtual void CheckArgument(const std::wstring&) = 0;
 		virtual std::wstring GetHelpDescription() = 0;

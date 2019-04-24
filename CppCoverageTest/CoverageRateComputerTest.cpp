@@ -19,9 +19,9 @@
 #include <memory>
 
 #include "CppCoverage/CoverageRateComputer.hpp"
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/ModuleCoverage.hpp"
-#include "CppCoverage/FileCoverage.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
+#include "Plugin/Exporter/ModuleCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
 #include "CppCoverage/CoverageRate.hpp"
 
 namespace cov = CppCoverage;
@@ -53,7 +53,7 @@ namespace CppCoverageTest
 
 			//-----------------------------------------------------------------
 			static void SetFileLineCount(
-				cov::FileCoverage& file, 
+				Plugin::FileCoverage& file, 
 				int executedCount, 
 				int unexecutedCount)
 			{
@@ -65,13 +65,13 @@ namespace CppCoverageTest
 					file.AddLine(++line, false);
 			}
 
-			cov::CoverageData coverageData_;
+			Plugin::CoverageData coverageData_;
 			std::unique_ptr<cov::CoverageRateComputer> coverageRateComputer_;
-			cov::ModuleCoverage* module1_;
-			cov::ModuleCoverage* module2_;
-			cov::FileCoverage* file1_;
-			cov::FileCoverage* file2_;
-			cov::FileCoverage* file3_;
+			Plugin::ModuleCoverage* module1_;
+			Plugin::ModuleCoverage* module2_;
+			Plugin::FileCoverage* file1_;
+			Plugin::FileCoverage* file2_;
+			Plugin::FileCoverage* file3_;
 		};
 	}
 

@@ -27,9 +27,6 @@
 
 namespace CppCoverage
 {
-	class CoverageData;
-	class ModuleCoverage;
-	class FileCoverage;
 	class CoverageRate;
 }
 

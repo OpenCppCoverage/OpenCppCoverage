@@ -177,8 +177,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CppCoverage\CppCoverage.vcxproj">
-      <Project>{a50dd5a6-e85a-4e0b-9cc6-90d32503ce62}</Project>
+    <ProjectReference Include="..\Plugin\Plugin.vcxproj">
+      <Project>{2f439508-07e0-4084-9614-1a42bde8ed9a}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

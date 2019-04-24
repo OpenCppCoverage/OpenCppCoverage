@@ -25,7 +25,7 @@
 
 #include "CppCoverage/ExportPluginDescription.hpp"
 
-namespace CppCoverage
+namespace Plugin
 {
 	class CoverageData;
 }
@@ -57,7 +57,7 @@ namespace Exporter
 		CreateExportPluginDescriptions() const;
 
 		void Export(const std::wstring& pluginName,
-		            const CppCoverage::CoverageData&,
+		            const Plugin::CoverageData&,
 		            const std::wstring& argument) const;
 
 	  private:

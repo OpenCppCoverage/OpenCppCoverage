@@ -151,10 +151,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Exporter\CoverageData.hpp" />
+    <ClInclude Include="Exporter\FileCoverage.hpp" />
+    <ClInclude Include="Exporter\LineCoverage.hpp" />
+    <ClInclude Include="Exporter\ModuleCoverage.hpp" />
     <ClInclude Include="PluginExport.hpp" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Exporter\CoverageData.cpp" />
+    <ClCompile Include="Exporter\FileCoverage.cpp" />
+    <ClCompile Include="Exporter\LineCoverage.cpp" />
+    <ClCompile Include="Exporter\ModuleCoverage.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

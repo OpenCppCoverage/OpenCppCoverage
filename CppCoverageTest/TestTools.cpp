@@ -102,7 +102,7 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		cov::CoverageData ComputeCoverageData(
+		Plugin::CoverageData ComputeCoverageData(
 			const std::vector<std::wstring>& arguments,
 			const std::wstring& modulePattern,
 			const std::wstring& sourcePattern)
@@ -113,7 +113,7 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		cov::CoverageData ComputeCoverageDataPatterns(
+		Plugin::CoverageData ComputeCoverageDataPatterns(
 			const CoverageArgs& args)
 		{
 			cov::CodeCoverageRunner codeCoverageRunner{

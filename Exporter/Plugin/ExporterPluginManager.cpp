@@ -140,7 +140,7 @@ namespace Exporter
 	//-------------------------------------------------------------------------
 	void
 	ExporterPluginManager::Export(const std::wstring& pluginName,
-	                              const CppCoverage::CoverageData& coverageData,
+	                              const Plugin::CoverageData& coverageData,
 	                              const std::wstring& argument) const
 	{
 		auto it = plugins_.find(pluginName);

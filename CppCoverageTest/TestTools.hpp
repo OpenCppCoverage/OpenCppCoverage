@@ -26,7 +26,7 @@
 #include "CppCoverage/Options.hpp"
 #include "CppCoverage/SubstitutePdbSourcePath.hpp"
 
-namespace CppCoverage
+namespace Plugin
 {
 	class CoverageData;
 }
@@ -69,13 +69,13 @@ namespace CppCoverageTest
 		};
 
 		//---------------------------------------------------------------------
-		CppCoverage::CoverageData ComputeCoverageData(
+		Plugin::CoverageData ComputeCoverageData(
 			const std::vector<std::wstring>& arguments,
 			const std::wstring& modulePattern,
 			const std::wstring& sourcePattern);
 
 		//---------------------------------------------------------------------
-		CppCoverage::CoverageData ComputeCoverageDataPatterns(const CoverageArgs& args);
+		Plugin::CoverageData ComputeCoverageDataPatterns(const CoverageArgs& args);
 	}
 }
 

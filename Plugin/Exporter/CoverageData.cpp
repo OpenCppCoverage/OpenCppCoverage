@@ -19,7 +19,7 @@
 
 #include "ModuleCoverage.hpp"
 
-namespace CppCoverage
+namespace Plugin
 {
 	//-------------------------------------------------------------------------
 	CoverageData::CoverageData(const std::wstring& name, int exitCode)

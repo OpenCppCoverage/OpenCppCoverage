@@ -20,17 +20,16 @@
 #include <random>
 #include <fstream>
 
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/ModuleCoverage.hpp"
-#include "CppCoverage/FileCoverage.hpp"
-#include "CppCoverage/LineCoverage.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
+#include "Plugin/Exporter/ModuleCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
+#include "Plugin/Exporter/LineCoverage.hpp"
 #include "Exporter/Binary/CoverageDataSerializer.hpp"
 #include "Exporter/Binary/CoverageDataDeserializer.hpp"
 
 #include "TestHelper/TemporaryPath.hpp"
 #include "TestHelper/CoverageDataComparer.hpp"
 
-namespace cov = CppCoverage;
 using namespace testing;
 
 namespace ExporterTest
@@ -39,7 +38,7 @@ namespace ExporterTest
 	{					
 		//---------------------------------------------------------------------
 		void AddRandomFiles(
-			cov::ModuleCoverage& module,
+			Plugin::ModuleCoverage& module,
 			std::default_random_engine& generator,
 			std::uniform_int_distribution<int>& distribution)
 		{
@@ -56,9 +55,9 @@ namespace ExporterTest
 		}
 
 		//---------------------------------------------------------------------
-		cov::CoverageData CreateRandomCoverageData()
+		Plugin::CoverageData CreateRandomCoverageData()
 		{
-			cov::CoverageData coverageData{ L"Testé", 42 };
+			Plugin::CoverageData coverageData{ L"Testé", 42 };
 			std::default_random_engine generator;
 			std::uniform_int_distribution<int> distribution(0, 1);
 			

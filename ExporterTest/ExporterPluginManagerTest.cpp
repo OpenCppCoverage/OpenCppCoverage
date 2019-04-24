@@ -24,7 +24,7 @@
 #include "Exporter/Plugin/LoadedPlugin.hpp"
 #include "Exporter/Plugin/ExporterPluginManager.hpp"
 
-#include "CppCoverage/CoverageData.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
 
 #include "Tools/Tool.hpp"
 
@@ -51,7 +51,7 @@ namespace ExporterTest
 		{
 		  public:
 			MOCK_METHOD2(Export,
-			             void(const CppCoverage::CoverageData&,
+			             void(const Plugin::CoverageData&,
 			                  const std::wstring& argument));
 
 			MOCK_METHOD1(CheckArgument, void(const std::wstring&));
@@ -168,7 +168,7 @@ namespace ExporterTest
 		EXPECT_CALL(*exportPlugin, Export(_, argument));
 
 		auto pluginManager = CreateManager(std::move(exportPlugin));
-		CppCoverage::CoverageData coverageData{L"", 0};
+		Plugin::CoverageData coverageData{L"", 0};
 
 		pluginManager->Export(pluginName_, coverageData, argument);
 	}
@@ -187,7 +187,7 @@ namespace ExporterTest
 		    }));
 
 		auto pluginManager = CreateManager(std::move(exportPlugin));
-		CppCoverage::CoverageData coverageData{L"", 0};
+		Plugin::CoverageData coverageData{L"", 0};
 
 		ASSERT_THROW(pluginManager->Export(pluginName_, coverageData, L""),
 		             std::runtime_error);

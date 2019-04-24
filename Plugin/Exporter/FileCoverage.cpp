@@ -17,9 +17,7 @@
 #include "stdafx.h"
 #include "FileCoverage.hpp"
 
-#include "CppCoverageException.hpp"
-
-namespace CppCoverage
+namespace Plugin
 {
 	//-------------------------------------------------------------------------
 	FileCoverage::FileCoverage(const std::filesystem::path& path)
@@ -33,14 +31,21 @@ namespace CppCoverage
 		LineCoverage line{ lineNumber, hasBeenExecuted };
 
 		if (!lines_.emplace(lineNumber, line).second)
-			THROW(L"Line " << lineNumber << L" already exists for " << path_.wstring());
+		{
+			throw std::runtime_error("Line " + std::to_string(lineNumber) +
+				" already exists for " + path_.string());
+		}
 	}
 
 	//-------------------------------------------------------------------------
 	void FileCoverage::UpdateLine(unsigned int lineNumber, bool hasBeenExecuted)
 	{
 		if (!lines_.erase(lineNumber))
-			THROW(L"Line " << lineNumber << L" does not exists and cannot be updated for " << path_.wstring());
+		{
+			throw std::runtime_error(
+			    "Line " + std::to_string(lineNumber) +
+			    " does not exists and cannot be updated for " + path_.string());
+		}
 
 		AddLine(lineNumber, hasBeenExecuted);
 	}

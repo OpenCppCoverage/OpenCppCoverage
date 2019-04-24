@@ -205,6 +205,9 @@
     <ProjectReference Include="..\Exporter\Exporter.vcxproj">
       <Project>{865b72e7-da46-4392-a1b3-e5bd752c7041}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Plugin\Plugin.vcxproj">
+      <Project>{2f439508-07e0-4084-9614-1a42bde8ed9a}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\TestHelper\TestHelper.vcxproj">
       <Project>{120d7bdf-3b21-48b7-8eb7-dad94f863026}</Project>
     </ProjectReference>

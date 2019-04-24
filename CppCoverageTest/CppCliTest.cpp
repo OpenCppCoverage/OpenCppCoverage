@@ -17,8 +17,8 @@
 #include "stdafx.h"
 
 #include "CppCoverageTest/TestTools.hpp"
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/ModuleCoverage.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
+#include "Plugin/Exporter/ModuleCoverage.hpp"
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
 #include "TestHelper/Tools.hpp"

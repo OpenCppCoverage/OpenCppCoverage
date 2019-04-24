@@ -25,9 +25,6 @@
 #include "CTemplate.hpp"
 #include "Tools/Tool.hpp"
 
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/ModuleCoverage.hpp"
-#include "CppCoverage/FileCoverage.hpp"
 #include "CppCoverage/CoverageRate.hpp"
 
 #include "../ExporterException.hpp"

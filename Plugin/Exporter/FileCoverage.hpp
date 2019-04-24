@@ -16,16 +16,15 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
 #include <filesystem>
 #include <map>
 
 #include "LineCoverage.hpp"
-#include "CppCoverageExport.hpp"
+#include "../PluginExport.hpp"
 
-namespace CppCoverage
+namespace Plugin
 {
-	class CPPCOVERAGE_DLL FileCoverage
+	class PLUGIN_DLL FileCoverage
 	{
 	public:
 		explicit FileCoverage(const std::filesystem::path& path);

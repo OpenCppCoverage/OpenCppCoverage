@@ -16,7 +16,7 @@
 
 #include "stdafx.h"
 
-#include "CppCoverage/FileCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
 #include "CppCoverage/CppCoverageException.hpp"
 
 namespace cov = CppCoverage;
@@ -26,7 +26,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(FileCoverageTest, Basic)
 	{
-		cov::FileCoverage file{ L"" };
+		Plugin::FileCoverage file{ L"" };
 		unsigned int lineNumber = 0;
 
 		file.AddLine(lineNumber, true);
@@ -44,7 +44,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(FileCoverageTest, UpdateLine)
 	{
-		cov::FileCoverage file{ L"" };
+		Plugin::FileCoverage file{ L"" };
 		unsigned int lineNumber = 0;
 
 		file.AddLine(lineNumber, true);
@@ -56,8 +56,8 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(FileCoverageTest, UpdateLineNotExists)
 	{
-		cov::FileCoverage file{ L"" };
+		Plugin::FileCoverage file{ L"" };
 		
-		ASSERT_THROW(file.UpdateLine(0, false), cov::CppCoverageException);
+		ASSERT_THROW(file.UpdateLine(0, false), std::runtime_error);
 	}
 }

@@ -39,7 +39,7 @@ namespace Exporter
 
 	//-------------------------------------------------------------------------
 	void BinaryExporter::Export(
-		const CppCoverage::CoverageData& coverageData, 
+		const Plugin::CoverageData& coverageData, 
 		const std::filesystem::path& output)
 	{
 		CoverageDataSerializer coverageDataSerializer;

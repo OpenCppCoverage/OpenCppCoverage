@@ -70,7 +70,7 @@ namespace OpenCppCoverage
 		//-----------------------------------------------------------------------------
 		void Export(
 			const cov::Options& options, 
-			const cov::CoverageData& coverage)
+			const Plugin::CoverageData& coverage)
 		{
 			const auto& exports = options.GetExports();
 			std::map<cov::OptionsExportType, std::unique_ptr<Exporter::IExporter>> exporters;
@@ -95,9 +95,9 @@ namespace OpenCppCoverage
 		}
 
 		//-----------------------------------------------------------------------------
-		std::vector<cov::CoverageData> LoadInputCoverageDatas(const cov::Options& options)
+		std::vector<Plugin::CoverageData> LoadInputCoverageDatas(const cov::Options& options)
 		{
-			std::vector<cov::CoverageData> coverageDatas;
+			std::vector<Plugin::CoverageData> coverageDatas;
 			Exporter::CoverageDataDeserializer coverageDataDeserializer;
 
 			for (const auto& path : options.GetInputCoveragePaths())

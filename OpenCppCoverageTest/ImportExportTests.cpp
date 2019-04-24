@@ -23,7 +23,7 @@
 
 #include "CppCoverage/ExportOptionParser.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
-#include "CppCoverage/CoverageData.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
 #include "CppCoverage/OptionsParser.hpp"
 
 #include "Exporter/binary/CoverageDataDeserializer.hpp"
@@ -66,7 +66,7 @@ namespace OpenCppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		cov::CoverageData ReadCoverageDataFromFile(const TestHelper::TemporaryPath& temporaryPath)
+		Plugin::CoverageData ReadCoverageDataFromFile(const TestHelper::TemporaryPath& temporaryPath)
 		{
 			Exporter::CoverageDataDeserializer coverageDataDeserializer;
 			

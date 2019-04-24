@@ -19,10 +19,10 @@
 #include <random>
 
 #include "CppCoverage/CoverageDataMerger.hpp"
-#include "CppCoverage/CoverageData.hpp" 
-#include "CppCoverage/ModuleCoverage.hpp" 
-#include "CppCoverage/FileCoverage.hpp" 
-#include "CppCoverage/LineCoverage.hpp" 
+#include "Plugin/Exporter/CoverageData.hpp" 
+#include "Plugin/Exporter/ModuleCoverage.hpp" 
+#include "Plugin/Exporter/FileCoverage.hpp" 
+#include "Plugin/Exporter/LineCoverage.hpp" 
 
 namespace cov = CppCoverage;
 namespace fs = std::filesystem;
@@ -73,7 +73,7 @@ namespace CppCoverageTest
 		void AddRandomFileCoverage(
 			const RandFct& getRand,
 			unsigned int fileIndex,
-			cov::ModuleCoverage& module,			
+			Plugin::ModuleCoverage& module,			
 			LineInfoHasBeenExecuted& mergedLineInfo)
 		{
 			auto fileName = std::to_wstring(fileIndex);
@@ -91,11 +91,11 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		cov::CoverageData AddRandomCoverageData(
+		Plugin::CoverageData AddRandomCoverageData(
 			const RandFct& getRand,
 			LineInfoHasBeenExecuted& mergedLineInfo)
 		{
-			cov::CoverageData coverageData{ L"", 0 };
+			Plugin::CoverageData coverageData{ L"", 0 };
 			
 			for (auto moduleIndex: GetRandomValues(getRand, getRand()))
 			{
@@ -110,7 +110,7 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		std::vector<cov::CoverageData> AddRandomCoverageDataCollection(
+		std::vector<Plugin::CoverageData> AddRandomCoverageDataCollection(
 			int maxRandomValue,
 			LineInfoHasBeenExecuted& mergedLineInfo)
 		{
@@ -118,7 +118,7 @@ namespace CppCoverageTest
 			std::uniform_int_distribution<unsigned int> distribution(1, maxRandomValue);
 			auto getRand = [&](){ return distribution(generator); };
 
-			std::vector<cov::CoverageData> coverageDatas;
+			std::vector<Plugin::CoverageData> coverageDatas;
 			auto coverageDataCount = getRand();
 
 			for (size_t i = 0; i < coverageDataCount; ++i)

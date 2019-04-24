@@ -22,12 +22,11 @@
 #include <boost/spirit/include/classic.hpp>
 #include <boost/spirit/include/classic_tree_to_xml.hpp>
 
-#include "CppCoverage/FileCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
 
 #include "../ExporterException.hpp"
 
 namespace fs = std::filesystem;
-namespace cov = CppCoverage;
 
 namespace Exporter
 {
@@ -35,8 +34,8 @@ namespace Exporter
 	{
 		//---------------------------------------------------------------------
 		bool HaveSameCoverage(
-			const cov::LineCoverage* lineCoverage,
-			const cov::LineCoverage* otherLineCoverage)
+			const Plugin::LineCoverage* lineCoverage,
+			const Plugin::LineCoverage* otherLineCoverage)
 		{
 			if (!lineCoverage || !otherLineCoverage)
 				return lineCoverage == otherLineCoverage;
@@ -44,7 +43,7 @@ namespace Exporter
 		}
 
 		//---------------------------------------------------------------------
-		std::wstring GetStyle(const cov::LineCoverage* lineCoverage)
+		std::wstring GetStyle(const Plugin::LineCoverage* lineCoverage)
 		{
 			if (!lineCoverage)
 				return L"";
@@ -57,7 +56,7 @@ namespace Exporter
 		//---------------------------------------------------------------------
 		void AddEndStyleIfNeeded(
 			std::wostream& output,
-			const cov::LineCoverage* previousLineCoverage)
+			const Plugin::LineCoverage* previousLineCoverage)
 		{
 			if (previousLineCoverage)
 				output << HtmlFileCoverageExporter::EndStyle;
@@ -67,8 +66,8 @@ namespace Exporter
 		bool AddLineCoverageColor(
 			std::wostream& output,
 			const std::wstring& line, 
-			const cov::LineCoverage* lineCoverage,
-			const cov::LineCoverage* previousLineCoverage)
+			const Plugin::LineCoverage* lineCoverage,
+			const Plugin::LineCoverage* previousLineCoverage)
 		{
 			if (HaveSameCoverage(lineCoverage, previousLineCoverage))
 			{
@@ -107,7 +106,7 @@ namespace Exporter
 
 	//-------------------------------------------------------------------------
 	bool HtmlFileCoverageExporter::Export(
-		const cov::FileCoverage& fileCoverage,
+		const Plugin::FileCoverage& fileCoverage,
 		std::wostream& output) const
 	{
 		auto filePath = fileCoverage.GetPath();
@@ -117,7 +116,7 @@ namespace Exporter
 			THROW(L"Cannot open file : " + filePath.wstring());
 
 		std::wstring line;
-		const cov::LineCoverage* previousLineCoverage = nullptr;
+		const Plugin::LineCoverage* previousLineCoverage = nullptr;
 		int styleChangesCount = 0;
 		int lineCount = 0;
 		for (int i = 1; std::getline(ifs, line); ++i)

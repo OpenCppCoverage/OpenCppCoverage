@@ -23,10 +23,15 @@
 #include "HtmlFileCoverageExporter.hpp"
 #include "../IExporter.hpp"
 
-namespace CppCoverage
+namespace Plugin
 {
 	class CoverageData;
 	class FileCoverage;
+	class ModuleCoverage;
+}
+
+namespace CppCoverage
+{
 	class CoverageRateComputer;
 }
 
@@ -49,7 +54,7 @@ namespace Exporter
 		explicit HtmlExporter(const std::filesystem::path& templateFolder);
 
 		std::filesystem::path GetDefaultPath(const std::wstring& prefix) const override;
-		void Export(const CppCoverage::CoverageData&, const std::filesystem::path& outputFolder) override;
+		void Export(const Plugin::CoverageData&, const std::filesystem::path& outputFolder) override;
 
 	private:
 		HtmlExporter(const HtmlExporter&) = delete;
@@ -57,11 +62,11 @@ namespace Exporter
 
 		boost::optional<std::filesystem::path> ExportFile(
 			const HtmlFolderStructure& htmlFolderStructure,
-			const CppCoverage::FileCoverage& fileCoverage) const;
+			const Plugin::FileCoverage& fileCoverage) const;
 
 		void ExportFiles(
 			CppCoverage::CoverageRateComputer&,
-			const CppCoverage::ModuleCoverage& module,
+			const Plugin::ModuleCoverage& module,
 			const HtmlFolderStructure& htmlFolderStructure,
 			ctemplate::TemplateDictionary& moduleTemplateDictionary);
 

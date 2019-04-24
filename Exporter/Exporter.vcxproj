@@ -238,6 +238,9 @@
     <ProjectReference Include="..\CppCoverage\CppCoverage.vcxproj">
       <Project>{a50dd5a6-e85a-4e0b-9cc6-90d32503ce62}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Plugin\Plugin.vcxproj">
+      <Project>{2f439508-07e0-4084-9614-1a42bde8ed9a}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Tools\Tools.vcxproj">
       <Project>{7f6d05ef-deb0-4c64-bd13-a85f46314b91}</Project>
     </ProjectReference>

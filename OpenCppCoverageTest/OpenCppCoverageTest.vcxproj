@@ -188,6 +188,9 @@
     <ProjectReference Include="..\Exporter\Exporter.vcxproj">
       <Project>{865b72e7-da46-4392-a1b3-e5bd752c7041}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Plugin\Plugin.vcxproj">
+      <Project>{2f439508-07e0-4084-9614-1a42bde8ed9a}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\TestCoverageSharedLib\TestCoverageSharedLib.vcxproj">
       <Project>{0481b51c-98f1-4e92-a51e-162b77ecd939}</Project>
     </ProjectReference>

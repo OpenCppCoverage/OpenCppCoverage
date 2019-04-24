@@ -14,27 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "stdafx.h"
-#include "LineCoverage.hpp"
+#pragma once
 
-namespace CppCoverage
+#include "../PluginExport.hpp"
+
+namespace Plugin
 {
-	//-------------------------------------------------------------------------
-	LineCoverage::LineCoverage(unsigned int lineNumber, bool hasBeenExecuted)
-		: lineNumber_(lineNumber)
-		, hasBeenExecuted_(hasBeenExecuted)
+	class PLUGIN_DLL LineCoverage
 	{
-	}
+	public:
+		LineCoverage(unsigned int lineNumber, bool hasBeenExecuted);
+		LineCoverage(const LineCoverage&) = default;
 		
-	//-------------------------------------------------------------------------
-	unsigned int LineCoverage::GetLineNumber() const
-	{
-		return lineNumber_;
-	}
-
-	//-------------------------------------------------------------------------
-	bool LineCoverage::HasBeenExecuted() const
-	{
-		return hasBeenExecuted_;
-	}
+		unsigned int GetLineNumber() const;
+		bool HasBeenExecuted() const;
+		
+	private:
+		unsigned int lineNumber_;
+		bool hasBeenExecuted_;
+	};
 }
+
+
