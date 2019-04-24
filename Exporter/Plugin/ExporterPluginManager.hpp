@@ -36,7 +36,7 @@ namespace Exporter
 	class IPluginLoader;
 
 	template <typename T>
-	class Plugin;
+	class LoadedPlugin;
 
 	class IExportPlugin;
 
@@ -61,7 +61,8 @@ namespace Exporter
 		            const std::wstring& argument) const;
 
 	  private:
-		std::unordered_map<std::wstring, std::shared_ptr<Plugin<IExportPlugin>>>
+		std::unordered_map<std::wstring,
+		                   std::shared_ptr<LoadedPlugin<IExportPlugin>>>
 		    plugins_;
 		std::filesystem::path pluginFolder_;
 	};

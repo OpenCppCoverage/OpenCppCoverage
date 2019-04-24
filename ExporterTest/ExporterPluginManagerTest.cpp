@@ -21,7 +21,7 @@
 
 #include "Exporter/Plugin/IExportPlugin.hpp"
 #include "Exporter/Plugin/IPluginLoader.hpp"
-#include "Exporter/Plugin/Plugin.hpp"
+#include "Exporter/Plugin/LoadedPlugin.hpp"
 #include "Exporter/Plugin/ExporterPluginManager.hpp"
 
 #include "CppCoverage/CoverageData.hpp"
@@ -41,7 +41,7 @@ namespace ExporterTest
 		  public:
 			MOCK_METHOD2(
 			    TryLoadPlugin,
-			    std::unique_ptr<Exporter::Plugin<Exporter::IExportPlugin>>(
+			    std::unique_ptr<Exporter::LoadedPlugin<Exporter::IExportPlugin>>(
 			        const std::filesystem::path& pluginPath,
 			        const std::string& pluginFactoryFctName));
 		};
@@ -83,7 +83,7 @@ namespace ExporterTest
 			    .WillOnce(testing::Invoke([&](const auto& p, const auto&) {
 				    EXPECT_EQ(pluginPath_, p);
 				    auto plugin = std::make_unique<
-				        Exporter::Plugin<Exporter::IExportPlugin>>(nullptr);
+				        Exporter::LoadedPlugin<Exporter::IExportPlugin>>(nullptr);
 				    plugin->Set(std::move(exportPlugin));
 
 				    return plugin;

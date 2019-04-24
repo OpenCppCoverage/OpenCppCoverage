@@ -23,16 +23,16 @@
 namespace Exporter
 {
 	template <typename T>
-	class Plugin
+	class LoadedPlugin
 	{
 	  public:
 		//---------------------------------------------------------------------
-		explicit Plugin(HMODULE libModule) : libModule_{libModule}
+		explicit LoadedPlugin(HMODULE libModule) : libModule_{libModule}
 		{
 		}
 
 		//---------------------------------------------------------------------
-		~Plugin()
+		~LoadedPlugin()
 		{
 			plugin_.reset();
 			if (libModule_)

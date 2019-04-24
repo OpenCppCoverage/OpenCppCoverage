@@ -17,7 +17,7 @@
 #pragma once
 
 #include "IPluginLoader.hpp"
-#include "Plugin.hpp"
+#include "LoadedPlugin.hpp"
 
 #include "Tools/Tool.hpp"
 
@@ -30,7 +30,7 @@ namespace Exporter
 	{
 	  public:
 		//-------------------------------------------------------------------------
-		std::unique_ptr<Plugin<T>>
+		std::unique_ptr<LoadedPlugin<T>>
 		TryLoadPlugin(const std::filesystem::path& pluginPath,
 		              const std::string& pluginFactoryFctName) override
 		{
@@ -39,7 +39,7 @@ namespace Exporter
 			if (!libModule)
 				throw std::runtime_error("LoadLibrary failed.");
 
-			auto plugin = std::make_unique<Plugin<T>>(libModule);
+			auto plugin = std::make_unique<LoadedPlugin<T>>(libModule);
 
 			auto address =
 			    GetProcAddress(libModule, pluginFactoryFctName.c_str());

@@ -23,7 +23,7 @@
 namespace Exporter
 {
 	template <typename T>
-	class Plugin;
+	class LoadedPlugin;
 
 	template <typename T>
 	class IPluginLoader
@@ -31,7 +31,7 @@ namespace Exporter
 	  public:
 		virtual ~IPluginLoader() = default;
 
-		virtual std::unique_ptr<Plugin<T>>
+		virtual std::unique_ptr<LoadedPlugin<T>>
 		TryLoadPlugin(const std::filesystem::path& pluginPath,
 		              const std::string& pluginFactoryFctName) = 0;
 	};

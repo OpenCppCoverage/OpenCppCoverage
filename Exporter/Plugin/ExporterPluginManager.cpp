@@ -20,7 +20,7 @@
 #include <optional>
 
 #include "IPluginLoader.hpp"
-#include "Plugin.hpp"
+#include "LoadedPlugin.hpp"
 #include "IExportPlugin.hpp"
 #include "../ExporterException.hpp"
 #include "Tools/Tool.hpp"
@@ -115,7 +115,7 @@ namespace Exporter
 			    "GetHelpDescription",
 			    pluginPath);
 
-			std::weak_ptr<Plugin<IExportPlugin>> weakPlugin{exportPlugin};
+			std::weak_ptr<LoadedPlugin<IExportPlugin>> weakPlugin{exportPlugin};
 
 			exportPluginDescriptions.push_back(
 			    CppCoverage::ExportPluginDescription{

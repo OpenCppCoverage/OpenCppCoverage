@@ -196,7 +196,7 @@
     <ClInclude Include="Plugin\ExporterPluginManager.hpp" />
     <ClInclude Include="Plugin\IExportPlugin.hpp" />
     <ClInclude Include="Plugin\IPluginLoader.hpp" />
-    <ClInclude Include="Plugin\Plugin.hpp" />
+    <ClInclude Include="Plugin\LoadedPlugin.hpp" />
     <ClInclude Include="Plugin\PluginLoader.hpp" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
