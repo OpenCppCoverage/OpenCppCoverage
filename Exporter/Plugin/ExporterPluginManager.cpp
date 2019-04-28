@@ -122,7 +122,7 @@ namespace Exporter
 			        std::wstring{pluginName},
 			        std::move(helpDescription),
 			        [weakPlugin, pluginPath, this](
-			            const std::wstring& parameter) {
+			            const std::optional<std::wstring>& parameter) {
 				        auto p = weakPlugin.lock();
 				        if (!p)
 					        THROW("Plugin was released");
@@ -141,7 +141,7 @@ namespace Exporter
 	void
 	ExporterPluginManager::Export(const std::wstring& pluginName,
 	                              const Plugin::CoverageData& coverageData,
-	                              const std::wstring& argument) const
+	                              const std::optional<std::wstring>& argument) const
 	{
 		auto it = plugins_.find(pluginName);
 		if (it == plugins_.end())

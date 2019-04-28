@@ -53,9 +53,9 @@ namespace ExporterTest
 		  public:
 			MOCK_METHOD2(Export,
 			             void(const Plugin::CoverageData&,
-			                  const std::wstring& argument));
+			                  const std::optional<std::wstring>& argument));
 
-			MOCK_METHOD1(CheckArgument, void(const std::wstring&));
+			MOCK_METHOD1(CheckArgument, void(const std::optional<std::wstring>&));
 			MOCK_METHOD0(GetHelpDescription, std::wstring());
 		};
 	}
@@ -112,7 +112,7 @@ namespace ExporterTest
 	{
 		auto exportPlugin = std::make_unique<ExportPluginMock>();
 
-		const std::wstring argument = L"argument";
+		const std::optional<std::wstring> argument = L"argument";
 		const std::wstring description = L"description";
 
 		EXPECT_CALL(*exportPlugin, GetHelpDescription())
@@ -164,7 +164,7 @@ namespace ExporterTest
 	TEST_F(ExporterPluginManagerTest, Export)
 	{
 		auto exportPlugin = std::make_unique<ExportPluginMock>();
-		const std::wstring argument = L"argument";
+		const std::optional<std::wstring> argument = L"argument";
 
 		EXPECT_CALL(*exportPlugin, Export(_, argument));
 

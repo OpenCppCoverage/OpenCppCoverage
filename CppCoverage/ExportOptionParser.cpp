@@ -89,11 +89,14 @@ namespace CppCoverage
 				return false;
 
 			auto argument = exportData.argument;
-			it->CheckArgument(argument);
+			auto optionalArgument = (argument.empty())
+			                            ? std::nullopt
+			                            : std::make_optional(argument);
+			it->CheckArgument(optionalArgument);
 
 			options.AddExport(OptionsExport{OptionsExportType::Plugin,
 			                                std::wstring{exportData.exportType},
-			                                std::move(argument)});
+			                                std::move(optionalArgument)});
 			return true;
 		}
 	}

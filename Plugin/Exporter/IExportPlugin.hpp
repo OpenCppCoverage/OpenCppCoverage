@@ -17,6 +17,7 @@
 #pragma once
 
 #include <string>
+#include <optional>
 
 namespace Plugin
 {
@@ -27,8 +28,8 @@ namespace Plugin
 	  public:
 		virtual ~IExportPlugin() = default;
 		virtual void Export(const Plugin::CoverageData&,
-		                    const std::wstring& argument) = 0;
-		virtual void CheckArgument(const std::wstring&) = 0;
+		                    const std::optional<std::wstring>& argument) = 0;
+		virtual void CheckArgument(const std::optional<std::wstring>&) = 0;
 		virtual std::wstring GetHelpDescription() = 0;
 	};
 }

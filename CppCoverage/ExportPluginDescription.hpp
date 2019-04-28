@@ -24,7 +24,8 @@ namespace CppCoverage
 	class ExportPluginDescription
 	{
 	  public:
-		using CheckArgumentFct = std::function<void(const std::wstring&)>;
+		using CheckArgumentFct =
+		    std::function<void(const std::optional<std::wstring>&)>;
 
 		//-------------------------------------------------------------------------------
 		ExportPluginDescription(std::wstring&& pluginName,
@@ -56,7 +57,7 @@ namespace CppCoverage
 		};
 
 		//-------------------------------------------------------------------------------
-		void CheckArgument(const std::wstring& parameter) const
+		void CheckArgument(const std::optional<std::wstring>& parameter) const
 		{
 			checkArgumentFct_(parameter);
 		}

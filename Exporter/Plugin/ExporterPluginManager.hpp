@@ -22,6 +22,7 @@
 #include <string>
 #include <filesystem>
 #include <unordered_map>
+#include <optional>
 
 #include "CppCoverage/ExportPluginDescription.hpp"
 
@@ -57,7 +58,7 @@ namespace Exporter
 
 		void Export(const std::wstring& pluginName,
 		            const Plugin::CoverageData&,
-		            const std::wstring& argument) const;
+		            const std::optional<std::wstring>& argument) const;
 
 	  private:
 		std::unordered_map<std::wstring,

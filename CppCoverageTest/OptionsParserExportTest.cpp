@@ -170,7 +170,7 @@ namespace CppCoverageTest
 		void CheckExportPluginParser(
 		    const std::wstring& pluginName,
 		    const std::wstring& pluginArg,
-			std::function<void(const std::wstring&)> checkArgumentFct,
+			std::function<void(const std::optional<std::wstring>&)> checkArgumentFct,
 		    std::function<void(const cov::OptionsExport&)> checkOptionExporFct)
 		{
 			std::vector<cov::ExportPluginDescription> exportPluginDescription;
@@ -199,7 +199,7 @@ namespace CppCoverageTest
 	TEST(OptionsParserExportTest, ExportPluginDescription)
 	{
 		const std::wstring pluginArg = L"pluginArg";
-		std::wstring argument;
+		std::optional<std::wstring> argument;
 
 		CheckExportPluginParser(
 			L"pluginName",
