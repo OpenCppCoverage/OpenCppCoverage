@@ -21,7 +21,7 @@
 
 #include "IPluginLoader.hpp"
 #include "LoadedPlugin.hpp"
-#include "IExportPlugin.hpp"
+#include "Plugin/Exporter/IExportPlugin.hpp"
 #include "../ExporterException.hpp"
 #include "Tools/Tool.hpp"
 
@@ -66,7 +66,7 @@ namespace Exporter
 
 	//-------------------------------------------------------------------------
 	ExporterPluginManager::ExporterPluginManager(
-	    IPluginLoader<IExportPlugin>& pluginLoader,
+	    IPluginLoader<Plugin::IExportPlugin>& pluginLoader,
 	    std::filesystem::path&& pluginFolder)
 	    : pluginFolder_{std::move(pluginFolder)}
 	{
@@ -115,7 +115,7 @@ namespace Exporter
 			    "GetHelpDescription",
 			    pluginPath);
 
-			std::weak_ptr<LoadedPlugin<IExportPlugin>> weakPlugin{exportPlugin};
+			std::weak_ptr<LoadedPlugin<Plugin::IExportPlugin>> weakPlugin{exportPlugin};
 
 			exportPluginDescriptions.push_back(
 			    CppCoverage::ExportPluginDescription{

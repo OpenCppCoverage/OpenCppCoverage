@@ -28,6 +28,7 @@
 namespace Plugin
 {
 	class CoverageData;
+	class IExportPlugin;
 }
 
 namespace Exporter
@@ -38,12 +39,10 @@ namespace Exporter
 	template <typename T>
 	class LoadedPlugin;
 
-	class IExportPlugin;
-
 	class EXPORTER_DLL ExporterPluginManager
 	{
 	  public:
-		explicit ExporterPluginManager(IPluginLoader<IExportPlugin>&,
+		explicit ExporterPluginManager(IPluginLoader<Plugin::IExportPlugin>&,
 		                               std::filesystem::path&& pluginFolder);
 		~ExporterPluginManager();
 
@@ -62,7 +61,7 @@ namespace Exporter
 
 	  private:
 		std::unordered_map<std::wstring,
-		                   std::shared_ptr<LoadedPlugin<IExportPlugin>>>
+		                   std::shared_ptr<LoadedPlugin<Plugin::IExportPlugin>>>
 		    plugins_;
 		std::filesystem::path pluginFolder_;
 	};

@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="Exporter\CoverageData.hpp" />
     <ClInclude Include="Exporter\FileCoverage.hpp" />
+    <ClInclude Include="Exporter\IExportPlugin.hpp" />
     <ClInclude Include="Exporter\LineCoverage.hpp" />
     <ClInclude Include="Exporter\ModuleCoverage.hpp" />
     <ClInclude Include="PluginExport.hpp" />

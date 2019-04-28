@@ -194,7 +194,6 @@
     <ClInclude Include="IExporter.hpp" />
     <ClInclude Include="InvalidOutputFileException.hpp" />
     <ClInclude Include="Plugin\ExporterPluginManager.hpp" />
-    <ClInclude Include="Plugin\IExportPlugin.hpp" />
     <ClInclude Include="Plugin\IPluginLoader.hpp" />
     <ClInclude Include="Plugin\LoadedPlugin.hpp" />
     <ClInclude Include="Plugin\PluginLoader.hpp" />

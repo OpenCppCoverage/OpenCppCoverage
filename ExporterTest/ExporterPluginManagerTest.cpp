@@ -19,7 +19,8 @@
 #include "TestHelper/TemporaryPath.hpp"
 #include "TestHelper/Tools.hpp"
 
-#include "Exporter/Plugin/IExportPlugin.hpp"
+#include "Plugin/Exporter/IExportPlugin.hpp"
+
 #include "Exporter/Plugin/IPluginLoader.hpp"
 #include "Exporter/Plugin/LoadedPlugin.hpp"
 #include "Exporter/Plugin/ExporterPluginManager.hpp"
@@ -36,18 +37,18 @@ namespace ExporterTest
 	{
 		//---------------------------------------------------------------------
 		class PluginLoaderMock
-		    : public Exporter::IPluginLoader<Exporter::IExportPlugin>
+		    : public Exporter::IPluginLoader<Plugin::IExportPlugin>
 		{
 		  public:
 			MOCK_METHOD2(
 			    TryLoadPlugin,
-			    std::unique_ptr<Exporter::LoadedPlugin<Exporter::IExportPlugin>>(
+			    std::unique_ptr<Exporter::LoadedPlugin<Plugin::IExportPlugin>>(
 			        const std::filesystem::path& pluginPath,
 			        const std::string& pluginFactoryFctName));
 		};
 
 		//---------------------------------------------------------------------
-		class ExportPluginMock : public Exporter::IExportPlugin
+		class ExportPluginMock : public Plugin::IExportPlugin
 		{
 		  public:
 			MOCK_METHOD2(Export,
@@ -83,7 +84,7 @@ namespace ExporterTest
 			    .WillOnce(testing::Invoke([&](const auto& p, const auto&) {
 				    EXPECT_EQ(pluginPath_, p);
 				    auto plugin = std::make_unique<
-				        Exporter::LoadedPlugin<Exporter::IExportPlugin>>(nullptr);
+				        Exporter::LoadedPlugin<Plugin::IExportPlugin>>(nullptr);
 				    plugin->Set(std::move(exportPlugin));
 
 				    return plugin;

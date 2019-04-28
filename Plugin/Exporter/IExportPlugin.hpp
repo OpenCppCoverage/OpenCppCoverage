@@ -16,17 +16,13 @@
 
 #pragma once
 
-#include "../ExporterExport.hpp"
 #include <string>
 
 namespace Plugin
 {
 	class CoverageData;
-}
 
-namespace Exporter
-{
-	class EXPORTER_DLL IExportPlugin
+	class IExportPlugin
 	{
 	  public:
 		virtual ~IExportPlugin() = default;
