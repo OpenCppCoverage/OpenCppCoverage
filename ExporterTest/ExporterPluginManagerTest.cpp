@@ -40,7 +40,7 @@ namespace ExporterTest
 		    : public Exporter::IPluginLoader<Plugin::IExportPlugin>
 		{
 		  public:
-			MOCK_METHOD2(
+			MOCK_CONST_METHOD2(
 			    TryLoadPlugin,
 			    std::unique_ptr<Exporter::LoadedPlugin<Plugin::IExportPlugin>>(
 			        const std::filesystem::path& pluginPath,

@@ -33,6 +33,6 @@ namespace Exporter
 
 		virtual std::unique_ptr<LoadedPlugin<T>>
 		TryLoadPlugin(const std::filesystem::path& pluginPath,
-		              const std::string& pluginFactoryFctName) = 0;
+		              const std::string& pluginFactoryFctName) const = 0;
 	};
 }

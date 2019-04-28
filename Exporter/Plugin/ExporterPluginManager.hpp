@@ -43,7 +43,7 @@ namespace Exporter
 	class EXPORTER_DLL ExporterPluginManager
 	{
 	  public:
-		explicit ExporterPluginManager(IPluginLoader<Plugin::IExportPlugin>&,
+		explicit ExporterPluginManager(const IPluginLoader<Plugin::IExportPlugin>&,
 		                               std::filesystem::path&& pluginFolder);
 		~ExporterPluginManager();
 

@@ -66,7 +66,7 @@ namespace Exporter
 
 	//-------------------------------------------------------------------------
 	ExporterPluginManager::ExporterPluginManager(
-	    IPluginLoader<Plugin::IExportPlugin>& pluginLoader,
+	    const IPluginLoader<Plugin::IExportPlugin>& pluginLoader,
 	    std::filesystem::path&& pluginFolder)
 	    : pluginFolder_{std::move(pluginFolder)}
 	{

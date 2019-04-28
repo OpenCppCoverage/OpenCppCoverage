@@ -32,7 +32,7 @@ namespace Exporter
 		//-------------------------------------------------------------------------
 		std::unique_ptr<LoadedPlugin<T>>
 		TryLoadPlugin(const std::filesystem::path& pluginPath,
-		              const std::string& pluginFactoryFctName) override
+		              const std::string& pluginFactoryFctName) const override
 		{
 			auto libModule = LoadLibrary(pluginPath.c_str());
 
