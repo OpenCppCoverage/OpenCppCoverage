@@ -14,14 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "stdafx.h"
+#include "pch.h"
 
 #include "Plugin/Exporter/CoverageData.hpp"
 #include "Plugin/Exporter/ModuleCoverage.hpp"
 #include "Plugin/Exporter/FileCoverage.hpp"
 #include "Plugin/Exporter/LineCoverage.hpp"
 
-namespace CppCoverageTest
+namespace PluginTest
 {
 	namespace
 	{

@@ -173,7 +173,6 @@
     <ClCompile Include="CodeCoverageRunnerTest.cpp" />
     <ClCompile Include="CoverageDataMergerRandomTest.cpp" />
     <ClCompile Include="CoverageDataMergerTest.cpp" />
-    <ClCompile Include="CoverageDataTest.cpp" />
     <ClCompile Include="CppCliTest.cpp" />
     <ClCompile Include="DebugInformationEnumeratorTest.cpp" />
     <None Include="OptimizedBuildVS2013\OptimizedBuildVS2013\OptimizedBuildVS2013.cpp" />
@@ -188,7 +187,6 @@
     <ClCompile Include="DebuggerTest.cpp" />
     <ClCompile Include="ExceptionHandlerTest.cpp" />
     <ClCompile Include="ExecutedAddressManagerTest.cpp" />
-    <ClCompile Include="FileCoverageTest.cpp" />
     <ClCompile Include="HandleInformationTest.cpp" />
     <ClCompile Include="OptionsParserConfigTest.cpp" />
     <ClCompile Include="OptionsParserExportTest.cpp" />
