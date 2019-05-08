@@ -56,7 +56,7 @@ namespace ExporterTest
 			                  const std::optional<std::wstring>& argument));
 
 			MOCK_METHOD1(CheckArgument, void(const std::optional<std::wstring>&));
-			MOCK_METHOD0(GetHelpDescription, std::wstring());
+			MOCK_METHOD0(GetArgumentHelpDescription, std::wstring());
 		};
 	}
 
@@ -115,7 +115,7 @@ namespace ExporterTest
 		const std::optional<std::wstring> argument = L"argument";
 		const std::wstring description = L"description";
 
-		EXPECT_CALL(*exportPlugin, GetHelpDescription())
+		EXPECT_CALL(*exportPlugin, GetArgumentHelpDescription())
 		    .WillOnce(testing::Return(description));
 		EXPECT_CALL(*exportPlugin, CheckArgument(argument));
 

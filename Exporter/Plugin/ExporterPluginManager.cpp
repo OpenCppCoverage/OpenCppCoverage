@@ -111,7 +111,7 @@ namespace Exporter
 			const auto pluginPath = pluginFolder_ / (pluginName + L".dll");
 
 			auto helpDescription = CallPluginfunction(
-			    [&]() { return exportPlugin->Get().GetHelpDescription(); },
+			    [&]() { return exportPlugin->Get().GetArgumentHelpDescription(); },
 			    "GetHelpDescription",
 			    pluginPath);
 

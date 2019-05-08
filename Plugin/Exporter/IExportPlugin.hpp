@@ -23,13 +23,33 @@ namespace Plugin
 {
 	class CoverageData;
 
+	//-------------------------------------------------------------------------
+	// This is the interface to implement a new export type.
+	//-------------------------------------------------------------------------
 	class IExportPlugin
 	{
 	  public:
 		virtual ~IExportPlugin() = default;
-		virtual void Export(const Plugin::CoverageData&,
+
+		//---------------------------------------------------------------------
+		// Perform the export.
+		//    coverageData: stores the result of the code coverage.
+		//    argument: The command line argument provided by the user or std::nullopt.
+		//---------------------------------------------------------------------
+		virtual void Export(const Plugin::CoverageData& coverageData,
 		                    const std::optional<std::wstring>& argument) = 0;
-		virtual void CheckArgument(const std::optional<std::wstring>&) = 0;
-		virtual std::wstring GetHelpDescription() = 0;
+
+		//---------------------------------------------------------------------
+		// Check the command line argument.
+		//    argument: The command line argument provided by the user or std::nullopt.
+		// If the argument is not valid, this function must throw std::runtime_error.
+		//---------------------------------------------------------------------
+		virtual void CheckArgument(const std::optional<std::wstring>& argument) = 0;
+	
+		//---------------------------------------------------------------------
+		// Get the text to describe the command line argument.
+		// For example, it can be "output file (optional)".
+		//---------------------------------------------------------------------
+		virtual std::wstring GetArgumentHelpDescription() = 0; 
 	};
 }
