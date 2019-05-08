@@ -55,6 +55,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCppCli", "TestCppCli\Te
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Plugin", "Plugin\Plugin.vcxproj", "{2F439508-07E0-4084-9614-1A42BDE8ED9A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PluginTest", "PluginTest\PluginTest.vcxproj", "{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -191,6 +193,14 @@ Global
 		{2F439508-07E0-4084-9614-1A42BDE8ED9A}.Release|Win32.Build.0 = Release|Win32
 		{2F439508-07E0-4084-9614-1A42BDE8ED9A}.Release|x64.ActiveCfg = Release|x64
 		{2F439508-07E0-4084-9614-1A42BDE8ED9A}.Release|x64.Build.0 = Release|x64
+		{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}.Debug|Win32.Build.0 = Debug|Win32
+		{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}.Debug|x64.ActiveCfg = Debug|x64
+		{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}.Debug|x64.Build.0 = Debug|x64
+		{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}.Release|Win32.ActiveCfg = Release|Win32
+		{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}.Release|Win32.Build.0 = Release|Win32
+		{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}.Release|x64.ActiveCfg = Release|x64
+		{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
