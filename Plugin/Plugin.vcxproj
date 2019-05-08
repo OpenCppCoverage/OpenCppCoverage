@@ -156,6 +156,7 @@
     <ClInclude Include="Exporter\IExportPlugin.hpp" />
     <ClInclude Include="Exporter\LineCoverage.hpp" />
     <ClInclude Include="Exporter\ModuleCoverage.hpp" />
+    <ClInclude Include="OptionsParserException.hpp" />
     <ClInclude Include="PluginExport.hpp" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

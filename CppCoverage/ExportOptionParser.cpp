@@ -20,7 +20,7 @@
 #include <range/v3/algorithm/find_if.hpp>
 #include "ProgramOptionsVariablesMap.hpp"
 #include "Options.hpp"
-#include "OptionsParserException.hpp"
+#include "Plugin/OptionsParserException.hpp"
 #include "ExportPluginDescription.hpp"
 #include "Tools/Tool.hpp"
 
@@ -143,7 +143,7 @@ namespace CppCoverage
 			else if (!TryAddExportPlugin(
 			             exportPluginDescriptions_, exportData, options))
 			{
-				throw OptionsParserException(
+				throw Plugin::OptionsParserException(
 				    Tools::ToLocalString(exportData.exportType) +
 				    " is not a valid export type.");
 			}

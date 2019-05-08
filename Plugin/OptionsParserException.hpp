@@ -18,7 +18,7 @@
 
 #include <stdexcept>
 
-namespace CppCoverage
+namespace Plugin
 {
 	//---------------------------------------------------------------------
 	class OptionsParserException : public std::runtime_error

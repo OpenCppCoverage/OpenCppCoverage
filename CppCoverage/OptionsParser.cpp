@@ -38,7 +38,7 @@
 #include "Tools/WarningManager.hpp"
 #include "Tools/Log.hpp"
 #include "IOptionParser.hpp"
-#include "OptionsParserException.hpp"
+#include "Plugin/OptionsParserException.hpp"
 
 namespace po = boost::program_options;
 namespace cov = CppCoverage;
@@ -55,7 +55,7 @@ namespace CppCoverage
 
 			if (value.find(notWindowsPathSeparator) != std::string::npos)
 			{
-				throw OptionsParserException(
+				throw Plugin::OptionsParserException(
 				    "Error: Invalid value \""
 				    "--" +
 				    name + ' ' + value + "\". " +
@@ -70,7 +70,7 @@ namespace CppCoverage
 			{
 				if (part == "." || part == "..")
 				{
-					throw OptionsParserException(
+					throw Plugin::OptionsParserException(
 					    "Error: \""
 					    "--" +
 					    name + ' ' + value +
@@ -151,7 +151,7 @@ namespace CppCoverage
 			std::ifstream ifs(path.c_str());
 
 			if (!ifs)
-				throw OptionsParserException("Cannot open config file: " +
+				throw Plugin::OptionsParserException("Cannot open config file: " +
 				                             path);
 
 			programOptions.FillVariableMap(ifs, variablesMap.GetVariablesMap());
@@ -171,7 +171,7 @@ namespace CppCoverage
 				{
 					if (!fs::exists(path))
 					{
-						throw OptionsParserException(
+						throw Plugin::OptionsParserException(
 						    "Argument of " +
 						    ProgramOptions::InputCoverageValue + " <" + path +
 						    "> does not exist.");
@@ -214,13 +214,13 @@ namespace CppCoverage
 
 					if (!fs::is_regular_file(unifiedDiffPath))
 					{
-						throw OptionsParserException("Unified diff path " +
+						throw Plugin::OptionsParserException("Unified diff path " +
 						                             unifiedDiffPath.string() +
 						                             " does not exist.");
 					}
 					if (rootDiffFolder && !is_directory(*rootDiffFolder))
 					{
-						throw OptionsParserException(
+						throw Plugin::OptionsParserException(
 						    "Unified diff root folder " +
 						    rootDiffFolder->string() + " does not exist.");
 					}
@@ -257,7 +257,7 @@ namespace CppCoverage
 			                   ". ";
 			if (pos == std::string::npos)
 			{
-				throw OptionsParserException(error + "Cannot find " +
+				throw Plugin::OptionsParserException(error + "Cannot find " +
 				                             OptionsParser::PathSeparator +
 				                             '.');
 			}
@@ -265,7 +265,7 @@ namespace CppCoverage
 			auto pdbPath = paths.substr(0, pos);
 			if (pdbPath.find('/') != std::string::npos)
 			{
-				throw OptionsParserException(
+				throw Plugin::OptionsParserException(
 				    error + "Path \"" + pdbPath +
 				    "\" contains '/' which is not the Windows "
 				    "path separator. "
@@ -274,7 +274,7 @@ namespace CppCoverage
 			auto localPath = paths.substr(pos + 1);
 			if (!fs::exists(localPath))
 			{
-				throw OptionsParserException(error + "Path \"" + localPath +
+				throw Plugin::OptionsParserException(error + "Path \"" + localPath +
 				                             "\" does not exist.");
 			}
 
@@ -366,7 +366,7 @@ namespace CppCoverage
 		{
 			ShowExplanation(emptyOptionsExplanation, unknownOption.what());
 		}
-		catch (const OptionsParserException& e)
+		catch (const Plugin::OptionsParserException& e)
 		{
 			ShowExplanation(emptyOptionsExplanation, e.what());
 		}
@@ -423,7 +423,7 @@ namespace CppCoverage
 		    variablesMap.IsOptionSelected(ProgramOptions::QuietOption);
 
 		if (isVerbose && isQuiet)
-			throw OptionsParserException("--" + ProgramOptions::VerboseOption +
+			throw Plugin::OptionsParserException("--" + ProgramOptions::VerboseOption +
 			                             " and --" +
 			                             ProgramOptions::QuietOption +
 			                             " cannot be used at the same time.");
@@ -454,7 +454,7 @@ namespace CppCoverage
 		AddSubstitutePdbSourcePaths(variablesMap, options);
 
 		if (!options.GetStartInfo() && options.GetInputCoveragePaths().empty())
-			throw OptionsParserException(
+			throw Plugin::OptionsParserException(
 			    "You must specify a program to execute or use --" +
 			    ProgramOptions::InputCoverageValue);
 
