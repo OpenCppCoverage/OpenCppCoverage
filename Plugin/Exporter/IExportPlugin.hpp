@@ -18,6 +18,7 @@
 
 #include <string>
 #include <optional>
+#include <filesystem>
 
 namespace Plugin
 {
@@ -34,23 +35,28 @@ namespace Plugin
 		//---------------------------------------------------------------------
 		// Perform the export.
 		//    coverageData: stores the result of the code coverage.
-		//    argument: The command line argument provided by the user or std::nullopt.
+		//    argument: The command line argument provided by the user or
+		//    std::nullopt.
+		// Returns the path where the report was generated or std::nullopt.
 		//---------------------------------------------------------------------
-		virtual void Export(const Plugin::CoverageData& coverageData,
-		                    const std::optional<std::wstring>& argument) = 0;
+		virtual std::optional<std::filesystem::path>
+		Export(const Plugin::CoverageData& coverageData,
+		       const std::optional<std::wstring>& argument) = 0;
 
 		//---------------------------------------------------------------------
 		// Check the command line argument.
-		//    argument: The command line argument provided by the user or std::nullopt.
+		//    argument: The command line argument provided by the user or
+		//    std::nullopt.
 		// If the argument is not valid, this function must throw an instance of
 		// OptionsParserException.
 		//---------------------------------------------------------------------
-		virtual void CheckArgument(const std::optional<std::wstring>& argument) = 0;
-	
+		virtual void
+		CheckArgument(const std::optional<std::wstring>& argument) = 0;
+
 		//---------------------------------------------------------------------
 		// Get the text to describe the command line argument.
 		// For example, it can be "output file (optional)".
 		//---------------------------------------------------------------------
-		virtual std::wstring GetArgumentHelpDescription() = 0; 
+		virtual std::wstring GetArgumentHelpDescription() = 0;
 	};
 }

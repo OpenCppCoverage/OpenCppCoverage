@@ -176,9 +176,14 @@ namespace Exporter
 			THROW("Cannot find plugin: " << pluginName);
 		auto& plugin = it->second;
 
-		CallPluginfunction(
-		    [&]() { plugin->Get().Export(coverageData, argument); },
+		auto optionalOutput = CallPluginfunction(
+		    [&]() { return plugin->Get().Export(coverageData, argument); },
 		    "Export",
 		    pluginFolder_ / pluginName);
+		if (optionalOutput)
+		{
+			Tools::ShowOutputMessage(
+			    pluginName + L" has generated the report at ", *optionalOutput);
+		}
 	}
 }
