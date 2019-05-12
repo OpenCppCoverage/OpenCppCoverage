@@ -19,6 +19,8 @@
 
 #include <optional>
 
+#include "Plugin/OptionsParserException.hpp"
+
 #include "IPluginLoader.hpp"
 #include "LoadedPlugin.hpp"
 #include "Plugin/Exporter/IExportPlugin.hpp"
@@ -43,7 +45,7 @@ namespace Exporter
 				fullMessage += "Error: Function " + *functionName + " failed: ";
 			fullMessage += additionalInformation;
 			fullMessage +=
-			    "Removing " + pluginPath.string() + " may fix the problem.";
+			    "\nRemoving " + pluginPath.string() + " may fix the problem.";
 
 			return fullMessage;
 		}
@@ -98,6 +100,38 @@ namespace Exporter
 	ExporterPluginManager::~ExporterPluginManager() = default;
 
 	//-------------------------------------------------------------------------
+	void
+	CheckArgument(const std::weak_ptr<LoadedPlugin<Plugin::IExportPlugin>>& weakPlugin,
+	              const std::filesystem::path& pluginPath,
+	              const std::optional<std::wstring>& parameter)
+	{
+		auto p = weakPlugin.lock();
+		if (!p)
+			THROW("Plugin was released");
+
+		std::string error;
+		try
+		{
+			p->Get().CheckArgument(parameter);
+		}
+		catch (const Plugin::OptionsParserException&)
+		{
+			throw;
+		}
+		catch (const std::exception& e)
+		{
+			error = e.what();
+		}
+		catch (...)
+		{
+			error = "Unknow";
+		}
+
+		auto fullErrorMessage = InvalidPluginError("CheckArgument", error, pluginPath);
+		throw std::runtime_error(fullErrorMessage);
+	}
+
+	//-------------------------------------------------------------------------
 	std::vector<CppCoverage::ExportPluginDescription>
 	ExporterPluginManager::CreateExportPluginDescriptions() const
 	{
@@ -123,15 +157,8 @@ namespace Exporter
 			        std::move(helpDescription),
 			        [weakPlugin, pluginPath, this](
 			            const std::optional<std::wstring>& parameter) {
-				        auto p = weakPlugin.lock();
-				        if (!p)
-					        THROW("Plugin was released");
-
-				        CallPluginfunction(
-				            [&]() { p->Get().CheckArgument(parameter); },
-				            "CheckArgument",
-				            pluginPath);
-			        }});
+					CheckArgument(weakPlugin, pluginPath, parameter);
+				}});
 		}
 
 		return exportPluginDescriptions;

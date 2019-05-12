@@ -42,7 +42,8 @@ namespace Plugin
 		//---------------------------------------------------------------------
 		// Check the command line argument.
 		//    argument: The command line argument provided by the user or std::nullopt.
-		// If the argument is not valid, this function must throw std::runtime_error.
+		// If the argument is not valid, this function must throw an instance of
+		// OptionsParserException.
 		//---------------------------------------------------------------------
 		virtual void CheckArgument(const std::optional<std::wstring>& argument) = 0;
 	
