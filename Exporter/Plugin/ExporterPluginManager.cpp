@@ -113,6 +113,7 @@ namespace Exporter
 		try
 		{
 			p->Get().CheckArgument(parameter);
+			return;
 		}
 		catch (const Plugin::OptionsParserException&)
 		{
