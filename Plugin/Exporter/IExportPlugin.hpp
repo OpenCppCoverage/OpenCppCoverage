@@ -58,5 +58,14 @@ namespace Plugin
 		// For example, it can be "output file (optional)".
 		//---------------------------------------------------------------------
 		virtual std::wstring GetArgumentHelpDescription() = 0;
+
+		//---------------------------------------------------------------------
+		// Get the IExportPlugin interface version.
+		// Must be implemented as return Plugin::CurrentExportPluginVersion.
+		//---------------------------------------------------------------------
+		virtual int GetExportPluginVersion() const = 0;
 	};
+
+	// The current version of IExportPlugin.
+	const int CurrentExportPluginVersion = 1;
 }

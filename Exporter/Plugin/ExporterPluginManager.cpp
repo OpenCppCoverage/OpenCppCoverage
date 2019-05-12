@@ -64,6 +64,28 @@ namespace Exporter
 				    return InvalidPluginError(functionName, error, pluginPath);
 			    });
 		}
+
+		//---------------------------------------------------------------------
+		void CheckVersion(const Plugin::IExportPlugin& exportPlugin,
+		                  const std::filesystem::path& pluginPath)
+		{
+			const auto functionName = "GetExportPluginVersion";
+			auto pluginVersion = CallPluginfunction(
+			    [&]() { return exportPlugin.GetExportPluginVersion(); },
+			    functionName,
+			    pluginPath);
+			auto currentVersion = Plugin::CurrentExportPluginVersion;
+			if (pluginVersion != currentVersion)
+			{
+				auto error =
+				    "IExportPlugin version missmatch: "
+				    "OpenCppCoverage version is " +
+				    std::to_string(currentVersion) +
+				    " whereas the plugin version is " + std::to_string(pluginVersion);
+				throw std::runtime_error(
+				    InvalidPluginError(functionName, error, pluginPath));
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------
@@ -91,7 +113,7 @@ namespace Exporter
 			    [&](const auto& error) {
 				    return InvalidPluginError(std::nullopt, error, path);
 			    });
-
+			CheckVersion(plugin->Get(), path);
 			plugins_.emplace(pluginName, std::move(plugin));
 		}
 	}
