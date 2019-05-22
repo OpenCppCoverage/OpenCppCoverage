@@ -107,6 +107,9 @@ namespace Exporter
 	const std::string TemplateHtmlExporter::CodeTemplate = "CODE";
 	const std::string TemplateHtmlExporter::IdTemplate = "ID";
 	const std::string TemplateHtmlExporter::ThirdPartyPathTemplate = "THIRD_PARTY_PATH";
+	const std::string TemplateHtmlExporter::OCCProjectLink = "OCC_PROJECT_LINK";
+	const std::string TemplateHtmlExporter::OCCVersion = "OCC_VERSION";
+	const std::string TemplateHtmlExporter::ActualProjectLink = "https://github.com/OpenCppCoverage/OpenCppCoverage/releases";
 
 	//-------------------------------------------------------------------------
 	TemplateHtmlExporter::TemplateHtmlExporter(
@@ -130,6 +133,8 @@ namespace Exporter
 
 		dictionary->SetValue(TitleTemplate, titleStr);
 		dictionary->SetValue(MainMessageTemplate, ToString(message));
+		dictionary->SetValue(OCCProjectLink, ActualProjectLink);
+		dictionary->SetValue(OCCVersion, OPENCPPCOVERAGE_VERSION);
 
 		return dictionary;
 	}
@@ -200,6 +205,8 @@ namespace Exporter
 		dictionary.SetValue(CodeTemplate, ToString(codeContent));
 		dictionary.SetValue(BodyOnLoadTemplate, bodyLoad);
 		dictionary.SetValue(SourceWarningMessageTemplate, warning);
+		dictionary.SetValue(OCCProjectLink, ActualProjectLink);
+		dictionary.SetValue(OCCVersion, OPENCPPCOVERAGE_VERSION);
 		WriteTemplate(dictionary, fileTemplatePath_, output);
 	}
 	//-------------------------------------------------------------------------
