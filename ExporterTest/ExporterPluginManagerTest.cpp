@@ -151,6 +151,19 @@ namespace ExporterTest
 	}
 
 	//-------------------------------------------------------------------------
+	TEST_F(ExporterPluginManagerTest, InvalidVersion)
+	{
+		auto exportPlugin =
+		    CreateExportPluginMock(Plugin::CurrentExportPluginVersion);
+		ASSERT_NO_THROW(CreateManager(std::move(exportPlugin)));
+
+		exportPlugin =
+		    CreateExportPluginMock(Plugin::CurrentExportPluginVersion + 1);
+		ASSERT_THROW(CreateManager(std::move(exportPlugin)),
+		             std::runtime_error);
+	}
+
+	//-------------------------------------------------------------------------
 	TEST_F(ExporterPluginManagerTest, TryLoadPluginFailure)
 	{
 		PluginLoaderMock pluginLoader;
