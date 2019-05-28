@@ -52,11 +52,14 @@ namespace ExporterTest
 		{
 		  public:
 			MOCK_METHOD2(Export,
-			             void(const Plugin::CoverageData&,
-			                  const std::optional<std::wstring>& argument));
+			             std::optional<std::filesystem::path>(
+			                 const Plugin::CoverageData&,
+			                 const std::optional<std::wstring>& argument));
 
-			MOCK_METHOD1(CheckArgument, void(const std::optional<std::wstring>&));
+			MOCK_METHOD1(CheckArgument,
+			             void(const std::optional<std::wstring>&));
 			MOCK_METHOD0(GetArgumentHelpDescription, std::wstring());
+			MOCK_CONST_METHOD0(GetExportPluginVersion, int());
 		};
 	}
 
@@ -100,6 +103,18 @@ namespace ExporterTest
 			    pluginLoader, std::filesystem::path{pluginFolder_.GetPath()});
 		}
 
+		//---------------------------------------------------------------------
+		std::unique_ptr<ExportPluginMock> CreateExportPluginMock(
+		    int pluginVersion = Plugin::CurrentExportPluginVersion) const
+		{
+			auto exportPlugin = std::make_unique<ExportPluginMock>();
+
+			EXPECT_CALL(*exportPlugin, GetExportPluginVersion())
+			    .WillOnce(testing::Return(pluginVersion));
+
+			return exportPlugin;
+		}
+
 		std::filesystem::path pluginPath_;
 		std::wstring pluginName_;
 
@@ -110,7 +125,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST_F(ExporterPluginManagerTest, CreateExportPluginDescriptions)
 	{
-		auto exportPlugin = std::make_unique<ExportPluginMock>();
+		auto exportPlugin = CreateExportPluginMock();
 
 		const std::optional<std::wstring> argument = L"argument";
 		const std::wstring description = L"description";
@@ -163,7 +178,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST_F(ExporterPluginManagerTest, Export)
 	{
-		auto exportPlugin = std::make_unique<ExportPluginMock>();
+		auto exportPlugin = CreateExportPluginMock();
 		const std::optional<std::wstring> argument = L"argument";
 
 		EXPECT_CALL(*exportPlugin, Export(_, argument));
@@ -177,14 +192,17 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST_F(ExporterPluginManagerTest, InvalidExport)
 	{
-		auto exportPlugin = std::make_unique<ExportPluginMock>();
+		auto exportPlugin = CreateExportPluginMock();
 		const auto errorMessage = "errorMessage";
 
 		EXPECT_CALL(*exportPlugin, Export(_, _))
-		    .WillOnce(
-		        testing::Invoke([](const auto&, const auto&) { throw 42; }))
+		    .WillOnce(testing::Invoke([](const auto&, const auto&) {
+			    throw 42;
+			    return std::nullopt;
+		    }))
 		    .WillOnce(testing::Invoke([&](const auto&, const auto&) {
 			    throw std::runtime_error(errorMessage);
+			    return std::nullopt;
 		    }));
 
 		auto pluginManager = CreateManager(std::move(exportPlugin));
