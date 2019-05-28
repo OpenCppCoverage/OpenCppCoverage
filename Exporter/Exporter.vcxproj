@@ -218,7 +218,6 @@
     <ClCompile Include="CoberturaExporter.cpp" />
     <ClCompile Include="Binary\CoverageDataSerializer.cpp" />
     <ClCompile Include="Binary\CoverageDataDeserializer.cpp" />
-    <ClCompile Include="ExporterException.cpp" />
     <ClCompile Include="Html\HtmlExporter.cpp" />
     <ClCompile Include="Html\HtmlFile.cpp" />
     <ClCompile Include="Html\HtmlFileCoverageExporter.cpp" />
