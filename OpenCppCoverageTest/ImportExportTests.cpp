@@ -29,6 +29,7 @@
 #include "Exporter/binary/CoverageDataDeserializer.hpp"
 
 #include "TestHelper/CoverageDataComparer.hpp"
+#include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
 #include "OpenCppCoverageTestTools.hpp"
 
@@ -43,7 +44,7 @@ namespace OpenCppCoverageTest
 		//---------------------------------------------------------------------
 		void RunCoverage(
 			std::vector<std::pair<std::string, std::string>> coverageArguments,
-			const TestHelper::TemporaryPath& output)
+			const std::filesystem::path& output)
 		{
 			fs::path testCoverageConsole = TestCoverageConsole::GetOutputBinaryPath();						
 			
@@ -106,4 +107,17 @@ namespace OpenCppCoverageTest
 
 		coverageDataComparer.AssertEquals(initialCoverage, finalCoverage);
 	}	
+
+	//-------------------------------------------------------------------------
+	TEST(ImportExportTest, ExportPlugin)
+	{
+		TestHelper::TemporaryPath tempPath{
+		    TestHelper::TemporaryPathOption::CreateAsFolder};
+		auto output = tempPath.GetPath() / "Output.txt";
+		auto dllPath = TestCoverageSharedLib::GetOutputBinaryPath();
+		auto pluginName = dllPath.stem().string();
+
+		RunCoverage({BuildExportTypeString(pluginName, output)}, output);
+		ASSERT_NE(0, std::filesystem::file_size(output));
+	}
 }
