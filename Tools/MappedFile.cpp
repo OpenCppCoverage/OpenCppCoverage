@@ -20,7 +20,6 @@
 #include "ToolsException.hpp"
 
 #include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/filesystem/operations.hpp>
 
 namespace Tools
 {

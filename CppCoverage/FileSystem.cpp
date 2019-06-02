@@ -18,7 +18,6 @@
 #include <system_error>
 
 #include "FileSystem.hpp"
-#include <boost/filesystem/operations.hpp>
 #include <boost/optional/optional.hpp>
 
 namespace CppCoverage

@@ -20,7 +20,6 @@
 #include "Tools.hpp"
 #include <fstream>
 #include <filesystem>
-#include <boost/filesystem/operations.hpp>
 #include <boost/algorithm/string.hpp>
 
 #include <Poco/Process.h>
