@@ -16,7 +16,6 @@
 
 #include "stdafx.h"
 #include "InvalidOutputFileException.hpp"
-#include <boost/filesystem/operations.hpp>
 
 namespace Exporter
 {

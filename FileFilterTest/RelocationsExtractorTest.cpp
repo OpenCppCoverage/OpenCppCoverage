@@ -18,7 +18,6 @@
 #include <windows.h>
 #include <regex>
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem/operations.hpp>
 
 #include "FileFilter/RelocationsExtractor.hpp"
 #include "TestCoverageOptimizedBuild/TestCoverageOptimizedBuild.hpp"
