@@ -64,6 +64,9 @@ namespace Exporter
 		static const std::string CodeTemplate;
 		static const std::string IdTemplate;
 		static const std::string ThirdPartyPathTemplate;
+		static const std::string OCCProjectLink;
+		static const std::string OCCVersion;
+		static const std::string ActualProjectLink;
 
 	public:
 		explicit TemplateHtmlExporter(
