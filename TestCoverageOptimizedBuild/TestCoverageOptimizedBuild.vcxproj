@@ -22,7 +22,7 @@
     <ProjectGuid>{2FD17BA1-0E02-49E6-84C3-0A8F63FEF871}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TestCoverageOptimizedBuild</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <ProjectName>TestCoverageOptimizedBuild</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

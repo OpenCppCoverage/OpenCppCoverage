@@ -22,7 +22,7 @@
     <ProjectGuid>{0DD16EDF-BD43-4D7B-B357-931F48F2FCC6}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TestCoverageConsole</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
