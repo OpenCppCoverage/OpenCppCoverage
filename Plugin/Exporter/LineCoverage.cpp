@@ -17,7 +17,7 @@
 #include "stdafx.h"
 #include "LineCoverage.hpp"
 
-namespace CppCoverage
+namespace Plugin
 {
 	//-------------------------------------------------------------------------
 	LineCoverage::LineCoverage(unsigned int lineNumber, bool hasBeenExecuted)

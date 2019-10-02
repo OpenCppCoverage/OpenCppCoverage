@@ -25,6 +25,6 @@ namespace CppCoverageTest
 	  public:
 		MOCK_CONST_METHOD1(
 		    GetLastWriteTime,
-		    boost::optional<std::time_t>(const boost::filesystem::path&));
+		    boost::optional<std::filesystem::file_time_type>(const std::filesystem::path&));
 	};
 }

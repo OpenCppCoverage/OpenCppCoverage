@@ -95,7 +95,7 @@ namespace FileFilter
 	//-------------------------------------------------------------------------
 	std::unique_ptr<ReleaseCoverageFilter::FileData>
 	ReleaseCoverageFilter::UpdateLineDataCaches(
-	    const boost::filesystem::path& filePath, const std::vector<LineInfo>& lineDatas)
+	    const std::filesystem::path& filePath, const std::vector<LineInfo>& lineDatas)
 	{
 		auto fileData = std::make_unique<FileData>();
 		fileData->path_ = filePath;

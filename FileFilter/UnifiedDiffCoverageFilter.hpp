@@ -21,7 +21,7 @@
 #include <vector>
 
 #include <boost/optional/optional_fwd.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include "PathMatcher.hpp"
 
 namespace FileFilter
@@ -32,16 +32,16 @@ namespace FileFilter
 	{
 	public:
 		UnifiedDiffCoverageFilter(
-			const boost::filesystem::path& unifiedDiffPath,
-			const boost::optional<boost::filesystem::path>& rootDiffFolder);
+			const std::filesystem::path& unifiedDiffPath,
+			const boost::optional<std::filesystem::path>& rootDiffFolder);
 
 		UnifiedDiffCoverageFilter(
 			std::vector<File>&&,
-			const boost::optional<boost::filesystem::path>& rootDiffFolder);
+			const boost::optional<std::filesystem::path>& rootDiffFolder);
 
-		bool IsSourceFileSelected(const boost::filesystem::path&);
-		bool IsLineSelected(const boost::filesystem::path&, int lineNumber);
-		std::vector<boost::filesystem::path> GetUnmatchedPaths() const;
+		bool IsSourceFileSelected(const std::filesystem::path&);
+		bool IsLineSelected(const std::filesystem::path&, int lineNumber);
+		std::vector<std::filesystem::path> GetUnmatchedPaths() const;
 
 	private:
 		UnifiedDiffCoverageFilter(const UnifiedDiffCoverageFilter&) = delete;
@@ -49,9 +49,9 @@ namespace FileFilter
 		UnifiedDiffCoverageFilter(UnifiedDiffCoverageFilter&&) = delete;
 		UnifiedDiffCoverageFilter& operator=(UnifiedDiffCoverageFilter&&) = delete;
 
-		File* SearchFile(const boost::filesystem::path&);
+		File* SearchFile(const std::filesystem::path&);
 
-		boost::filesystem::path lastPath_;
+		std::filesystem::path lastPath_;
 		File* lastFile_;
 		PathMatcher pathMatcher_;
 	};

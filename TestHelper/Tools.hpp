@@ -16,15 +16,8 @@
 
 #pragma once
 
+#include <filesystem>
 #include "TestHelperExport.hpp"
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
 
 extern "C"
 {
@@ -33,22 +26,21 @@ extern "C"
 
 namespace TestHelper
 {
-	boost::filesystem::path TEST_HELPER_DLL  GetTestUnloadDllFilename();
-	boost::filesystem::path TEST_HELPER_DLL  GetOutputBinaryPath();
+	std::filesystem::path TEST_HELPER_DLL  GetTestUnloadDllFilename();
+	std::filesystem::path TEST_HELPER_DLL  GetOutputBinaryPath();
 
-	void TEST_HELPER_DLL CreateEmptyFile(const boost::filesystem::path&);
+	void TEST_HELPER_DLL CreateEmptyFile(const std::filesystem::path&);
 
 	std::string TEST_HELPER_DLL RunProcess(
-		const boost::filesystem::path& program,
+		const std::filesystem::path& program,
 		const std::vector<std::string>& args);
 
-	boost::filesystem::path TEST_HELPER_DLL GetVisualStudioPath();
+	std::filesystem::path TEST_HELPER_DLL GetVisualStudioPath();
 
 	//-------------------------------------------------------------------------
 	template <typename ExceptionType, typename Fct>
-	void
-	AssertThrow(Fct fct,
-	            std::function<bool(const ExceptionType&)> exceptionPredicate)
+	void AssertThrow(Fct fct,
+	                 std::function<void(const ExceptionType&)> exceptionCheck)
 	{
 		try
 		{
@@ -56,10 +48,13 @@ namespace TestHelper
 		}
 		catch (const ExceptionType& e)
 		{
-			if (exceptionPredicate(e))
-				return;
-			throw std::runtime_error("Expected exception does not match predicate.");
+			exceptionCheck(e);
+			return;
 		}
-		throw std::runtime_error("Expected exception not found.");
+		catch (...)
+		{
+			throw std::runtime_error("Expected exception not raised.");
+		}
+		throw std::runtime_error("No exception raised.");
 	}
 }

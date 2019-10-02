@@ -19,11 +19,10 @@
 
 #include <sstream>
 #include <boost/optional.hpp>
-#include <boost/filesystem.hpp>
 
 #include "tools/Log.hpp"
 
-#include "CoverageData.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
 #include "Debugger.hpp"
 #include "ExecutedAddressManager.hpp"
 #include "HandleInformation.hpp"
@@ -61,7 +60,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	CoverageData CodeCoverageRunner::RunCoverage(
+	Plugin::CoverageData CodeCoverageRunner::RunCoverage(
 		const RunCoverageSettings& settings)
 	{
 		Debugger debugger{ settings.GetCoverChildren(), settings.GetContinueAfterCppException(), settings.GetStopOnAssert()};

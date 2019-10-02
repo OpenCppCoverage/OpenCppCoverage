@@ -15,7 +15,6 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
-#include <boost/filesystem/path.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 
 #include "OpenCppCoverageTestTools.hpp"

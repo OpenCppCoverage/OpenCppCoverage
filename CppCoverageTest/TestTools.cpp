@@ -17,7 +17,7 @@
 #include "stdafx.h"
 #include "TestTools.hpp"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <boost/algorithm/string.hpp>
 
 #include "CppCoverage/StartInfo.hpp"
@@ -31,7 +31,6 @@
 
 #include "Tools/WarningManager.hpp"
 
-namespace bfs = boost::filesystem;
 namespace cov = CppCoverage;
 
 namespace CppCoverageTest
@@ -59,7 +58,7 @@ namespace CppCoverageTest
 	namespace TestTools
 	{
 		//-------------------------------------------------------------------------
-		void GetHandles(const boost::filesystem::path& path, TestTools::T_HandlesFct action)
+		void GetHandles(const std::filesystem::path& path, TestTools::T_HandlesFct action)
 		{
 			cov::StartInfo startInfo{ path };
 			cov::Debugger debugger{ false, false, false };
@@ -103,7 +102,7 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		cov::CoverageData ComputeCoverageData(
+		Plugin::CoverageData ComputeCoverageData(
 			const std::vector<std::wstring>& arguments,
 			const std::wstring& modulePattern,
 			const std::wstring& sourcePattern)
@@ -114,7 +113,7 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		cov::CoverageData ComputeCoverageDataPatterns(
+		Plugin::CoverageData ComputeCoverageDataPatterns(
 			const CoverageArgs& args)
 		{
 			cov::CodeCoverageRunner codeCoverageRunner{

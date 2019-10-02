@@ -20,12 +20,13 @@
 #include "FileFilter/File.hpp"
 #include "FileFilter/UnifiedDiffParserException.hpp"
 
-#include <boost/filesystem.hpp>
+#include <fstream>
+#include <filesystem>
 
 #include "Tools/Tool.hpp"
 
 using namespace FileFilter;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace FileFilterTest
 {

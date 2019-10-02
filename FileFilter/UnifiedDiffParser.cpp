@@ -19,7 +19,7 @@
 
 #include <sstream>
 #include <regex>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <boost/algorithm/string.hpp>
 
 #include "File.hpp"
@@ -179,7 +179,7 @@ namespace FileFilter
 	}
 
 	//---------------------------------------------------------------------
-	boost::filesystem::path UnifiedDiffParser::ExtractTargetFile(Stream& stream) const
+	std::filesystem::path UnifiedDiffParser::ExtractTargetFile(Stream& stream) const
 	{
 		std::wstring line;		
 		if (!stream.GetLine(line))

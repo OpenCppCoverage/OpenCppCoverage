@@ -17,7 +17,7 @@
 #pragma once
 
 #include <memory>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "HtmlFile.hpp"
 #include "../ExporterExport.hpp"
@@ -31,19 +31,19 @@ namespace Exporter
 		static const std::wstring FolderModules;
 
 	public:
-		HtmlFolderStructure(const boost::filesystem::path& templateFolder);
+		HtmlFolderStructure(const std::filesystem::path& templateFolder);
 		~HtmlFolderStructure();
 
-		boost::filesystem::path CreateCurrentRoot(const boost::filesystem::path& outputFolder);
-		HtmlFile CreateCurrentModule(const boost::filesystem::path&);		
-		HtmlFile GetHtmlFilePath(const boost::filesystem::path& filePath) const;
+		std::filesystem::path CreateCurrentRoot(const std::filesystem::path& outputFolder);
+		HtmlFile CreateCurrentModule(const std::filesystem::path&);		
+		HtmlFile GetHtmlFilePath(const std::filesystem::path& filePath) const;
 
 	private:
 		HtmlFolderStructure(const HtmlFolderStructure&) = delete;
 		HtmlFolderStructure& operator=(const HtmlFolderStructure&) = delete;
 
 	private:
-		boost::filesystem::path templateFolder_;
+		std::filesystem::path templateFolder_;
 
 		struct Hierarchy;
 		std::unique_ptr<Hierarchy> optionalCurrentRoot_;

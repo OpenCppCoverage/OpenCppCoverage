@@ -16,22 +16,24 @@
 
 #include "stdafx.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "TestCoverageConsole/TestCoverageConsole.hpp"
 #include "TestHelper/TemporaryPath.hpp"
 
+#include "CppCoverage/ExportOptionParser.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
-#include "CppCoverage/CoverageData.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
 #include "CppCoverage/OptionsParser.hpp"
 
 #include "Exporter/binary/CoverageDataDeserializer.hpp"
 
 #include "TestHelper/CoverageDataComparer.hpp"
+#include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
 #include "OpenCppCoverageTestTools.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 namespace cov = CppCoverage;
 
 namespace OpenCppCoverageTest
@@ -42,7 +44,7 @@ namespace OpenCppCoverageTest
 		//---------------------------------------------------------------------
 		void RunCoverage(
 			std::vector<std::pair<std::string, std::string>> coverageArguments,
-			const TestHelper::TemporaryPath& output)
+			const std::filesystem::path& output)
 		{
 			fs::path testCoverageConsole = TestCoverageConsole::GetOutputBinaryPath();						
 			
@@ -65,7 +67,7 @@ namespace OpenCppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		cov::CoverageData ReadCoverageDataFromFile(const TestHelper::TemporaryPath& temporaryPath)
+		Plugin::CoverageData ReadCoverageDataFromFile(const TestHelper::TemporaryPath& temporaryPath)
 		{
 			Exporter::CoverageDataDeserializer coverageDataDeserializer;
 			
@@ -76,26 +78,26 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(ImportExportTest, ExportHtml)
 	{
-		RunCoverage(cov::ProgramOptions::ExportTypeHtmlValue);
+		RunCoverage(cov::ExportOptionParser::ExportTypeHtmlValue);
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(ImportExportTest, ExportCobertura)
 	{
-		RunCoverage(cov::ProgramOptions::ExportTypeCoberturaValue);
+		RunCoverage(cov::ExportOptionParser::ExportTypeCoberturaValue);
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(ImportExportTest, ExportImportBinary)
 	{
 		TestHelper::TemporaryPath initialOutput;
-		RunCoverage({ BuildExportTypeString(cov::ProgramOptions::ExportTypeBinaryValue, initialOutput) }, initialOutput);
+		RunCoverage({ BuildExportTypeString(cov::ExportOptionParser::ExportTypeBinaryValue, initialOutput) }, initialOutput);
 
 		TestHelper::TemporaryPath finalOutput;
 
 		RunCoverage(
 		{ { cov::ProgramOptions::InputCoverageValue, initialOutput.GetPath().string() },
-		{ BuildExportTypeString(cov::ProgramOptions::ExportTypeBinaryValue, finalOutput )} },
+		{ BuildExportTypeString(cov::ExportOptionParser::ExportTypeBinaryValue, finalOutput )} },
 		finalOutput);	
 
 		auto initialCoverage = ReadCoverageDataFromFile(initialOutput);
@@ -105,4 +107,17 @@ namespace OpenCppCoverageTest
 
 		coverageDataComparer.AssertEquals(initialCoverage, finalCoverage);
 	}	
+
+	//-------------------------------------------------------------------------
+	TEST(ImportExportTest, ExportPlugin)
+	{
+		TestHelper::TemporaryPath tempPath{
+		    TestHelper::TemporaryPathOption::CreateAsFolder};
+		auto output = tempPath.GetPath() / "Output.txt";
+		auto dllPath = TestCoverageSharedLib::GetOutputBinaryPath();
+		auto pluginName = dllPath.stem().string();
+
+		RunCoverage({BuildExportTypeString(pluginName, output)}, output);
+		ASSERT_NE(0, std::filesystem::file_size(output));
+	}
 }

@@ -17,12 +17,12 @@
 #include "stdafx.h"
 #include "UniquePath.hpp"
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace Tools
 {
 	//-------------------------------------------------------------------------
-	boost::filesystem::path UniquePath::GetUniquePath(const boost::filesystem::path& path)
+	std::filesystem::path UniquePath::GetUniquePath(const std::filesystem::path& path)
 	{
 		auto uniquePath = path;
 		auto filenameWithoutExtension = path.filename().replace_extension(L"");

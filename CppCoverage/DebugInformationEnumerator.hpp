@@ -16,16 +16,10 @@
 
 #pragma once
 
+#include <filesystem>
+
 #include "CppCoverageExport.hpp"
 #include "SubstitutePdbSourcePath.hpp"
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
 
 struct IDiaSession;
 struct IDiaLineNumber;
@@ -57,8 +51,8 @@ namespace CppCoverage
 		};
 
 		virtual ~IDebugInformationHandler() = default;
-		virtual bool IsSourceFileSelected(const boost::filesystem::path&) = 0;
-		virtual void OnSourceFile(const boost::filesystem::path&,
+		virtual bool IsSourceFileSelected(const std::filesystem::path&) = 0;
+		virtual void OnSourceFile(const std::filesystem::path&,
 		                          const std::vector<Line>&) = 0;
 	};
 
@@ -67,7 +61,7 @@ namespace CppCoverage
 	{
 	  public:
 		explicit DebugInformationEnumerator(const std::vector<SubstitutePdbSourcePath>&);
-		bool Enumerate(const boost::filesystem::path&,
+		bool Enumerate(const std::filesystem::path&,
 		               IDebugInformationHandler&);
 
 	  private:
@@ -76,7 +70,7 @@ namespace CppCoverage
 		void
 		OnNewLine(IDiaSession&, IDiaLineNumber&, IDebugInformationHandler&);
 
-		boost::filesystem::path
+		std::filesystem::path
 		GetSourceFileName(IDiaSourceFile&) const;
 
 		std::vector<IDebugInformationHandler::Line> lines_;

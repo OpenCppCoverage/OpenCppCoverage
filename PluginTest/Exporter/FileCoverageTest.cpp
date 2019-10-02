@@ -14,19 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "stdafx.h"
+#include "pch.h"
 
-#include "CppCoverage/FileCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
 #include "CppCoverage/CppCoverageException.hpp"
 
 namespace cov = CppCoverage;
 
-namespace CppCoverageTest
+namespace PluginTest
 {
 	//-------------------------------------------------------------------------
 	TEST(FileCoverageTest, Basic)
 	{
-		cov::FileCoverage file{ L"" };
+		Plugin::FileCoverage file{ L"" };
 		unsigned int lineNumber = 0;
 
 		file.AddLine(lineNumber, true);
@@ -44,7 +44,7 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(FileCoverageTest, UpdateLine)
 	{
-		cov::FileCoverage file{ L"" };
+		Plugin::FileCoverage file{ L"" };
 		unsigned int lineNumber = 0;
 
 		file.AddLine(lineNumber, true);
@@ -56,8 +56,8 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(FileCoverageTest, UpdateLineNotExists)
 	{
-		cov::FileCoverage file{ L"" };
+		Plugin::FileCoverage file{ L"" };
 		
-		ASSERT_THROW(file.UpdateLine(0, false), cov::CppCoverageException);
+		ASSERT_THROW(file.UpdateLine(0, false), std::runtime_error);
 	}
 }

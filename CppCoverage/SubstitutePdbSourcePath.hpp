@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include "CppCoverageExport.hpp"
 
 namespace CppCoverage
@@ -26,8 +26,8 @@ namespace CppCoverage
 	  public:
 		//---------------------------------------------------------------------
 		SubstitutePdbSourcePath(
-		    boost::filesystem::path&& pdbStartPath,
-		    boost::filesystem::path&& localPath)
+		    std::filesystem::path&& pdbStartPath,
+		    std::filesystem::path&& localPath)
 		    : pdbStartPath_{std::move(pdbStartPath)}, localPath_{std::move(localPath)}
 		{
 		}
@@ -37,19 +37,19 @@ namespace CppCoverage
 		SubstitutePdbSourcePath(SubstitutePdbSourcePath&&) = default;
 
 		//---------------------------------------------------------------------
-		const boost::filesystem::path& GetPdbStartPath() const
+		const std::filesystem::path& GetPdbStartPath() const
 		{
 			return pdbStartPath_;
 		}
 
 		//---------------------------------------------------------------------
-		const boost::filesystem::path& GetLocalPath() const
+		const std::filesystem::path& GetLocalPath() const
 		{
 			return localPath_;
 		}
 
 	  private:
-		boost::filesystem::path pdbStartPath_;
-		boost::filesystem::path localPath_;
+		std::filesystem::path pdbStartPath_;
+		std::filesystem::path localPath_;
 	};
 }

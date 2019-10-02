@@ -18,15 +18,9 @@
 
 #include <boost/optional/optional_fwd.hpp>
 #include <memory>
-#include "CppCoverageExport.hpp"
+#include <filesystem>
 
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
+#include "CppCoverageExport.hpp"
 
 namespace CppCoverage
 {
@@ -38,12 +32,12 @@ namespace CppCoverage
 		explicit FilterAssistant(std::shared_ptr<IFileSystem>);
 		~FilterAssistant();
 
-		void OnNewModule(const boost::filesystem::path&, bool isSelected);
-		boost::optional<boost::filesystem::path>
+		void OnNewModule(const std::filesystem::path&, bool isSelected);
+		boost::optional<std::filesystem::path>
 		ComputeSuggestedModuleFilter() const;
 
-		void OnNewSourceFile(const boost::filesystem::path&, bool isSelected);
-		boost::optional<boost::filesystem::path>
+		void OnNewSourceFile(const std::filesystem::path&, bool isSelected);
+		boost::optional<std::filesystem::path>
 		ComputeSuggestedSourceFileFilter() const;
 
 		boost::optional<std::wstring> GetAdviceMessage() const;

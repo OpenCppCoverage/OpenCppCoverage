@@ -16,14 +16,14 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 namespace TestCoverageConsole
 {
 	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetDebugInformationEnumeratorTestPath()
+	inline std::filesystem::path GetDebugInformationEnumeratorTestPath()
 	{
-		return boost::filesystem::path(__FILE__)
+		return std::filesystem::path(__FILE__)
 		    .replace_extension("cpp")
 		    .filename();
 	}

@@ -20,7 +20,7 @@
 #include <memory>
 #include <set>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include "CppCoverageExport.hpp"
 
@@ -60,7 +60,7 @@ namespace CppCoverage
 		UnifiedDiffCoverageFilterManager& operator=(const UnifiedDiffCoverageFilterManager&) = delete;
 
 		std::vector<std::wstring> ComputeWarningMessageLines(
-			const std::set<boost::filesystem::path>& unmatchPaths,
+			const std::set<std::filesystem::path>& unmatchPaths,
 			size_t maxUnmatchPaths) const;
 
 		const std::set<int>& GetExecutableLinesSet(const FileFilter::FileInfo&);
@@ -68,7 +68,7 @@ namespace CppCoverage
 
 		struct ExecutableLineCache
 		{
-			boost::filesystem::path currentFilePath;
+			std::filesystem::path currentFilePath;
 			std::set<int> executableLinesSet;
 		};
 

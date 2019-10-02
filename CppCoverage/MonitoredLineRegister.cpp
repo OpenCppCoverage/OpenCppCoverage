@@ -102,7 +102,7 @@ namespace CppCoverage
 
 	//----------------------------------------------------------------------------
 	bool MonitoredLineRegister::RegisterLineToMonitor(
-	    const boost::filesystem::path& modulePath,
+	    const std::filesystem::path& modulePath,
 	    HANDLE hProcess,
 	    void* baseOfImage)
 	{
@@ -125,7 +125,7 @@ namespace CppCoverage
 
 	//--------------------------------------------------------------------------
 	bool MonitoredLineRegister::IsSourceFileSelected(
-	    const boost::filesystem::path& path)
+	    const std::filesystem::path& path)
 	{
 		auto isSelected = coverageFilterManager_->IsSourceFileSelected(path.wstring());
 		filterAssistant_->OnNewSourceFile(path, isSelected);
@@ -134,7 +134,7 @@ namespace CppCoverage
 
 	//--------------------------------------------------------------------------
 	void
-	MonitoredLineRegister::OnSourceFile(const boost::filesystem::path& path,
+	MonitoredLineRegister::OnSourceFile(const std::filesystem::path& path,
 	                                    const std::vector<Line>& lines)
 	{
 		std::vector<FileFilter::LineInfo> lineInfos;
@@ -173,7 +173,7 @@ namespace CppCoverage
 
 	//--------------------------------------------------------------------------
 	void MonitoredLineRegister::SetBreakPoint(
-	    const boost::filesystem::path& path,
+	    const std::filesystem::path& path,
 	    HANDLE hProcess,
 	    std::vector<DWORD64>&& addressCollection,
 	    const LineNumberByAddress& lineNumberByAddress)

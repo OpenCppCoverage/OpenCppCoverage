@@ -166,15 +166,18 @@
     <ClInclude Include="Address.hpp" />
     <ClInclude Include="BreakPoint.hpp" />
     <ClInclude Include="CodeCoverageRunner.hpp" />
-    <ClInclude Include="CoverageData.hpp" />
     <ClInclude Include="CoverageDataMerger.hpp" />
     <ClInclude Include="CoverageFilterManager.hpp" />
     <ClInclude Include="DebugInformationEnumerator.hpp" />
+    <ClInclude Include="ExportOptionParser.hpp" />
+    <ClInclude Include="ExportPluginDescription.hpp" />
     <ClInclude Include="FileSystem.hpp" />
     <ClInclude Include="FilterAssistant.hpp" />
+    <ClInclude Include="IOptionParser.hpp" />
     <ClInclude Include="IFileSystem.hpp" />
     <ClInclude Include="MonitoredLineRegister.hpp" />
     <ClInclude Include="ICoverageFilterManager.hpp" />
+    <ClInclude Include="ProgramOptionsVariablesMap.hpp" />
     <ClInclude Include="RunCoverageSettings.hpp" />
     <ClInclude Include="SubstitutePdbSourcePath.hpp" />
     <ClInclude Include="UnifiedDiffCoverageFilterManager.hpp" />
@@ -188,12 +191,9 @@
     <ClInclude Include="ExceptionHandler.hpp" />
     <ClInclude Include="ExecutedAddressManager.hpp" />
     <ClInclude Include="CppCoverageExport.hpp" />
-    <ClInclude Include="FileCoverage.hpp" />
     <ClInclude Include="Handle.hpp" />
     <ClInclude Include="HandleInformation.hpp" />
     <ClInclude Include="IDebugEventsHandler.hpp" />
-    <ClInclude Include="LineCoverage.hpp" />
-    <ClInclude Include="ModuleCoverage.hpp" />
     <ClInclude Include="Options.hpp" />
     <ClInclude Include="OptionsExport.hpp" />
     <ClInclude Include="OptionsParser.hpp" />
@@ -208,10 +208,10 @@
     <ClCompile Include="Address.cpp" />
     <ClCompile Include="BreakPoint.cpp" />
     <ClCompile Include="CodeCoverageRunner.cpp" />
-    <ClCompile Include="CoverageData.cpp" />
     <ClCompile Include="CoverageDataMerger.cpp" />
     <ClCompile Include="CoverageFilterManager.cpp" />
     <ClCompile Include="DebugInformationEnumerator.cpp" />
+    <ClCompile Include="ExportOptionParser.cpp" />
     <ClCompile Include="FileSystem.cpp" />
     <ClCompile Include="FilterAssistant.cpp" />
     <ClCompile Include="MonitoredLineRegister.cpp" />
@@ -226,11 +226,8 @@
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="ExceptionHandler.cpp" />
     <ClCompile Include="ExecutedAddressManager.cpp" />
-    <ClCompile Include="FileCoverage.cpp" />
     <ClCompile Include="HandleInformation.cpp" />
     <ClCompile Include="IDebugEventsHandler.cpp" />
-    <ClCompile Include="LineCoverage.cpp" />
-    <ClCompile Include="ModuleCoverage.cpp" />
     <ClCompile Include="Options.cpp" />
     <ClCompile Include="OptionsExport.cpp" />
     <ClCompile Include="OptionsParser.cpp" />
@@ -250,21 +247,26 @@
     <ProjectReference Include="..\FileFilter\FileFilter.vcxproj">
       <Project>{6fd7c5be-04bd-496d-a924-285a3e867814}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Plugin\Plugin.vcxproj">
+      <Project>{2f439508-07e0-4084-9614-1a42bde8ed9a}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Tools\Tools.vcxproj">
       <Project>{7f6d05ef-deb0-4c64-bd13-a85f46314b91}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\thirdparty.1.2.0\build\native\thirdparty.targets" Condition="Exists('..\packages\thirdparty.1.2.0\build\native\thirdparty.targets')" />
+    <Import Project="..\packages\thirdparty.1.3.0\build\native\thirdparty.targets" Condition="Exists('..\packages\thirdparty.1.3.0\build\native\thirdparty.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\thirdparty.1.2.0\build\native\thirdparty.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\thirdparty.1.2.0\build\native\thirdparty.targets'))" />
+    <Error Condition="!Exists('..\packages\thirdparty.1.3.0\build\native\thirdparty.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\thirdparty.1.3.0\build\native\thirdparty.targets'))" />
   </Target>
 </Project>

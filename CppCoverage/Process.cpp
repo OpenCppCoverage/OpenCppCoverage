@@ -109,7 +109,7 @@ namespace CppCoverage
 		{
 			std::wostringstream ostr;
 
-			if (!boost::filesystem::exists(startInfo_.GetPath()))
+			if (!std::filesystem::exists(startInfo_.GetPath()))
 				ostr << CannotFindPathMessage + startInfo_.GetPath().wstring();
 			else
 			{

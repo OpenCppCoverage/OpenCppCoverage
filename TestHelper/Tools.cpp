@@ -19,15 +19,14 @@
 #include "stdafx.h"
 #include "Tools.hpp"
 #include <fstream>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <filesystem>
 #include <boost/algorithm/string.hpp>
 
 #include <Poco/Process.h>
 #include <Poco/Pipe.h>
 #include <Poco/PipeStream.h>
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 //-------------------------------------------------------------------------
 void TestUnloadDll()

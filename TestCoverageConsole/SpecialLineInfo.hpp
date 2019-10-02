@@ -16,15 +16,15 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 namespace TestCoverageConsole
 {
 	void SpecialLineInfo();
 
 	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetSpecialLineInfoFilename()
+	inline std::filesystem::path GetSpecialLineInfoFilename()
 	{
-		return boost::filesystem::path(__FILE__).replace_extension("cpp").filename();
+		return std::filesystem::path(__FILE__).replace_extension("cpp").filename();
 	}
 }

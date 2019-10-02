@@ -19,15 +19,8 @@
 #include "FileFilterExport.hpp"
 #include <vector>
 #include <memory>
+#include <filesystem>
 #include <boost/optional/optional_fwd.hpp>
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
 
 namespace FileFilter
 {
@@ -38,12 +31,12 @@ namespace FileFilter
 	public:
 		explicit PathMatcher(
 			std::vector<File>&&,
-			const boost::optional<boost::filesystem::path>& parentPath);
+			const boost::optional<std::filesystem::path>& parentPath);
 		~PathMatcher();
 
-		File* Match(const boost::filesystem::path&);
+		File* Match(const std::filesystem::path&);
 
-		using PathCollection = std::vector<boost::filesystem::path>;
+		using PathCollection = std::vector<std::filesystem::path>;
 		PathCollection GetUnmatchedPaths() const;
 
 	private:

@@ -18,7 +18,7 @@
 
 #include <windows.h>
 #include <vector>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include "LineInfo.hpp"
 
@@ -28,13 +28,13 @@ namespace FileFilter
 	{
 	public:
 		FileInfo(
-			const boost::filesystem::path& filePath,
+			const std::filesystem::path& filePath,
 			std::vector<LineInfo>&& lineInfoColllection)
 			: filePath_{ filePath }
 			, lineInfoColllection_{ std::move(lineInfoColllection) }
 		{}
 
-		const boost::filesystem::path filePath_;
+		const std::filesystem::path filePath_;
 		const std::vector<LineInfo> lineInfoColllection_;
 	};	
 }

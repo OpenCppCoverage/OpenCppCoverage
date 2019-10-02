@@ -17,13 +17,14 @@
 #include "stdafx.h"
 #include "HtmlExporter.hpp"
 
+#include <boost/optional/optional.hpp>
 #include <sstream>
 #include <iomanip>
 #include "CTemplate.hpp"
 
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/ModuleCoverage.hpp"
-#include "CppCoverage/FileCoverage.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
+#include "Plugin/Exporter/ModuleCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
 #include "CppCoverage/CoverageRateComputer.hpp"
 #include "CppCoverage/CoverageRate.hpp"
 
@@ -41,7 +42,7 @@ namespace Exporter
 	namespace
 	{
 		//-------------------------------------------------------------------------
-		std::wstring GetMainMessage(const CppCoverage::CoverageData& coverageData)
+		std::wstring GetMainMessage(const Plugin::CoverageData& coverageData)
 		{
 			auto exitCode = coverageData.GetExitCode();
 
@@ -63,7 +64,7 @@ namespace Exporter
 	}
 
 	//-------------------------------------------------------------------------
-	boost::filesystem::path HtmlExporter::GetDefaultPath(const std::wstring&) const
+	std::filesystem::path HtmlExporter::GetDefaultPath(const std::wstring&) const
 	{
 		auto now = std::time(nullptr);
 		auto localNow = std::localtime(&now);
@@ -76,8 +77,8 @@ namespace Exporter
 
 	//-------------------------------------------------------------------------
 	void HtmlExporter::Export(
-		const CppCoverage::CoverageData& coverageData, 
-		const boost::filesystem::path& outputFolderPrefix)
+		const Plugin::CoverageData& coverageData, 
+		const std::filesystem::path& outputFolderPrefix)
 	{	
 		HtmlFolderStructure htmlFolderStructure{templateFolder_};
 		cov::CoverageRateComputer coverageRateComputer{ coverageData };
@@ -124,7 +125,7 @@ namespace Exporter
 	//---------------------------------------------------------------------
 	void HtmlExporter::ExportFiles(
 		cov::CoverageRateComputer& coverageRateComputer,
-		const cov::ModuleCoverage& module,
+		const Plugin::ModuleCoverage& module,
 		const HtmlFolderStructure& htmlFolderStructure, 
 		ctemplate::TemplateDictionary& moduleTemplateDictionary)
 	{
@@ -151,7 +152,7 @@ namespace Exporter
 	//---------------------------------------------------------------------
 	boost::optional<fs::path> HtmlExporter::ExportFile(
 		const HtmlFolderStructure& htmlFolderStructure,
-		const cov::FileCoverage& fileCoverage) const
+		const Plugin::FileCoverage& fileCoverage) const
 	{
 		auto htmlFilePath = htmlFolderStructure.GetHtmlFilePath(fileCoverage.GetPath());
 		std::wostringstream ostr;

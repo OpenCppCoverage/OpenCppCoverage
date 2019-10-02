@@ -49,7 +49,7 @@ namespace FileFilter
 
 	//-------------------------------------------------------------------------
 	bool LineFilter::IsLineSelected(
-		const boost::filesystem::path& filePath, 
+		const std::filesystem::path& filePath, 
 		int lineNumber)
 	{
 		const auto* lines = GetLines(filePath);
@@ -82,7 +82,7 @@ namespace FileFilter
 
 	//-------------------------------------------------------------------------
 	const std::vector<std::string>* LineFilter::GetLines(
-		const boost::filesystem::path& path)
+		const std::filesystem::path& path)
 	{
 		if (path != filePath_)
 		{

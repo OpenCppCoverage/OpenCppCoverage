@@ -18,10 +18,10 @@
 
 #include "CppCoverage/ExecutedAddressManager.hpp"
 #include "CppCoverage/CppCoverageException.hpp"
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/ModuleCoverage.hpp"
-#include "CppCoverage/FileCoverage.hpp"
-#include "CppCoverage/LineCoverage.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
+#include "Plugin/Exporter/ModuleCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
+#include "Plugin/Exporter/LineCoverage.hpp"
 #include "CppCoverage/Address.hpp"
 
 namespace cov = CppCoverage;
@@ -85,7 +85,7 @@ namespace CppCoverageTest
 		manager.MarkAddressAsExecuted(address2);
 		manager.OnExitProcess(hProcess);
 
-		const cov::CoverageData coverageData = manager.CreateCoverageData(L"", 0);
+		const Plugin::CoverageData coverageData = manager.CreateCoverageData(L"", 0);
 		
 		const auto& modules = coverageData.GetModules();
 		ASSERT_EQ(1, modules.size());

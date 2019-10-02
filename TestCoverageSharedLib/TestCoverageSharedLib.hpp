@@ -16,20 +16,20 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 namespace TestCoverageSharedLib
 {
-	__declspec(dllexport) boost::filesystem::path GetMainCppPath();
-	__declspec(dllexport) boost::filesystem::path GetOutputBinaryPath();
+	__declspec(dllexport) std::filesystem::path GetMainCppPath();
+	__declspec(dllexport) std::filesystem::path GetOutputBinaryPath();
 	__declspec(dllexport) bool IsOdd(int n);
 
 	__declspec(dllexport) void CallSharedFunctionFromSharedLib();
 
 	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetSharedFunctionFilename()
+	inline std::filesystem::path GetSharedFunctionFilename()
 	{
-		return boost::filesystem::path(__FILE__).filename();
+		return std::filesystem::path(__FILE__).filename();
 	}
 
 	//-------------------------------------------------------------------------

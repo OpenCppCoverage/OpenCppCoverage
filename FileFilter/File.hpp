@@ -18,21 +18,21 @@
 
 #include "FileFilterExport.hpp"
 #include <set>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace FileFilter
 {
 	class FILEFILTER_DLL File
 	{
 	public:
-		explicit File(const boost::filesystem::path&);
+		explicit File(const std::filesystem::path&);
 		File(File&&) = default;
 		File& operator=(File&&) = default;
 
 		void AddSelectedLines(const std::vector<int>&);
 
-		const boost::filesystem::path& GetPath() const;
-		void SetPath(const boost::filesystem::path&);
+		const std::filesystem::path& GetPath() const;
+		void SetPath(const std::filesystem::path&);
 
 		bool IsLineSelected(int) const;
 		const std::set<int>& GetSelectedLines() const;
@@ -43,7 +43,7 @@ namespace FileFilter
 		File(const File&) = delete;
 		File& operator=(const File&) = delete;
 
-		boost::filesystem::path path_;
+		std::filesystem::path path_;
 		std::set<int> selectedLines_;
 	};
 }

@@ -17,6 +17,8 @@
 #include "stdafx.h"
 #include "Log.hpp"
 
+#include <filesystem>
+
 #include <boost/log/expressions.hpp>
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/log/utility/setup/console.hpp>
@@ -43,7 +45,7 @@ namespace Tools
 	}
 
 	//-------------------------------------------------------------------------
-	void InitConsoleAndFileLog(const boost::filesystem::path& logPath)
+	void InitConsoleAndFileLog(const std::filesystem::path& logPath)
 	{		
 		boost::log::add_common_attributes();
 
@@ -86,7 +88,7 @@ namespace Tools
 	{
 		typedef sinks::synchronous_sink<sinks::text_ostream_backend> text_sink;
 		auto sink = boost::make_shared<text_sink>();
-		auto& backend = sink->locked_backend();
+		auto backend = sink->locked_backend();
 
 		backend->add_stream(ostr);
 		backend->auto_flush(true);

@@ -15,19 +15,20 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "stdafx.h"
+#include <system_error>
+
 #include "FileSystem.hpp"
-#include <boost/filesystem/operations.hpp>
 #include <boost/optional/optional.hpp>
 
 namespace CppCoverage
 {
 	//----------------------------------------------------------------------------
-	boost::optional<std::time_t>
-	FileSystem::GetLastWriteTime(const boost::filesystem::path& path) const
+	boost::optional<std::filesystem::file_time_type>
+	FileSystem::GetLastWriteTime(const std::filesystem::path& path) const
 	{
-		boost::system::error_code error;
-		auto time = boost::filesystem::last_write_time(path, error);
+		std::error_code error;
+		auto time = std::filesystem::last_write_time(path, error);
 
-		return error ? boost::optional<std::time_t>{} : time;
+		return error ? boost::optional<std::filesystem::file_time_type>{} : time;
 	}
 }

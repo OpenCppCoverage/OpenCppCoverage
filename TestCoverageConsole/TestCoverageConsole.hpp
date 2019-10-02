@@ -17,33 +17,26 @@
 #pragma once
 
 #include <string>
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
+#include <filesystem>
 
 namespace TestCoverageConsole
 {
 	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetMainCppPath()
+	inline std::filesystem::path GetMainCppPath()
 	{
-		return boost::filesystem::path(__FILE__).replace_extension("cpp");
+		return std::filesystem::path(__FILE__).replace_extension("cpp");
 	}
 
 	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetMainCppFilename()
+	inline std::filesystem::path GetMainCppFilename()
 	{
 		return GetMainCppPath().filename();
 	}
 
 	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetOutputBinaryPath()
+	inline std::filesystem::path GetOutputBinaryPath()
 	{
-		return boost::filesystem::path(OUT_DIR) / "TestCoverageConsole.exe";
+		return std::filesystem::path(OUT_DIR) / "TestCoverageConsole.exe";
 	}
 
 	//-------------------------------------------------------------------------

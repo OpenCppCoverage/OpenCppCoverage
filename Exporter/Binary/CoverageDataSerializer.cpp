@@ -16,13 +16,14 @@
 
 #include "stdafx.h"
 #include "CoverageDataSerializer.hpp"
+#include <fstream>
 
 #include "CoverageData.pb.hpp"
 
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/ModuleCoverage.hpp"
-#include "CppCoverage/FileCoverage.hpp"
-#include "CppCoverage/LineCoverage.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
+#include "Plugin/Exporter/ModuleCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
+#include "Plugin/Exporter/LineCoverage.hpp"
 
 #include "../ExporterException.hpp"
 
@@ -32,7 +33,6 @@
 #include "../InvalidOutputFileException.hpp"
 
 namespace pb = ProtoBuff;
-namespace cov = CppCoverage;
 
 namespace Exporter
 {
@@ -40,7 +40,7 @@ namespace Exporter
 	{
 		//---------------------------------------------------------------------
 		void InitializeProtoBuffFrom(
-			const cov::FileCoverage& file,
+			const Plugin::FileCoverage& file,
 			pb::FileCoverage& fileProtoBuff)
 		{
 			fileProtoBuff.set_path(Tools::ToUtf8String(file.GetPath().wstring()));
@@ -56,7 +56,7 @@ namespace Exporter
 
 		//---------------------------------------------------------------------
 		void InitializeModuleProtoBuffFrom(
-			const cov::ModuleCoverage& module,
+			const Plugin::ModuleCoverage& module,
 			pb::ModuleCoverage& moduleProtoBuff)
 		{
 			moduleProtoBuff.set_path(Tools::ToUtf8String(module.GetPath().wstring()));
@@ -70,7 +70,7 @@ namespace Exporter
 
 		//---------------------------------------------------------------------
 		void FillCoverageDataProtoBuffFrom(
-			const cov::CoverageData& coverageData,
+			const Plugin::CoverageData& coverageData,
 			pb::CoverageData& coverageDataProtoBuff)
 		{
 			coverageDataProtoBuff.set_name(Tools::ToUtf8String(coverageData.GetName()));
@@ -94,8 +94,8 @@ namespace Exporter
 	
 	//-------------------------------------------------------------------------
 	void CoverageDataSerializer::Serialize(
-		const cov::CoverageData& coverageData,
-		const boost::filesystem::path& output) const
+		const Plugin::CoverageData& coverageData,
+		const std::filesystem::path& output) const
 	{		
 		pb::CoverageData coverageDataProtoBuff;
 		Tools::CreateParentFolderIfNeeded(output);

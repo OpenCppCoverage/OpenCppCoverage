@@ -20,20 +20,13 @@
 
 #include <string>
 #include <functional>
+#include <filesystem>
 
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/Options.hpp"
 #include "CppCoverage/SubstitutePdbSourcePath.hpp"
 
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
-
-namespace CppCoverage
+namespace Plugin
 {
 	class CoverageData;
 }
@@ -44,7 +37,7 @@ namespace CppCoverageTest
 	{
 		using T_HandlesFct = std::function<void(HANDLE hProcess, HANDLE hFile)>;
 
-		void GetHandles(const boost::filesystem::path&, T_HandlesFct);
+		void GetHandles(const std::filesystem::path&, T_HandlesFct);
 
 		boost::optional<CppCoverage::Options> Parse(
 			const CppCoverage::OptionsParser& parser,
@@ -63,7 +56,7 @@ namespace CppCoverageTest
 				const std::wstring& modulePattern,
 				const std::wstring& sourcePattern);
 
-			boost::filesystem::path programToRun_;
+			std::filesystem::path programToRun_;
 			std::vector<std::wstring> arguments_;
 			std::vector<std::wstring> modulePatternCollection_;
 			std::vector<std::wstring> sourcePatternCollection_;
@@ -77,13 +70,13 @@ namespace CppCoverageTest
 		};
 
 		//---------------------------------------------------------------------
-		CppCoverage::CoverageData ComputeCoverageData(
+		Plugin::CoverageData ComputeCoverageData(
 			const std::vector<std::wstring>& arguments,
 			const std::wstring& modulePattern,
 			const std::wstring& sourcePattern);
 
 		//---------------------------------------------------------------------
-		CppCoverage::CoverageData ComputeCoverageDataPatterns(const CoverageArgs& args);
+		Plugin::CoverageData ComputeCoverageDataPatterns(const CoverageArgs& args);
 	}
 }
 

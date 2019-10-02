@@ -27,11 +27,16 @@
 #include "CppCoverage/CoverageDataMerger.hpp"
 #include "CppCoverage/OptionsExport.hpp"
 #include "CppCoverage/RunCoverageSettings.hpp"
+#include "CppCoverage/ExportOptionParser.hpp"
 
 #include "Exporter/Html/HtmlExporter.hpp"
 #include "Exporter/CoberturaExporter.hpp"
 #include "Exporter/Binary/BinaryExporter.hpp"
 #include "Exporter/Binary/CoverageDataDeserializer.hpp"
+#include "Exporter/Plugin/ExporterPluginManager.hpp"
+#include "Exporter/Plugin/PluginLoader.hpp"
+
+#include "Plugin/Exporter/IExportPlugin.hpp"
 
 #include "Tools/Tool.hpp"
 #include "Tools/Log.hpp"
@@ -60,37 +65,61 @@ namespace OpenCppCoverage
 			return L"CoverageOutput";
 		}
 
+		//-------------------------------------------------------------------------
+		std::filesystem::path GetTemplateFolder()
+		{
+			return Tools::GetExecutableFolder() / "Template";
+		}
+
+		//-------------------------------------------------------------------------
+		std::filesystem::path GetPluginsExportFolder()
+		{
+			return Tools::GetExecutableFolder() / "Plugins" / "Exporter";
+		}
+
 		//-----------------------------------------------------------------------------
-		void Export(
-			const cov::Options& options, 
-			const cov::CoverageData& coverage)
+		void
+		Export(const cov::Options& options,
+		       const Exporter::ExporterPluginManager& exporterPluginManager,
+		       const Plugin::CoverageData& coverage)
 		{
 			const auto& exports = options.GetExports();
 			std::map<cov::OptionsExportType, std::unique_ptr<Exporter::IExporter>> exporters;
 			
 			exporters.emplace(cov::OptionsExportType::Html, 
-				std::unique_ptr<Exporter::IExporter>(new Exporter::HtmlExporter{ Tools::GetTemplateFolder() }));
+				std::unique_ptr<Exporter::IExporter>(std::make_unique<Exporter::HtmlExporter>( GetTemplateFolder() )));
 			exporters.emplace(cov::OptionsExportType::Cobertura, 
-				std::unique_ptr<Exporter::IExporter>(new Exporter::CoberturaExporter{}));
+				std::unique_ptr<Exporter::IExporter>(std::make_unique<Exporter::CoberturaExporter>()));
 			exporters.emplace(cov::OptionsExportType::Binary,
-				std::unique_ptr<Exporter::IExporter>(new Exporter::BinaryExporter{}));
+				std::unique_ptr<Exporter::IExporter>(std::make_unique<Exporter::BinaryExporter>()));
 			
 			auto defaultPathPrefix = GetDefaultPathPrefix(options);
 
 			for (const auto& singleExport : exports)
 			{
-				const auto& exporter = exporters.at(singleExport.GetType());
-				auto optionalOutputPath = singleExport.GetOutputPath();
-				auto output = (optionalOutputPath) ? *optionalOutputPath : exporter->GetDefaultPath(defaultPathPrefix);
+				auto exportType = singleExport.GetType();
+				auto parameter = singleExport.GetParameter();
 
-				exporter->Export(coverage, output);
+				if (exportType == cov::OptionsExportType::Plugin)
+					exporterPluginManager.Export(
+					    singleExport.GetName(), coverage, parameter);
+				else
+				{
+					const auto& exporter = exporters.at(exportType);
+					auto output =
+					    (parameter)
+					        ? fs::path{*parameter}
+					        : exporter->GetDefaultPath(defaultPathPrefix);
+
+					exporter->Export(coverage, output);
+				}
 			}
 		}
 
 		//-----------------------------------------------------------------------------
-		std::vector<cov::CoverageData> LoadInputCoverageDatas(const cov::Options& options)
+		std::vector<Plugin::CoverageData> LoadInputCoverageDatas(const cov::Options& options)
 		{
-			std::vector<cov::CoverageData> coverageDatas;
+			std::vector<Plugin::CoverageData> coverageDatas;
 			Exporter::CoverageDataDeserializer coverageDataDeserializer;
 
 			for (const auto& path : options.GetInputCoveragePaths())
@@ -120,6 +149,7 @@ namespace OpenCppCoverage
 
 		//-----------------------------------------------------------------------------
 		int Run(const cov::Options& options,
+		        const Exporter::ExporterPluginManager& exporterPluginManager,
 		        std::shared_ptr<Tools::WarningManager> warningManager)
 		{
 			InitLogger(options);
@@ -164,7 +194,7 @@ namespace OpenCppCoverage
 			if (options.IsAggregateByFileModeEnabled())
 				coverageDataMerger.MergeFileCoverage(coverageData);
 
-			Export(options, coverageData);
+			Export(options, exporterPluginManager, coverageData);
 
 			if (exitCode)
 				LOG_ERROR << L"Your program stop with error code: " << exitCode;
@@ -178,7 +208,17 @@ namespace OpenCppCoverage
 	                         std::wostream* emptyOptionsExplanation) const
 	{
 		auto warningManager = std::make_shared<Tools::WarningManager>();
-		cov::OptionsParser optionsParser{warningManager};
+		std::vector<std::unique_ptr<cov::IOptionParser>> optionParsers;
+
+		Exporter::ExporterPluginManager exporterPluginManager{
+		    Exporter::PluginLoader<Plugin::IExportPlugin>{},
+		    GetPluginsExportFolder()};
+
+		auto exportPluginDescriptions =
+		    exporterPluginManager.CreateExportPluginDescriptions();
+		optionParsers.push_back(std::make_unique<cov::ExportOptionParser>(
+		    std::move(exportPluginDescriptions)));
+		cov::OptionsParser optionsParser{warningManager, std::move(optionParsers)};
 
 		auto options = optionsParser.Parse(argc, argv, emptyOptionsExplanation);
 		auto status = FailureExitCode;
@@ -187,7 +227,7 @@ namespace OpenCppCoverage
 		{
 			try
 			{
-				status = ::OpenCppCoverage::Run(*options, warningManager);
+				status = ::OpenCppCoverage::Run(*options, exporterPluginManager, warningManager);
 			}
 			catch (const std::exception& e)
 			{

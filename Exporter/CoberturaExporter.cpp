@@ -19,21 +19,20 @@
 #include <unordered_set>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "CoberturaExporter.hpp"
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/ModuleCoverage.hpp"
-#include "CppCoverage/FileCoverage.hpp"
-#include "CppCoverage/LineCoverage.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
+#include "Plugin/Exporter/ModuleCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
+#include "Plugin/Exporter/LineCoverage.hpp"
 #include "CppCoverage/CoverageRateComputer.hpp"
 #include "InvalidOutputFileException.hpp"
 
 #include "Tools/Tool.hpp"
 
-namespace cov = CppCoverage;
 namespace property_tree = boost::property_tree;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace Exporter
 {
@@ -65,9 +64,9 @@ namespace Exporter
 
 		//-------------------------------------------------------------------------
 		void FillFileTree(
-			const cov::CoverageRateComputer& coverageRateComputer,
+			const CppCoverage::CoverageRateComputer& coverageRateComputer,
 			property_tree::wptree& fileTree, 
-			const cov::FileCoverage& file)
+			const Plugin::FileCoverage& file)
 		{
 			const auto& path = file.GetPath();
 			auto res = path.relative_path();
@@ -91,7 +90,7 @@ namespace Exporter
 
 		//-------------------------------------------------------------------------
 		void WriteSourceRoots(
-			const CppCoverage::CoverageData& coverageData,
+			const Plugin::CoverageData& coverageData,
 			property_tree::wptree& coverageTree)
 		{
 			std::unordered_set<std::wstring> rootPaths;
@@ -113,7 +112,7 @@ namespace Exporter
 
 		//-------------------------------------------------------------------------
 		void SetCoverageAttributes(property_tree::wptree& coverageTree,
-		                           const cov::CoverageRate& coverageRate)
+		                           const CppCoverage::CoverageRate& coverageRate)
 		{
 			coverageTree.put(L"<xmlattr>.branches-covered", 0);
 			coverageTree.put(L"<xmlattr>.branches-valid", 0);
@@ -128,9 +127,9 @@ namespace Exporter
 		//-------------------------------------------------------------------------
 		void FillCoverageTree(
 			property_tree::wptree& root,
-			const CppCoverage::CoverageData& coverageData)
+			const Plugin::CoverageData& coverageData)
 		{
-			cov::CoverageRateComputer coverageRateComputer(coverageData);
+			CppCoverage::CoverageRateComputer coverageRateComputer(coverageData);
 			auto& coverageTree = AddChild(root, L"coverage");
 			const auto& coverageRate = coverageRateComputer.GetCoverageRate();
 			SetCoverage(coverageTree, coverageRate);
@@ -166,9 +165,9 @@ namespace Exporter
 	CoberturaExporter::CoberturaExporter() = default;
 
 	//-------------------------------------------------------------------------
-	boost::filesystem::path CoberturaExporter::GetDefaultPath(const std::wstring& prefix) const
+	std::filesystem::path CoberturaExporter::GetDefaultPath(const std::wstring& prefix) const
 	{
-		boost::filesystem::path path{ prefix };
+		std::filesystem::path path{ prefix };
 		
 		path += "Coverage.xml";
 
@@ -177,8 +176,8 @@ namespace Exporter
 
 	//-------------------------------------------------------------------------
 	void CoberturaExporter::Export(
-		const CppCoverage::CoverageData& coverageData, 
-		const boost::filesystem::path& output)
+		const Plugin::CoverageData& coverageData, 
+		const std::filesystem::path& output)
 	{
 		Tools::CreateParentFolderIfNeeded(output);
 		std::wofstream ofs{ output.string().c_str() };
@@ -191,7 +190,7 @@ namespace Exporter
 
 	//-------------------------------------------------------------------------
 	void CoberturaExporter::Export(
-		const CppCoverage::CoverageData& coverageData,
+		const Plugin::CoverageData& coverageData,
 		std::wostream& ostream) const
 	{
 		using Ptree = property_tree::wptree;

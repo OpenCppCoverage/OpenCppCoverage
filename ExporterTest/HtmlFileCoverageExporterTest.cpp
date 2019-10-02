@@ -16,8 +16,10 @@
 
 #include "stdafx.h"
 
+#include <fstream>
+
 #include <boost/algorithm/string.hpp>
-#include "CppCoverage/FileCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
 #include "Exporter/Html/HtmlFileCoverageExporter.hpp"
 #include "TestHelper/TemporaryPath.hpp"
 
@@ -38,7 +40,7 @@ namespace ExporterTest
 		void FillSources(
 			const SourceLines& sourceLines,
 			const TestHelper::TemporaryPath& sourceFile,
-			CppCoverage::FileCoverage& fileCoverage)
+			Plugin::FileCoverage& fileCoverage)
 		{
 			std::wofstream ofs(sourceFile.GetPath().wstring());
 
@@ -63,7 +65,7 @@ namespace ExporterTest
 		{
 			std::wostringstream ostr;
 			TestHelper::TemporaryPath sourceFile;
-			CppCoverage::FileCoverage fileCoverage{ sourceFile };
+			Plugin::FileCoverage fileCoverage{ sourceFile };
 
 			FillSources(sourceLines, sourceFile, fileCoverage);
 

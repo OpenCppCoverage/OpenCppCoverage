@@ -22,7 +22,7 @@
 #include <dia2.h>
 #include <atlbase.h>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <boost/algorithm/string.hpp>
 
 #include "tools/Log.hpp"
@@ -187,7 +187,7 @@ namespace CppCoverage
 
 		//----------------------------------------------------------------------
 		CComPtr<IDiaDataSource>
-		LoadDataForExe(const boost::filesystem::path& path)
+		LoadDataForExe(const std::filesystem::path& path)
 		{
 			CComPtr<IDiaDataSource> sourcePtr;
 
@@ -221,7 +221,7 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	bool
-	DebugInformationEnumerator::Enumerate(const boost::filesystem::path& path,
+	DebugInformationEnumerator::Enumerate(const std::filesystem::path& path,
 	                                      IDebugInformationHandler& handler)
 	{
 		auto sourcePtr = LoadDataForExe(path);
@@ -286,23 +286,31 @@ namespace CppCoverage
 		if (lineNumber.get_lineNumber(&linenum) != S_OK)
 			THROW("DIA: Cannot get line number");
 
-		ULONGLONG virtualAddress = 0;
-		if (lineNumber.get_virtualAddress(&virtualAddress) != S_OK)
-			THROW("DIA: Cannot get virtual address");
+		const auto invalidLine = 0x00f00f00;
+		if (linenum != invalidLine)
+		{
+			ULONGLONG virtualAddress = 0;
+			if (lineNumber.get_virtualAddress(&virtualAddress) != S_OK)
+				THROW("DIA: Cannot get virtual address");
 
-		CComPtr<IDiaSymbol> symbol;
-		if (session.findSymbolByVA(virtualAddress, SymTagEnum::SymTagNull, &symbol) != S_OK || !symbol)
-			THROW("DIA: Cannot find symbol");
+			CComPtr<IDiaSymbol> symbol;
+			if (session.findSymbolByVA(
+			        virtualAddress, SymTagEnum::SymTagNull, &symbol) != S_OK ||
+			    !symbol)
+			{
+				THROW("DIA: Cannot find symbol");
+			}
 
-		unsigned long symIndex = 0;
-		if (symbol->get_symIndexId(&symIndex) != S_OK)
-			THROW("DIA: Cannot get symIndex");
+			unsigned long symIndex = 0;
+			if (symbol->get_symIndexId(&symIndex) != S_OK)
+				THROW("DIA: Cannot get symIndex");
 
-		lines_.emplace_back(linenum, virtualAddress, symIndex);
+			lines_.emplace_back(linenum, virtualAddress, symIndex);
+		}
 	}
 
 	//----------------------------------------------------------------------
-	boost::filesystem::path DebugInformationEnumerator::GetSourceFileName(
+	std::filesystem::path DebugInformationEnumerator::GetSourceFileName(
 	    IDiaSourceFile& sourceFile) const
 	{
 		DiaString fileName;
@@ -316,8 +324,12 @@ namespace CppCoverage
 
 			if (boost::istarts_with(filenameStr, pdbStartPath))
 			{
-				auto remainingPath = filenameStr.substr(pdbStartPath.size());
+				auto startIndex = pdbStartPath.size();
+				if (startIndex < filenameStr.size() && filenameStr[startIndex] == '\\')
+					++startIndex;
+				auto remainingPath = filenameStr.substr(startIndex);
 				filenameStr = (paths.GetLocalPath() / remainingPath).wstring();
+				break;
 			}
 		}
 

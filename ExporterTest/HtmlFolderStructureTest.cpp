@@ -16,12 +16,14 @@
 
 #include "stdafx.h"
 
+#include <system_error>
+
 #include "Exporter/Html/HtmlFolderStructure.hpp"
 
 #include "TestHelper/TemporaryPath.hpp"
 #include "TestHelper/Tools.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace ExporterTest
 {
@@ -32,7 +34,7 @@ namespace ExporterTest
 		{
 			HtmlFolderStructureTest()
 			{
-				boost::system::error_code error;
+				std::error_code error;
 				auto folder = templateFolder_.GetPath() / Exporter::HtmlFolderStructure::ThirdParty;
 				fs::create_directories(folder);				
 				htmlFolderStructure_.reset(new Exporter::HtmlFolderStructure(templateFolder_));				

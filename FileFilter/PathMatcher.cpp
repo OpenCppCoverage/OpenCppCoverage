@@ -17,7 +17,7 @@
 #include "stdafx.h"
 
 #include "PathMatcher.hpp"
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include <boost/optional/optional.hpp>
 #include <boost/algorithm/string.hpp>
@@ -28,7 +28,7 @@
 #include "AmbiguousPathException.hpp"
 #include "File.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace FileFilter
 {	

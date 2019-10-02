@@ -31,20 +31,20 @@ namespace CppCoverageTest
 		{
 			//--------------------------------------------------------------------------
 			explicit DebugInformationHandlerMock(
-			    const boost::filesystem::path& selectedFilename)
+			    const std::filesystem::path& selectedFilename)
 			    : selectedFilename_{selectedFilename}
 			{
 			}
 
 			//--------------------------------------------------------------------------
 			bool IsSourceFileSelected(
-			    const boost::filesystem::path& sourceFile) override
+			    const std::filesystem::path& sourceFile) override
 			{
 				return selectedFilename_ == sourceFile.filename();
 			}
 
 			//--------------------------------------------------------------------------
-			void OnSourceFile(const boost::filesystem::path& path,
+			void OnSourceFile(const std::filesystem::path& path,
 			                  const std::vector<Line>& lines) override
 			{
 				selectedFullPath_ = path;
@@ -52,14 +52,14 @@ namespace CppCoverageTest
 					lines_.push_back(line.lineNumber_);
 			}
 
-			const boost::filesystem::path selectedFilename_;
-			boost::filesystem::path selectedFullPath_;
+			const std::filesystem::path selectedFilename_;
+			std::filesystem::path selectedFullPath_;
 			std::vector<int> lines_;
 		};
 
 		//---------------------------------------------------------------------------
 		std::vector<int>
-		GetLineNumbersWithTag(const boost::filesystem::path& path,
+		GetLineNumbersWithTag(const std::filesystem::path& path,
 		                      const std::wstring& tag)
 		{
 			std::vector<int> lines;

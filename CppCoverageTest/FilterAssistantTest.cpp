@@ -18,7 +18,7 @@
 
 #include "CppCoverage/FilterAssistant.hpp"
 #include <boost/optional/optional.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include "FileSystemMock.hpp"
 
 namespace cov = CppCoverage;
@@ -29,9 +29,9 @@ namespace
 	//-------------------------------------------------------------------------
 	struct Params
 	{
-		void (cov::FilterAssistant::*onNewFile)(const boost::filesystem::path&,
+		void (cov::FilterAssistant::*onNewFile)(const std::filesystem::path&,
 		                                        bool);
-		boost::optional<boost::filesystem::path> (
+		boost::optional<std::filesystem::path> (
 		    cov::FilterAssistant::*computeSuggestedFilter)() const;
 	};
 }
@@ -49,17 +49,17 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		void AddFile(const boost::filesystem::path& path,
-		             std::time_t time,
+		void AddFile(const std::filesystem::path& path,
+					 int time,
 		             bool isSelected)
 		{
 			EXPECT_CALL(*fileSystem_, GetLastWriteTime(path))
-			    .WillRepeatedly(Return(time));
+			    .WillRepeatedly(Return(std::filesystem::file_time_type(std::chrono::seconds(time))));
 			(*filterAssistant_.*GetParam().onNewFile)(path, isSelected);
 		}
 
 		//---------------------------------------------------------------------
-		boost::optional<boost::filesystem::path> ComputeSuggestedFilter() const
+		boost::optional<std::filesystem::path> ComputeSuggestedFilter() const
 		{
 			return (*filterAssistant_.*GetParam().computeSuggestedFilter)();
 		}

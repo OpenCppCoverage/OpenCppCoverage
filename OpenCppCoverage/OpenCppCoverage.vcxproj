@@ -99,6 +99,9 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>if not exist "$(OutDir)Plugins\Exporter" mkdir "$(OutDir)Plugins\Exporter"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -112,6 +115,9 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>if not exist "$(OutDir)Plugins\Exporter" mkdir "$(OutDir)Plugins\Exporter"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -129,6 +135,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PostBuildEvent>
+      <Command>if not exist "$(OutDir)Plugins\Exporter" mkdir "$(OutDir)Plugins\Exporter"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -146,6 +155,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PostBuildEvent>
+      <Command>if not exist "$(OutDir)Plugins\Exporter" mkdir "$(OutDir)Plugins\Exporter"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -173,6 +185,9 @@
     <ProjectReference Include="..\Exporter\Exporter.vcxproj">
       <Project>{865b72e7-da46-4392-a1b3-e5bd752c7041}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Plugin\Plugin.vcxproj">
+      <Project>{2f439508-07e0-4084-9614-1a42bde8ed9a}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Tools\Tools.vcxproj">
       <Project>{7f6d05ef-deb0-4c64-bd13-a85f46314b91}</Project>
     </ProjectReference>
@@ -182,12 +197,12 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\thirdparty.1.2.0\build\native\thirdparty.targets" Condition="Exists('..\packages\thirdparty.1.2.0\build\native\thirdparty.targets')" />
+    <Import Project="..\packages\thirdparty.1.3.0\build\native\thirdparty.targets" Condition="Exists('..\packages\thirdparty.1.3.0\build\native\thirdparty.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\thirdparty.1.2.0\build\native\thirdparty.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\thirdparty.1.2.0\build\native\thirdparty.targets'))" />
+    <Error Condition="!Exists('..\packages\thirdparty.1.3.0\build\native\thirdparty.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\thirdparty.1.3.0\build\native\thirdparty.targets'))" />
   </Target>
 </Project>
