@@ -48,8 +48,8 @@ namespace CppCoverageTest
 		TestHelper::AssertThrow<std::runtime_error>(
 		    [&]() { process.Start(0); },
 		    [](const auto& e) {
-			    return boost::algorithm::contains(
-			        e.what(), cov::Process::CheckIfValidExecutableMessage);
+			    ASSERT_TRUE(boost::algorithm::contains(
+			        e.what(), cov::Process::CheckIfValidExecutableMessage));
 		    });
 	}
 

@@ -22,7 +22,7 @@
 
 #include <iostream>
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace TestCoverageSharedLib
 {
@@ -44,7 +44,7 @@ namespace TestCoverageSharedLib
 	//-------------------------------------------------------------------------
 	fs::path GetOutputBinaryPath()
 	{		
-		return boost::filesystem::path(OUT_DIR) / TARGET_FILE_NAME;
+		return std::filesystem::path(OUT_DIR) / TARGET_FILE_NAME;
 	}
 
 	//-------------------------------------------------------------------------

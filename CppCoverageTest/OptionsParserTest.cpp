@@ -16,7 +16,7 @@
 
 #include "stdafx.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include "CppCoverage/Options.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
 
@@ -26,7 +26,7 @@
 #include "TestHelper/TemporaryPath.hpp"
 
 namespace cov = CppCoverage;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace CppCoverageTest
 {
@@ -125,7 +125,17 @@ namespace CppCoverageTest
 			->IsContinueAfterCppExceptionModeEnabled());
 	}
 
-	//-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    TEST(OptionsParserTest, StopOnAssert)
+    {
+      cov::OptionsParser parser;
+
+      ASSERT_TRUE(TestTools::Parse(parser,
+        { TestTools::GetOptionPrefix() + cov::ProgramOptions::StopOnAssertOption })
+        ->IsStopOnAssertModeEnabled());
+    }
+    
+    //-------------------------------------------------------------------------
 	TEST(OptionsParserTest, WorkingDirectory)
 	{
 		cov::OptionsParser parser;

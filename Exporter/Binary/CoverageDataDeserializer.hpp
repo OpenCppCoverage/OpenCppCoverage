@@ -16,17 +16,11 @@
 
 #pragma once
 
+#include <filesystem>
+
 #include "../ExporterExport.hpp"
 
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
-
-namespace CppCoverage
+namespace Plugin
 {
 	class CoverageData;
 }
@@ -38,7 +32,7 @@ namespace Exporter
 	public:		
 		CoverageDataDeserializer() = default;
 
-		CppCoverage::CoverageData Deserialize(const boost::filesystem::path&, const std::string& errorIfNotCorrectFormat) const;
+		Plugin::CoverageData Deserialize(const std::filesystem::path&, const std::string& errorIfNotCorrectFormat) const;
 		
 	private:
 		CoverageDataDeserializer(const CoverageDataDeserializer&) = delete;

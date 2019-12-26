@@ -16,12 +16,14 @@
 
 #include "stdafx.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
+#include <fstream>
+
 #include <boost/algorithm/string.hpp>
 
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/ModuleCoverage.hpp"
-#include "CppCoverage/FileCoverage.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
+#include "Plugin/Exporter/ModuleCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
 
 #include "Exporter/InvalidOutputFileException.hpp"
 #include "Exporter/CoberturaExporter.hpp"
@@ -29,8 +31,7 @@
 
 #include "TestHelper/TemporaryPath.hpp"
 
-namespace cov = CppCoverage;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace ExporterTest
 {
@@ -52,7 +53,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST(CoberturaExporterTest, Export)
 	{
-		cov::CoverageData coverageData{L"", 0};
+		Plugin::CoverageData coverageData{L"", 0};
 
 		coverageData.AddModule(L"EmptyModule");
 		auto& module = coverageData.AddModule(L"Module");
@@ -76,7 +77,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST(CoberturaExporterTest, SubFolderDoesNotExist)
 	{
-		cov::CoverageData coverageData{ L"", 0 };
+		Plugin::CoverageData coverageData{ L"", 0 };
 		TestHelper::TemporaryPath output;
 		auto outputPath = output.GetPath() / "SubFolder" / "output.xml";
 
@@ -88,7 +89,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST(CoberturaExporterTest, SpecialChars)
 	{
-		cov::CoverageData coverageData{ L"", 0 };
+		Plugin::CoverageData coverageData{ L"", 0 };
 		coverageData.AddModule(L"יא").AddFile(L"יא").AddLine(0, true);
 		
 		std::wostringstream ostr;
@@ -107,7 +108,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST(CoberturaExporterTest, OutputExists)
 	{
-		cov::CoverageData coverageData{ L"", 0 };
+		Plugin::CoverageData coverageData{ L"", 0 };
 		TestHelper::TemporaryPath outputPath{ TestHelper::TemporaryPathOption::CreateAsFile };
 		
 		ASSERT_NO_THROW(Exporter::CoberturaExporter().Export(coverageData, outputPath));
@@ -116,7 +117,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST(CoberturaExporterTest, InvalidFile)
 	{
-		cov::CoverageData coverageData{L"", 0};
+		Plugin::CoverageData coverageData{L"", 0};
 		TestHelper::TemporaryPath outputPath{
 		    TestHelper::TemporaryPathOption::CreateAsFolder};
 

@@ -1,5 +1,5 @@
 // OpenCppCoverage is an open source code coverage for C++.
-// Copyright (C) 2014 OpenCppCoverage
+// Copyright (C) 2019 OpenCppCoverage
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -14,9 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "stdafx.h"
-#include "ExporterException.hpp"
+#include "pch.h"
+#include <tchar.h>
 
-namespace Exporter
+//-----------------------------------------------------------------------------
+int _tmain(int argc, _TCHAR* argv[])
 {
+	::testing::InitGoogleMock(&argc, argv);
+	return RUN_ALL_TESTS();
 }

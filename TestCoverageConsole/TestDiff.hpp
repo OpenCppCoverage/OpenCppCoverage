@@ -16,15 +16,15 @@
 
 #pragma once
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace TestCoverageConsole
 {
 	void FilterByDiff();
 
 	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetTestDiffFilename()
+	inline std::filesystem::path GetTestDiffFilename()
 	{
-		return boost::filesystem::path(__FILE__).replace_extension("cpp").filename();
+		return std::filesystem::path(__FILE__).replace_extension("cpp").filename();
 	}
 }

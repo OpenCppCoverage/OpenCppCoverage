@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace TestCoverageOptimizedBuild
 {
-	__declspec(dllexport) boost::filesystem::path GetMainCppPath();
-	__declspec(dllexport) boost::filesystem::path GetOutputBinaryPath();
+	__declspec(dllexport) std::filesystem::path GetMainCppPath();
+	__declspec(dllexport) std::filesystem::path GetOutputBinaryPath();
 	__declspec(dllexport) void TestOptimizedBuild();
 }

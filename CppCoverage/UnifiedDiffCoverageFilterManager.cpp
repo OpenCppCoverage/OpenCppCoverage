@@ -130,7 +130,7 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	std::vector<std::wstring> UnifiedDiffCoverageFilterManager::ComputeWarningMessageLines(size_t maxUnmatchPaths) const
 	{
-		std::set<boost::filesystem::path> unmatchPaths;
+		std::set<std::filesystem::path> unmatchPaths;
 
 		for (const auto& filter : unifiedDiffCoverageFilters_)
 		{
@@ -143,7 +143,7 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	std::vector<std::wstring> UnifiedDiffCoverageFilterManager::ComputeWarningMessageLines(
-		const std::set<boost::filesystem::path>& unmatchPaths,
+		const std::set<std::filesystem::path>& unmatchPaths,
 		size_t maxUnmatchPaths) const
 	{
 		std::vector<std::wstring> messageLines;

@@ -20,6 +20,7 @@
 #include <Psapi.h>
 #include <boost/algorithm/string.hpp>
 #include "CppCoverageException.hpp"
+#include "Handle.hpp"
 
 namespace CppCoverage
 {
@@ -77,14 +78,44 @@ namespace CppCoverage
 		}
 
 		//-------------------------------------------------------------------------
+		std::wstring GetMappedFileNameStr(HANDLE hfile)
+		{
+			DWORD dwFileSizeHi = 0;
+			DWORD dwFileSizeLo = GetFileSize(hfile, &dwFileSizeHi);
+
+			if (dwFileSizeLo == 0 && dwFileSizeHi == 0)
+				THROW(L"Cannot map a file with a length of zero.");
+
+			auto fileMappingHandle = CreateHandle(
+				CreateFileMapping(hfile, NULL, PAGE_READONLY, 0, 1, NULL),
+				CloseHandle);
+
+			auto mapViewOfFile = CreateHandle(
+				MapViewOfFile(fileMappingHandle.GetValue(), FILE_MAP_READ, 0, 0, 1),
+				UnmapViewOfFile);
+
+			TCHAR pszFilename[MAX_PATH + 1];
+
+			if (!GetMappedFileName(GetCurrentProcess(),
+				mapViewOfFile.GetValue(),
+				pszFilename,
+				MAX_PATH))
+			{
+				THROW(L"Cannot GetMappedFileName");
+			}
+
+			return pszFilename;
+		}
+
+		//-------------------------------------------------------------------------
 		std::wstring GetFinalPathName(HANDLE hfile)
 		{
 			std::vector<wchar_t> buffer(PathBufferSize);
 
-			if (!GetFinalPathNameByHandle(hfile, &buffer[0], static_cast<int>(buffer.size()) - 1, VOLUME_NAME_NT))
-				THROW_LAST_ERROR(L"Cannot find path for the handle.", GetLastError());
+			if (GetFinalPathNameByHandle(hfile, &buffer[0], static_cast<int>(buffer.size()) - 1, VOLUME_NAME_NT))
+				return &buffer[0];
 
-			return &buffer[0];
+			return GetMappedFileNameStr(hfile);
 		}
 	}
 

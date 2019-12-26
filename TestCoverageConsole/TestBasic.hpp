@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <tchar.h>
 
 namespace TestCoverageConsole
@@ -32,8 +32,8 @@ namespace TestCoverageConsole
 	}
 
 	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetTestBasicFilename()
+	inline std::filesystem::path GetTestBasicFilename()
 	{
-		return boost::filesystem::path(__FILE__).replace_extension("cpp").filename();
+		return std::filesystem::path(__FILE__).replace_extension("cpp").filename();
 	}
 }

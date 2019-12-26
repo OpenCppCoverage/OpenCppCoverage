@@ -17,7 +17,7 @@
 #pragma once
 
 #include "FileFilterExport.hpp"
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #pragma warning(push)
 #pragma warning(disable: 4275) // warning C4275: non dll-interface class 'std::exception' used as base for dll-interface class
@@ -28,20 +28,20 @@ namespace FileFilter
 	{
 	public:		
 		AmbiguousPathException(
-			const boost::filesystem::path& postFixPath,
-			const boost::filesystem::path& firstPossiblePath,
-			const boost::filesystem::path& secondPossiblePath);
+			const std::filesystem::path& postFixPath,
+			const std::filesystem::path& firstPossiblePath,
+			const std::filesystem::path& secondPossiblePath);
 
 		AmbiguousPathException(const AmbiguousPathException&) = default;
 
-		const boost::filesystem::path& GetPostFixPath() const;
-		const boost::filesystem::path& GetFirstPossiblePath() const;
-		const boost::filesystem::path& GetSecondPossiblePath() const;
+		const std::filesystem::path& GetPostFixPath() const;
+		const std::filesystem::path& GetFirstPossiblePath() const;
+		const std::filesystem::path& GetSecondPossiblePath() const;
 
 	private:
-		boost::filesystem::path postFixPath_;
-		boost::filesystem::path firstPossiblePath_;
-		boost::filesystem::path secondPossiblePath_;
+		std::filesystem::path postFixPath_;
+		std::filesystem::path firstPossiblePath_;
+		std::filesystem::path secondPossiblePath_;
 	};	
 }
 

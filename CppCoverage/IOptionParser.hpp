@@ -1,5 +1,5 @@
 // OpenCppCoverage is an open source code coverage for C++.
-// Copyright (C) 2014 OpenCppCoverage
+// Copyright (C) 2019 OpenCppCoverage
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,39 +16,29 @@
 
 #pragma once
 
-#include <vector>
-#include <memory>
-
-#include <boost/filesystem.hpp>
-
 #include "CppCoverageExport.hpp"
+
+namespace boost
+{
+	namespace program_options
+	{
+		class options_description;
+	}
+}
 
 namespace CppCoverage
 {
-	class FileCoverage;
+	class Options;
+	class ProgramOptionsVariablesMap;
 
-	class CPPCOVERAGE_DLL ModuleCoverage
+	class CPPCOVERAGE_DLL IOptionParser
 	{
-	public:
-		typedef std::vector<std::unique_ptr<FileCoverage>> T_FileCoverageCollection;
+	  public:
+		virtual ~IOptionParser() = default;
 
-	public:
-		explicit ModuleCoverage(const boost::filesystem::path& path);
-		~ModuleCoverage();
-
-		FileCoverage& AddFile(const boost::filesystem::path& filename);
-		
-		const boost::filesystem::path& GetPath() const;
-		const T_FileCoverageCollection& GetFiles() const;
-
-	private:
-		ModuleCoverage(const ModuleCoverage&) = delete;
-		ModuleCoverage& operator=(const ModuleCoverage&) = delete;
-		
-	private:
-		T_FileCoverageCollection files_;
-		boost::filesystem::path path_;		
+		virtual void ParseOption(const ProgramOptionsVariablesMap&,
+		                         Options&) = 0;
+		virtual void
+		AddOption(boost::program_options::options_description&) = 0;
 	};
 }
-
-

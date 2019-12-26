@@ -17,7 +17,7 @@
 #include "stdafx.h"
 #include "OpenCppCoverageTestTools.hpp"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <Poco/Process.h>
 #include <Poco/Pipe.h>
 #include <Poco/PipeStream.h>
@@ -25,6 +25,7 @@
 #include "Tools/Tool.hpp"
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
+#include "CppCoverage/ExportOptionParser.hpp"
 
 namespace cov = CppCoverage;
 
@@ -33,7 +34,7 @@ namespace OpenCppCoverageTest
 	//---------------------------------------------------------------------
 	void AddDefaultFilters(
 		std::vector<std::pair<std::string, std::string>>& coverageArguments,	
-		const boost::filesystem::path& programToRun)
+		const std::filesystem::path& programToRun)
 	{
 		coverageArguments.push_back({ cov::ProgramOptions::SelectedModulesOption, programToRun.string() });
 		coverageArguments.push_back({ cov::ProgramOptions::SelectedSourcesOption, GetSolutionFolderName() });
@@ -42,27 +43,27 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	void AddDefaultHtmlExport(
 		std::vector<std::pair<std::string, std::string>>& coverageArguments,
-		const boost::filesystem::path& outputFolder)
+		const std::filesystem::path& outputFolder)
 	{
 		coverageArguments.push_back(
-		{ cov::ProgramOptions::ExportTypeOption, cov::ProgramOptions::ExportTypeHtmlValue
-		+ cov::OptionsParser::ExportSeparator + outputFolder.string() });		
+		{ cov::ExportOptionParser::ExportTypeOption, cov::ExportOptionParser::ExportTypeHtmlValue
+		+ cov::ExportOptionParser::ExportSeparator + outputFolder.string() });		
 	}
 
 	//---------------------------------------------------------------------
 	std::pair<std::string, std::string> BuildExportTypeString(
 		const std::string& exportType,
-		const boost::filesystem::path& output)
+		const std::filesystem::path& output)
 	{
 		return{
-			cov::ProgramOptions::ExportTypeOption,
-			exportType + cov::OptionsParser::ExportSeparator + output.string() };
+			cov::ExportOptionParser::ExportTypeOption,
+			exportType + cov::ExportOptionParser::ExportSeparator + output.string() };
 	}
 
 	//-------------------------------------------------------------------------
 	int RunCoverageFor(
 		const std::vector<std::pair<std::string, std::string>>& coverageArguments,
-		const boost::filesystem::path& programToRun,
+		const std::filesystem::path& programToRun,
 		const std::vector<std::wstring>& arguments,
 		std::string* optionalOutput)
 	{
@@ -84,7 +85,7 @@ namespace OpenCppCoverageTest
 		for (auto& argument : allCoverageArguments)
 			argument = "\"" + argument + "\"";
 
-		boost::filesystem::path openCppCoverage(OUT_DIR);
+		std::filesystem::path openCppCoverage(OUT_DIR);
 
 		openCppCoverage /= "OpenCppCoverage.exe";
 
@@ -110,6 +111,6 @@ namespace OpenCppCoverageTest
 	//-------------------------------------------------------------------------
 	std::string GetSolutionFolderName()
 	{
-		return boost::filesystem::canonical(SOLUTION_DIR).filename().string();
+		return std::filesystem::canonical(SOLUTION_DIR).filename().string();
 	}
 }

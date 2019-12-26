@@ -129,16 +129,28 @@ namespace CppCoverage
 		isContinueAfterCppExceptionModeEnabled_ = true;
 	}
 	
-	//-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
 	bool Options::IsContinueAfterCppExceptionModeEnabled() const
 	{
 		return isContinueAfterCppExceptionModeEnabled_;
 	}
 
-	//-------------------------------------------------------------------------
-	void Options::AddExport(const OptionsExport& optionExport)
+    //-------------------------------------------------------------------------
+    void Options::EnableStopOnAssertMode()
+    {
+      isStopOnAssertModeEnabled_ = true;
+    }
+    
+    //-------------------------------------------------------------------------
+    bool Options::IsStopOnAssertModeEnabled() const
+    {
+      return isStopOnAssertModeEnabled_;
+    }
+
+    //-------------------------------------------------------------------------
+	void Options::AddExport(OptionsExport&& optionExport)
 	{
-		exports_.push_back(optionExport);
+		exports_.push_back(std::move(optionExport));
 	}
 	
 	//-------------------------------------------------------------------------
@@ -148,13 +160,13 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void Options::AddInputCoveragePath(const boost::filesystem::path& path)
+	void Options::AddInputCoveragePath(const std::filesystem::path& path)
 	{
 		inputCoveragePaths_.push_back(path);
 	}
 
 	//-------------------------------------------------------------------------
-	const std::vector<boost::filesystem::path>& Options::GetInputCoveragePaths() const
+	const std::vector<std::filesystem::path>& Options::GetInputCoveragePaths() const
 	{
 		return inputCoveragePaths_;
 	}

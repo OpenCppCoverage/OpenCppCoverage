@@ -20,7 +20,7 @@
 namespace FileFilter
 {
 	//----------------------------------------------------------------------------
-	File::File(const boost::filesystem::path& path)
+	File::File(const std::filesystem::path& path)
 		: path_{path}
 	{
 	}
@@ -32,13 +32,13 @@ namespace FileFilter
 	}
 
 	//----------------------------------------------------------------------------
-	const boost::filesystem::path& File::GetPath() const
+	const std::filesystem::path& File::GetPath() const
 	{
 		return path_;
 	}
 
 	//----------------------------------------------------------------------------
-	void File::SetPath(const boost::filesystem::path& path)
+	void File::SetPath(const std::filesystem::path& path)
 	{
 		path_ = path;
 	}

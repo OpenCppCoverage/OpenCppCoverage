@@ -17,9 +17,9 @@
 #include "stdafx.h"
 #include "CoverageRateComputer.hpp"
 
-#include "CoverageData.hpp"
-#include "ModuleCoverage.hpp"
-#include "FileCoverage.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
+#include "Plugin/Exporter/ModuleCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
 #include "CoverageRate.hpp"
 
 namespace CppCoverage
@@ -27,7 +27,7 @@ namespace CppCoverage
 	namespace
 	{
 		//---------------------------------------------------------------------
-		CoverageRate ComputeFileCoverage(const FileCoverage& file)
+		CoverageRate ComputeFileCoverage(const Plugin::FileCoverage& file)
 		{
 			int executedLines = 0;
 			int unexecutedLines = 0;
@@ -66,14 +66,14 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	CoverageRateComputer::CoverageRateComputer(const CoverageData& coverageData)
+	CoverageRateComputer::CoverageRateComputer(const Plugin::CoverageData& coverageData)
 		: coverageData_(coverageData)
 	{
 		ComputeCoverageRateCache(coverageData);
 	}
 	
 	//-------------------------------------------------------------------------
-	void CoverageRateComputer::ComputeCoverageRateCache(const CoverageData& coverageData)
+	void CoverageRateComputer::ComputeCoverageRateCache(const Plugin::CoverageData& coverageData)
 	{
 		for (const auto& module : coverageData.GetModules())
 		{
@@ -93,14 +93,14 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
-	std::vector<ModuleCoverage*> CoverageRateComputer::SortModulesByCoverageRate() const
+	std::vector<Plugin::ModuleCoverage*> CoverageRateComputer::SortModulesByCoverageRate() const
 	{
 		return SortByCoverageRate(coverageData_.GetModules(), moduleCoverageRate_);
 	}
 
 	//-------------------------------------------------------------------------
-	std::vector<FileCoverage*> CoverageRateComputer::SortFilesByCoverageRate(
-		const ModuleCoverage& modules) const
+	std::vector<Plugin::FileCoverage*> CoverageRateComputer::SortFilesByCoverageRate(
+		const Plugin::ModuleCoverage& modules) const
 	{
 		return SortByCoverageRate(modules.GetFiles(), fileCoverageRate_);
 	}
@@ -112,13 +112,13 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	const CoverageRate& CoverageRateComputer::GetCoverageRate(const ModuleCoverage& module) const
+	const CoverageRate& CoverageRateComputer::GetCoverageRate(const Plugin::ModuleCoverage& module) const
 	{
 		return moduleCoverageRate_.at(&module);
 	}
 	
 	//-------------------------------------------------------------------------
-	const CoverageRate& CoverageRateComputer::GetCoverageRate(const FileCoverage& file) const
+	const CoverageRate& CoverageRateComputer::GetCoverageRate(const Plugin::FileCoverage& file) const
 	{
 		return fileCoverageRate_.at(&file);
 	}

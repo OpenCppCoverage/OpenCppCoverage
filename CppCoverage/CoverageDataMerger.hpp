@@ -18,17 +18,20 @@
 
 #include "CppCoverageExport.hpp"
 
-namespace CppCoverage
+namespace Plugin
 {
 	class CoverageData;
+}
 
+namespace CppCoverage
+{
 	class CPPCOVERAGE_DLL CoverageDataMerger
 	{
 	public:
 		CoverageDataMerger() = default;
 		
-		CoverageData Merge(const std::vector<CoverageData>&) const;
-		void MergeFileCoverage(CoverageData&) const;
+		Plugin::CoverageData Merge(const std::vector<Plugin::CoverageData>&) const;
+		void MergeFileCoverage(Plugin::CoverageData&) const;
 
 	private:
 		CoverageDataMerger(const CoverageDataMerger&) = delete;

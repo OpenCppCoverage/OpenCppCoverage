@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "TestHelperExport.hpp"
 
@@ -36,15 +36,15 @@ namespace TestHelper
 		explicit TemporaryPath(TemporaryPathOption = TemporaryPathOption::DoNotCreate);
 		~TemporaryPath();
 
-		operator const boost::filesystem::path& () const;
-		const boost::filesystem::path& GetPath() const;
-		const boost::filesystem::path* operator->() const;
+		operator const std::filesystem::path& () const;
+		const std::filesystem::path& GetPath() const;
+		const std::filesystem::path* operator->() const;
 
 	private:
 		TemporaryPath(const TemporaryPath&) = delete;
 		TemporaryPath& operator=(const TemporaryPath&) = delete;
 
 	private:
-		boost::filesystem::path path_;
+		std::filesystem::path path_;
 	};
 }

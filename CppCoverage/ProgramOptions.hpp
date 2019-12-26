@@ -21,7 +21,9 @@
 #include "CppCoverageExport.hpp"
 
 namespace CppCoverage
-{	
+{
+	class IOptionParser;
+
 	class CPPCOVERAGE_DLL ProgramOptions
 	{
 	public:
@@ -40,12 +42,9 @@ namespace CppCoverage
 		static const std::string WorkingDirectoryOption;
 		static const std::string CoverChildrenOption;
 		static const std::string NoAggregateByFileOption;
-		static const std::string ProgramToRunOption;
+        static const std::string StopOnAssertOption;
+        static const std::string ProgramToRunOption;
 		static const std::string ProgramToRunArgOption;
-		static const std::string ExportTypeOption;
-		static const std::string ExportTypeHtmlValue;
-		static const std::string ExportTypeCoberturaValue;	
-		static const std::string ExportTypeBinaryValue;
 		static const std::string InputCoverageValue;
 		static const std::string UnifiedDiffOption;
 		static const std::string ContinueAfterCppExceptionOption;
@@ -53,7 +52,7 @@ namespace CppCoverage
 		static const std::string ExcludedLineRegexOption;
 		static const std::string SubstitutePdbSourcePathOption;
 
-		ProgramOptions();
+		explicit ProgramOptions(const std::vector<std::unique_ptr<IOptionParser>>&);
 
 		void FillVariableMap(
 			int argc,

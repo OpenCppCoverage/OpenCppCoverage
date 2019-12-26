@@ -19,7 +19,7 @@
 #include <string>
 #include <functional>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <boost/optional/optional_fwd.hpp>
 
 #include "ToolsExport.hpp"
@@ -32,14 +32,36 @@ namespace Tools
 	TOOLS_DLL std::string ToUtf8String(const std::wstring&);
 
 	TOOLS_DLL boost::optional<std::wstring> Try(std::function<void()>);	
-	TOOLS_DLL boost::filesystem::path GetTemplateFolder();
+	
+	template <typename Exception, typename Fct>
+	decltype(auto)
+	Try(Fct fct, std::function<std::string(const std::string&)> buildErrorMsg)
+	{
+		std::string error;
+		try
+		{
+			return fct();
+		}
+		catch (const std::exception& e)
+		{
+			error = e.what();
+		}
+		catch (...)
+		{
+			error = "Unknow";
+		}
+
+		throw Exception(buildErrorMsg(error));
+	}
+
+	TOOLS_DLL std::filesystem::path GetExecutableFolder();
 	
 	TOOLS_DLL void CreateMiniDumpOnUnHandledException();
 
-	TOOLS_DLL void ShowOutputMessage(const std::wstring& message, const boost::filesystem::path& path);
+	TOOLS_DLL void ShowOutputMessage(const std::wstring& message, const std::filesystem::path& path);
 	TOOLS_DLL std::wstring GetSeparatorLine();
 
-	TOOLS_DLL void CreateParentFolderIfNeeded(const boost::filesystem::path& path);
+	TOOLS_DLL void CreateParentFolderIfNeeded(const std::filesystem::path& path);
 }
 
 

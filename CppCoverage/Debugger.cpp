@@ -59,9 +59,11 @@ namespace CppCoverage
 	//-------------------------------------------------------------------------
 	Debugger::Debugger(
 		bool coverChildren,
-		bool continueAfterCppException)
+		bool continueAfterCppException,
+        bool stopOnAssert)
 		: coverChildren_{ coverChildren }
 		, continueAfterCppException_{ continueAfterCppException }
+        , stopOnAssert_{ stopOnAssert }
 	{
 	}
 
@@ -184,7 +186,15 @@ namespace CppCoverage
 				LOG_WARNING << "It seems there is an assertion failure or you call DebugBreak() in your program.";
 				LOG_WARNING << Tools::GetSeparatorLine();
 
-				return ProcessStatus( EXCEPTION_BREAKPOINT, DBG_CONTINUE );
+                if (stopOnAssert_)
+                {
+                  LOG_WARNING << "Stop on assertion.";
+                  return ProcessStatus{ boost::none, DBG_EXCEPTION_NOT_HANDLED };
+                }
+                else
+                {
+                  return ProcessStatus(EXCEPTION_BREAKPOINT, DBG_CONTINUE);
+                }
 			}
 			case IDebugEventsHandler::ExceptionType::NotHandled:
 			{

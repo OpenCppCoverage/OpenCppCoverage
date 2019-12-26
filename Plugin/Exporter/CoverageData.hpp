@@ -19,22 +19,15 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <filesystem>
 
-#include "CppCoverageExport.hpp"
+#include "../PluginExport.hpp"
 
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
-
-namespace CppCoverage
+namespace Plugin
 {
 	class ModuleCoverage;
 
-	class CPPCOVERAGE_DLL CoverageData
+	class PLUGIN_DLL CoverageData
 	{
 	public:
 		typedef std::vector<std::unique_ptr<ModuleCoverage>> T_ModuleCoverageCollection;
@@ -45,7 +38,7 @@ namespace CppCoverage
 
 		CoverageData(CoverageData&&);			
 		CoverageData& operator=(CoverageData&&);
-		ModuleCoverage& AddModule(const boost::filesystem::path& name);
+		ModuleCoverage& AddModule(const std::filesystem::path& name);
 		
 		void SetName(const std::wstring&);
 		void SetExitCode(int);

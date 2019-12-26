@@ -16,35 +16,38 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
-#include <boost/filesystem.hpp>
-#include <map>
+#include <vector>
+#include <memory>
 
-#include "LineCoverage.hpp"
-#include "CppCoverageExport.hpp"
+#include <filesystem>
 
-namespace CppCoverage
+#include "../PluginExport.hpp"
+
+namespace Plugin
 {
-	class CPPCOVERAGE_DLL FileCoverage
+	class FileCoverage;
+
+	class PLUGIN_DLL ModuleCoverage
 	{
 	public:
-		explicit FileCoverage(const boost::filesystem::path& path);
+		typedef std::vector<std::unique_ptr<FileCoverage>> T_FileCoverageCollection;
 
-		void AddLine(unsigned int lineNumber, bool hasBeenExecuted);
-		void UpdateLine(unsigned int lineNumber, bool hasBeenExecuted);
+	public:
+		explicit ModuleCoverage(const std::filesystem::path& path);
+		~ModuleCoverage();
 
-		const boost::filesystem::path& GetPath() const;
-		const LineCoverage* operator[](unsigned int line) const;
-		std::vector<LineCoverage> GetLines() const;
-
-		FileCoverage& operator=(const FileCoverage&) = default;
+		FileCoverage& AddFile(const std::filesystem::path& filename);
+		
+		const std::filesystem::path& GetPath() const;
+		const T_FileCoverageCollection& GetFiles() const;
 
 	private:
-		FileCoverage(const FileCoverage&) = delete;
-			
+		ModuleCoverage(const ModuleCoverage&) = delete;
+		ModuleCoverage& operator=(const ModuleCoverage&) = delete;
+		
 	private:
-		boost::filesystem::path path_;
-		std::map<unsigned int, LineCoverage> lines_;	
+		T_FileCoverageCollection files_;
+		std::filesystem::path path_;		
 	};
 }
 

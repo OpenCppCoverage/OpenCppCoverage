@@ -17,12 +17,13 @@
 #include "stdafx.h"
 
 #include "CppCoverage/OptionsParser.hpp"
-#include "CppCoverage/ProgramOptions.hpp"
+#include "CppCoverage/ExportOptionParser.hpp"
 #include "CppCoverage/OptionsExport.hpp"
 
 #include "CppCoverageTest/TestTools.hpp"
 
 #include "TestHelper/TemporaryPath.hpp"
+#include "Tools/Tool.hpp"
 
 namespace cov = CppCoverage;
 
@@ -33,64 +34,98 @@ namespace CppCoverageTest
 		//-------------------------------------------------------------------------
 		bool operator==(const cov::OptionsExport& export1, const cov::OptionsExport& export2)
 		{
-			return export1.GetType() == export2.GetType()
-				&& export1.GetOutputPath() == export2.GetOutputPath();
+			return export1.GetType() == export2.GetType() &&
+			       export1.GetParameter() == export2.GetParameter();
+		}
+
+		//-------------------------------------------------------------------------
+		std::unique_ptr<cov::OptionsParser>
+		CreateOptionParser(std::vector<cov::ExportPluginDescription>&&
+		                       exportPluginDescription = {})
+		{
+			std::vector<std::unique_ptr<cov::IOptionParser>> optionParsers;
+
+			optionParsers.push_back(std::make_unique<cov::ExportOptionParser>(
+			    std::move(exportPluginDescription)));
+			return std::make_unique<cov::OptionsParser>(
+			    nullptr, std::move(optionParsers));
 		}
 
 		//-------------------------------------------------------------------------
 		void TestExportTypes(
 			const std::vector<std::string>& exportTypesStr,
-			const std::vector<cov::OptionsExport>& expectedValue)
+			const std::vector<cov::OptionsExport>& expectedValues)
 		{
-			cov::OptionsParser parser;
+			auto parser = CreateOptionParser();
 			std::vector<std::string> arguments;
 
 			for (const auto& exportTypeStr : exportTypesStr)
 			{
-				arguments.push_back(TestTools::GetOptionPrefix() + cov::ProgramOptions::ExportTypeOption);
+				arguments.push_back(TestTools::GetOptionPrefix() + cov::ExportOptionParser::ExportTypeOption);
 				arguments.push_back(exportTypeStr);
 			}
 
-			auto options = TestTools::Parse(parser, arguments);
+			auto options = TestTools::Parse(*parser, arguments);
 
 			ASSERT_TRUE(static_cast<bool>(options));
 			const auto& exports = options->GetExports();
 
-			ASSERT_EQ(expectedValue.size(), exports.size());
+			ASSERT_EQ(expectedValues.size(), exports.size());
 
 			for (size_t i = 0; i < exports.size(); ++i)
-				ASSERT_TRUE(expectedValue[i] == exports[i]);
+				ASSERT_TRUE(expectedValues[i] == exports[i]);
+		}
+
+		//-------------------------------------------------------------------------
+		void TestExportTypes(
+			const std::vector<std::string>& exportTypesStr,
+			cov::OptionsExport&& expectedValue)
+		{
+			std::vector<cov::OptionsExport> expectedValues;
+
+			expectedValues.push_back(std::move(expectedValue));
+			TestExportTypes(exportTypesStr, expectedValues);
+		}
+
+		//-------------------------------------------------------------------------
+		cov::OptionsExport MakeOptionExport(cov::OptionsExportType type)
+		{
+			return cov::OptionsExport{ type, L"", std::nullopt };
 		}
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserExportTest, ExportTypesDefault)
 	{
-		TestExportTypes({}, { cov::OptionsExport{ cov::OptionsExportType::Html } });
+		TestExportTypes({}, MakeOptionExport(cov::OptionsExportType::Html));
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserExportTest, ExportTypesHtml)
 	{
-		TestExportTypes(
-		{ cov::ProgramOptions::ExportTypeHtmlValue },
-		{ cov::OptionsExport{ cov::OptionsExportType::Html } });
+		TestExportTypes({cov::ExportOptionParser::ExportTypeHtmlValue},
+		                MakeOptionExport(cov::OptionsExportType::Html));
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserExportTest, ExportTypesCoberturaValue)
 	{
 		TestExportTypes(
-		{ cov::ProgramOptions::ExportTypeCoberturaValue }, 
-		{ cov::OptionsExport{ cov::OptionsExportType::Cobertura } });
+		    {cov::ExportOptionParser::ExportTypeCoberturaValue},
+		     MakeOptionExport(cov::OptionsExportType::Cobertura));
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserExportTest, ExportTypesBoth)
 	{
+		std::vector<cov::OptionsExport> expectedValues;
+		expectedValues.push_back(MakeOptionExport(cov::OptionsExportType::Html));
+		expectedValues.push_back(MakeOptionExport(cov::OptionsExportType::Cobertura));
+
 		TestExportTypes(
-		{ cov::ProgramOptions::ExportTypeHtmlValue, cov::ProgramOptions::ExportTypeCoberturaValue },
-		{ cov::OptionsExport{ cov::OptionsExportType::Html }, cov::OptionsExport{ cov::OptionsExportType::Cobertura } });
+		    {cov::ExportOptionParser::ExportTypeHtmlValue,
+		     cov::ExportOptionParser::ExportTypeCoberturaValue},
+			expectedValues);
 	}
 
 	//-------------------------------------------------------------------------
@@ -98,19 +133,20 @@ namespace CppCoverageTest
 	{
 		const std::string path = "path";
 		TestExportTypes(
-		{ cov::ProgramOptions::ExportTypeHtmlValue + cov::OptionsParser::ExportSeparator + path},
-		{ cov::OptionsExport{ cov::OptionsExportType::Html, path } });
+		    {cov::ExportOptionParser::ExportTypeHtmlValue +
+		     cov::ExportOptionParser::ExportSeparator + path},
+			{ cov::OptionsExport{cov::OptionsExportType::Html, L"", Tools::LocalToWString(path)}});
 	}
 
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserExportTest, ExistingExportPath)
 	{	
-		cov::OptionsParser parser;
+		auto parser = CreateOptionParser();
 		TestHelper::TemporaryPath temporaryPath{ TestHelper::TemporaryPathOption::CreateAsFile };
 
-		std::string exportStr = cov::ProgramOptions::ExportTypeHtmlValue + 
-			cov::OptionsParser::ExportSeparator + temporaryPath.GetPath().string();
-		auto options = TestTools::Parse(parser, { TestTools::GetOptionPrefix() + cov::ProgramOptions::ExportTypeOption, 
+		std::string exportStr = cov::ExportOptionParser::ExportTypeHtmlValue + 
+			cov::ExportOptionParser::ExportSeparator + temporaryPath.GetPath().string();
+		auto options = TestTools::Parse(*parser, { TestTools::GetOptionPrefix() + cov::ExportOptionParser::ExportTypeOption, 
 								exportStr });
 		ASSERT_NE(nullptr, options.get_ptr());
 	}
@@ -118,9 +154,61 @@ namespace CppCoverageTest
 	//-------------------------------------------------------------------------
 	TEST(OptionsParserExportTest, InvalidExportTypes)
 	{
-		cov::OptionsParser parser;
+		auto parser = CreateOptionParser();
 
-		auto options = TestTools::Parse(parser, { TestTools::GetOptionPrefix() + cov::ProgramOptions::ExportTypeOption, "Invalid" });
+		auto options =
+		    TestTools::Parse(*parser,
+		                     {TestTools::GetOptionPrefix() +
+		                          cov::ExportOptionParser::ExportTypeOption,
+		                      "Invalid"});
 		ASSERT_FALSE(options);
+	}
+
+	namespace
+	{
+		//-------------------------------------------------------------------------
+		void CheckExportPluginParser(
+		    const std::wstring& pluginName,
+		    const std::wstring& pluginArg,
+			std::function<void(const std::optional<std::wstring>&)> checkArgumentFct,
+		    std::function<void(const cov::OptionsExport&)> checkOptionExporFct)
+		{
+			std::vector<cov::ExportPluginDescription> exportPluginDescription;
+			exportPluginDescription.push_back(cov::ExportPluginDescription{
+				std::wstring{pluginName},
+			    L"",
+				checkArgumentFct
+			});
+			auto parser =
+			    CreateOptionParser(std::move(exportPluginDescription));
+
+			auto options =
+			    TestTools::Parse(*parser,
+			                     {TestTools::GetOptionPrefix() +
+			                          cov::ExportOptionParser::ExportTypeOption,
+			                      Tools::ToLocalString(pluginName) + ':' +
+			                          Tools::ToLocalString(pluginArg)});
+			if (!options)
+				throw std::runtime_error("Null option");
+
+			const auto& e = options->GetExports().at(0);
+			checkOptionExporFct(e);
+		}
+	}
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserExportTest, ExportPluginDescription)
+	{
+		const std::wstring pluginArg = L"pluginArg";
+		std::optional<std::wstring> argument;
+
+		CheckExportPluginParser(
+			L"pluginName",
+			pluginArg,
+			[&](const auto& arg) { argument = arg;  },
+			[&](const cov::OptionsExport& e) {
+			ASSERT_EQ(cov::OptionsExportType::Plugin, e.GetType());
+			ASSERT_EQ(pluginArg, e.GetParameter());
+		});
+		ASSERT_EQ(pluginArg, argument);
 	}
 }

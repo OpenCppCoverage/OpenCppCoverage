@@ -16,6 +16,7 @@
 
 #include "stdafx.h"
 
+#include <fstream>
 #include <boost/optional.hpp>
 
 #include "CppCoverage/ProgramOptions.hpp"

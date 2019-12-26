@@ -16,20 +16,19 @@
 
 #include "stdafx.h"
 
-#include "CppCoverage/CoverageData.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
 #include "Exporter/Binary/BinaryExporter.hpp"
 #include "Exporter/InvalidOutputFileException.hpp"
 #include "TestHelper/TemporaryPath.hpp"
 
-namespace cov = CppCoverage;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace ExporterTest
 {
 	//-------------------------------------------------------------------------
 	TEST(BinaryExporterTest, SubFolderDoesNotExist)
 	{
-		cov::CoverageData coverageData{ L"", 0 };
+		Plugin::CoverageData coverageData{ L"", 0 };
 
 		TestHelper::TemporaryPath output;
 		auto outputPath = output.GetPath() / "SubFolder" / "output.cov";
@@ -42,7 +41,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST(BinaryExporterTest, OutputExists)
 	{
-		cov::CoverageData coverageData{ L"", 0 };
+		Plugin::CoverageData coverageData{ L"", 0 };
 
 		TestHelper::TemporaryPath outputPath{ TestHelper::TemporaryPathOption::CreateAsFile };
 		
@@ -52,7 +51,7 @@ namespace ExporterTest
 	//-------------------------------------------------------------------------
 	TEST(BinaryExporterTest, InvalidFile)
 	{
-		cov::CoverageData coverageData{L"", 0};
+		Plugin::CoverageData coverageData{L"", 0};
 
 		TestHelper::TemporaryPath outputPath{
 		    TestHelper::TemporaryPathOption::CreateAsFolder};

@@ -17,7 +17,7 @@
 #pragma once
 
 #include "FileFilterExport.hpp"
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <vector>
 #include <string>
 #include <regex>
@@ -41,7 +41,7 @@ namespace FileFilter
 		~LineFilter();
 
 		bool IsLineSelected(const FileInfo&, const LineInfo&);
-		bool IsLineSelected(const boost::filesystem::path&, int lineNumber);
+		bool IsLineSelected(const std::filesystem::path&, int lineNumber);
 		int GetFileReadCount() const;
 
 	private:
@@ -50,11 +50,11 @@ namespace FileFilter
 		LineFilter(LineFilter&&) = delete;
 		LineFilter& operator=(LineFilter&&) = delete;
 
-		const std::vector<std::string>* GetLines(const boost::filesystem::path&);
+		const std::vector<std::string>* GetLines(const std::filesystem::path&);
 		bool IsLineSelected(const std::string& line) const;
 
 		std::vector<std::regex> excludedLineRegexes_;
-		boost::filesystem::path filePath_;
+		std::filesystem::path filePath_;
 		std::unique_ptr<Tools::MappedFile> mappedFileForFilePath_;
 		int fileReadCount_;
 		const bool enableLog_;

@@ -16,22 +16,34 @@
 
 #pragma once
 
-#include "CppCoverageExport.hpp"
+#include <filesystem>
+#include <map>
 
-namespace CppCoverage
+#include "LineCoverage.hpp"
+#include "../PluginExport.hpp"
+
+namespace Plugin
 {
-	class CPPCOVERAGE_DLL LineCoverage
+	class PLUGIN_DLL FileCoverage
 	{
 	public:
-		LineCoverage(unsigned int lineNumber, bool hasBeenExecuted);
-		LineCoverage(const LineCoverage&) = default;
-		
-		unsigned int GetLineNumber() const;
-		bool HasBeenExecuted() const;
-		
+		explicit FileCoverage(const std::filesystem::path& path);
+
+		void AddLine(unsigned int lineNumber, bool hasBeenExecuted);
+		void UpdateLine(unsigned int lineNumber, bool hasBeenExecuted);
+
+		const std::filesystem::path& GetPath() const;
+		const LineCoverage* operator[](unsigned int line) const;
+		std::vector<LineCoverage> GetLines() const;
+
+		FileCoverage& operator=(const FileCoverage&) = default;
+
 	private:
-		unsigned int lineNumber_;
-		bool hasBeenExecuted_;
+		FileCoverage(const FileCoverage&) = delete;
+			
+	private:
+		std::filesystem::path path_;
+		std::map<unsigned int, LineCoverage> lines_;	
 	};
 }
 

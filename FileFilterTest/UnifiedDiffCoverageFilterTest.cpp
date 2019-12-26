@@ -16,7 +16,6 @@
 
 #include "stdafx.h"
 
-#include <boost/filesystem.hpp>
 #include <boost/optional.hpp>
 
 #include "FileFilter/UnifiedDiffCoverageFilter.hpp"

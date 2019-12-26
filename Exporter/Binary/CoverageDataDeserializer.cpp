@@ -17,11 +17,13 @@
 #include "stdafx.h"
 #include "CoverageDataDeserializer.hpp"
 
+#include <fstream>
+
 #include "CoverageData.pb.hpp"
 
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/ModuleCoverage.hpp"
-#include "CppCoverage/FileCoverage.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
+#include "Plugin/Exporter/ModuleCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
 
 #include "../ExporterException.hpp"
 
@@ -31,7 +33,6 @@
 #include "ProtoBuff.hpp"
 
 namespace pb = ProtoBuff;
-namespace cov = CppCoverage;
 
 namespace Exporter
 {
@@ -58,7 +59,7 @@ namespace Exporter
 		void InitCoverageDataFrom(
 			google::protobuf::io::CodedInputStream&  input,
 			const pb::CoverageData& coverageDataProtoBuff,
-			cov::CoverageData& coverageData)
+			Plugin::CoverageData& coverageData)
 		{
 			auto moduleCount = coverageDataProtoBuff.modulecount();
 
@@ -80,7 +81,7 @@ namespace Exporter
 		}		
 
 		//-------------------------------------------------------------------------
-		cov::CoverageData DeserializeFromStream(
+		Plugin::CoverageData DeserializeFromStream(
 			std::istream& istr,
 			const std::string& errorIfNotCorrectFormat)
 		{
@@ -95,7 +96,7 @@ namespace Exporter
 
 			ReadMessage(codedInputStream, coverageDataProtoBuff);
 
-			cov::CoverageData coverageData{
+			Plugin::CoverageData coverageData{
 				Tools::Utf8ToWString(coverageDataProtoBuff.name()),
 				coverageDataProtoBuff.exitcode() };
 
@@ -106,8 +107,8 @@ namespace Exporter
 	}
 		
 	//-------------------------------------------------------------------------
-	CppCoverage::CoverageData CoverageDataDeserializer::Deserialize(
-		const boost::filesystem::path& path, 
+	Plugin::CoverageData CoverageDataDeserializer::Deserialize(
+		const std::filesystem::path& path, 
 		const std::string& errorIfNotCorrectFormat) const
 	{
 		std::ifstream ifs(path.string(), std::ios::binary);

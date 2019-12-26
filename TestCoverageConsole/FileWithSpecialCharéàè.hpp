@@ -16,13 +16,13 @@
 
 #pragma once
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 namespace TestCoverageConsole
 {
 	//-------------------------------------------------------------------------
-	inline boost::filesystem::path GetFileWithSpecialChars()
+	inline std::filesystem::path GetFileWithSpecialChars()
 	{
-		return boost::filesystem::path(__FILE__).filename();
+		return std::filesystem::path(__FILE__).filename();
 	}
 }

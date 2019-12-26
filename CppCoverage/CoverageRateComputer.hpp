@@ -20,34 +20,37 @@
 #include <unordered_map>
 #include "CoverageRate.hpp"
 
-namespace CppCoverage
+namespace Plugin
 {
 	class ModuleCoverage;
 	class FileCoverage;
 	class CoverageData;
+}
 
+namespace CppCoverage
+{
 	class CPPCOVERAGE_DLL CoverageRateComputer
 	{
 	public:
-		explicit CoverageRateComputer(const CoverageData&);
+		explicit CoverageRateComputer(const Plugin::CoverageData&);
 
-		std::vector<ModuleCoverage*> SortModulesByCoverageRate() const;
-		std::vector<FileCoverage*> SortFilesByCoverageRate(const ModuleCoverage&) const;
+		std::vector<Plugin::ModuleCoverage*> SortModulesByCoverageRate() const;
+		std::vector<Plugin::FileCoverage*> SortFilesByCoverageRate(const Plugin::ModuleCoverage&) const;
 		
 		const CoverageRate& GetCoverageRate() const;
-		const CoverageRate& GetCoverageRate(const ModuleCoverage&) const;
-		const CoverageRate& GetCoverageRate(const FileCoverage&) const;
+		const CoverageRate& GetCoverageRate(const Plugin::ModuleCoverage&) const;
+		const CoverageRate& GetCoverageRate(const Plugin::FileCoverage&) const;
 
 	private:
 		CoverageRateComputer(const CoverageRateComputer&) = delete;
 		CoverageRateComputer& operator=(const CoverageRateComputer&) = delete;
 
-		void ComputeCoverageRateCache(const CoverageData& coverageData);
+		void ComputeCoverageRateCache(const Plugin::CoverageData& coverageData);
 
-		const CoverageData& coverageData_;
+		const Plugin::CoverageData& coverageData_;
 
-		std::unordered_map<const ModuleCoverage*, CoverageRate> moduleCoverageRate_;
-		std::unordered_map<const FileCoverage*, CoverageRate> fileCoverageRate_;
+		std::unordered_map<const Plugin::ModuleCoverage*, CoverageRate> moduleCoverageRate_;
+		std::unordered_map<const Plugin::FileCoverage*, CoverageRate> fileCoverageRate_;
 		CoverageRate coverageRate_;
 	};
 }

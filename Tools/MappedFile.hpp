@@ -19,7 +19,7 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 #include "ToolsExport.hpp"
 
@@ -28,7 +28,7 @@ namespace Tools
 	class TOOLS_DLL MappedFile
 	{
 	public:
-		static std::unique_ptr<MappedFile> TryCreate(const boost::filesystem::path&);
+		static std::unique_ptr<MappedFile> TryCreate(const std::filesystem::path&);
 		
 		const std::vector<std::string>& GetLines() const;
 
@@ -37,7 +37,7 @@ namespace Tools
 		MappedFile(MappedFile&&) = default;
 
 	private:
-		explicit MappedFile(const boost::filesystem::path&);
+		explicit MappedFile(const std::filesystem::path&);
 
 		std::vector<std::string> lines_;
 	};

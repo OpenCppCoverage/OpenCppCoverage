@@ -17,12 +17,12 @@
 #include "stdafx.h"
 #include "StartInfo.hpp"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "Tools/Tool.hpp"
 #include "CppCoverageException.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace CppCoverage
 {	
@@ -65,7 +65,7 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	const boost::filesystem::path& StartInfo::GetPath() const
+	const std::filesystem::path& StartInfo::GetPath() const
 	{
 		return path_;
 	}

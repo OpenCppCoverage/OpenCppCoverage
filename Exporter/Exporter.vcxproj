@@ -58,24 +58,28 @@
     <Import Project="..\PropertySheets\Default.props" />
     <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\CTemplate.props" />
+    <Import Project="..\PropertySheets\Protobuf.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
     <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\CTemplate.props" />
+    <Import Project="..\PropertySheets\Protobuf.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
     <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\CTemplate.props" />
+    <Import Project="..\PropertySheets\Protobuf.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\PropertySheets\Default.props" />
     <Import Project="..\PropertySheets\Boost.props" />
     <Import Project="..\PropertySheets\CTemplate.props" />
+    <Import Project="..\PropertySheets\Protobuf.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
@@ -97,7 +101,7 @@
       <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)\packages\thirdparty.1.2.0\installed\x86-windows\tools\protoc.exe" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
+      <Command>"$(SolutionDir)\packages\thirdparty.1.3.0\installed\x86-windows\tools\protobuf\protoc.exe" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,7 +122,7 @@
       <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)\packages\thirdparty.1.2.0\installed\x86-windows\tools\protoc.exe" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
+      <Command>"$(SolutionDir)\packages\thirdparty.1.3.0\installed\x86-windows\tools\protobuf\protoc.exe" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -143,7 +147,7 @@
       <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)\packages\thirdparty.1.2.0\installed\x86-windows\tools\protoc.exe" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
+      <Command>"$(SolutionDir)\packages\thirdparty.1.3.0\installed\x86-windows\tools\protobuf\protoc.exe" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -168,7 +172,7 @@
       <Command>if not exist "$(OutDir)Template" mkdir "$(OutDir)Template" &amp;&amp; xcopy /s /y "$(ProjectDir)Html\Template" "$(OutDir)Template"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>"$(SolutionDir)\packages\thirdparty.1.2.0\installed\x86-windows\tools\protoc.exe" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
+      <Command>"$(SolutionDir)\packages\thirdparty.1.3.0\installed\x86-windows\tools\protobuf\protoc.exe" -I="$(ProjectDir)Binary" --cpp_out="$(ProjectDir)Binary" "$(ProjectDir)Binary\CoverageData.proto"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -189,6 +193,10 @@
     <ClInclude Include="Html\TemplateHtmlExporter.hpp" />
     <ClInclude Include="IExporter.hpp" />
     <ClInclude Include="InvalidOutputFileException.hpp" />
+    <ClInclude Include="Plugin\ExporterPluginManager.hpp" />
+    <ClInclude Include="Plugin\IPluginLoader.hpp" />
+    <ClInclude Include="Plugin\LoadedPlugin.hpp" />
+    <ClInclude Include="Plugin\PluginLoader.hpp" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
@@ -210,13 +218,13 @@
     <ClCompile Include="CoberturaExporter.cpp" />
     <ClCompile Include="Binary\CoverageDataSerializer.cpp" />
     <ClCompile Include="Binary\CoverageDataDeserializer.cpp" />
-    <ClCompile Include="ExporterException.cpp" />
     <ClCompile Include="Html\HtmlExporter.cpp" />
     <ClCompile Include="Html\HtmlFile.cpp" />
     <ClCompile Include="Html\HtmlFileCoverageExporter.cpp" />
     <ClCompile Include="Html\HtmlFolderStructure.cpp" />
     <ClCompile Include="Html\TemplateHtmlExporter.cpp" />
     <ClCompile Include="InvalidOutputFileException.cpp" />
+    <ClCompile Include="Plugin\ExporterPluginManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -227,6 +235,9 @@
   <ItemGroup>
     <ProjectReference Include="..\CppCoverage\CppCoverage.vcxproj">
       <Project>{a50dd5a6-e85a-4e0b-9cc6-90d32503ce62}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Plugin\Plugin.vcxproj">
+      <Project>{2f439508-07e0-4084-9614-1a42bde8ed9a}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Tools\Tools.vcxproj">
       <Project>{7f6d05ef-deb0-4c64-bd13-a85f46314b91}</Project>
@@ -242,12 +253,12 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\thirdparty.1.2.0\build\native\thirdparty.targets" Condition="Exists('..\packages\thirdparty.1.2.0\build\native\thirdparty.targets')" />
+    <Import Project="..\packages\thirdparty.1.3.0\build\native\thirdparty.targets" Condition="Exists('..\packages\thirdparty.1.3.0\build\native\thirdparty.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\thirdparty.1.2.0\build\native\thirdparty.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\thirdparty.1.2.0\build\native\thirdparty.targets'))" />
+    <Error Condition="!Exists('..\packages\thirdparty.1.3.0\build\native\thirdparty.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\thirdparty.1.3.0\build\native\thirdparty.targets'))" />
   </Target>
 </Project>

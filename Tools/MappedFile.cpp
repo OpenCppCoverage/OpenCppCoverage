@@ -20,12 +20,11 @@
 #include "ToolsException.hpp"
 
 #include <boost/iostreams/device/mapped_file.hpp>
-#include <boost/filesystem/operations.hpp>
 
 namespace Tools
 {
 	//-------------------------------------------------------------------------
-	MappedFile::MappedFile(const boost::filesystem::path& path)
+	MappedFile::MappedFile(const std::filesystem::path& path)
 	{
 		boost::iostreams::mapped_file mappedFile(path.string(), boost::iostreams::mapped_file::readonly);
 
@@ -54,9 +53,9 @@ namespace Tools
 	}
 
 	//-------------------------------------------------------------------------
-	std::unique_ptr<MappedFile> MappedFile::TryCreate(const boost::filesystem::path& path)
+	std::unique_ptr<MappedFile> MappedFile::TryCreate(const std::filesystem::path& path)
 	{
-		if (!boost::filesystem::exists(path) || boost::filesystem::file_size(path) == 0)
+		if (!std::filesystem::exists(path) || std::filesystem::file_size(path) == 0)
 			return nullptr;
 		return std::unique_ptr<MappedFile>(new MappedFile{ path });
 	}

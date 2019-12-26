@@ -23,8 +23,8 @@
 #include "tools/Log.hpp"
 
 #include "CppCoverageException.hpp"
-#include "ModuleCoverage.hpp"
-#include "FileCoverage.hpp"
+#include "Plugin/Exporter/ModuleCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
 #include "Address.hpp"
 
 namespace CppCoverage
@@ -146,11 +146,11 @@ namespace CppCoverage
 	}
 	
 	//-------------------------------------------------------------------------
-	CoverageData ExecutedAddressManager::CreateCoverageData(
+	Plugin::CoverageData ExecutedAddressManager::CreateCoverageData(
 		const std::wstring& name,
 		int exitCode) const
 	{
-		CoverageData coverageData{ name, exitCode };
+		Plugin::CoverageData coverageData{ name, exitCode };
 
 		for (const auto& pair : modules_)
 		{

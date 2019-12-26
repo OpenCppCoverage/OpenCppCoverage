@@ -14,16 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "stdafx.h"
+#include "pch.h"
 
-#include "CppCoverage/CoverageData.hpp"
-#include "CppCoverage/ModuleCoverage.hpp"
-#include "CppCoverage/FileCoverage.hpp"
-#include "CppCoverage/LineCoverage.hpp"
+#include "Plugin/Exporter/CoverageData.hpp"
+#include "Plugin/Exporter/ModuleCoverage.hpp"
+#include "Plugin/Exporter/FileCoverage.hpp"
+#include "Plugin/Exporter/LineCoverage.hpp"
 
-namespace cov = CppCoverage;
-
-namespace CppCoverageTest
+namespace PluginTest
 {
 	namespace
 	{
@@ -31,7 +29,7 @@ namespace CppCoverageTest
 		const std::wstring filename = L"filename";
 
 		//---------------------------------------------------------------------
-		void FillCoverageData(cov::CoverageData& data)
+		void FillCoverageData(Plugin::CoverageData& data)
 		{
 			auto& createdModule = data.AddModule(moduleName);
 			auto& createdFile = createdModule.AddFile(filename);
@@ -40,7 +38,7 @@ namespace CppCoverageTest
 		}
 
 		//---------------------------------------------------------------------
-		void CheckCoverageData(const cov::CoverageData& data)
+		void CheckCoverageData(const Plugin::CoverageData& data)
 		{
 			const auto& modules = data.GetModules();
 			ASSERT_EQ(1, modules.size());
@@ -68,7 +66,7 @@ namespace CppCoverageTest
 	//---------------------------------------------------------------------
 	TEST(CoverageDataTest, CoverageData)
 	{
-		cov::CoverageData data{L"", 0};
+		Plugin::CoverageData data{L"", 0};
 		
 		FillCoverageData(data);
 		CheckCoverageData(data);
@@ -77,11 +75,11 @@ namespace CppCoverageTest
 	//---------------------------------------------------------------------
 	TEST(CoverageDataTest, MoveConstructor)
 	{
-		cov::CoverageData data{L"", 0};
+		Plugin::CoverageData data{L"", 0};
 
 		FillCoverageData(data);
 
-		cov::CoverageData movedCoverageData = { std::move(data) };
+		Plugin::CoverageData movedCoverageData = { std::move(data) };
 		CheckCoverageData(movedCoverageData);
 	}			
 }

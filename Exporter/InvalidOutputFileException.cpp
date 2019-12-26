@@ -16,20 +16,19 @@
 
 #include "stdafx.h"
 #include "InvalidOutputFileException.hpp"
-#include <boost/filesystem/operations.hpp>
 
 namespace Exporter
 {
 	namespace
 	{
 		//---------------------------------------------------------------------
-		std::string GetErrorMessage(const boost::filesystem::path& output,
+		std::string GetErrorMessage(const std::filesystem::path& output,
 		                            const std::string& outputKind)
 		{
 			auto error = "Cannot write " + outputKind +
 			             " export to the file: \"" + output.string() + "\".";
 
-			if (boost::filesystem::is_directory(output) || output.filename_is_dot())
+			if (std::filesystem::is_directory(output))
 			{
 				error += " The output \"" + output.string() +
 				         "\" is a directory whereas as it must be a file.";
@@ -40,7 +39,7 @@ namespace Exporter
 
 	//-------------------------------------------------------------------------
 	InvalidOutputFileException::InvalidOutputFileException(
-	    const boost::filesystem::path& output, const std::string& outputKind)
+	    const std::filesystem::path& output, const std::string& outputKind)
 	    : std::runtime_error(GetErrorMessage(output, outputKind))
 	{
 	}

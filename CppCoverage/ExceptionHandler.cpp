@@ -24,7 +24,8 @@
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	const std::wstring ExceptionHandler::UnhandledExceptionErrorMessage = L"Unhandled exception code: ";
+	const std::wstring ExceptionHandler::UnhandledExceptionErrorMessage =
+	    L"Your application has thrown an unhandled exception. Code: ";
 	const std::wstring ExceptionHandler::ExceptionCpp = L"Exception C++";
 	const std::wstring ExceptionHandler::ExceptionAccesViolation = L"EXCEPTION_ACCESS_VIOLATION";
 	const std::wstring ExceptionHandler::ExceptionUnknown = L"Unknown";

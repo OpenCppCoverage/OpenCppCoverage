@@ -18,15 +18,15 @@
 
 #include <memory>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
+
+// Disable: This header is deprecated. Use <boost/integer/integer_log2.hpp> instead.
+#define BOOST_ALLOW_DEPRECATED_HEADERS
 #include <boost/uuid/uuid_generators.hpp>
 #include "../ExporterExport.hpp"
 
 namespace CppCoverage
 {
-	class CoverageData;
-	class ModuleCoverage;
-	class FileCoverage;
 	class CoverageRate;
 }
 
@@ -35,7 +35,7 @@ namespace ctemplate
 	class TemplateDictionary;
 }
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace Exporter
 {
@@ -64,6 +64,9 @@ namespace Exporter
 		static const std::string CodeTemplate;
 		static const std::string IdTemplate;
 		static const std::string ThirdPartyPathTemplate;
+		static const std::string OCCProjectLink;
+		static const std::string OCCVersion;
+		static const std::string ActualProjectLink;
 
 	public:
 		explicit TemplateHtmlExporter(

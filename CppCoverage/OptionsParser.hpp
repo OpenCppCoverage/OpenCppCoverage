@@ -41,17 +41,18 @@ namespace CppCoverage
 	class Options;
 	class ProgramOptions;
 	enum class OptionsExportType;
-	class OptionsExport;
+	class IOptionParser;
+	class ProgramOptionsVariablesMap;
 
 	class CPPCOVERAGE_DLL OptionsParser
 	{
 	public:
-		static const char ExportSeparator;
 		static const char PathSeparator;
 		static const int DosCommandLineMaxSize;
 
 		OptionsParser();
-		explicit OptionsParser(std::shared_ptr<Tools::WarningManager>);
+		explicit OptionsParser(std::shared_ptr<Tools::WarningManager>,
+		                       std::vector<std::unique_ptr<IOptionParser>>&&);
 		~OptionsParser();
 
 		boost::optional<Options> Parse(int argc, const char** argv, std::wostream* emptyOptionsExplanation) const;
@@ -61,19 +62,15 @@ namespace CppCoverage
 	private:
 		OptionsParser(const OptionsParser&) = delete;
 		OptionsParser& operator=(const OptionsParser&) = delete;
-		
+		OptionsParser(OptionsParser&&) = delete;
+		OptionsParser& operator=(OptionsParser&&) = delete;
+
 		boost::optional<Options> Parse(int argc, const char** argv) const;
 		void ShowExplanation(std::wostream* emptyOptionsExplanation, const char* message) const;
 		
-		void AddExporTypes(
-			const boost::program_options::variables_map& variables,
-			Options& options) const;
-
-		OptionsExport CreateExport(const std::string&) const;
-
-		std::map<std::string, OptionsExportType> exportTypes_;
 		std::unique_ptr<ProgramOptions> programOptions_;
 		std::shared_ptr<Tools::WarningManager> optionalWarningManager_;
+		std::vector<std::unique_ptr<IOptionParser>> optionParsers_;
 	};
 }
 

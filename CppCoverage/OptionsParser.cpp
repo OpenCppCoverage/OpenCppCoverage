@@ -20,7 +20,9 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <boost/filesystem.hpp>
+#include <fstream>
+#include <filesystem>
+
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
@@ -31,55 +33,21 @@
 #include "CppCoverageException.hpp"
 #include "ProgramOptions.hpp"
 #include "OptionsExport.hpp"
+#include "ProgramOptionsVariablesMap.hpp"
+
 #include "Tools/WarningManager.hpp"
 #include "Tools/Log.hpp"
+#include "IOptionParser.hpp"
+#include "Plugin/OptionsParserException.hpp"
 
 namespace po = boost::program_options;
 namespace cov = CppCoverage;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace CppCoverage
 {
 	namespace
-	{		
-		//---------------------------------------------------------------------
-		template<typename T>
-		const T* GetOptionalValue(
-			const po::variables_map& variables, 
-			const std::string& optionName)
-		{
-			auto it = variables.find(optionName);
-
-			if (it == variables.end())
-				return nullptr;
-			const auto& variable = it->second;
-
-			return &variable.as<T>();
-		}
-
-		//---------------------------------------------------------------------
-		template<typename T>
-		const T& GetValue(
-			const po::variables_map& variables,
-			const std::string& optionName)
-		{
-			auto* optionalValue = GetOptionalValue<T>(variables, optionName);
-			
-			if (!optionalValue)
-				THROW(L"Cannot find option:" + Tools::LocalToWString(optionName));
-			
-			return *optionalValue;
-		}
-
-		//---------------------------------------------------------------------
-		struct OptionsParserException : std::runtime_error
-		{
-			OptionsParserException(const std::string& message)
-				: std::runtime_error(message.c_str())
-			{
-			}
-		};
-
+	{
 		//---------------------------------------------------------------------
 		void CheckPattern(const std::string& name, const std::string& value)
 		{
@@ -87,7 +55,7 @@ namespace CppCoverage
 
 			if (value.find(notWindowsPathSeparator) != std::string::npos)
 			{
-				throw OptionsParserException(
+				throw Plugin::OptionsParserException(
 				    "Error: Invalid value \""
 				    "--" +
 				    name + ' ' + value + "\". " +
@@ -102,38 +70,42 @@ namespace CppCoverage
 			{
 				if (part == "." || part == "..")
 				{
-					throw OptionsParserException(
-						"Error: \""
-						"--" +
-						name + ' ' + value +
-						"\": Cannot contain \".\" (current folder) or \"..\" "
-						"(parent folder).");
+					throw Plugin::OptionsParserException(
+					    "Error: \""
+					    "--" +
+					    name + ' ' + value +
+					    "\": Cannot contain \".\" (current folder) or \"..\" "
+					    "(parent folder).");
 				}
 			}
 		}
 
 		//---------------------------------------------------------------------
-		cov::Patterns GetPatterns(
-			const po::variables_map& variables, 
-			const std::string& selected, 
-			const std::string& excluded)
+		cov::Patterns
+		GetPatterns(const ProgramOptionsVariablesMap& variablesMap,
+		            const std::string& selected,
+		            const std::string& excluded)
 		{
-			cov::Patterns patterns{ false };
+			cov::Patterns patterns{false};
 
-			auto selectedPatterns = GetValue<std::vector<std::string>>(variables, selected);
+			auto selectedPatterns =
+			    variablesMap.GetValue<std::vector<std::string>>(selected);
 			for (const auto& pattern : selectedPatterns)
 			{
 				CheckPattern(selected, pattern);
 				patterns.AddSelectedPatterns(Tools::LocalToWString(pattern));
 			}
 
-			auto excludedPatterns = GetOptionalValue<std::vector<std::string>>(variables, excluded);
+			auto excludedPatterns =
+			    variablesMap.GetOptionalValue<std::vector<std::string>>(
+			        excluded);
 			if (excludedPatterns)
 			{
 				for (const auto& pattern : *excludedPatterns)
 				{
 					CheckPattern(excluded, pattern);
-					patterns.AddExcludedPatterns(Tools::LocalToWString(pattern));
+					patterns.AddExcludedPatterns(
+					    Tools::LocalToWString(pattern));
 				}
 			}
 
@@ -141,84 +113,57 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
-		boost::optional<cov::StartInfo> GetStartInfo(const po::variables_map& variables)
+		boost::optional<cov::StartInfo>
+		GetStartInfo(const ProgramOptionsVariablesMap& variablesMap)
 		{
-			const auto* programToRun = GetOptionalValue<std::string>(variables, ProgramOptions::ProgramToRunOption);
+			const auto* programToRun =
+			    variablesMap.GetOptionalValue<std::string>(
+			        ProgramOptions::ProgramToRunOption);
 
 			if (!programToRun)
-				return boost::none;				
+				return boost::none;
 
-			cov::StartInfo startInfo{ *programToRun };
+			cov::StartInfo startInfo{*programToRun};
 
-			const auto* arguments = GetOptionalValue<std::vector<std::string>>(variables, ProgramOptions::ProgramToRunArgOption);
+			const auto* arguments =
+			    variablesMap.GetOptionalValue<std::vector<std::string>>(
+			        ProgramOptions::ProgramToRunArgOption);
 			if (arguments)
 			{
 				for (const auto& arg : *arguments)
 					startInfo.AddArgument(Tools::LocalToWString(arg));
 			}
 
-			const auto* workingDirectory = GetOptionalValue<std::string>(variables, 
-				ProgramOptions::WorkingDirectoryOption);
-			
+			const auto* workingDirectory =
+			    variablesMap.GetOptionalValue<std::string>(
+			        ProgramOptions::WorkingDirectoryOption);
+
 			if (workingDirectory)
 				startInfo.SetWorkingDirectory(*workingDirectory);
 			return startInfo;
 		}
 
-		//---------------------------------------------------------------------
-		bool IsOptionSelected(
-			const po::variables_map& variables,
-			const std::string& optionName)
-		{
-			return variables.find(optionName) != variables.end();
-		}
-
 		//-------------------------------------------------------------------------
-		void ParseConfigFile(
-			const ProgramOptions& programOptions, 
-			po::variables_map& variables, 
-			const std::string& path)
+		void ParseConfigFile(const ProgramOptions& programOptions,
+		                     ProgramOptionsVariablesMap& variablesMap,
+		                     const std::string& path)
 		{
 			std::ifstream ifs(path.c_str());
 
 			if (!ifs)
-				throw OptionsParserException("Cannot open config file: " + path);
+				throw Plugin::OptionsParserException("Cannot open config file: " +
+				                             path);
 
-			programOptions.FillVariableMap(ifs, variables);
+			programOptions.FillVariableMap(ifs, variablesMap.GetVariablesMap());
 		}
 
 		//---------------------------------------------------------------------
-		struct ExportString
-		{
-			std::string exportOutputPath;
-			std::string exportType;
-		};
-
-		//---------------------------------------------------------------------
-		ExportString ParseExportString(const std::string& exportStr)
-		{
-			ExportString exportString;
-			auto pos = exportStr.find(OptionsParser::ExportSeparator);
-
-			if (pos != std::string::npos)
-			{
-				exportString.exportType = exportStr.substr(0, pos);
-				exportString.exportOutputPath = exportStr.substr(pos + 1);
-			}
-			else
-				exportString.exportType = exportStr;
-
-			return exportString;
-		}
-
-
-		//---------------------------------------------------------------------
-		void AddInputCoverages(
-			const po::variables_map& variables,
-			Options& options)
+		void AddInputCoverages(const ProgramOptionsVariablesMap& variablesMap,
+		                       Options& options)
 		{
 			auto inputCoveragePaths =
-				GetOptionalValue<std::vector<std::string>>(variables, ProgramOptions::InputCoverageValue);
+			    variablesMap.GetOptionalValue<std::vector<std::string>>(
+			        ProgramOptions::InputCoverageValue);
 
 			if (inputCoveragePaths)
 			{
@@ -226,8 +171,10 @@ namespace CppCoverage
 				{
 					if (!fs::exists(path))
 					{
-						throw OptionsParserException("Argument of " + 
-							ProgramOptions::InputCoverageValue + " <" + path + "> does not exist.");
+						throw Plugin::OptionsParserException(
+						    "Argument of " +
+						    ProgramOptions::InputCoverageValue + " <" + path +
+						    "> does not exist.");
 					}
 
 					options.AddInputCoveragePath(path);
@@ -237,21 +184,23 @@ namespace CppCoverage
 
 		//----------------------------------------------------------------------------
 		std::pair<fs::path, boost::optional<fs::path>>
-			ExtractUnifiedDiffOption(const std::string& option)
+		ExtractUnifiedDiffOption(const std::string& option)
 		{
 			auto pos = option.find(OptionsParser::PathSeparator);
 
 			if (pos == std::string::npos)
-				return{ option, boost::none };
+				return {option, boost::none};
 
-			return{ option.substr(0, pos), fs::path{option.substr(pos + 1)} };
+			return {option.substr(0, pos), fs::path{option.substr(pos + 1)}};
 		}
 
 		//----------------------------------------------------------------------------
-		void AddUnifiedDiff(const po::variables_map& variables, Options& options)
+		void AddUnifiedDiff(const ProgramOptionsVariablesMap& variablesMap,
+		                    Options& options)
 		{
-			auto unifiedDiffCollection = GetOptionalValue<std::vector<std::string>>(
-				variables, ProgramOptions::UnifiedDiffOption);
+			auto unifiedDiffCollection =
+			    variablesMap.GetOptionalValue<std::vector<std::string>>(
+			        ProgramOptions::UnifiedDiffOption);
 
 			if (unifiedDiffCollection)
 			{
@@ -260,45 +209,55 @@ namespace CppCoverage
 					fs::path unifiedDiffPath;
 					boost::optional<fs::path> rootDiffFolder;
 
-					std::tie(unifiedDiffPath, rootDiffFolder) = ExtractUnifiedDiffOption(unifiedDiff);
+					std::tie(unifiedDiffPath, rootDiffFolder) =
+					    ExtractUnifiedDiffOption(unifiedDiff);
 
 					if (!fs::is_regular_file(unifiedDiffPath))
 					{
-						throw OptionsParserException(
-							"Unified diff path " + unifiedDiffPath.string() + " does not exist.");
+						throw Plugin::OptionsParserException("Unified diff path " +
+						                             unifiedDiffPath.string() +
+						                             " does not exist.");
 					}
 					if (rootDiffFolder && !is_directory(*rootDiffFolder))
 					{
-						throw OptionsParserException(
-							"Unified diff root folder " + rootDiffFolder->string() + " does not exist.");
+						throw Plugin::OptionsParserException(
+						    "Unified diff root folder " +
+						    rootDiffFolder->string() + " does not exist.");
 					}
 
-					options.AddUnifiedDiffSettings(UnifiedDiffSettings{ unifiedDiffPath, rootDiffFolder });
+					options.AddUnifiedDiffSettings(
+					    UnifiedDiffSettings{unifiedDiffPath, rootDiffFolder});
 				}
 			}
 		}
 
 		//----------------------------------------------------------------------------
-		void AddExcludedLineRegexes(const po::variables_map& variables, Options& options)
+		void
+		AddExcludedLineRegexes(const ProgramOptionsVariablesMap& variablesMap,
+		                       Options& options)
 		{
-			auto excludedLineRegexes = GetOptionalValue<std::vector<std::string>>(
-				variables, ProgramOptions::ExcludedLineRegexOption);
+			auto excludedLineRegexes =
+			    variablesMap.GetOptionalValue<std::vector<std::string>>(
+			        ProgramOptions::ExcludedLineRegexOption);
 			if (excludedLineRegexes)
 			{
 				for (const auto& excludedLineRegex : *excludedLineRegexes)
-					options.AddExcludedLineRegex(Tools::LocalToWString(excludedLineRegex));
+					options.AddExcludedLineRegex(
+					    Tools::LocalToWString(excludedLineRegex));
 			}
 		}
 
 		//---------------------------------------------------------------------
-		SubstitutePdbSourcePath CreateSubstitutePdbSourcePath(const std::string& paths)
+		SubstitutePdbSourcePath
+		CreateSubstitutePdbSourcePath(const std::string& paths)
 		{
 			auto pos = paths.find(OptionsParser::PathSeparator);
 			const auto error = "Invalid value for " +
-			                   ProgramOptions::SubstitutePdbSourcePathOption + ". ";
+			                   ProgramOptions::SubstitutePdbSourcePathOption +
+			                   ". ";
 			if (pos == std::string::npos)
 			{
-				throw OptionsParserException(error + "Cannot find " +
+				throw Plugin::OptionsParserException(error + "Cannot find " +
 				                             OptionsParser::PathSeparator +
 				                             '.');
 			}
@@ -306,15 +265,16 @@ namespace CppCoverage
 			auto pdbPath = paths.substr(0, pos);
 			if (pdbPath.find('/') != std::string::npos)
 			{
-				throw OptionsParserException(
+				throw Plugin::OptionsParserException(
 				    error + "Path \"" + pdbPath +
-				    "\" contains '/' which is not the Windows path separator. "
+				    "\" contains '/' which is not the Windows "
+				    "path separator. "
 				    "Please use '\\' instead.");
 			}
 			auto localPath = paths.substr(pos + 1);
 			if (!fs::exists(localPath))
 			{
-				throw OptionsParserException(error + "Path \"" + localPath +
+				throw Plugin::OptionsParserException(error + "Path \"" + localPath +
 				                             "\" does not exist.");
 			}
 
@@ -322,12 +282,12 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
-		void AddSubstitutePdbSourcePaths(const po::variables_map& variables,
-		                                Options& options)
+		void AddSubstitutePdbSourcePaths(
+		    const ProgramOptionsVariablesMap& variablesMap, Options& options)
 		{
 			auto substitutePdbSourcePaths =
-			    GetOptionalValue<std::vector<std::string>>(
-			        variables, ProgramOptions::SubstitutePdbSourcePathOption);
+			    variablesMap.GetOptionalValue<std::vector<std::string>>(
+			        ProgramOptions::SubstitutePdbSourcePathOption);
 
 			if (substitutePdbSourcePaths)
 			{
@@ -352,7 +312,9 @@ namespace CppCoverage
 			}
 
 			estimatedSize += argc - 1; // separators for arguments.
-			if (estimatedSize >= static_cast<size_t>(OptionsParser::DosCommandLineMaxSize * 3 / 4))
+			if (estimatedSize >=
+			    static_cast<size_t>(OptionsParser::DosCommandLineMaxSize * 3 /
+			                        4))
 			{
 				auto tooLongCmd = OptionsParser::GetTooLongCommandLineMessage();
 				LOG_WARNING << tooLongCmd;
@@ -362,31 +324,22 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	const char OptionsParser::ExportSeparator = ':';
 	const char OptionsParser::PathSeparator = '?';
 	const int OptionsParser::DosCommandLineMaxSize = 8191;
 
 	//-------------------------------------------------------------------------
 	OptionsParser::OptionsParser(
-	    std::shared_ptr<Tools::WarningManager> warningManager)
-	    : OptionsParser()
+	    std::shared_ptr<Tools::WarningManager> warningManager,
+	    std::vector<std::unique_ptr<IOptionParser>>&& optionParsers)
+	    : programOptions_{std::make_unique<ProgramOptions>(optionParsers)},
+	      optionalWarningManager_{std::move(warningManager)}
 	{
-		optionalWarningManager_ = std::move(warningManager);
-		if (!optionalWarningManager_)
-			THROW("OptionalWarningManager is null");
+		optionParsers_ = std::move(optionParsers);
 	}
 
 	//-------------------------------------------------------------------------
-	OptionsParser::OptionsParser()
+	OptionsParser::OptionsParser() : OptionsParser({}, {})
 	{
-		exportTypes_.emplace(ProgramOptions::ExportTypeHtmlValue,
-		                     OptionsExportType::Html);
-		exportTypes_.emplace(ProgramOptions::ExportTypeCoberturaValue,
-		                     OptionsExportType::Cobertura);
-		exportTypes_.emplace(ProgramOptions::ExportTypeBinaryValue,
-		                     OptionsExportType::Binary);
-
-		programOptions_ = std::make_unique<ProgramOptions>();
 	}
 
 	//-------------------------------------------------------------------------
@@ -395,11 +348,11 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	boost::optional<Options> OptionsParser::Parse(
-			int argc, 
-			const char** argv, 
-			std::wostream* emptyOptionsExplanation) const
-	{				
+	boost::optional<Options>
+	OptionsParser::Parse(int argc,
+	                     const char** argv,
+	                     std::wostream* emptyOptionsExplanation) const
+	{
 		try
 		{
 			auto options = Parse(argc, argv);
@@ -413,18 +366,17 @@ namespace CppCoverage
 		{
 			ShowExplanation(emptyOptionsExplanation, unknownOption.what());
 		}
-		catch (const OptionsParserException& e)
+		catch (const Plugin::OptionsParserException& e)
 		{
 			ShowExplanation(emptyOptionsExplanation, e.what());
 		}
-		
+
 		return boost::none;
 	}
 
 	//-------------------------------------------------------------------------
-	void OptionsParser::ShowExplanation(
-		std::wostream* emptyOptionsExplanation, 
-		const char* message) const
+	void OptionsParser::ShowExplanation(std::wostream* emptyOptionsExplanation,
+	                                    const char* message) const
 	{
 		if (emptyOptionsExplanation)
 		{
@@ -432,94 +384,83 @@ namespace CppCoverage
 			*emptyOptionsExplanation << *programOptions_ << std::endl;
 		}
 	}
-		
+
 	//-------------------------------------------------------------------------
-	boost::optional<Options> OptionsParser::Parse(int argc, const char** argv) const
+	boost::optional<Options> OptionsParser::Parse(int argc,
+	                                              const char** argv) const
 	{
-		po::variables_map variables;
+		ProgramOptionsVariablesMap variablesMap;
 
 		if (optionalWarningManager_)
 			CheckArgumentsSize(argc, argv, *optionalWarningManager_);
-		programOptions_->FillVariableMap(argc, argv, variables);
-		const auto* configFile = GetOptionalValue<std::string>(variables, ProgramOptions::ConfigFileOption);
+		programOptions_->FillVariableMap(
+		    argc, argv, variablesMap.GetVariablesMap());
+		const auto* configFile = variablesMap.GetOptionalValue<std::string>(
+		    ProgramOptions::ConfigFileOption);
 
 		if (configFile)
-			ParseConfigFile(*programOptions_, variables, *configFile);
+			ParseConfigFile(*programOptions_, variablesMap, *configFile);
 
-		if (IsOptionSelected(variables, ProgramOptions::HelpOption))
+		if (variablesMap.IsOptionSelected(ProgramOptions::HelpOption))
 			return boost::none;
 
-		auto modulePatterns = GetPatterns(variables, ProgramOptions::SelectedModulesOption, ProgramOptions::ExcludedModulesOption);
-		auto sourcePatterns = GetPatterns(variables, ProgramOptions::SelectedSourcesOption, ProgramOptions::ExcludedSourcesOption);
+		auto modulePatterns =
+		    GetPatterns(variablesMap,
+		                ProgramOptions::SelectedModulesOption,
+		                ProgramOptions::ExcludedModulesOption);
+		auto sourcePatterns =
+		    GetPatterns(variablesMap,
+		                ProgramOptions::SelectedSourcesOption,
+		                ProgramOptions::ExcludedSourcesOption);
 
-		auto optionalStartInfo = GetStartInfo(variables);
-		Options options{ modulePatterns, sourcePatterns, optionalStartInfo.get_ptr() };
-		
-		bool isVerbose = IsOptionSelected(variables, ProgramOptions::VerboseOption);
-		bool isQuiet = IsOptionSelected(variables, ProgramOptions::QuietOption);
+		auto optionalStartInfo = GetStartInfo(variablesMap);
+		Options options{
+		    modulePatterns, sourcePatterns, optionalStartInfo.get_ptr()};
+
+		bool isVerbose =
+		    variablesMap.IsOptionSelected(ProgramOptions::VerboseOption);
+		bool isQuiet =
+		    variablesMap.IsOptionSelected(ProgramOptions::QuietOption);
 
 		if (isVerbose && isQuiet)
-			throw OptionsParserException("--" + ProgramOptions::VerboseOption + " and --" + ProgramOptions::QuietOption + " cannot be used at the same time.");
+			throw Plugin::OptionsParserException("--" + ProgramOptions::VerboseOption +
+			                             " and --" +
+			                             ProgramOptions::QuietOption +
+			                             " cannot be used at the same time.");
 
 		if (isVerbose)
 			options.SetLogLevel(LogLevel::Verbose);
 		if (isQuiet)
 			options.SetLogLevel(LogLevel::Quiet);
 
-		if (IsOptionSelected(variables, ProgramOptions::CoverChildrenOption))
+		if (variablesMap.IsOptionSelected(ProgramOptions::CoverChildrenOption))
 			options.EnableCoverChildrenMode();
-		if (IsOptionSelected(variables, ProgramOptions::PluginOption))
+		if (variablesMap.IsOptionSelected(ProgramOptions::PluginOption))
 			options.EnablePlugingMode();
-		if (IsOptionSelected(variables, ProgramOptions::NoAggregateByFileOption))
+		if (variablesMap.IsOptionSelected(
+		        ProgramOptions::NoAggregateByFileOption))
 			options.DisableAggregateByFileMode();
-		if (IsOptionSelected(variables, ProgramOptions::ContinueAfterCppExceptionOption))
+		if (variablesMap.IsOptionSelected(
+		        ProgramOptions::ContinueAfterCppExceptionOption))
 			options.EnableContinueAfterCppExceptionMode();
-		if (IsOptionSelected(variables, ProgramOptions::OptimizedBuildOption))
+		if (variablesMap.IsOptionSelected(ProgramOptions::OptimizedBuildOption))
 			options.EnableOptimizedBuildSupport();
+		if (variablesMap.IsOptionSelected(ProgramOptions::StopOnAssertOption))
+			options.EnableStopOnAssertMode();
 
-		AddExporTypes(variables, options);
-		AddInputCoverages(variables, options);
-		AddUnifiedDiff(variables, options);
-		AddExcludedLineRegexes(variables, options);
-		AddSubstitutePdbSourcePaths(variables, options);
+		AddInputCoverages(variablesMap, options);
+		AddUnifiedDiff(variablesMap, options);
+		AddExcludedLineRegexes(variablesMap, options);
+		AddSubstitutePdbSourcePaths(variablesMap, options);
 
 		if (!options.GetStartInfo() && options.GetInputCoveragePaths().empty())
-			throw OptionsParserException("You must specify a program to execute or use --" + ProgramOptions::InputCoverageValue);
+			throw Plugin::OptionsParserException(
+			    "You must specify a program to execute or use --" +
+			    ProgramOptions::InputCoverageValue);
 
+		for (const auto& optionParser : optionParsers_)
+			optionParser->ParseOption(variablesMap, options);
 		return options;
-	}
-
-	//----------------------------------------------------------------------------
-	void OptionsParser::AddExporTypes(
-		const po::variables_map& variables,
-		Options& options) const
-	{
-		auto exportTypeStrCollection = GetValue<std::vector<std::string>>(variables, ProgramOptions::ExportTypeOption);
-
-		for (const auto& exportTypeStr : exportTypeStrCollection)
-		{
-			auto optionExport = CreateExport(exportTypeStr);
-
-			options.AddExport(optionExport);
-		}
-	}
-	
-	//-------------------------------------------------------------------------
-	OptionsExport OptionsParser::CreateExport(const std::string& exportStr) const
-	{
-		auto exportString = ParseExportString(exportStr);		
-		auto it = exportTypes_.find(exportString.exportType);
-
-		if (it == exportTypes_.end())
-			throw OptionsParserException(exportString.exportType + " is not a valid export type.");		
-
-		OptionsExportType type = it->second;
-		auto exportOutputPath = exportString.exportOutputPath;
-
-		if (!exportOutputPath.empty())
-			return OptionsExport{ type, exportOutputPath };
-
-		return OptionsExport{ type };
 	}
 
 	//-------------------------------------------------------------------------

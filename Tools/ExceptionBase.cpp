@@ -17,7 +17,7 @@
 #include "stdafx.h"
 #include "ExceptionBase.hpp"
 #include "Tool.hpp"
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace Tools
 {
@@ -30,6 +30,6 @@ namespace Tools
 	//-------------------------------------------------------------------------
 	std::wstring GetFilename(const char* path)
 	{
-		return boost::filesystem::path{ path }.filename().wstring();
+		return std::filesystem::path{ path }.filename().wstring();
 	}
 }

@@ -16,15 +16,8 @@
 
 #pragma once
 
+#include <filesystem>
 #include "FileFilterExport.hpp"
-
-namespace boost
-{
-	namespace filesystem
-	{
-		class path;
-	}
-}
 
 namespace FileFilter
 {
@@ -49,7 +42,7 @@ namespace FileFilter
 		struct HunksDifferences;
 		struct Stream;
 
-		boost::filesystem::path ExtractTargetFile(Stream&) const;
+		std::filesystem::path ExtractTargetFile(Stream&) const;
 		HunksDifferences ExtractHunksDifferences(
 							const Stream&, 
 							const std::wstring& hunksDifferencesLine) const;

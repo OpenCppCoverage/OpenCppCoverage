@@ -33,7 +33,8 @@ namespace CppCoverage
 	public:
 		Debugger(
 			bool coverChildren,
-			bool continueAfterCppException);
+			bool continueAfterCppException,
+            bool stopOnAssert);
 
 		int Debug(const StartInfo&, IDebugEventsHandler&);
 		size_t GetRunningProcesses() const;
@@ -81,7 +82,8 @@ namespace CppCoverage
 		boost::optional<DWORD> rootProcessId_;
 		bool coverChildren_;
 		bool continueAfterCppException_;
-	};
+        bool stopOnAssert_;
+    };
 }
 
 

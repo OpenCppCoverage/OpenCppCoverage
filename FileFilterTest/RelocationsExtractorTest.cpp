@@ -18,14 +18,13 @@
 #include <windows.h>
 #include <regex>
 #include <boost/algorithm/string.hpp>
-#include <boost/filesystem/operations.hpp>
 
 #include "FileFilter/RelocationsExtractor.hpp"
 #include "TestCoverageOptimizedBuild/TestCoverageOptimizedBuild.hpp"
 
 #include "TestHelper/Tools.hpp"
 
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 namespace FileFilterTest
 {	

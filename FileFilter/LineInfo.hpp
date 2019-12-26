@@ -17,7 +17,6 @@
 #pragma once
 
 #include <vector>
-#include <boost/filesystem/path.hpp>
 
 namespace FileFilter
 {	
