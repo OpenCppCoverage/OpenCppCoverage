@@ -41,6 +41,8 @@
             <thead>
                 <tr>
                     <th scope="col" class="rounded-left">Coverage</th>
+                    <th scope="col">Covered lines</th>
+                    <th scope="col">Uncovered lines</th>
                     <th scope="col">Total lines</th>
                     <th scope="col" class="rounded-right">Items</th>
                 </tr>
@@ -51,6 +53,8 @@
                     <td>
             <canvas id="pi_{{ID}}" width="280" height="100">Cover {{COVER_RATE}}%</canvas>
                     </td>            
+                    <td>{{EXECUTED_LINE}}</td>
+                    <td>{{UNEXECUTED_LINE}}</td>
                     <td>{{TOTAL_LINE}}</td>
                     <td>            
                       {{#ITEM_LINK}} <a href="{{LINK}}">{{NAME}}</a> {{/ITEM_LINK}}
