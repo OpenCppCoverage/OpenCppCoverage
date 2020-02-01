@@ -17,6 +17,8 @@
 #include "stdafx.h"
 #include "Address.hpp"
 
+#include <iostream>
+
 namespace CppCoverage
 {			
 	//-------------------------------------------------------------------------

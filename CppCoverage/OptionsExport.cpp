@@ -18,6 +18,7 @@
 #include "OptionsExport.hpp"
 
 #include <map>
+#include <iostream>
 
 namespace CppCoverage
 {

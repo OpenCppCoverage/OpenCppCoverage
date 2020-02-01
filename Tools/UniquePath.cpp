@@ -17,6 +17,7 @@
 #include "stdafx.h"
 #include "UniquePath.hpp"
 
+#include <string>
 #include <filesystem>
 
 namespace Tools

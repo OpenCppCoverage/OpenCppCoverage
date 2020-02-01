@@ -21,6 +21,7 @@
 #include "Exporter/Html/TemplateHtmlExporter.hpp"
 #include "Exporter/Html/CTemplate.hpp"
 #include "CppCoverage/CoverageRate.hpp"
+#include "Tools/Tool.hpp"
 
 using namespace Exporter;
 
@@ -116,9 +117,10 @@ namespace ExporterTest
 				auto pos = line.find(':');
 				if (pos != std::string::npos)
 				{
-					results.emplace(
-						std::string{ line.begin(), line.begin() + pos },
-						std::wstring{ line.begin() + pos + 1, line.end() } );
+					std::wstring s1{ line.begin(), line.begin() + pos };
+					std::wstring s2{ line.begin() + pos + 1, line.end() };
+
+					results.emplace(Tools::ToLocalString(s1), s2);
 				}
 			}
 			return results;

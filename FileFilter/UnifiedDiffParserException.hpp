@@ -18,6 +18,7 @@
 
 #include "FileFilterExport.hpp"
 #include <string>
+#include <stdexcept>
 
 #pragma warning(push)
 #pragma warning(disable: 4275) // warning C4275: non dll-interface class 'std::exception' used as base for dll-interface class
