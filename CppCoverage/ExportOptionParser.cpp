@@ -17,7 +17,6 @@
 #include "stdafx.h"
 #include "ExportOptionParser.hpp"
 #include <boost/program_options/options_description.hpp>
-#include <range/v3/algorithm/find_if.hpp>
 #include "ProgramOptionsVariablesMap.hpp"
 #include "Options.hpp"
 #include "Plugin/OptionsParserException.hpp"
@@ -81,11 +80,11 @@ namespace CppCoverage
 		                        const ExportData& exportData,
 		                        Options& options)
 		{
-			auto it = ranges::find_if(
-			    exportPluginDescriptions, [&](const auto& plugin) {
+			auto it = std::find_if(
+			    exportPluginDescriptions.begin(), exportPluginDescriptions.end(), [&](const auto& plugin) {
 				    return plugin.GetPluginName() == exportData.exportType;
 			    });
-			if (it == ranges::end(exportPluginDescriptions))
+			if (it == exportPluginDescriptions.end())
 				return false;
 
 			auto argument = exportData.argument;

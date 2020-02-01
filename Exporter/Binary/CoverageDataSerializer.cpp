@@ -83,7 +83,7 @@ namespace Exporter
 			const google::protobuf::MessageLite& message, 
 			google::protobuf::io::CodedOutputStream& output)
 		{
-			output.WriteVarint32(message.ByteSize());
+			output.WriteVarint64(message.ByteSizeLong());
 			if (!message.SerializeToCodedStream(&output))
 				THROW(L"Cannot serialize message to stream");
 		}

@@ -17,8 +17,7 @@
 #include "stdafx.h"
 
 #include <filesystem>
-#include <boost/algorithm/string/case_conv.hpp>
-
+#include <boost/algorithm/string/predicate.hpp >
 #include "TestHelper/TemporaryPath.hpp"
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
@@ -41,14 +40,14 @@ namespace OpenCppCoverageTest
 		auto testCoverageSharedLibMain = TestCoverageSharedLib::GetMainCppPath();
 
 		//---------------------------------------------------------------------
-		bool Find(const std::wstring& filename, const fs::path& outputDirectory)
+		bool FindFilename(const std::wstring& filename, const fs::path& outputDirectory)
 		{
 			for (fs::recursive_directory_iterator it(outputDirectory);
 				it != fs::recursive_directory_iterator(); ++it)
 			{
 				const auto& path = it->path();
 
-				if (path.filename().wstring().find(filename) != std::string::npos)
+				if (boost::iequals(path.filename().stem().wstring(), filename))
 					return true;
 			}
 
@@ -98,7 +97,7 @@ namespace OpenCppCoverageTest
 			void CheckFilenameWithExtensionExistsInOutput(const fs::path& path, bool expectedValue)
 			{
 				auto filename = path.filename();
-				ASSERT_EQ(expectedValue, Find(filename.wstring(), GetTempPath()));
+				ASSERT_EQ(expectedValue, FindFilename(filename.wstring(), GetTempPath()));
 			}
 
 			//-----------------------------------------------------------------
@@ -133,7 +132,6 @@ namespace OpenCppCoverageTest
 	{
 		auto testCoverageConsoleMain = TestCoverageConsole::GetMainCppFilename().string();
 
-		boost::algorithm::to_lower(testCoverageConsoleMain);
 		RunCoverageOnProgram({ { cov::ProgramOptions::SelectedSourcesOption, testCoverageConsoleMain } }, false);
 		CheckFilenameWithExtensionExistsInOutput(testCoverageConsoleMain, true);
 		CheckFilenameWithExtensionExistsInOutput(testCoverageSharedLibMain, false);
@@ -144,7 +142,6 @@ namespace OpenCppCoverageTest
 	{
 		auto testCoverageConsoleMain = TestCoverageConsole::GetMainCppFilename().string();
 
-		boost::algorithm::to_lower(testCoverageConsoleMain);
 		RunCoverageOnProgram({ { cov::ProgramOptions::ExcludedSourcesOption, testCoverageConsoleMain } });
 		CheckFilenameWithExtensionExistsInOutput(testCoverageConsoleMain, false);
 		CheckFilenameWithExtensionExistsInOutput(testCoverageSharedLibMain, true);

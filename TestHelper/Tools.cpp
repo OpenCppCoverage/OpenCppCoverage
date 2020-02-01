@@ -80,7 +80,7 @@ namespace TestHelper
 		               "Installer" / "vswhere.exe";
 
 		std::vector<std::string> args = {
-		    "-format", "value", "-property", "installationPath"};
+		    "-latest", "-format", "value", "-property", "installationPath"};
 		std::string value = RunProcess(vswhere, args);
 		boost::trim(value);
 		fs::path installerPath{value};
