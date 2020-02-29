@@ -12,10 +12,10 @@ jobs:
 
   steps:
     - uses: actions/checkout@v2
-    name:  BuildThirdPartyDependencies
-    run: |
-      BuildThirdPartyDependencies.bat
-    name: Build
-    run: |
-      cd “C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\”
-      .\MSBuild.exe CppCoverage.sln
+    - name:  BuildThirdPartyDependencies
+      run: |
+        BuildThirdPartyDependencies.bat
+    - name: Build
+      run: |
+        cd “C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\”
+        .\MSBuild.exe CppCoverage.sln
