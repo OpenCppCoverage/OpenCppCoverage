@@ -1,16 +1,21 @@
 name: CI
+
 on: [push, pull_request]
+
 jobs:
   build:
   strategy:
-      matrix:
+     matrix:
         os: [windows-latest, windows-2016]
-    
-    steps:
+
+  runs-on: ${{ matrix.os }}    
+
+  steps:
     - uses: actions/checkout@v2
     name:  BuildThirdPartyDependencies
+    run: |
       BuildThirdPartyDependencies.bat
     name: Build
+    run: |
       cd “C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\”
       .\MSBuild.exe CppCoverage.sln
-  
