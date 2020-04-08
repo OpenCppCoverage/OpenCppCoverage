@@ -19,13 +19,13 @@ jobs:
         run: msbuild /m CppCoverage.sln /p:Configuration=Debug /p:Platform=x64
 
       - name: Run CppCoverageTest
-        run: .\x64\Debug\CppCoverageTest.exe --gtest_filter=-CodeCoverageRunnerTest.OptimizedBuild
+        run: .\x64\Debug\CppCoverageTest.exe --gtest_filter=-CodeCoverageRunnerTest.OptimizedBuild # Require VS2013
 
       - name: Run ExporterTest
         run: .\x64\Debug\ExporterTest.exe
 
       - name: Run FileFilterTest
-        run: .\x64\Debug\FileFilterTest.exe
+        run: .\x64\Debug\FileFilterTest.exe --gtest_filter=-RelocationsExtractorTest.Extract # Require mspdbcore.dll
 
       - name: Run OpenCppCoverageTest
         run: .\x64\Debug\OpenCppCoverageTest.exe
