@@ -1,0 +1,37 @@
+name: Unit tests
+on: [push]
+
+jobs:
+  build:
+    name: Unit tests
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install third party libraries
+        run: ./InstallThirdPartyLibraries.ps1
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.0.0
+
+      - name: Build solution
+        run: msbuild /m CppCoverage.sln /p:Configuration=Debug /p:Platform=x64
+
+      - name: Run CppCoverageTest
+        run: .\x64\Debug\CppCoverageTest.exe --gtest_filter=-CodeCoverageRunnerTest.OptimizedBuild
+
+      - name: Run ExporterTest
+        run: .\x64\Debug\ExporterTest.exe
+
+      - name: Run FileFilterTest
+        run: .\x64\Debug\FileFilterTest.exe
+
+      - name: Run OpenCppCoverageTest
+        run: .\x64\Debug\OpenCppCoverageTest.exe
+
+      - name: Run PluginTest
+        run: .\x64\Debug\PluginTest.exe
+
+      - name: Run ToolsTest
+        run: .\x64\Debug\ToolsTest.exe
