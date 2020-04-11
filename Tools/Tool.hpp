@@ -55,8 +55,7 @@ namespace Tools
 	}
 
 	TOOLS_DLL std::filesystem::path GetExecutableFolder();
-	
-	TOOLS_DLL void CreateMiniDumpOnUnHandledException();
+
 
 	TOOLS_DLL void ShowOutputMessage(const std::wstring& message, const std::filesystem::path& path);
 	TOOLS_DLL std::wstring GetSeparatorLine();

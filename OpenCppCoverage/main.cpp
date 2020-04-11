@@ -21,7 +21,7 @@
 
 #include <iostream>
 
-#include "Tools/Tool.hpp"
+#include "Tools/MiniDump.hpp"
 
 #include "OpenCppCoverage.hpp"
 

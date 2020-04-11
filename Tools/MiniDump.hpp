@@ -1,5 +1,5 @@
 // OpenCppCoverage is an open source code coverage for C++.
-// Copyright (C) 2016 OpenCppCoverage
+// Copyright (C) 2020 OpenCppCoverage
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,7 +16,11 @@
 
 #pragma once
 
-#pragma warning(push)
-	#pragma warning(disable: 4091) // 'typedef ': ignored on left of '' when no variable is declared
-	#include <DbgHelp.h>
-#pragma warning(pop)
+#include "ToolsExport.hpp"
+
+namespace Tools
+{
+	TOOLS_DLL void CreateMiniDumpOnUnHandledException();
+}
+
+

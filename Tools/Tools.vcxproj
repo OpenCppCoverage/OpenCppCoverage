@@ -155,10 +155,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DbgHelp.hpp" />
     <ClInclude Include="ExceptionBase.hpp" />
     <ClInclude Include="Log.hpp" />
     <ClInclude Include="MappedFile.hpp" />
+    <ClInclude Include="MiniDump.hpp" />
     <ClInclude Include="PEFileHeader.hpp" />
     <ClInclude Include="ProcessMemory.hpp" />
     <ClInclude Include="ScopedAction.hpp" />
@@ -186,6 +186,7 @@
     <ClCompile Include="ExceptionBase.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="MappedFile.cpp" />
+    <ClCompile Include="MiniDump.cpp" />
     <ClCompile Include="PEFileHeader.cpp" />
     <ClCompile Include="ProcessMemory.cpp" />
     <ClCompile Include="ScopedAction.cpp" />
