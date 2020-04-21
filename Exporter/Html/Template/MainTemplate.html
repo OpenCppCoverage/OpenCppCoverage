@@ -9,11 +9,18 @@
         <script src="{{THIRD_PARTY_PATH}}/RGraph/libraries/RGraph.common.tooltips.js" type="text/javascript"></script>
         <script src="{{THIRD_PARTY_PATH}}/RGraph/libraries/RGraph.pie.js" type="text/javascript"></script>
         <script src="{{THIRD_PARTY_PATH}}/JQuery/jquery-1.11.1.min.js"></script>
+        <script src="{{THIRD_PARTY_PATH}}/JQuery/jquery.tablesorter-2.0.5.min.js"></script>
+        <script src="{{THIRD_PARTY_PATH}}/JQuery/jquery.tablesorter.staticrow.min.js"></script>
     </head>
     <body>
     <script type="text/javascript">
         $(document).ready(function ()
         {
+            var table = $("#rounded-corner");
+            var firstRow = table.find('tbody tr:first');
+            firstRow.addClass('static');
+            table.tablesorter({ widgets: ['staticRow'] });
+
             {{#ITEMS}}
             new RGraph.Pie('pi_{{ID}}', [{{EXECUTED_LINE}}, {{UNEXECUTED_LINE}}])
                 .set('labels', ['Cover {{COVER_RATE}}%','Uncover {{UNCOVER_RATE}}%'])
@@ -26,7 +33,6 @@
                 .set('labels.sticks.length', 10)
                 .draw();
             {{/ITEMS}}
-
       })
     </script>    
         <h1>
@@ -39,6 +45,8 @@
             <thead>
                 <tr>
                     <th scope="col" class="rounded-left">Coverage</th>
+                    <th scope="col">Covered lines</th>
+                    <th scope="col">Uncovered lines</th>
                     <th scope="col">Total lines</th>
                     <th scope="col" class="rounded-right">Items</th>
                 </tr>
@@ -49,6 +57,8 @@
                     <td>
             <canvas id="pi_{{ID}}" width="280" height="100">Cover {{COVER_RATE}}%</canvas>
                     </td>            
+                    <td>{{EXECUTED_LINE}}</td>
+                    <td>{{UNEXECUTED_LINE}}</td>
                     <td>{{TOTAL_LINE}}</td>
                     <td>            
                       {{#ITEM_LINK}} <a href="{{LINK}}">{{NAME}}</a> {{/ITEM_LINK}}
