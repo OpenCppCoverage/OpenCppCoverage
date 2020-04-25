@@ -26,7 +26,7 @@ OpenCppCoverage can be downloaded from [here](../../releases).
 ## Usage
 You can simply run the following command:
 
-```OpenCppCoverage.exe --sources MySourcePath -- YourProgram.exe arg1 arg2```
+```OpenCppCoverage.exe --sources MySourcePath* -- YourProgram.exe arg1 arg2```
 
 For example, *MySourcePath* can be *MyProject*, if your sources are located in *C:\Dev\MyProject*.
 
