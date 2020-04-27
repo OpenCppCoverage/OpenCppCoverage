@@ -169,7 +169,7 @@ namespace CppCoverage
 			{
 				for (const auto& path : *inputCoveragePaths)
 				{
-					if (!fs::exists(path))
+					if (!Tools::FileExists(path))
 					{
 						throw Plugin::OptionsParserException(
 						    "Argument of " +
@@ -272,7 +272,7 @@ namespace CppCoverage
 				    "Please use '\\' instead.");
 			}
 			auto localPath = paths.substr(pos + 1);
-			if (!fs::exists(localPath))
+			if (!Tools::FileExists(localPath))
 			{
 				throw Plugin::OptionsParserException(error + "Path \"" + localPath +
 				                             "\" does not exist.");

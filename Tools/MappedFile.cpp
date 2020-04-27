@@ -18,6 +18,7 @@
 #include "MappedFile.hpp"
 
 #include "ToolsException.hpp"
+#include "Tools/Tool.hpp"
 
 #include <boost/iostreams/device/mapped_file.hpp>
 
@@ -55,7 +56,7 @@ namespace Tools
 	//-------------------------------------------------------------------------
 	std::unique_ptr<MappedFile> MappedFile::TryCreate(const std::filesystem::path& path)
 	{
-		if (!std::filesystem::exists(path) || std::filesystem::file_size(path) == 0)
+		if (!FileExists(path) || std::filesystem::file_size(path) == 0)
 			return nullptr;
 		return std::unique_ptr<MappedFile>(new MappedFile{ path });
 	}

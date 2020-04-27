@@ -31,6 +31,8 @@
 #include "TestHelper/CoverageDataComparer.hpp"
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
 
+#include "Tools/Tool.hpp"
+
 #include "OpenCppCoverageTestTools.hpp"
 
 namespace fs = std::filesystem;
@@ -53,7 +55,7 @@ namespace OpenCppCoverageTest
 			int exitCode = RunCoverageFor(coverageArguments, testCoverageConsole, {});
 			
 			ASSERT_EQ(0, exitCode);		
-			ASSERT_TRUE(fs::exists(output));
+			ASSERT_TRUE(Tools::FileExists(output));
 		}
 		
 		//---------------------------------------------------------------------

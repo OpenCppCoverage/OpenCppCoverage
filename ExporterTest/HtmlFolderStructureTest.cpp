@@ -23,6 +23,8 @@
 #include "TestHelper/TemporaryPath.hpp"
 #include "TestHelper/Tools.hpp"
 
+#include "Tools/Tool.hpp"
+
 namespace fs = std::filesystem;
 
 namespace ExporterTest
@@ -57,7 +59,7 @@ namespace ExporterTest
 		TestHelper::CreateEmptyFile(templateFolder_.GetPath() / Exporter::HtmlFolderStructure::ThirdParty / "EmptyFile");
 		htmlFolderStructure_->CreateCurrentRoot(outputFolder_);
 		auto createdPath = outputFolder_.GetPath() / Exporter::HtmlFolderStructure::ThirdParty;
-		ASSERT_TRUE(fs::exists(createdPath));	
+		ASSERT_TRUE(Tools::FileExists(createdPath));	
 	}
 	
 	//-------------------------------------------------------------------------
@@ -67,7 +69,7 @@ namespace ExporterTest
 		auto htmlPath = htmlFolderStructure_->CreateCurrentModule(Module + ".exe");
 		auto modulesFolder = outputFolder_.GetPath() / Exporter::HtmlFolderStructure::FolderModules;
 		auto expectedOutputFolder = modulesFolder / Module;
-		ASSERT_TRUE(fs::exists(expectedOutputFolder));
+		ASSERT_TRUE(Tools::FileExists(expectedOutputFolder));
 		auto expectedPath = modulesFolder / (Module + ".html");
 		ASSERT_EQ(expectedPath, htmlPath.GetAbsolutePath());
 	}

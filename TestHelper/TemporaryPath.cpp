@@ -22,6 +22,7 @@
 
 #include "Tools/Log.hpp"
 #include "TestHelper/Tools.hpp"
+#include "Tools/Tool.hpp"
 
 namespace fs = std::filesystem;
 
@@ -39,7 +40,7 @@ namespace TestHelper
 		do
 		{
 			path_ = fs::absolute(temp_directory / std::to_string(distribution(generator)));
-		} while (fs::exists(path_));
+		} while (Tools::FileExists(path_));
 
 		if (temporaryPathOption == TemporaryPathOption::CreateAsFolder)
 			fs::create_directories(path_);

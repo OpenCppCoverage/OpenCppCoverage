@@ -31,7 +31,7 @@ namespace CppCoverage
 		//-------------------------------------------------------------------------
 		void CheckPathExists(const std::string& context, const fs::path& path)
 		{
-			if (!fs::exists(path))
+			if (!Tools::FileExists(path))
 				throw std::runtime_error(context + " \"" + path.string() + "\" does not exist");
 		}
 	}

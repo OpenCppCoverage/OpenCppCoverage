@@ -18,6 +18,8 @@
 
 #include "stdafx.h"
 #include "Tools.hpp"
+#include "Tools/Tool.hpp"
+
 #include <fstream>
 #include <filesystem>
 #include <boost/algorithm/string.hpp>
@@ -85,7 +87,7 @@ namespace TestHelper
 		boost::trim(value);
 		fs::path installerPath{value};
 
-		if (!fs::exists(installerPath))
+		if (!Tools::FileExists(installerPath))
 			throw std::runtime_error(
 			    "Invalid Visual Studio installation path: " + value);
 		return installerPath;

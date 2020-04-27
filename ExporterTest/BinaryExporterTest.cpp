@@ -20,6 +20,7 @@
 #include "Exporter/Binary/BinaryExporter.hpp"
 #include "Exporter/InvalidOutputFileException.hpp"
 #include "TestHelper/TemporaryPath.hpp"
+#include "Tools/Tool.hpp"
 
 namespace fs = std::filesystem;
 
@@ -33,9 +34,9 @@ namespace ExporterTest
 		TestHelper::TemporaryPath output;
 		auto outputPath = output.GetPath() / "SubFolder" / "output.cov";
 
-		ASSERT_FALSE(fs::exists(outputPath));
+		ASSERT_FALSE(Tools::FileExists(outputPath));
 		Exporter::BinaryExporter().Export(coverageData, outputPath);
-		ASSERT_TRUE(fs::exists(outputPath));
+		ASSERT_TRUE(Tools::FileExists(outputPath));
 	}
 
 	//-------------------------------------------------------------------------

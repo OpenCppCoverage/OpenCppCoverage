@@ -157,7 +157,7 @@ namespace Exporter
 		auto htmlFilePath = htmlFolderStructure.GetHtmlFilePath(fileCoverage.GetPath());
 		std::wostringstream ostr;
 		
-		if (!fs::exists(fileCoverage.GetPath()))
+		if (!Tools::FileExists(fileCoverage.GetPath()))
 			return boost::optional<fs::path>();
 
 		auto enableCodePrettify = fileCoverageExporter_.Export(fileCoverage, ostr);

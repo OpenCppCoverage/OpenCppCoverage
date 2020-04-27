@@ -61,6 +61,7 @@ namespace Tools
 	TOOLS_DLL std::wstring GetSeparatorLine();
 
 	TOOLS_DLL void CreateParentFolderIfNeeded(const std::filesystem::path& path);
+	TOOLS_DLL bool FileExists(const std::filesystem::path& path);
 }
 
 

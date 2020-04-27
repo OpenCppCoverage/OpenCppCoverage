@@ -153,7 +153,7 @@ namespace OpenCppCoverageTest
 		    testCoverageConsole,
 		    {TestCoverageConsole::TestThrowUnHandledCppException});
 		ASSERT_NE(0, exitCode);
-		ASSERT_TRUE(fs::exists(tempFolder));
+		ASSERT_TRUE(Tools::FileExists(tempFolder));
 
 		additionalCoverageArguments.emplace_back(
 		    cov::ProgramOptions::InputCoverageValue, tempFolder->string());

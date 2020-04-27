@@ -29,6 +29,8 @@
 
 #include "TestHelper/TemporaryPath.hpp"
 
+#include "Tools/Tool.hpp"
+
 namespace fs = std::filesystem;
 
 namespace ExporterTest
@@ -61,7 +63,7 @@ namespace ExporterTest
 		void CheckWarningInIndex(bool expectedValue)
 		{
 			auto indexPath = output_.GetPath() / "index.html";
-			ASSERT_TRUE(fs::exists(indexPath));
+			ASSERT_TRUE(Tools::FileExists(indexPath));
 			std::wifstream ifs{ indexPath.string()};
 			bool hasWarning = Contains(ifs, Exporter::HtmlExporter::WarningExitCodeMessage);
 			
@@ -92,11 +94,11 @@ namespace ExporterTest
 		htmlExporter_.Export(data, output_);
 
 		auto modulesPath = output_.GetPath() / Exporter::HtmlFolderStructure::FolderModules;
-		ASSERT_TRUE(fs::exists(output_.GetPath() / "index.html"));
-		ASSERT_TRUE(fs::exists(modulesPath / "module1.html"));
-		ASSERT_FALSE(fs::exists(modulesPath / "module2.html"));
-		ASSERT_TRUE(fs::exists(modulesPath / "module1" / (filename1 + L".html")));
-		ASSERT_TRUE(fs::exists(modulesPath / "module1" / (filename2 + L".html")));
+		ASSERT_TRUE(Tools::FileExists(output_.GetPath() / "index.html"));
+		ASSERT_TRUE(Tools::FileExists(modulesPath / "module1.html"));
+		ASSERT_FALSE(Tools::FileExists(modulesPath / "module2.html"));
+		ASSERT_TRUE(Tools::FileExists(modulesPath / "module1" / (filename1 + L".html")));
+		ASSERT_TRUE(Tools::FileExists(modulesPath / "module1" / (filename2 + L".html")));
 	}
 
 	//-------------------------------------------------------------------------
@@ -123,9 +125,9 @@ namespace ExporterTest
 		Plugin::CoverageData data{ L"Test", 42 };
 		auto outputFolder = output_.GetPath() / "SubFolder1" / "SubFolder2";
 
-		ASSERT_FALSE(fs::exists(outputFolder));
+		ASSERT_FALSE(Tools::FileExists(outputFolder));
 		htmlExporter_.Export(data, outputFolder);
-		ASSERT_TRUE(fs::exists(outputFolder));
+		ASSERT_TRUE(Tools::FileExists(outputFolder));
 	}
 
 	//-------------------------------------------------------------------------
@@ -152,11 +154,11 @@ namespace ExporterTest
 		htmlExporter_.Export(data, output_);
 
 		auto modulesPath = output_.GetPath() / Exporter::HtmlFolderStructure::FolderModules;
-		ASSERT_TRUE(fs::exists(modulesPath / "module2"));
-		ASSERT_TRUE(fs::exists(modulesPath / "module2.html"));
-		ASSERT_TRUE(fs::exists(modulesPath / "module" / (filename + L".html")));
-		ASSERT_TRUE(fs::exists(modulesPath / "module" / (filename + L"2.html")));
-		ASSERT_TRUE(fs::exists(modulesPath / "module.html"));
+		ASSERT_TRUE(Tools::FileExists(modulesPath / "module2"));
+		ASSERT_TRUE(Tools::FileExists(modulesPath / "module2.html"));
+		ASSERT_TRUE(Tools::FileExists(modulesPath / "module" / (filename + L".html")));
+		ASSERT_TRUE(Tools::FileExists(modulesPath / "module" / (filename + L"2.html")));
+		ASSERT_TRUE(Tools::FileExists(modulesPath / "module.html"));
 	}
 }
 

@@ -419,7 +419,7 @@ namespace CppCoverageTest
 		args.programToRun_ = optimizedBuildProjectPath /
 		                     "Release" / "OptimizedBuildVS2013.exe";
 
-		if (!fs::exists(args.programToRun_))
+		if (!Tools::FileExists(args.programToRun_))
 		{
 			throw std::runtime_error(
 				"You need to compile " + optimizedBuildProjectPath.string() +

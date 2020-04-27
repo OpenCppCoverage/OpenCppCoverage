@@ -166,4 +166,13 @@ namespace Tools
 			}
 		}
 	}
+
+	//---------------------------------------------------------------------
+	bool FileExists(const std::filesystem::path& path)
+	{
+		std::error_code ignoredErrorCode;
+
+		// Error can happen when the drive is not ready (DVD for example).
+		return std::filesystem::exists(path, ignoredErrorCode);
+	}
 }

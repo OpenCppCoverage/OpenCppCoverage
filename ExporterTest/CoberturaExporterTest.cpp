@@ -81,9 +81,9 @@ namespace ExporterTest
 		TestHelper::TemporaryPath output;
 		auto outputPath = output.GetPath() / "SubFolder" / "output.xml";
 
-		ASSERT_FALSE(fs::exists(outputPath));
+		ASSERT_FALSE(Tools::FileExists(outputPath));
 		Exporter::CoberturaExporter().Export(coverageData, outputPath);
-		ASSERT_TRUE(fs::exists(outputPath));
+		ASSERT_TRUE(Tools::FileExists(outputPath));
 	}
 
 	//-------------------------------------------------------------------------
