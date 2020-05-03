@@ -18,6 +18,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <regex>
 
 #include <boost/algorithm/string.hpp>
 
@@ -69,6 +70,9 @@ namespace ExporterTest
 		std::wostringstream ostr;
 		Exporter::CoberturaExporter().Export(coverageData, ostr);
 		auto result = ostr.str();
+		std::wregex regex(LR"(timestamp="\d*")");
+		result = std::regex_replace(result, regex, L"timestamp=\"TIMESTAMP\"");
+
 		auto expectedResult = GetExpectedResult();				
 		
 		ASSERT_EQ(result, expectedResult);

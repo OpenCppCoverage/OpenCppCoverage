@@ -116,7 +116,10 @@ namespace Exporter
 		{
 			coverageTree.put(L"<xmlattr>.branches-covered", 0);
 			coverageTree.put(L"<xmlattr>.branches-valid", 0);
-			coverageTree.put(L"<xmlattr>.timestamp", 0);
+
+			auto now = std::chrono::system_clock::now();
+			auto timestamp = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
+			coverageTree.put(L"<xmlattr>.timestamp", timestamp);
 			coverageTree.put(L"<xmlattr>.lines-covered",
 			                 coverageRate.GetExecutedLinesCount());
 			coverageTree.put(L"<xmlattr>.lines-valid",
