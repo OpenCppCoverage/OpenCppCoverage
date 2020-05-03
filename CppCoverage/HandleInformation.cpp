@@ -73,7 +73,7 @@ namespace CppCoverage
 			}
 
 			// Handle network drive. We just remove prefix.
-			queryDosDevicesMapping.emplace_back(L"\\Device\\Mup", L"");
+			queryDosDevicesMapping.emplace_back(L"\\Device\\Mup", L"\\");
 			return queryDosDevicesMapping;
 		}
 
