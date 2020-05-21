@@ -194,6 +194,8 @@ namespace OpenCppCoverage
 				coverageDataMerger.MergeFileCoverage(coverageData);
 
 			Export(options, exporterPluginManager, coverageData);
+			LOG_INFO << L"The code coverage report is not what you expect? See the FAQ "
+				L"https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/FAQ.";
 
 			if (exitCode)
 				LOG_ERROR << L"Your program stop with error code: " << exitCode;
