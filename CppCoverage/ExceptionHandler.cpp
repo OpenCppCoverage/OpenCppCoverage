@@ -99,8 +99,9 @@ namespace CppCoverage
 		message << UnhandledExceptionErrorMessage << exceptionRecord.ExceptionCode;
 		message << L": " << GetExceptionStrFromCode(exceptionRecord.ExceptionCode) << std::endl;
 		message << Tools::GetSeparatorLine() << std::endl;
-		message << L"If your application was built with optimization enabled, make sure you use --"
-			+ Tools::LocalToWString(ProgramOptions::OptimizedBuildOption) << std::endl;
+		message << L"See https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/FAQ";
+		message << L"#your-application-has-thrown-an-unhandled-exception-code-3221225477";
+		message << L"-exception_access_violation for additional information." << std::endl;
 
 		return (exceptionCode == CppExceptionErrorCode) 
 			? ExceptionHandlerStatus::CppError : ExceptionHandlerStatus::Error;
