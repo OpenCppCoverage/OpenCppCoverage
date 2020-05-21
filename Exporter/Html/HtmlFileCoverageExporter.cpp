@@ -114,6 +114,7 @@ namespace Exporter
 		std::wifstream ifs{filePath.string()};
 		if (!ifs)
 			THROW(L"Cannot open file : " + filePath.wstring());
+		ifs.imbue(std::locale("", LC_CTYPE));
 
 		std::wstring line;
 		const Plugin::LineCoverage* previousLineCoverage = nullptr;
