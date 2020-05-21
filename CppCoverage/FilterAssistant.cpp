@@ -41,12 +41,14 @@ namespace CppCoverage
 			    L"--" + Tools::LocalToWString(excludedOption);
 
 			return noFileSelectedMessage + L" Please check the values of " +
-			       selectOptionFlag + L" and " + excludedOptionFlag +
-			       L".\n"
-			       L"You can try to remove all " +
-			       selectOptionFlag + L" and " + excludedOptionFlag +
-			       L" and use " + selectOptionFlag + L'=' +
-			       suggestedFilter.wstring() + L" instead.";
+				selectOptionFlag + L" and " + excludedOptionFlag +
+				L".\n"
+				L"You can try to remove all " +
+				selectOptionFlag + L" and " + excludedOptionFlag +
+				L" and use " + selectOptionFlag + L'=' +
+				suggestedFilter.wstring() + L" instead.\n" +
+				L"For additional help, see " + 
+				L"https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/FAQ#coverage-report-is-empty.";
 		}
 	}
 
