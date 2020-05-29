@@ -41,7 +41,8 @@ namespace CppCoverage
 		                      std::shared_ptr<ExecutedAddressManager>,
 		                      std::shared_ptr<ICoverageFilterManager>,
 		                      std::unique_ptr<DebugInformationEnumerator>,
-		                      std::shared_ptr<FilterAssistant>);
+		                      std::shared_ptr<FilterAssistant>,
+		                      bool);
 		~MonitoredLineRegister();
 
 		bool RegisterLineToMonitor(const std::filesystem::path& modulePath,
@@ -69,5 +70,6 @@ namespace CppCoverage
 		const std::unique_ptr<DebugInformationEnumerator>
 		    debugInformationEnumerator_;
 		const std::shared_ptr<FilterAssistant> filterAssistant_;
+		bool managedModulesSupported_;
 	};
 }

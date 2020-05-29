@@ -34,7 +34,8 @@ namespace CppCoverage
 	      maxUnmatchPathsForWarning_{0},
 	      optimizedBuildSupport_{false},
 	      excludedLineRegexes_{excludedLineRegexes},
-	      substitutePdbSourcePath_{substitutePdbSourcePath}
+	      substitutePdbSourcePath_{substitutePdbSourcePath},
+	      managedModulesSupport_{false}
 	{
 	}
 
@@ -66,6 +67,12 @@ namespace CppCoverage
 	void RunCoverageSettings::SetOptimizedBuildSupport(bool optimizedBuildSupport)
 	{
 		optimizedBuildSupport_ = optimizedBuildSupport;
+	}
+
+	//-------------------------------------------------------------------------
+	void RunCoverageSettings::SetManagedModulesSupport(bool managedModulesSupport)
+	{
+		managedModulesSupport_ = managedModulesSupport;
 	}
 
 	//-------------------------------------------------------------------------
@@ -114,6 +121,12 @@ namespace CppCoverage
 	bool RunCoverageSettings::GetOptimizedBuildSupport() const
 	{
 		return optimizedBuildSupport_;
+	}
+
+	//-------------------------------------------------------------------------
+	bool RunCoverageSettings::GetManagedModulesSupport() const
+	{
+		return managedModulesSupport_;
 	}
 
 	//-------------------------------------------------------------------------

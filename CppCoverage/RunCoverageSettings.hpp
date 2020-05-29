@@ -44,6 +44,7 @@ namespace CppCoverage
         void SetStopOnAssert(bool);
         void SetMaxUnmatchPathsForWarning(size_t);
 		void SetOptimizedBuildSupport(bool);
+		void SetManagedModulesSupport(bool);
 
 		const StartInfo& GetStartInfo() const;
 		const CoverageFilterSettings& GetCoverageFilterSettings() const;
@@ -53,6 +54,7 @@ namespace CppCoverage
         bool GetStopOnAssert() const;
         size_t GetMaxUnmatchPathsForWarning() const;
 		bool GetOptimizedBuildSupport() const;
+		bool GetManagedModulesSupport() const;
 		const std::vector<std::wstring>& GetExcludedLineRegexes() const;
 		const std::vector<SubstitutePdbSourcePath>& GetSubstitutePdbSourcePaths() const;
 
@@ -65,6 +67,7 @@ namespace CppCoverage
         bool stopOnAssert_;
         size_t maxUnmatchPathsForWarning_;
 		bool optimizedBuildSupport_;
+		bool managedModulesSupport_;
 		std::vector<std::wstring> excludedLineRegexes_;
 		std::vector<SubstitutePdbSourcePath> substitutePdbSourcePath_;
 	};

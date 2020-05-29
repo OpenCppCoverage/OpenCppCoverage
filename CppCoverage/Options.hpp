@@ -70,6 +70,9 @@ namespace CppCoverage
 		void EnableContinueAfterCppExceptionMode();
 		bool IsContinueAfterCppExceptionModeEnabled() const;
 
+		void EnableManagedModulesSupport();
+		bool IsManagedModulesSupportEnabled() const;
+
 		void AddExport(OptionsExport&&);
 		const std::vector<OptionsExport>& GetExports() const;
 		
@@ -106,6 +109,7 @@ namespace CppCoverage
 		bool isContinueAfterCppExceptionModeEnabled_;
         bool isStopOnAssertModeEnabled_;
         bool isOptimizedBuildSupportEnabled_;
+		bool isManagedModulesSupportEnabled_;
         std::vector<OptionsExport> exports_;
 		std::vector<std::filesystem::path> inputCoveragePaths_;
 		std::vector<UnifiedDiffSettings> unifiedDiffSettingsCollection_;

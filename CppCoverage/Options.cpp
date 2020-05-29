@@ -49,6 +49,7 @@ namespace CppCoverage
 		, isAggregateByFileModeEnabled_{true}
 		, isContinueAfterCppExceptionModeEnabled_{false}
 		, isOptimizedBuildSupportEnabled_{false}
+		, isManagedModulesSupportEnabled_{false}
 	{
 		if (startInfo)
 			optionalStartInfo_ = *startInfo;
@@ -146,6 +147,18 @@ namespace CppCoverage
     {
       return isStopOnAssertModeEnabled_;
     }
+
+	 //-------------------------------------------------------------------------
+	 void Options::EnableManagedModulesSupport()
+	 {
+		 isManagedModulesSupportEnabled_ = true;
+	 }
+
+	 //-------------------------------------------------------------------------
+	 bool Options::IsManagedModulesSupportEnabled() const
+	 {
+		 return isManagedModulesSupportEnabled_;
+	 }
 
     //-------------------------------------------------------------------------
 	void Options::AddExport(OptionsExport&& optionExport)

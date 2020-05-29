@@ -228,6 +228,16 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, AllowManagedModules)
+	{
+		cov::OptionsParser parser;
+
+		ASSERT_TRUE(TestTools::Parse(parser,
+		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::AllowManagedModules })
+			->IsManagedModulesSupportEnabled());
+	}
+
+	//-------------------------------------------------------------------------
 	TEST(OptionsParserTest, ExcludedLineRegex)
 	{
 		cov::OptionsParser parser;

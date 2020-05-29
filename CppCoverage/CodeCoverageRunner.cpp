@@ -76,7 +76,8 @@ namespace CppCoverage
 		    executedAddressManager_,
 		    coverageFilterManager_,
 		    std::make_unique<DebugInformationEnumerator>(settings.GetSubstitutePdbSourcePaths()),
-			filterAssistant_);
+			filterAssistant_,
+		    settings.GetManagedModulesSupport());
 
 		const auto& startInfo = settings.GetStartInfo();
 		int exitCode = debugger.Debug(startInfo, *this);

@@ -86,12 +86,14 @@ namespace CppCoverage
 	    std::shared_ptr<ExecutedAddressManager> executedAddressManager,
 	    std::shared_ptr<ICoverageFilterManager> coverageFilterManager,
 	    std::unique_ptr<DebugInformationEnumerator> debugInformationEnumerator,
-	    std::shared_ptr<FilterAssistant> filterAssistant)
+	    std::shared_ptr<FilterAssistant> filterAssistant,
+	    bool managedModulesSupported)
 	    : breakPoint_{breakPoint},
 	      executedAddressManager_{executedAddressManager},
 	      coverageFilterManager_{coverageFilterManager},
 	      debugInformationEnumerator_{std::move(debugInformationEnumerator)},
-	      filterAssistant_{std::move(filterAssistant)}
+	      filterAssistant_{std::move(filterAssistant)},
+	      managedModulesSupported_{ managedModulesSupported }
 	{
 	}
 
@@ -105,7 +107,8 @@ namespace CppCoverage
 	    void* baseOfImage)
 	{
 		if (!ModuleKind{}.IsNativeModule(
-		        hProcess, reinterpret_cast<DWORD64>(baseOfImage)))
+		        hProcess, reinterpret_cast<DWORD64>(baseOfImage))
+			&& !managedModulesSupported_)
 		{
 			LOG_INFO << modulePath.wstring()
 			         << " is skipped as it is a managed module.";
