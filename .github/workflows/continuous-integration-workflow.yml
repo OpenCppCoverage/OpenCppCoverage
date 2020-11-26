@@ -1,4 +1,4 @@
-name: Unit tests
+name: CI Build
 on: [push, pull_request]
 
 jobs:
@@ -35,3 +35,11 @@ jobs:
 
       - name: Run ToolsTest
         run: .\x64\Debug\ToolsTest.exe
+      
+      - name: Build archive
+        run: CreateRelease.bat
+        
+      - uses: actions/upload-artifact@v2
+        with:
+          name: opencppcoverage
+          path: newrelease/
