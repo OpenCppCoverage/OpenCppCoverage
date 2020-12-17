@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: Unit tests
+    name: Build and test
     runs-on: windows-latest
     steps:
       - name: Checkout
