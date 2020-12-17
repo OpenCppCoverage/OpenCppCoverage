@@ -39,7 +39,9 @@ jobs:
       - name: Build archive
         run: | 
           dir
-          CreateRelease.bat
+          pushd x64
+          dir
+          ..\CreateRelease.bat
           dir
         
       - uses: actions/upload-artifact@v2
