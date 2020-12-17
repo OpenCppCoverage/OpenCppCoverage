@@ -13,7 +13,7 @@ jobs:
         run: ./InstallThirdPartyLibraries.ps1
 
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1.0.0
+        uses: microsoft/setup-msbuild@v1.0.2
 
       - name: Build solution
         run: msbuild /m CppCoverage.sln /p:Configuration=Debug /p:Platform=x64
@@ -37,7 +37,10 @@ jobs:
         run: .\x64\Debug\ToolsTest.exe
       
       - name: Build archive
-        run: CreateRelease.bat
+        run: | 
+          dir
+          CreateRelease.bat
+          dir
         
       - uses: actions/upload-artifact@v2
         with:
