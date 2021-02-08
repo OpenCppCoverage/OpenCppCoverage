@@ -17,7 +17,7 @@
 #include "stdafx.h"
 
 #include "MonitoredLineRegister.hpp"
-
+#include "CoverageLevel.hpp"
 #include "ICoverageFilterManager.hpp"
 #include "Address.hpp"
 #include "BreakPoint.hpp"
@@ -117,7 +117,20 @@ namespace CppCoverage
 		moduleInfo_ = std::make_unique<FileFilter::ModuleInfo>(
 		    hProcess, modulePath, baseOfImage);
 
-		return debugInformationEnumerator_->Enumerate(modulePath, *this);
+		if (coverageFilterManager_->GetCoverageLevel() == CoverageLevel::Line)
+		{
+			return debugInformationEnumerator_->EnumerateLineLevel(modulePath, *this);
+		}
+		else
+		{
+			std::vector<std::filesystem::path> filepaths;
+			bool result = debugInformationEnumerator_->EnumerateSourceLevel(modulePath, *this, filepaths);
+			
+			if (result)
+				executedAddressManager_->AddModuleFiles(modulePath, filepaths);
+
+			return result;
+		}
 	}
 
 	//--------------------------------------------------------------------------

@@ -23,6 +23,7 @@
 #include <atlbase.h>
 
 #include <filesystem>
+#include <boost/optional.hpp>
 #include <boost/algorithm/string.hpp>
 
 #include "tools/Log.hpp"
@@ -210,6 +211,50 @@ namespace CppCoverage
 			}
 			return sourcePtr;
 		}
+
+		//----------------------------------------------------------------------
+		class ModuleEnumerationData
+		{
+		public:
+			ModuleEnumerationData(CComPtr<IDiaDataSource>&& sourcePtr)
+				: sourcePtr_{ std::move(sourcePtr) }
+			{
+				if (!sourcePtr_)
+					THROW("DIA: Source pointer is invalid.");
+
+				if (sourcePtr_->openSession(&sessionPtr_) != S_OK || !sessionPtr_)
+					THROW("DIA: Cannot open session.");
+
+				sourceFiles_ = GetEnumSourceFiles(*sessionPtr_);
+				if (!sourceFiles_)
+					THROW("DIA: Cannot get SourceFiles");
+			}
+
+			CComPtr<IDiaSession>& GetSessionPtr()
+			{
+				return sessionPtr_;
+			}
+
+			CComPtr<IDiaEnumSourceFiles>& GetSourceFiles()
+			{
+				return sourceFiles_;
+			}
+
+		private:
+			CComPtr<IDiaDataSource> sourcePtr_;
+			CComPtr<IDiaSession> sessionPtr_;
+			CComPtr<IDiaEnumSourceFiles> sourceFiles_;
+		};
+
+		boost::optional<ModuleEnumerationData> LoadModuleEnumerationData(const std::filesystem::path& path)
+		{
+			auto sourcePtr = LoadDataForExe(path);
+
+			if (!sourcePtr)
+				return boost::none;
+			else
+				return ModuleEnumerationData(std::move(sourcePtr));
+		}
 	}
 
 	//--------------------------------------------------------------------------
@@ -221,32 +266,48 @@ namespace CppCoverage
 
 	//-------------------------------------------------------------------------
 	bool
-	DebugInformationEnumerator::Enumerate(const std::filesystem::path& path,
-	                                      IDebugInformationHandler& handler)
+		DebugInformationEnumerator::EnumerateSourceLevel(const std::filesystem::path& path,
+			IDebugInformationHandler& handler,
+			std::vector<std::filesystem::path>& filepaths)
 	{
-		auto sourcePtr = LoadDataForExe(path);
+		auto moduleEnumData = LoadModuleEnumerationData(path);
 
-		if (!sourcePtr)
+		if (!moduleEnumData.has_value())
 			return false;
 
-		CComPtr<IDiaSession> sessionPtr;
-		if (sourcePtr->openSession(&sessionPtr) != S_OK || !sessionPtr)
-			THROW("DIA: Cannot open session.");
+		EnumerateCollection<IDiaSourceFile>(
+			*moduleEnumData.value().GetSourceFiles(), [this, &handler, &filepaths](IDiaSourceFile& sourceFile) {
+			auto filename = GetSourceFileName(sourceFile);
+			if (handler.IsSourceFileSelected(filename))
+			{
+				filepaths.emplace_back(filename);
+			}
+		});
 
-		auto sourceFiles = GetEnumSourceFiles(*sessionPtr);
-		if (!sourceFiles)
-			THROW("DIA: cannot get SourceFiles");
+		return true;
+	}
+
+	//-------------------------------------------------------------------------
+	bool
+		DebugInformationEnumerator::EnumerateLineLevel(const std::filesystem::path& path,
+			IDebugInformationHandler& handler)
+	{
+		auto moduleEnumData = LoadModuleEnumerationData(path);
+
+		if (!moduleEnumData.has_value())
+			return false;
 
 		EnumerateCollection<IDiaSourceFile>(
-		    *sourceFiles, [&](IDiaSourceFile& sourceFile) {
-			    auto filename = GetSourceFileName(sourceFile);
-			    if (handler.IsSourceFileSelected(filename))
-			    {
-				    lines_.clear();
-				    EnumLines(*sessionPtr, sourceFile, handler);
-				    handler.OnSourceFile(filename, lines_);
-			    }
-		    });
+			*moduleEnumData.value().GetSourceFiles(), [this, &handler, &moduleEnumData](IDiaSourceFile& sourceFile) {
+			auto filename = GetSourceFileName(sourceFile);
+			if (handler.IsSourceFileSelected(filename))
+			{
+				lines_.clear();
+				EnumLines(*moduleEnumData.value().GetSessionPtr(), sourceFile, handler);
+				handler.OnSourceFile(filename, lines_);
+			}
+		});
+
 		return true;
 	}
 

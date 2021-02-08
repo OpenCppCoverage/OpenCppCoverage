@@ -36,11 +36,11 @@ namespace fs = std::filesystem;
 namespace ExporterTest
 {
 	//-------------------------------------------------------------------------
-	struct HtmlExporterTest : public ::testing::Test
+	struct HtmlExporterTest : public ::testing::TestWithParam<bool>
 	{
 		//-------------------------------------------------------------------------
 		HtmlExporterTest()
-			: htmlExporter_{ fs::canonical(OUT_DIR) / "Template" }
+			: htmlExporter_{ fs::canonical(OUT_DIR) / "Template", GetParam() }
 		{
 
 		}
@@ -75,7 +75,7 @@ namespace ExporterTest
 	};	
 
 	//-------------------------------------------------------------------------
-	TEST_F(HtmlExporterTest, Export)
+	TEST_P(HtmlExporterTest, Export)
 	{	
 		fs::path testFolder = fs::path(PROJECT_DIR) / "Data";
 		Plugin::CoverageData data{ L"Test", 0};
@@ -96,13 +96,13 @@ namespace ExporterTest
 		auto modulesPath = output_.GetPath() / Exporter::HtmlFolderStructure::FolderModules;
 		ASSERT_TRUE(Tools::FileExists(output_.GetPath() / "index.html"));
 		ASSERT_TRUE(Tools::FileExists(modulesPath / "module1.html"));
-		ASSERT_FALSE(Tools::FileExists(modulesPath / "module2.html"));
+		ASSERT_EQ(Tools::FileExists(modulesPath / "module2.html"), GetParam());
 		ASSERT_TRUE(Tools::FileExists(modulesPath / "module1" / (filename1 + L".html")));
 		ASSERT_TRUE(Tools::FileExists(modulesPath / "module1" / (filename2 + L".html")));
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(HtmlExporterTest, NoWarning)
+	TEST_P(HtmlExporterTest, NoWarning)
 	{
 		Plugin::CoverageData data{ L"Test", 0 };
 
@@ -111,7 +111,7 @@ namespace ExporterTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(HtmlExporterTest, Warning)
+	TEST_P(HtmlExporterTest, Warning)
 	{
 		Plugin::CoverageData data{ L"Test", 42};
 
@@ -120,7 +120,7 @@ namespace ExporterTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(HtmlExporterTest, SubFolderDoesNotExist)
+	TEST_P(HtmlExporterTest, SubFolderDoesNotExist)
 	{
 		Plugin::CoverageData data{ L"Test", 42 };
 		auto outputFolder = output_.GetPath() / "SubFolder1" / "SubFolder2";
@@ -131,7 +131,7 @@ namespace ExporterTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(HtmlExporterTest, OutputExists)
+	TEST_P(HtmlExporterTest, OutputExists)
 	{
 		Plugin::CoverageData data{ L"Test", 42 };
 		TestHelper::TemporaryPath outputFolder{ TestHelper::TemporaryPathOption::CreateAsFolder };
@@ -140,7 +140,7 @@ namespace ExporterTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(HtmlExporterTest, SameModuleSameSourceFile)
+	TEST_P(HtmlExporterTest, SameModuleSameSourceFile)
 	{
 		Plugin::CoverageData data{ L"Test", 0 };
 		const std::wstring filename = L"TestFile1.cpp";
@@ -160,5 +160,12 @@ namespace ExporterTest
 		ASSERT_TRUE(Tools::FileExists(modulesPath / "module" / (filename + L"2.html")));
 		ASSERT_TRUE(Tools::FileExists(modulesPath / "module.html"));
 	}
+
+	INSTANTIATE_TEST_SUITE_P(
+		HtmlExporterTests,
+		HtmlExporterTest,
+		::testing::Values(
+			false, true
+		));
 }
 

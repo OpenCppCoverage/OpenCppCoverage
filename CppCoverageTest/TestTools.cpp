@@ -20,6 +20,7 @@
 #include <filesystem>
 #include <boost/algorithm/string.hpp>
 
+#include "CppCoverage/CoverageLevel.hpp"
 #include "CppCoverage/StartInfo.hpp"
 #include "CppCoverage/Debugger.hpp"
 #include "CppCoverage/IDebugEventsHandler.hpp"
@@ -105,16 +106,18 @@ namespace CppCoverageTest
 		Plugin::CoverageData ComputeCoverageData(
 			const std::vector<std::wstring>& arguments,
 			const std::wstring& modulePattern,
-			const std::wstring& sourcePattern)
+			const std::wstring& sourcePattern,
+			cov::CoverageLevel coverageLevel)
 		{
 			CoverageArgs args{ arguments, modulePattern, sourcePattern };
 
-			return ComputeCoverageDataPatterns(args);
+			return ComputeCoverageDataPatterns(args, coverageLevel);
 		}
 
 		//---------------------------------------------------------------------
 		Plugin::CoverageData ComputeCoverageDataPatterns(
-			const CoverageArgs& args)
+			const CoverageArgs& args,
+			cov::CoverageLevel coverageLevel)
 		{
 			cov::CodeCoverageRunner codeCoverageRunner{
 			    std::make_shared<Tools::WarningManager>()};
@@ -148,6 +151,7 @@ namespace CppCoverageTest
 			settings.SetCoverChildren(args.coverChildren_);
 			settings.SetContinueAfterCppException(args.continueAfterCppException_);
 			settings.SetOptimizedBuildSupport(args.optimizedBuildSupport_);
+			settings.SetCoverageLevel(coverageLevel);
 
 			auto coverageData = codeCoverageRunner.RunCoverage(settings);
 

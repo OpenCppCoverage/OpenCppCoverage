@@ -69,6 +69,12 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	void RunCoverageSettings::SetCoverageLevel(CoverageLevel coverageLevel)
+	{
+		coverageLevel_ = coverageLevel;
+	}
+
+	//-------------------------------------------------------------------------
 	const StartInfo& RunCoverageSettings::GetStartInfo() const
 	{
 		return startInfo_;
@@ -126,5 +132,11 @@ namespace CppCoverage
 	const std::vector<SubstitutePdbSourcePath>& RunCoverageSettings::GetSubstitutePdbSourcePaths() const
 	{
 		return substitutePdbSourcePath_;
+	}
+
+	//-------------------------------------------------------------------------
+	CoverageLevel RunCoverageSettings::GetCoverageLevel() const
+	{
+		return coverageLevel_;
 	}
 }

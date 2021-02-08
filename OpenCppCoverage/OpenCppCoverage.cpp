@@ -19,6 +19,7 @@
 
 #include <iostream>
 
+#include "CppCoverage/CoverageLevel.hpp"
 #include "CppCoverage/CodeCoverageRunner.hpp"
 #include "CppCoverage/CoverageFilterSettings.hpp"
 #include "CppCoverage/OptionsParser.hpp"
@@ -87,7 +88,8 @@ namespace OpenCppCoverage
 			std::map<cov::OptionsExportType, std::unique_ptr<Exporter::IExporter>> exporters;
 			
 			exporters.emplace(cov::OptionsExportType::Html, 
-				std::unique_ptr<Exporter::IExporter>(std::make_unique<Exporter::HtmlExporter>( GetTemplateFolder() )));
+				std::unique_ptr<Exporter::IExporter>(std::make_unique<Exporter::HtmlExporter>( 
+					GetTemplateFolder(), options.GetCoverageLevel() == cov::CoverageLevel::Source)));
 			exporters.emplace(cov::OptionsExportType::Cobertura, 
 				std::unique_ptr<Exporter::IExporter>(std::make_unique<Exporter::CoberturaExporter>()));
 			exporters.emplace(cov::OptionsExportType::Binary,
@@ -182,6 +184,7 @@ namespace OpenCppCoverage
                 runCoverageSettings.SetStopOnAssert(options.IsStopOnAssertModeEnabled());
                 runCoverageSettings.SetMaxUnmatchPathsForWarning(maxUnmatchPathsForWarning);
 				runCoverageSettings.SetOptimizedBuildSupport(options.IsOptimizedBuildSupportEnabled());
+				runCoverageSettings.SetCoverageLevel(options.GetCoverageLevel());
 				auto coverageData = codeCoverageRunner.RunCoverage(runCoverageSettings);
 				exitCode = coverageData.GetExitCode();
 				coveraDatas.push_back(std::move(coverageData));
@@ -236,7 +239,7 @@ namespace OpenCppCoverage
 			}
 			catch (...)
 			{
-				LOG_ERROR << "Unkown Error";
+				LOG_ERROR << "Unknown Error";
 			}
 
 			warningManager->DisplayWarnings();

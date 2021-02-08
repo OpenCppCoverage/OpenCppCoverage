@@ -20,7 +20,7 @@
 #include "Plugin/Exporter/CoverageData.hpp"
 #include "Plugin/Exporter/ModuleCoverage.hpp"
 #include "TestCoverageSharedLib/TestCoverageSharedLib.hpp"
-
+#include "TestTools.hpp"
 #include "TestHelper/Tools.hpp"
 
 namespace fs = std::filesystem;
@@ -28,7 +28,11 @@ namespace fs = std::filesystem;
 namespace CppCoverageTest
 {
 	//---------------------------------------------------------------------
-	TEST(CppCliTest, ManagedUnManagedModule)
+	class CppCliTest : public TestTools::CoverageLevelTest
+	{};
+
+	//---------------------------------------------------------------------
+	TEST_P(CppCliTest, ManagedUnManagedModule)
 	{
 		auto vsPath = TestHelper::GetVisualStudioPath();
 		fs::path vsConsoleTestPath = vsPath / "Common7" / "IDE" /
@@ -43,10 +47,15 @@ namespace CppCoverageTest
 		    sharedLibModulePath.wstring());
 		coverageArgs.programToRun_ = vsConsoleTestPath;
 
-		auto coverage = TestTools::ComputeCoverageDataPatterns(coverageArgs);
+		auto coverage = TestTools::ComputeCoverageDataPatterns(coverageArgs, this->coverageLevel_);
 		ASSERT_EQ(0, coverage.GetExitCode());
 		const auto& modules = coverage.GetModules();
 		ASSERT_EQ(1, modules.size());
 		ASSERT_EQ(sharedLibModulePath, modules.at(0)->GetPath());
 	}
+
+	INSTANTIATE_TEST_SUITE_P(
+		CppCliTests,
+		CppCliTest,
+		TestTools::CoverageLevelValues);
 }

@@ -33,6 +33,7 @@ namespace CppCoverage
 {
 	class CoverageFilterSettings;
 	class UnifiedDiffSettings;
+	enum class Coveragelevel;
 
 	class CPPCOVERAGE_DLL CoverageFilterManager: public ICoverageFilterManager
 	{
@@ -41,12 +42,14 @@ namespace CppCoverage
 			const CoverageFilterSettings&,
 			const std::vector<UnifiedDiffSettings>&,
 			const std::vector<std::wstring>& excludedLineRegexes,
-			bool useReleaseCoverageFilter);
+			bool useReleaseCoverageFilter,
+			CoverageLevel coverageLevel);
 
 		~CoverageFilterManager();
 
 		bool IsModuleSelected(const std::wstring& filename) const override;
 		bool IsSourceFileSelected(const std::wstring& filename) override;
+		CoverageLevel GetCoverageLevel() const override;
 		bool IsLineSelected(
 			const FileFilter::ModuleInfo&,
 			const FileFilter::FileInfo&,
@@ -63,5 +66,6 @@ namespace CppCoverage
 		FileFilter::LineFilter lineFilter_;
 
 		const std::unique_ptr<FileFilter::ReleaseCoverageFilter> optionalReleaseCoverageFilter_;
+		const CoverageLevel coverageLevel_;
 	};
 }

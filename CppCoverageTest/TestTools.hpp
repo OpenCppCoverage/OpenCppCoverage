@@ -22,6 +22,7 @@
 #include <functional>
 #include <filesystem>
 
+#include "CppCoverage/CoverageLevel.hpp"
 #include "CppCoverage/OptionsParser.hpp"
 #include "CppCoverage/Options.hpp"
 #include "CppCoverage/SubstitutePdbSourcePath.hpp"
@@ -35,6 +36,17 @@ namespace CppCoverageTest
 {
 	namespace TestTools
 	{
+		class CoverageLevelTest : public ::testing::TestWithParam<CppCoverage::CoverageLevel>
+		{
+		protected:
+			const CppCoverage::CoverageLevel coverageLevel_ = GetParam();
+
+		};
+
+		const auto CoverageLevelValues = ::testing::Values(
+			CppCoverage::CoverageLevel::Line, CppCoverage::CoverageLevel::Source
+		);
+
 		using T_HandlesFct = std::function<void(HANDLE hProcess, HANDLE hFile)>;
 
 		void GetHandles(const std::filesystem::path&, T_HandlesFct);
@@ -72,10 +84,11 @@ namespace CppCoverageTest
 		Plugin::CoverageData ComputeCoverageData(
 			const std::vector<std::wstring>& arguments,
 			const std::wstring& modulePattern,
-			const std::wstring& sourcePattern);
+			const std::wstring& sourcePattern,
+			CppCoverage::CoverageLevel coverageLevel);
 
 		//---------------------------------------------------------------------
-		Plugin::CoverageData ComputeCoverageDataPatterns(const CoverageArgs& args);
+		Plugin::CoverageData ComputeCoverageDataPatterns(const CoverageArgs& args, CppCoverage::CoverageLevel coverageLevel);
 	}
 }
 

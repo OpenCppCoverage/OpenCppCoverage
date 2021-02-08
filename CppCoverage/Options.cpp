@@ -147,6 +147,18 @@ namespace CppCoverage
       return isStopOnAssertModeEnabled_;
     }
 
+	//-------------------------------------------------------------------------
+    void Options::SetCoverageLevel(CoverageLevel coverageLevel)
+    {
+      coverageLevel_ = coverageLevel;
+    }
+    
+    //-------------------------------------------------------------------------
+	CoverageLevel Options::GetCoverageLevel() const
+    {
+      return coverageLevel_;
+    }
+
     //-------------------------------------------------------------------------
 	void Options::AddExport(OptionsExport&& optionExport)
 	{

@@ -61,8 +61,10 @@ namespace CppCoverage
 	{
 	  public:
 		explicit DebugInformationEnumerator(const std::vector<SubstitutePdbSourcePath>&);
-		bool Enumerate(const std::filesystem::path&,
-		               IDebugInformationHandler&);
+		bool 
+		EnumerateSourceLevel(const std::filesystem::path&, IDebugInformationHandler&, std::vector<std::filesystem::path>&);
+		bool 
+		EnumerateLineLevel(const std::filesystem::path&, IDebugInformationHandler&);
 
 	  private:
 		void
