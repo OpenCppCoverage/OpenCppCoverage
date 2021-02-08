@@ -17,6 +17,7 @@
 #include "stdafx.h"
 
 #include <filesystem>
+#include "CppCoverage/CoverageLevel.hpp"
 #include "CppCoverage/Options.hpp"
 #include "CppCoverage/ProgramOptions.hpp"
 
@@ -32,7 +33,18 @@ namespace CppCoverageTest
 {
 	namespace
 	{
-		const std::string optionShortPrefix = "-";		
+		const std::string optionShortPrefix = "-";	
+
+		std::vector<std::string> BuildCoverageLevelOption(cov::CoverageLevel coverageLevel, const std::string& prefix)
+		{
+			std::vector<std::string> options;
+			options.emplace_back(prefix + cov::ProgramOptions::CoverageLevelOption);
+			options.emplace_back((coverageLevel == cov::CoverageLevel::Line ?
+				cov::ProgramOptions::CoverageLevelLineValue :
+				cov::ProgramOptions::CoverageLevelSourceValue));
+			
+			return options;
+		}
 	}
 		
 	//-------------------------------------------------------------------------
@@ -50,6 +62,7 @@ namespace CppCoverageTest
 		ASSERT_FALSE(options->IsOptimizedBuildSupportEnabled());
 		ASSERT_TRUE(options->GetExcludedLineRegexes().empty());
 		ASSERT_TRUE(options->GetSubstitutePdbSourcePaths().empty());
+		ASSERT_EQ(options->GetCoverageLevel(), cov::CoverageLevel::Line);
 	}
 
 	//-------------------------------------------------------------------------
@@ -86,6 +99,24 @@ namespace CppCoverageTest
 		{ optionShortPrefix + cov::ProgramOptions::QuietShortOption })->GetLogLevel());
 		ASSERT_EQ(cov::LogLevel::Quiet, TestTools::Parse(parser,
 		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::QuietOption })->GetLogLevel());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, LineLevelCoverage)
+	{
+		cov::OptionsParser parser;
+
+		ASSERT_EQ(cov::CoverageLevel::Line, TestTools::Parse(parser,
+			BuildCoverageLevelOption(cov::CoverageLevel::Line, TestTools::GetOptionPrefix()))->GetCoverageLevel());
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, SourceLevelCoverage)
+	{
+		cov::OptionsParser parser;
+
+		ASSERT_EQ(cov::CoverageLevel::Source, TestTools::Parse(parser,
+			BuildCoverageLevelOption(cov::CoverageLevel::Source, TestTools::GetOptionPrefix()))->GetCoverageLevel());
 	}
 
 	//-------------------------------------------------------------------------

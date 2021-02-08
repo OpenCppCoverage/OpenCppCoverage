@@ -1,5 +1,5 @@
 // OpenCppCoverage is an open source code coverage for C++.
-// Copyright (C) 2016 OpenCppCoverage
+// Copyright (C) 2014 OpenCppCoverage
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -16,34 +16,11 @@
 
 #pragma once
 
-#include "CppCoverageExport.hpp"
-#include <string>
-
-namespace FileFilter
-{
-	class ModuleInfo;
-	class FileInfo;
-	class LineInfo;
-}
-
 namespace CppCoverage
 {
-	class CoverageFilterSettings;
-	enum class CoverageLevel;
-
-	class CPPCOVERAGE_DLL ICoverageFilterManager
+	enum class CoverageLevel
 	{
-	public:
-		virtual ~ICoverageFilterManager() = default;
-
-		virtual bool IsModuleSelected(const std::wstring& filename) const = 0;
-		virtual bool IsSourceFileSelected(const std::wstring& filename) = 0;
-		virtual CoverageLevel GetCoverageLevel() const = 0;
-		virtual bool IsLineSelected(
-			const FileFilter::ModuleInfo&,
-			const FileFilter::FileInfo&,
-			const FileFilter::LineInfo&) = 0;
+		Line,
+		Source
 	};
 }
-
-

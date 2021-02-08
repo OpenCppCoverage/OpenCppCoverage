@@ -19,6 +19,7 @@
 
 #include <iostream>
 
+#include "CppCoverage/CoverageLevel.hpp"
 #include "CppCoverage/CodeCoverageRunner.hpp"
 #include "CppCoverage/CoverageFilterSettings.hpp"
 #include "CppCoverage/OptionsParser.hpp"
@@ -182,6 +183,7 @@ namespace OpenCppCoverage
                 runCoverageSettings.SetStopOnAssert(options.IsStopOnAssertModeEnabled());
                 runCoverageSettings.SetMaxUnmatchPathsForWarning(maxUnmatchPathsForWarning);
 				runCoverageSettings.SetOptimizedBuildSupport(options.IsOptimizedBuildSupportEnabled());
+				runCoverageSettings.SetCoverageLevel(options.GetCoverageLevel());
 				auto coverageData = codeCoverageRunner.RunCoverage(runCoverageSettings);
 				exitCode = coverageData.GetExitCode();
 				coveraDatas.push_back(std::move(coverageData));

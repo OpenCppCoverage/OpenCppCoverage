@@ -22,6 +22,7 @@
 
 #include "tools/Log.hpp"
 
+#include "CoverageLevel.hpp"
 #include "Plugin/Exporter/CoverageData.hpp"
 #include "Debugger.hpp"
 #include "ExecutedAddressManager.hpp"
@@ -69,7 +70,8 @@ namespace CppCoverage
 			settings.GetCoverageFilterSettings(),
 			settings.GetUnifiedDiffSettings(), 
 			settings.GetExcludedLineRegexes(),
-			settings.GetOptimizedBuildSupport());
+			settings.GetOptimizedBuildSupport(),
+			settings.GetCoverageLevel());
 
 		monitoredLineRegister_ = std::make_unique<MonitoredLineRegister>(
 		    breakpoint_,

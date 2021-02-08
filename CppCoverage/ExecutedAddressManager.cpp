@@ -74,6 +74,26 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	void ExecutedAddressManager::AddModuleFiles(const std::wstring& moduleName, const std::vector<std::filesystem::path>& filepaths)
+	{
+		auto module = modules_.find(moduleName);
+
+		if(module == modules_.end())
+			THROW("Cannot find module.");
+
+		auto& files = module->second.files_;
+		for (const auto& filepath : filepaths)
+		{
+			auto file = files.find(filepath.wstring());
+			
+			if (file == files.end())
+			{
+				files.emplace(filepath.wstring(), File{});
+			}
+		}
+	}
+
+	//-------------------------------------------------------------------------
 	void ExecutedAddressManager::AddModule(
 		const std::wstring& moduleName,
 		void* dllBaseOfImage)

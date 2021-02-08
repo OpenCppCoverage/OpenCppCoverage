@@ -30,6 +30,7 @@
 #include "CppCoverage/Patterns.hpp"
 
 #include "Options.hpp"
+#include "CoverageLevel.hpp"
 #include "CppCoverageException.hpp"
 #include "ProgramOptions.hpp"
 #include "OptionsExport.hpp"
@@ -184,14 +185,36 @@ namespace CppCoverage
 
 		//----------------------------------------------------------------------------
 		std::pair<fs::path, boost::optional<fs::path>>
-		ExtractUnifiedDiffOption(const std::string& option)
+			ExtractUnifiedDiffOption(const std::string& option)
 		{
 			auto pos = option.find(OptionsParser::PathSeparator);
 
 			if (pos == std::string::npos)
-				return {option, boost::none};
+				return { option, boost::none };
 
-			return {option.substr(0, pos), fs::path{option.substr(pos + 1)}};
+			return { option.substr(0, pos), fs::path{option.substr(pos + 1)} };
+		}
+
+		//----------------------------------------------------------------------------
+		void
+			AddCoverageLevel(const ProgramOptionsVariablesMap& variablesMap,
+				Options& options)
+		{
+			if (variablesMap.IsOptionSelected(ProgramOptions::CoverageLevelOption))
+			{
+				auto coverageLevelStr = variablesMap.GetValue<std::string>(
+					ProgramOptions::CoverageLevelOption)
+					;
+
+				if (coverageLevelStr == ProgramOptions::CoverageLevelLineValue)
+				{
+					options.SetCoverageLevel(CoverageLevel::Line);
+				}
+				else if (coverageLevelStr == ProgramOptions::CoverageLevelSourceValue)
+				{
+					options.SetCoverageLevel(CoverageLevel::Source);
+				}
+			}
 		}
 
 		//----------------------------------------------------------------------------
@@ -448,6 +471,7 @@ namespace CppCoverage
 		if (variablesMap.IsOptionSelected(ProgramOptions::StopOnAssertOption))
 			options.EnableStopOnAssertMode();
 
+		AddCoverageLevel(variablesMap, options);
 		AddInputCoverages(variablesMap, options);
 		AddUnifiedDiff(variablesMap, options);
 		AddExcludedLineRegexes(variablesMap, options);

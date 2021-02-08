@@ -77,22 +77,47 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST(DebugInformationEnumeratorTest, Enumerate)
+	TEST(DebugInformationEnumeratorTest, EnumerateLineLevel)
 	{
 		auto selectedPath =
-		    TestCoverageConsole::GetDebugInformationEnumeratorTestPath();
+			TestCoverageConsole::GetDebugInformationEnumeratorTestPath();
 		DebugInformationHandlerMock debugInformationHandler{
-		    selectedPath.filename()};
+			selectedPath.filename() };
 
 		CppCoverage::DebugInformationEnumerator debugInformationEnumerator{ {} };
 
 		auto binary = TestCoverageConsole::GetOutputBinaryPath();
-		ASSERT_TRUE(debugInformationEnumerator.Enumerate(
-		    binary, debugInformationHandler));
+		ASSERT_TRUE(debugInformationEnumerator.EnumerateLineLevel(
+			binary, debugInformationHandler));
 
 		auto lineWithDebugInfo = GetLineNumbersWithTag(
-		    debugInformationHandler.selectedFullPath_, L"@DebugInfoExpected");
+			debugInformationHandler.selectedFullPath_, L"@DebugInfoExpected");
 
+		ASSERT_EQ(debugInformationHandler.lines_, lineWithDebugInfo);
+	}
+
+	//-------------------------------------------------------------------------
+	TEST(DebugInformationEnumeratorTest, EnumerateSourceLevel)
+	{
+		const std::vector<std::wstring> expectedSources = {};
+		auto selectedPath =
+			TestCoverageConsole::GetDebugInformationEnumeratorTestPath();
+		DebugInformationHandlerMock debugInformationHandler{
+			selectedPath.filename() };
+
+		CppCoverage::DebugInformationEnumerator debugInformationEnumerator{ {} };
+
+		auto binary = TestCoverageConsole::GetOutputBinaryPath();
+		std::vector<std::filesystem::path> filepaths;
+		ASSERT_TRUE(debugInformationEnumerator.EnumerateSourceLevel(
+			binary, debugInformationHandler, filepaths));
+
+		auto lineWithDebugInfo = GetLineNumbersWithTag(
+			debugInformationHandler.selectedFullPath_, L"@DebugInfoExpected");
+
+		ASSERT_EQ(1, filepaths.size());
+		ASSERT_EQ(debugInformationHandler.selectedFilename_, filepaths.at(0).filename().wstring());
+		ASSERT_EQ(0, lineWithDebugInfo.size());
 		ASSERT_EQ(debugInformationHandler.lines_, lineWithDebugInfo);
 	}
 }

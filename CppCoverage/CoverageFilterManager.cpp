@@ -18,6 +18,8 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include "CppCoverageException.hpp"
+#include "CoverageLevel.hpp"
 #include "CoverageFilterManager.hpp"
 #include "UnifiedDiffCoverageFilterManager.hpp"
 
@@ -29,16 +31,20 @@ namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
 	CoverageFilterManager::CoverageFilterManager(
-		const CoverageFilterSettings& settings,
+		const CoverageFilterSettings& settings,	
 		const std::vector<UnifiedDiffSettings>& unifiedDiffSettingsCollection,
 		const std::vector<std::wstring>& excludedLineRegexes,
-		bool useReleaseCoverageFilter)
+		bool useReleaseCoverageFilter,
+		CoverageLevel coverageLevel)
 		: wildcardCoverageFilter_{ settings }
 		, unifiedDiffCoverageFilterManager_{ unifiedDiffSettingsCollection }
 		, lineFilter_{ excludedLineRegexes }
 		, optionalReleaseCoverageFilter_{ useReleaseCoverageFilter ?
-			std::make_unique<FileFilter::ReleaseCoverageFilter>() : nullptr }		
+			std::make_unique<FileFilter::ReleaseCoverageFilter>() : nullptr }
+		, coverageLevel_{ coverageLevel }
 	{
+		if (coverageLevel != CoverageLevel::Line && coverageLevel != CoverageLevel::Source)
+			THROW("Invalid coverage level");
 	}
 
 	//-------------------------------------------------------------------------
@@ -57,6 +63,12 @@ namespace CppCoverage
 			return false;
 
 		return unifiedDiffCoverageFilterManager_.IsSourceFileSelected(filename);
+	}
+
+	//-------------------------------------------------------------------------
+	CoverageLevel CoverageFilterManager::GetCoverageLevel() const
+	{
+		return coverageLevel_;
 	}
 
 	//-------------------------------------------------------------------------

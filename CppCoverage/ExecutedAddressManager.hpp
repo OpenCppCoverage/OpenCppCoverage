@@ -38,6 +38,7 @@ namespace CppCoverage
 		~ExecutedAddressManager();
 
 		void AddModule(const std::wstring& moduleName, void* dllBaseOfImage);
+		void AddModuleFiles(const std::wstring& moduleName, const std::vector<std::filesystem::path>& filepaths);
 		void OnUnloadModule(HANDLE hProcess, void* dllBaseOfImage);
 
 		bool RegisterAddress(

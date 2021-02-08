@@ -65,7 +65,7 @@ namespace CppCoverageTest
 	using TestTools::ComputeCoverageDataPatterns;
 
 	//-------------------------------------------------------------------------
-	class CodeCoverageRunnerTest : public ::testing::Test
+	class CodeCoverageRunnerTest : public TestTools::CoverageLevelTest
 	{
 	public:
 				
@@ -106,11 +106,11 @@ namespace CppCoverageTest
 
 			args.continueAfterCppException_ = continueAfterCppException;
 
-			auto coverageData = ComputeCoverageDataPatterns(args);
+			auto coverageData = ComputeCoverageDataPatterns(args, coverageLevel_);
 
 			// Run child child process.
 			args.arguments_.insert(args.arguments_.begin(), TestCoverageConsole::TestChildProcess);
-			auto coverageDataChildProcess = ComputeCoverageDataPatterns(args);
+			auto coverageDataChildProcess = ComputeCoverageDataPatterns(args, coverageLevel_);
 
 			if (!TestHelper::CoverageDataComparer().IsFirstCollectionContainsSecond(
 					coverageDataChildProcess.GetModules(), coverageData.GetModules()))
@@ -165,62 +165,81 @@ namespace CppCoverageTest
 				[](const auto& line) { return line.HasBeenExecuted(); });
 		}
 
+		//-------------------------------------------------------------------------
+		void ValidateCoverageLevel(const std::wstring& filename, const Plugin::FileCoverage& file, std::function<void()> lineLevelValidator)
+		{
+			if (coverageLevel_ == cov::CoverageLevel::Line)
+			{
+				lineLevelValidator();
+			}
+			else
+			{
+				ASSERT_EQ(0, file.GetLines().size());
+				ASSERT_EQ(filename, file.GetPath().filename().wstring());
+			}			
+		}
+
 	private:
-		boost::shared_ptr<std::ostringstream> error_;		
+		boost::shared_ptr<std::ostringstream> error_;
 	};
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, RunCoverage)
+	TEST_P(CodeCoverageRunnerTest, RunCoverage)
 	{		
 		const auto testBasicFilename = TestCoverageConsole::GetTestBasicFilename().wstring();
 		
 		Plugin::CoverageData coverageData = ComputeCoverageData(TestCoverageConsole::TestBasic, testBasicFilename);
 		auto& file = GetFirstFileCoverage(coverageData);
 
-		int line = TestCoverageConsole::GetTestBasicLine() + 1;
-		TestLine(file, line++, true);
-		TestLine(file, line++, true);
-		ASSERT_TRUE(file[line++] == nullptr);
-		TestLine(file, line++, false);
-		ASSERT_EQ(0, coverageData.GetExitCode());
+		ValidateCoverageLevel(testBasicFilename, file, [&]() {
+			int line = TestCoverageConsole::GetTestBasicLine() + 1;
+			TestLine(file, line++, true);
+			TestLine(file, line++, true);
+			ASSERT_TRUE(file[line++] == nullptr);
+			TestLine(file, line++, false);
+			ASSERT_EQ(0, coverageData.GetExitCode());
+		});
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, RunCoverageDll)
-	{			
+	TEST_P(CodeCoverageRunnerTest, RunCoverageDll)
+	{
 		auto mainSharedLibFile = TestCoverageSharedLib::GetMainCppPath().wstring();
 
 		Plugin::CoverageData coverageData = ComputeCoverageDataInBothMode(TestCoverageConsole::TestSharedLib,
 			TestCoverageSharedLib::GetOutputBinaryPath().wstring(), mainSharedLibFile);
 		auto& file = GetFirstFileCoverage(coverageData);
 
-		int line = 31;
-		TestLine(file, line++, true);
-		TestLine(file, line++, true);
-		TestLine(file, line++, true);
-		ASSERT_EQ(nullptr, file[line++]);
-		TestLine(file, line++, false);
+		ValidateCoverageLevel(TestCoverageSharedLib::GetMainCppPath().filename().wstring(), file, [&]() {
+			int line = 31;
+			TestLine(file, line++, true);
+			TestLine(file, line++, true);
+			TestLine(file, line++, true);
+			ASSERT_EQ(nullptr, file[line++]);
+			TestLine(file, line++, false);
+		});
 	}
 	
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, RunThread)
+	TEST_P(CodeCoverageRunnerTest, RunThread)
 	{
 		const auto filter = TestCoverageConsole::GetTestThreadFilename().wstring();
 
 		Plugin::CoverageData coverageData = ComputeCoverageData(TestCoverageConsole::TestThread, filter);
 		auto& file = GetFirstFileCoverage(coverageData);
-
-		int line = 28;
-
-		TestLine(file, line++, true);
-		ASSERT_EQ(nullptr, file[line++]);
-		TestLine(file, line++, true);
-		TestLine(file, line++, true);
-		TestLine(file, line++, true);
+		
+		ValidateCoverageLevel(filter, file, [&]() {
+			int line = 28;
+			TestLine(file, line++, true);
+			ASSERT_EQ(nullptr, file[line++]);
+			TestLine(file, line++, true);
+			TestLine(file, line++, true);
+			TestLine(file, line++, true);
+		});
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, HandledException)
+	TEST_P(CodeCoverageRunnerTest, HandledException)
 	{
 		Plugin::CoverageData coverageData = RunCoverageWithException(
 			TestCoverageConsole::TestThrowHandledException, false);
@@ -230,7 +249,7 @@ namespace CppCoverageTest
 	}
 	
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, UnHandledSEHException)
+	TEST_P(CodeCoverageRunnerTest, UnHandledSEHException)
 	{
 		Plugin::CoverageData coverageData = RunCoverageWithException(
 			TestCoverageConsole::TestThrowUnHandledSEHException, false);
@@ -240,7 +259,7 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, UnHandledCppException)
+	TEST_P(CodeCoverageRunnerTest, UnHandledCppException)
 	{
 		auto coverageData = RunCoverageWithException(
 			TestCoverageConsole::TestThrowUnHandledCppException, false);
@@ -250,27 +269,33 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, UnHandledCppExceptionContinue)
+	TEST_P(CodeCoverageRunnerTest, UnHandledCppExceptionContinue)
 	{
 		auto coverageData = RunCoverageWithException(
 			TestCoverageConsole::TestThrowUnHandledCppException, true);
 		auto& file = GetFirstFileCoverage(coverageData);
-		auto returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainReturnLine();
-		TestLine(file, returnLine, true);
+		
+		ValidateCoverageLevel(TestCoverageConsole::GetMainCppFilename().filename().wstring(), file, [&]() {
+			auto returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainReturnLine();
+			TestLine(file, returnLine, true);
+		});
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, UnHandledCppExceptionNotContinue)
+	TEST_P(CodeCoverageRunnerTest, UnHandledCppExceptionNotContinue)
 	{
 		auto coverageData = RunCoverageWithException(
 			TestCoverageConsole::TestThrowUnHandledCppException, false);
 		auto& file = GetFirstFileCoverage(coverageData);
 		auto returnLine = TestCoverageConsole::GetTestCoverageConsoleCppMainReturnLine();
-		TestLine(file, returnLine, false);
+
+		ValidateCoverageLevel(TestCoverageConsole::GetMainCppFilename().filename().wstring(), file, [&]() {
+			TestLine(file, returnLine, false);
+		});
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, ChildProcess)
+	TEST_P(CodeCoverageRunnerTest, ChildProcess)
 	{
 		std::vector<std::wstring> arguments = {
 			TestCoverageConsole::TestChildProcess,
@@ -281,29 +306,42 @@ namespace CppCoverageTest
 		CoverageArgs args{ arguments, modulePattern, sourcePattern };
 
 		args.coverChildren_ = true;
-		auto rootAndChildProcess = ComputeCoverageDataPatterns(args);
+		auto rootAndChildProcess = ComputeCoverageDataPatterns(args, coverageLevel_);
 
 		args.coverChildren_ = false;
-		auto rootProcessOnly = ComputeCoverageDataPatterns(args);
+		auto rootProcessOnly = ComputeCoverageDataPatterns(args, coverageLevel_);
 
 		const auto& rootOnlyModules = rootProcessOnly.GetModules();
 		const auto& rootAndChildModules = rootAndChildProcess.GetModules();
 
-		ASSERT_TRUE(TestHelper::CoverageDataComparer().IsFirstCollectionContainsSecond(
-			rootAndChildModules, rootOnlyModules));
-		ASSERT_FALSE(TestHelper::CoverageDataComparer().IsFirstCollectionContainsSecond(
-			rootOnlyModules, rootAndChildModules));
+		auto filename = TestCoverageConsole::GetMainCppFilename().wstring();
+		{
+			auto& file = GetFirstFileCoverage(rootAndChildProcess);
+			ValidateCoverageLevel(filename, file, [&]() {
+				ASSERT_TRUE(TestHelper::CoverageDataComparer().IsFirstCollectionContainsSecond(
+					rootAndChildModules, rootOnlyModules));
+			});
+		}
+		{
+			auto& file = GetFirstFileCoverage(rootProcessOnly);
+			ValidateCoverageLevel(filename, file, [&]() {
+				ASSERT_FALSE(TestHelper::CoverageDataComparer().IsFirstCollectionContainsSecond(
+					rootOnlyModules, rootAndChildModules));
+			});
+		}
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, SeveralChildProcess)
+	TEST_P(CodeCoverageRunnerTest, SeveralChildProcess)
 	{
+		auto filename = TestCoverageConsole::GetMainCppFilename().wstring();
 		auto coverageData = TestTools::ComputeCoverageData(
 			{	TestCoverageConsole::TestChildProcess,
 				TestCoverageConsole::TestThrowUnHandledCppException,
 				TestCoverageConsole::TestThrowUnHandledSEHException },
 			TestCoverageConsole::GetOutputBinaryPath().wstring(),
-			TestCoverageConsole::GetMainCppFilename().wstring());
+			filename,
+			coverageLevel_);
 
 		std::vector<Plugin::CoverageData> coverageDataCollection;
 		coverageDataCollection.push_back(std::move(coverageData));
@@ -311,16 +349,19 @@ namespace CppCoverageTest
 
 		auto& file = GetFirstFileCoverage(mergedCoverageData);
 
-		int mainLine = TestCoverageConsole::GetTestCoverageConsoleCppMainStartLine();
-		TestLine(file, mainLine + 15, false); // TestThrowHandledException
-		TestLine(file, mainLine + 17, true); // TestThrowUnHandledCppException
-		TestLine(file, mainLine + 19, true); // TestThrowUnHandledSEHException
-		TestLine(file, mainLine + 21, false); // TestBreakPoint
-		TestLine(file, mainLine + 23, true); // TestChildProcess
+		ValidateCoverageLevel(filename, file, [&]() {
+			int mainLine = TestCoverageConsole::GetTestCoverageConsoleCppMainStartLine();
+			TestLine(file, mainLine + 15, false); // TestThrowHandledException
+			TestLine(file, mainLine + 17, true); // TestThrowUnHandledCppException
+			TestLine(file, mainLine + 19, true); // TestThrowUnHandledSEHException
+			TestLine(file, mainLine + 21, false); // TestBreakPoint
+			TestLine(file, mainLine + 23, true); // TestChildProcess
+			
+		});
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, TestFileInSeveralModules)
+	TEST_P(CodeCoverageRunnerTest, TestFileInSeveralModules)
 	{
 		CoverageArgs args{
 			{ TestCoverageConsole::TestFileInSeveralModules },
@@ -329,27 +370,39 @@ namespace CppCoverageTest
 		};
 
 		args.modulePatternCollection_.push_back(TestCoverageConsole::GetOutputBinaryPath().wstring());
-		auto coverageData = ComputeCoverageDataPatterns(args);
+		auto coverageData = ComputeCoverageDataPatterns(args, coverageLevel_);
 		const auto sharedFunctionLine = TestCoverageSharedLib::GetSharedFunctionLine();
 
 		const auto& fileFromFirstModule = *coverageData.GetModules().at(0)->GetFiles().at(0);
-		TestLine(fileFromFirstModule, sharedFunctionLine + 3, false);
-		TestLine(fileFromFirstModule, sharedFunctionLine + 4, true);
-
 		const auto& fileFromSecondModule = *coverageData.GetModules().at(1)->GetFiles().at(0);
-		TestLine(fileFromSecondModule, sharedFunctionLine + 3, true);
-		TestLine(fileFromSecondModule, sharedFunctionLine + 4, false);
-
-		cov::CoverageDataMerger().MergeFileCoverage(coverageData);
-		for (const auto* file : { &fileFromFirstModule, &fileFromSecondModule })
+		auto filename = TestCoverageSharedLib::GetSharedFunctionFilename().filename().wstring();
 		{
-			TestLine(*file, sharedFunctionLine + 3, true);
-			TestLine(*file, sharedFunctionLine + 4, true);
+			ValidateCoverageLevel(filename, fileFromFirstModule, [&]() {
+				TestLine(fileFromFirstModule, sharedFunctionLine + 3, false);
+				TestLine(fileFromFirstModule, sharedFunctionLine + 4, true);
+			});
+		}
+		{
+			auto filename = fileFromSecondModule.GetPath().filename().wstring();
+			ValidateCoverageLevel(filename, fileFromSecondModule, [&]() {
+				TestLine(fileFromSecondModule, sharedFunctionLine + 3, true);
+				TestLine(fileFromSecondModule, sharedFunctionLine + 4, false);
+			});
+		}
+
+		if (coverageLevel_ == cov::CoverageLevel::Line)
+		{
+			cov::CoverageDataMerger().MergeFileCoverage(coverageData);
+			for (const auto* file : { &fileFromFirstModule, &fileFromSecondModule })
+			{
+				TestLine(*file, sharedFunctionLine + 3, true);
+				TestLine(*file, sharedFunctionLine + 4, true);
+			}
 		}
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, SpecialLineInfo)
+	TEST_P(CodeCoverageRunnerTest, SpecialLineInfo)
 	{
 		const auto specialLineInfoFilename = TestCoverageConsole::GetSpecialLineInfoFilename().wstring();
 
@@ -362,7 +415,7 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, UnifiedDiff)
+	TEST_P(CodeCoverageRunnerTest, UnifiedDiff)
 	{
 		auto diffPath = std::filesystem::path(PROJECT_DIR) / "Data" / "TestDiff.diff";
 
@@ -371,18 +424,21 @@ namespace CppCoverageTest
 			TestCoverageConsole::GetOutputBinaryPath().wstring(),
 			TestCoverageConsole::GetTestDiffFilename().wstring() };
 		args.unifiedDiffSettingsCollection_.push_back({ diffPath, boost::none });
-		auto coverageData = ComputeCoverageDataPatterns(args);
-		const auto& file = GetFirstFileCoverage(coverageData);
-		ASSERT_EQ(4, file.GetLines().size());
-		
-		TestLine(file, 25, true);
-		TestLine(file, 26, true);
-		TestLine(file, 27, true);
-		TestLine(file, 28, false);
+		auto coverageData = ComputeCoverageDataPatterns(args, coverageLevel_);
+
+		const auto& file = GetFirstFileCoverage(coverageData);	
+		ValidateCoverageLevel(TestCoverageConsole::GetTestDiffFilename().filename().wstring(), file, [&]() {
+			ASSERT_EQ(4, file.GetLines().size());
+
+			TestLine(file, 25, true);
+			TestLine(file, 26, true);
+			TestLine(file, 27, true);
+			TestLine(file, 28, false);
+		});
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, SpecialChars)
+	TEST_P(CodeCoverageRunnerTest, SpecialChars)
 	{
 		const auto fileWithSpecialChars = TestCoverageConsole::GetFileWithSpecialChars();
 		CoverageArgs args{ 
@@ -390,29 +446,29 @@ namespace CppCoverageTest
 			TestCoverageConsole::GetOutputBinaryPath().filename().wstring(),
 			fileWithSpecialChars.wstring() };
 
-		auto coverageData = ComputeCoverageDataPatterns(args);
+		auto coverageData = ComputeCoverageDataPatterns(args, coverageLevel_);
 		const auto& file = GetFirstFileCoverage(coverageData);
-		auto filename = file.GetPath().filename().wstring();
-		ASSERT_TRUE(boost::algorithm::iequals(fileWithSpecialChars.wstring(), filename));
+		ASSERT_TRUE(boost::algorithm::iequals(fileWithSpecialChars.wstring(), file.GetPath().filename().wstring()));
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, UnloadReloadDll)
+	TEST_P(CodeCoverageRunnerTest, UnloadReloadDll)
 	{
-		const auto unloadDllFilename = TestHelper::GetTestUnloadDllFilename().wstring();
+		const auto filename = TestHelper::GetTestUnloadDllFilename().wstring();
 
 		auto coverageData = ComputeCoverageDataInBothMode(
 			TestCoverageConsole::TestUnloadReloadDll, 
 			TestHelper::GetOutputBinaryPath().wstring(), 
-			unloadDllFilename);
+			filename);
 		const auto& file = GetFirstFileCoverage(coverageData);
-		auto filename = file.GetPath().filename().wstring();
-		ASSERT_TRUE(boost::algorithm::iequals(unloadDllFilename, filename));
-		ASSERT_NE(0, CountExecutedLines(file));
+		ValidateCoverageLevel(filename, file, [&]() {
+			ASSERT_TRUE(boost::algorithm::iequals(filename, file.GetPath().filename().wstring()));
+			ASSERT_NE(0, CountExecutedLines(file));
+		});
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, OptimizedBuild)
+	TEST_P(CodeCoverageRunnerTest, OptimizedBuild)
 	{
 		CoverageArgs args{{}, L"OptimizedBuildVS2013", L"OptimizedBuildVS2013"};
 		auto optimizedBuildProjectPath = fs::path{ PROJECT_DIR } / "OptimizedBuildVS2013";
@@ -428,7 +484,7 @@ namespace CppCoverageTest
 
 		auto computeCoverage = [&](bool optimizedBuild) {
 			args.optimizedBuildSupport_ = optimizedBuild;
-			return ComputeCoverageDataPatterns(args);
+			return ComputeCoverageDataPatterns(args, coverageLevel_);
 		};
 
 		auto coverageData = computeCoverage(false);
@@ -438,7 +494,7 @@ namespace CppCoverageTest
 		ASSERT_EQ(0, coverageDataOptimizedBuild.GetExitCode());
 
 		const auto& fileOptimizedBuild =
-		    GetFirstFileCoverage(coverageDataOptimizedBuild);
+			GetFirstFileCoverage(coverageDataOptimizedBuild);
 		const auto& file = GetFirstFileCoverage(coverageData);
 		auto optimizedBuildCount = CountExecutedLines(fileOptimizedBuild);
 		auto count = CountExecutedLines(file);
@@ -447,7 +503,7 @@ namespace CppCoverageTest
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, ExcludedLine)
+	TEST_P(CodeCoverageRunnerTest, ExcludedLine)
 	{
 		CoverageArgs args{
 			{ TestCoverageConsole::TestBasic },
@@ -458,28 +514,30 @@ namespace CppCoverageTest
 		auto computeCoverage = [&](const std::vector<std::wstring>& excludedRegexes)
 		{
 			args.excludedLineRegexes_ = excludedRegexes;
-			return ComputeCoverageDataPatterns(args);
+			return ComputeCoverageDataPatterns(args, coverageLevel_);
 		};
 		auto coverageDataWithExcludedLine = computeCoverage({ L".*ExcludedLine.*" });
 		const auto& fileWithExcludedLine = GetFirstFileCoverage(coverageDataWithExcludedLine);
 
 		auto coverageData = computeCoverage({});
 		const auto& file = GetFirstFileCoverage(coverageData);
-
-		ASSERT_EQ(file.GetLines().size(), fileWithExcludedLine.GetLines().size() + 1);
+		
+		ValidateCoverageLevel(TestCoverageConsole::GetTestBasicFilename().filename().wstring(), file, [&]() {
+			ASSERT_EQ(file.GetLines().size(), fileWithExcludedLine.GetLines().size() + 1);
+		});
 	}
 
 	//-------------------------------------------------------------------------
-	TEST_F(CodeCoverageRunnerTest, SubstitutePdbSourcePath)
+	TEST_P(CodeCoverageRunnerTest, SubstitutePdbSourcePath)
 	{
 		const auto filename = TestCoverageConsole::GetMainCppFilename();
 		CoverageArgs args{
 		    {},
 		    TestCoverageConsole::GetOutputBinaryPath().filename().wstring(),
 		    filename.wstring()};
-		auto originalCoverageData = ComputeCoverageDataPatterns(args);
+		auto originalCoverageData = ComputeCoverageDataPatterns(args, coverageLevel_);
 		auto originalPath =
-		    GetFirstFileCoverage(originalCoverageData).GetPath();
+			GetFirstFileCoverage(originalCoverageData).GetPath();
 
 		ASSERT_EQ(filename, originalPath.filename());
 
@@ -491,8 +549,13 @@ namespace CppCoverageTest
 		args.sourcePatternCollection_.push_back(expectedPath.wstring());
 		args.substitutePdbSourcePath_.push_back(
 		    {originalPath.parent_path().wstring(), folder->wstring()});
-		auto coverageData = ComputeCoverageDataPatterns(args);
+		auto coverageData = ComputeCoverageDataPatterns(args, coverageLevel_);
 		const auto& file = GetFirstFileCoverage(coverageData);
 		ASSERT_EQ(expectedPath, file.GetPath());
 	}
+
+	INSTANTIATE_TEST_SUITE_P(
+		CodeCoverageRunnerTests,
+		CodeCoverageRunnerTest,
+		TestTools::CoverageLevelValues);
 }

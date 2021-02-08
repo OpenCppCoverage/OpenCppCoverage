@@ -54,6 +54,15 @@ namespace CppCoverage
 		}
 
 		//---------------------------------------------------------------------
+		std::string GetCoverageTypeHelp()
+		{
+			return std::string("Format: <coverageLevel>.\n") + 
+				"<coverageLevel> can be: \n" + 
+				"   line: line level coverage\n" +
+				"   source : source level coverage";
+		}
+
+		//---------------------------------------------------------------------
 		void
 		FillConfigurationOptions(po::options_description& options,
 			const std::vector<std::unique_ptr<IOptionParser>>& optionParsers)
@@ -79,8 +88,11 @@ namespace CppCoverage
 				(ProgramOptions::WorkingDirectoryOption.c_str(), po::value<std::string>(), "The program working directory.")
 				(ProgramOptions::CoverChildrenOption.c_str(), "Enable code coverage for children processes.")
 				(ProgramOptions::NoAggregateByFileOption.c_str(), "Do not aggregate coverage for same file path.")
-                (ProgramOptions::StopOnAssertOption.c_str(), "Do not continue after DebugBreak() or assert().")
-              (ProgramOptions::UnifiedDiffOption.c_str(),
+				(ProgramOptions::StopOnAssertOption.c_str(), "Do not continue after DebugBreak() or assert().")
+				(ProgramOptions::CoverageLevelOption.c_str(),
+				po::value<std::string>()->default_value({ ProgramOptions::CoverageLevelLineValue }, ProgramOptions::CoverageLevelLineValue)->composing(),
+				GetCoverageTypeHelp().c_str())
+                (ProgramOptions::UnifiedDiffOption.c_str(),
 					po::value<T_Strings>()->composing(), GetUnifiedDiffHelp().c_str())
 				(ProgramOptions::ContinueAfterCppExceptionOption.c_str(), "Try to continue after throwing a C++ exception.")
 				(ProgramOptions::OptimizedBuildOption.c_str(), 
@@ -105,6 +117,9 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
+	const std::string ProgramOptions::CoverageLevelOption = "coverage_level";
+	const std::string ProgramOptions::CoverageLevelSourceValue = "source";
+	const std::string ProgramOptions::CoverageLevelLineValue = "line";
 	const std::string ProgramOptions::SelectedModulesOption = "modules";
 	const std::string ProgramOptions::ExcludedModulesOption = "excluded_modules";
 	const std::string ProgramOptions::SelectedSourcesOption = "sources";

@@ -29,7 +29,8 @@
 namespace CppCoverage
 {
 	class Patterns;	
-	
+	enum class CoverageLevel;
+
 	enum class LogLevel
 	{
 		Quiet,
@@ -54,6 +55,9 @@ namespace CppCoverage
 
 		void SetLogLevel(LogLevel);
 		LogLevel GetLogLevel() const;
+
+		void SetCoverageLevel(CoverageLevel);
+		CoverageLevel GetCoverageLevel() const;
 		
 		void EnablePlugingMode();
 		bool IsPlugingModeEnabled() const;
@@ -100,6 +104,7 @@ namespace CppCoverage
 		boost::optional<StartInfo> optionalStartInfo_;
 
 		LogLevel logLevel_;
+		CoverageLevel coverageLevel_;
 		bool isPluginModeEnabled_;
 		bool isCoverChildrenModeEnabled_;
 		bool isAggregateByFileModeEnabled_;

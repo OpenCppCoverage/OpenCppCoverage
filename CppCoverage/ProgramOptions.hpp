@@ -27,6 +27,9 @@ namespace CppCoverage
 	class CPPCOVERAGE_DLL ProgramOptions
 	{
 	public:
+		static const std::string CoverageLevelOption;
+		static const std::string CoverageLevelSourceValue;
+		static const std::string CoverageLevelLineValue;
 		static const std::string SelectedModulesOption;
 		static const std::string ExcludedModulesOption;
 		static const std::string SelectedSourcesOption;

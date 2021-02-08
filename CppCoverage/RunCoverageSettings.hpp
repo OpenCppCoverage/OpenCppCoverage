@@ -26,6 +26,8 @@
 
 namespace CppCoverage
 {
+	enum class CoverageLevel;
+
 	class CPPCOVERAGE_DLL RunCoverageSettings
 	{
 	public:
@@ -44,6 +46,7 @@ namespace CppCoverage
         void SetStopOnAssert(bool);
         void SetMaxUnmatchPathsForWarning(size_t);
 		void SetOptimizedBuildSupport(bool);
+		void SetCoverageLevel(CoverageLevel);
 
 		const StartInfo& GetStartInfo() const;
 		const CoverageFilterSettings& GetCoverageFilterSettings() const;
@@ -55,6 +58,7 @@ namespace CppCoverage
 		bool GetOptimizedBuildSupport() const;
 		const std::vector<std::wstring>& GetExcludedLineRegexes() const;
 		const std::vector<SubstitutePdbSourcePath>& GetSubstitutePdbSourcePaths() const;
+		CoverageLevel GetCoverageLevel() const;
 
 	private:
 		StartInfo startInfo_;
@@ -65,6 +69,7 @@ namespace CppCoverage
         bool stopOnAssert_;
         size_t maxUnmatchPathsForWarning_;
 		bool optimizedBuildSupport_;
+		CoverageLevel coverageLevel_;
 		std::vector<std::wstring> excludedLineRegexes_;
 		std::vector<SubstitutePdbSourcePath> substitutePdbSourcePath_;
 	};

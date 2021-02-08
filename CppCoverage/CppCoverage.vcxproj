@@ -168,6 +168,7 @@
     <ClInclude Include="CodeCoverageRunner.hpp" />
     <ClInclude Include="CoverageDataMerger.hpp" />
     <ClInclude Include="CoverageFilterManager.hpp" />
+    <ClInclude Include="CoverageLevel.hpp" />
     <ClInclude Include="DebugInformationEnumerator.hpp" />
     <ClInclude Include="ExportOptionParser.hpp" />
     <ClInclude Include="ExportPluginDescription.hpp" />
