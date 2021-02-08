@@ -51,7 +51,7 @@ namespace Exporter
 		static const std::wstring WarningExitCodeMessage;
 
 	public:
-		explicit HtmlExporter(const std::filesystem::path& templateFolder);
+		explicit HtmlExporter(const std::filesystem::path& templateFolder, bool exportEmptyModules);
 
 		std::filesystem::path GetDefaultPath(const std::wstring& prefix) const override;
 		void Export(const Plugin::CoverageData&, const std::filesystem::path& outputFolder) override;
@@ -74,6 +74,7 @@ namespace Exporter
 		TemplateHtmlExporter exporter_;
 		HtmlFileCoverageExporter fileCoverageExporter_;
 		std::filesystem::path templateFolder_;
+		bool exportEmptyModules_;
 	};
 }
 

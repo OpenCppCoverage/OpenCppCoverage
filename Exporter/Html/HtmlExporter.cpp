@@ -56,10 +56,11 @@ namespace Exporter
 	const std::wstring HtmlExporter::WarningExitCodeMessage = L"Warning: Your program has exited with error code: ";
 
 	//-------------------------------------------------------------------------
-	HtmlExporter::HtmlExporter(const fs::path& templateFolder)
+	HtmlExporter::HtmlExporter(const fs::path& templateFolder, bool exportEmptyModules)
 		: exporter_(templateFolder / "MainTemplate.html", templateFolder / "SourceTemplate.html")
 		, fileCoverageExporter_()
 		, templateFolder_(templateFolder)
+		, exportEmptyModules_(exportEmptyModules)
 	{
 	}
 
@@ -99,7 +100,7 @@ namespace Exporter
 		{			
 			const auto& moduleCoverageRate = coverageRateComputer.GetCoverageRate(*module);
 
-			if (moduleCoverageRate.GetTotalLinesCount())
+			if (exportEmptyModules_ || moduleCoverageRate.GetTotalLinesCount())
 			{
 				const auto& modulePath = module->GetPath();
 				auto moduleFilename = module->GetPath().filename();

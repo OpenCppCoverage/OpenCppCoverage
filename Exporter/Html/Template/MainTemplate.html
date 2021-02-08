@@ -14,17 +14,34 @@
     <script type="text/javascript">
         $(document).ready(function ()
         {
+            function CreateCoverageChart(id, executedLine, unexecutedLine, coverRate, uncoverRate) {
+                if (executedLine === 0 && unexecutedLine === 0) {
+                    new RGraph.Pie(id, [0, 1])
+                    .set('labels', ['No line coverage data'])
+                    .set('colors', ['rgb(128,64,255)'])
+                    .set('linewidth', 1)
+                    .set('shadow', true)
+                    .set('tooltips', ['Unknown coverage'])
+                    .set('tooltips.event', 'onmousemove')
+                    .set('labels.sticks', false)
+                    .draw();
+                }
+                else {
+                    new RGraph.Pie(id, [executedLine, unexecutedLine])
+                    .set('labels', ['Cover ' + coverRate + '%', 'Uncover ' + uncoverRate + '%'])
+                    .set('colors', ['rgb(0,255,0)', 'rgb(255,0,0)'])
+                    .set('linewidth', 1)
+                    .set('shadow', true)
+                    .set('tooltips', ['cover ' + executedLine + ' lines (' + coverRate + '%)', 'uncover ' + unexecutedLine + ' lines (' + uncoverRate + '%)'])
+                    .set('tooltips.event', 'onmousemove')
+                    .set('labels.sticks', true)
+                    .set('labels.sticks.length', 10)
+                    .draw();
+                }   
+            }
+
             {{#ITEMS}}
-            new RGraph.Pie('pi_{{ID}}', [{{EXECUTED_LINE}}, {{UNEXECUTED_LINE}}])
-                .set('labels', ['Cover {{COVER_RATE}}%','Uncover {{UNCOVER_RATE}}%'])
-                .set('colors', ['rgb(0,255,0)','rgb(255,0,0)'])
-                .set('linewidth', 1)
-                .set('shadow', true)
-                .set('tooltips', ['cover {{EXECUTED_LINE}} lines ({{COVER_RATE}}%)', 'uncover {{UNEXECUTED_LINE}} lines ({{UNCOVER_RATE}}%)'])
-                .set('tooltips.event', 'onmousemove')
-                .set('labels.sticks', true)
-                .set('labels.sticks.length', 10)
-                .draw();
+            CreateCoverageChart('pi_{{ID}}', {{EXECUTED_LINE}}, {{UNEXECUTED_LINE}}, {{COVER_RATE}}, {{UNCOVER_RATE}});
             {{/ITEMS}}
 
       })

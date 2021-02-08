@@ -88,7 +88,8 @@ namespace OpenCppCoverage
 			std::map<cov::OptionsExportType, std::unique_ptr<Exporter::IExporter>> exporters;
 			
 			exporters.emplace(cov::OptionsExportType::Html, 
-				std::unique_ptr<Exporter::IExporter>(std::make_unique<Exporter::HtmlExporter>( GetTemplateFolder() )));
+				std::unique_ptr<Exporter::IExporter>(std::make_unique<Exporter::HtmlExporter>( 
+					GetTemplateFolder(), options.GetCoverageLevel() == cov::CoverageLevel::Source)));
 			exporters.emplace(cov::OptionsExportType::Cobertura, 
 				std::unique_ptr<Exporter::IExporter>(std::make_unique<Exporter::CoberturaExporter>()));
 			exporters.emplace(cov::OptionsExportType::Binary,
@@ -238,7 +239,7 @@ namespace OpenCppCoverage
 			}
 			catch (...)
 			{
-				LOG_ERROR << "Unkown Error";
+				LOG_ERROR << "Unknown Error";
 			}
 
 			warningManager->DisplayWarnings();
