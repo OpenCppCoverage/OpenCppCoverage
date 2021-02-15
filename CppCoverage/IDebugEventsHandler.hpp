@@ -31,7 +31,8 @@ namespace CppCoverage
 			InvalidBreakPoint,
 			NotHandled,
 			Error,
-			CppError
+			CppError,
+			SetThreadName
 		};
 
 		IDebugEventsHandler() = default;

@@ -30,7 +30,8 @@ namespace CppCoverage
 		BreakPoint,
 		FirstChanceException,
 		Error,
-		CppError
+		CppError,
+		SetThreadName
 	};
 
 	class CPPCOVERAGE_DLL ExceptionHandler
@@ -38,10 +39,12 @@ namespace CppCoverage
 	public:
 		static const std::wstring UnhandledExceptionErrorMessage;
 		static const std::wstring ExceptionCpp;
+		static const std::wstring ExceptionSetThreadName;
 		static const std::wstring ExceptionAccesViolation;
 		static const std::wstring ExceptionUnknown;
 		static const int ExceptionEmulationX86ErrorCode;
 		static const int CppExceptionErrorCode;
+		static const int SetThreadNameExceptionErrorCode;
 
 		ExceptionHandler();
 
