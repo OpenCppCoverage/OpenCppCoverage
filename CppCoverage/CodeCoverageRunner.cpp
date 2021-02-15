@@ -160,6 +160,12 @@ namespace CppCoverage
 
 				return IDebugEventsHandler::ExceptionType::CppError;
 			}
+			case CppCoverage::ExceptionHandlerStatus::SetThreadName:
+			{
+				LOG_ERROR << ostr.str();
+
+				return IDebugEventsHandler::ExceptionType::SetThreadName;
+			}
 		}
 
 		return IDebugEventsHandler::ExceptionType::NotHandled;

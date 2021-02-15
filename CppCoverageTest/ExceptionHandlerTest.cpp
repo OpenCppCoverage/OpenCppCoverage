@@ -95,6 +95,14 @@ namespace CppCoverageTest
 	}
 
 	//-----------------------------------------------------------------------------
+	TEST_F(ExceptionHandlerTest, TestUnHandleSetThreadName)
+	{
+		Run(TestCoverageConsole::TestSetThreadNameException);
+		ASSERT_EQ(cov::ExceptionHandlerStatus::SetThreadName, exceptionHandlerStatus_);
+		ASSERT_NE(std::string::npos, message_.find(cov::ExceptionHandler::ExceptionSetThreadName));
+	}
+
+	//-----------------------------------------------------------------------------
 	TEST_F(ExceptionHandlerTest, TestUnHandleSEHException)
 	{
 		Run(TestCoverageConsole::TestThrowUnHandledSEHException);	

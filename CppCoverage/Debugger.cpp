@@ -177,6 +177,7 @@ namespace CppCoverage
 		switch (exceptionType)
 		{
 			case IDebugEventsHandler::ExceptionType::BreakPoint:
+			case IDebugEventsHandler::ExceptionType::SetThreadName:
 			{
 				return ProcessStatus{ boost::none, DBG_CONTINUE };
 			}

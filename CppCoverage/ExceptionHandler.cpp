@@ -27,10 +27,12 @@ namespace CppCoverage
 	const std::wstring ExceptionHandler::UnhandledExceptionErrorMessage =
 	    L"Your application has thrown an unhandled exception. Code: ";
 	const std::wstring ExceptionHandler::ExceptionCpp = L"Exception C++";
+	const std::wstring ExceptionHandler::ExceptionSetThreadName = L"MS_VC_EXCEPTION (set thread name)";
 	const std::wstring ExceptionHandler::ExceptionAccesViolation = L"EXCEPTION_ACCESS_VIOLATION";
 	const std::wstring ExceptionHandler::ExceptionUnknown = L"Unknown";
 	const int ExceptionHandler::ExceptionEmulationX86ErrorCode = 0x4000001f;
 	const int ExceptionHandler::CppExceptionErrorCode = 0xE06D7363;
+	const int ExceptionHandler::SetThreadNameExceptionErrorCode = 0x406D1388;
 
 	//-------------------------------------------------------------------------
 	ExceptionHandler::ExceptionHandler()
@@ -65,6 +67,7 @@ namespace CppCoverage
 		exceptionCode_.emplace(EXCEPTION_STACK_OVERFLOW, L"EXCEPTION_STACK_OVERFLOW");
 		
 		exceptionCode_.emplace(CppExceptionErrorCode, ExceptionCpp);
+		exceptionCode_.emplace(SetThreadNameExceptionErrorCode, ExceptionSetThreadName);
 	}
 	
 	//-------------------------------------------------------------------------
@@ -99,9 +102,15 @@ namespace CppCoverage
 		message << UnhandledExceptionErrorMessage << exceptionRecord.ExceptionCode;
 		message << L": " << GetExceptionStrFromCode(exceptionRecord.ExceptionCode) << std::endl;
 		message << Tools::GetSeparatorLine() << std::endl;
+		if (exceptionCode == SetThreadNameExceptionErrorCode)
+		{
+			message << L" Ignoring attempt to set thread name and continuing." << std::endl;
+			return ExceptionHandlerStatus::SetThreadName;
+		}
 		message << L"See https://github.com/OpenCppCoverage/OpenCppCoverage/wiki/FAQ";
 		message << L"#your-application-has-thrown-an-unhandled-exception-code-3221225477";
 		message << L"-exception_access_violation for additional information." << std::endl;
+
 
 		return (exceptionCode == CppExceptionErrorCode) 
 			? ExceptionHandlerStatus::CppError : ExceptionHandlerStatus::Error;
