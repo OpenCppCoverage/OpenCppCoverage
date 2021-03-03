@@ -39,55 +39,88 @@ namespace Tools
 		}
 
 		//-----------------------------------------------------------------------------
-		void CreateMiniDump(
-			MINIDUMP_EXCEPTION_INFORMATION& minidumpInfo, 
-			HANDLE hFile, 			
-			const wchar_t* dmpFilename)
+		bool CreateMiniDump(
+			PEXCEPTION_POINTERS exceptionInfo,
+			DWORD dwProcessId,
+			DWORD dwThreadId,
+			HANDLE hProcess,
+			const wchar_t* dmpFilename,
+			bool isOpenCppCrash)
 		{
+			MINIDUMP_EXCEPTION_INFORMATION minidumpInfo;
 			auto miniDumpType = GetMiniDumpDefaultType();
+			HANDLE hFile = CreateFileW(dmpFilename, GENERIC_WRITE, 0, nullptr,
+									   CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+
+			if (hFile == INVALID_HANDLE_VALUE)
+				return false;
+
+			minidumpInfo.ThreadId = dwThreadId;
+			minidumpInfo.ExceptionPointers = exceptionInfo;
+			minidumpInfo.ClientPointers = FALSE;
 
 			std::wcerr << L"\tTrying to create memory dump..." << std::endl;
-			if (MiniDumpWriteDump(
-				GetCurrentProcess(),
-				GetCurrentProcessId(),
-				hFile,
-				miniDumpType,
-				&minidumpInfo,
-				nullptr,
-				nullptr))
+
+			bool succeeded = false;
+			// Loop from https://github.com/dotnet/diagnostics/blob/master/src/Tools/dotnet-dump/Dumper.Windows.cs
+			for (int n = 0; n < 5; ++n)
 			{
-				std::wcerr << "\tMemory dump created successfully: " << dmpFilename << std::endl;
-				std::wcerr << "\tPlease create a new issue on ";
-				std::wcerr << "https://github.com/OpenCppCoverage/OpenCppCoverage/issues and attached the memory dump ";
-				std::wcerr << dmpFilename << std::endl;
+				if (MiniDumpWriteDump(
+					hProcess,
+					dwProcessId,
+					hFile,
+					miniDumpType,
+					&minidumpInfo,
+					nullptr,
+					nullptr))
+				{
+					succeeded = true;
+					break;
+				}
+				else
+				{
+					if (GetLastError() != HRESULT_FROM_WIN32(ERROR_PARTIAL_COPY))
+						break;
+				}
+			}
+
+			if (succeeded)
+			{
+				if (isOpenCppCrash)
+				{
+					std::wcerr << "\tMemory dump created successfully: " << dmpFilename << std::endl;
+					std::wcerr << "\tPlease create a new issue on ";
+					std::wcerr << "https://github.com/OpenCppCoverage/OpenCppCoverage/issues and attached the memory dump ";
+					std::wcerr << dmpFilename << std::endl;
+				}
 			}
 			else
-				std::cerr << "\tFailed to create memory dump." << std::endl;
+			{
+				if (isOpenCppCrash)
+					std::cerr << "\tFailed to create memory dump." << std::endl;
+			}
+
+			CloseHandle(hFile);
+			return succeeded;
 		}
 		
 		//-----------------------------------------------------------------------------
 		LONG WINAPI CreateMiniDumpOnUnHandledException(PEXCEPTION_POINTERS exceptionInfo)
 		{
-			MINIDUMP_EXCEPTION_INFORMATION minidumpInfo;
-
-			std::wcerr << L"Unexpected error occurs." << std::endl;			
-
-			minidumpInfo.ThreadId = GetCurrentThreadId();
-			minidumpInfo.ExceptionPointers = exceptionInfo;
-			minidumpInfo.ClientPointers = FALSE;
+			std::wcerr << L"Unexpected error occurs." << std::endl;
 
 			const auto dmpFilename = L"OpenCppCoverage.dmp";
-			HANDLE hFile = CreateFile(dmpFilename, GENERIC_WRITE, 0, nullptr,
-				CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
-			
-			if (hFile != INVALID_HANDLE_VALUE)
-			{				
-				CreateMiniDump(minidumpInfo, hFile, dmpFilename);
-				CloseHandle(hFile);
-			}
+
+			CreateMiniDump(exceptionInfo,
+						   GetCurrentProcessId(),
+						   GetCurrentThreadId(),
+						   GetCurrentProcess(),
+						   dmpFilename,
+						   true);
+
 			abort();
 			return 0;
-		}	
+		}
 	}
 
 	//-------------------------------------------------------------------------
@@ -98,4 +131,13 @@ namespace Tools
 
 		SetUnhandledExceptionFilter(CreateMiniDumpOnUnHandledException);
 	}	
+
+	bool CreateMiniDumpFromException(PEXCEPTION_POINTERS exceptionInfo,
+									 DWORD dwProcessId,
+									 DWORD dwThreadId,
+									 HANDLE hProcess,
+									 const wchar_t* dmpFilename)
+	{
+		return CreateMiniDump(exceptionInfo, dwProcessId, dwThreadId, hProcess, dmpFilename, false);
+	}
 }

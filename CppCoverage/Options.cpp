@@ -48,6 +48,8 @@ namespace CppCoverage
 		, isCoverChildrenModeEnabled_{false}
 		, isAggregateByFileModeEnabled_{true}
 		, isContinueAfterCppExceptionModeEnabled_{false}
+		, isStopOnAssertModeEnabled_{false}
+		, isDumpOnCrashEnabled_{false}
 		, isOptimizedBuildSupportEnabled_{false}
 	{
 		if (startInfo)
@@ -148,6 +150,18 @@ namespace CppCoverage
     }
 
     //-------------------------------------------------------------------------
+    void Options::EnableDumpOnCrash()
+    {
+      isDumpOnCrashEnabled_ = true;
+    }
+    
+    //-------------------------------------------------------------------------
+    bool Options::IsDumpOnCrashEnabled() const
+    {
+      return isDumpOnCrashEnabled_;
+    }
+
+    //-------------------------------------------------------------------------
 	void Options::AddExport(OptionsExport&& optionExport)
 	{
 		exports_.push_back(std::move(optionExport));
@@ -230,6 +244,7 @@ namespace CppCoverage
 		ostr << L"Cover Children: " << options.isCoverChildrenModeEnabled_ << std::endl;
 		ostr << L"Aggregate by file: " << options.isAggregateByFileModeEnabled_ << std::endl;
 		ostr << L"Continue after C++ exception: " << options.isContinueAfterCppExceptionModeEnabled_ << std::endl;
+		ostr << L"Create minidump on crash: " << options.isDumpOnCrashEnabled_ << std::endl;
 		ostr << L"Optimized build support: " << options.isOptimizedBuildSupportEnabled_ << std::endl;
 
 		ostr << L"Export: ";

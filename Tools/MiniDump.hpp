@@ -17,10 +17,17 @@
 #pragma once
 
 #include "ToolsExport.hpp"
+#include <Windows.h>
+
 
 namespace Tools
 {
 	TOOLS_DLL void CreateMiniDumpOnUnHandledException();
+	TOOLS_DLL bool CreateMiniDumpFromException(PEXCEPTION_POINTERS exceptionInfo,
+											   DWORD dwProcessId,
+											   DWORD dwThreadId,
+											   HANDLE hProcess,
+											   const wchar_t* dmpFilename);
 }
 
 

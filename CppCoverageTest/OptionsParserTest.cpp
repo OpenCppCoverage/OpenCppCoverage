@@ -135,6 +135,16 @@ namespace CppCoverageTest
         ->IsStopOnAssertModeEnabled());
     }
     
+	//-------------------------------------------------------------------------
+	TEST(OptionsParserTest, DumpOnCrash)
+	{
+		cov::OptionsParser parser;
+
+		ASSERT_TRUE(TestTools::Parse(parser,
+		{ TestTools::GetOptionPrefix() + cov::ProgramOptions::DumpOnCrashOption })
+			->IsDumpOnCrashEnabled());
+	}
+
     //-------------------------------------------------------------------------
 	TEST(OptionsParserTest, WorkingDirectory)
 	{

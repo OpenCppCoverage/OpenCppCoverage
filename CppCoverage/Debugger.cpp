@@ -19,6 +19,7 @@
 
 #include "tools/Log.hpp"
 #include "tools/ScopedAction.hpp"
+#include "Tools/MiniDump.hpp"
 
 #include "Process.hpp"
 #include "CppCoverageException.hpp"
@@ -60,10 +61,12 @@ namespace CppCoverage
 	Debugger::Debugger(
 		bool coverChildren,
 		bool continueAfterCppException,
-        bool stopOnAssert)
+        bool stopOnAssert,
+		bool dumpOnCrash)
 		: coverChildren_{ coverChildren }
 		, continueAfterCppException_{ continueAfterCppException }
         , stopOnAssert_{ stopOnAssert }
+		, dumpOnCrash_{ dumpOnCrash }
 	{
 	}
 
@@ -163,6 +166,52 @@ namespace CppCoverage
 		return ProcessStatus{};
 	}
 	
+	void
+		Debugger::HandleCrashDump(
+			const DEBUG_EVENT& debugEvent,
+			HANDLE hProcess,
+			HANDLE hThread,
+			bool includeFirstChance) const
+	{
+		// Crash dump is not enabled
+		if (!dumpOnCrash_)
+			return;
+
+		const auto& exception = debugEvent.u.Exception;
+		// Do not create a crashdump on a first chance exception (can still be caught)
+		if (exception.dwFirstChance && !includeFirstChance)
+			return;
+
+		EXCEPTION_POINTERS ExceptionPointers = {};
+		CONTEXT ctx = {};
+
+		ctx.ContextFlags = CONTEXT_ALL;
+		GetThreadContext(hThread, &ctx);
+
+		ExceptionPointers.ExceptionRecord = const_cast<EXCEPTION_RECORD*>(&exception.ExceptionRecord);
+		ExceptionPointers.ContextRecord = &ctx;
+
+		auto crash_name = L"crash-" + std::to_wstring(debugEvent.dwProcessId) + L".dmp";
+
+		if (Tools::CreateMiniDumpFromException(
+			&ExceptionPointers,
+			debugEvent.dwProcessId,
+			debugEvent.dwThreadId,
+			hProcess,
+			crash_name.c_str()))
+		{
+			LOG_INFO << Tools::GetSeparatorLine();
+			LOG_INFO << "Created minidump " << crash_name;
+			LOG_INFO << Tools::GetSeparatorLine();
+		}
+		else
+		{
+			LOG_WARNING << Tools::GetSeparatorLine();
+			LOG_WARNING << "Failed to create minidump";
+			LOG_WARNING << Tools::GetSeparatorLine();
+		}
+	}
+
 	//-------------------------------------------------------------------------
 	Debugger::ProcessStatus
 		Debugger::OnException(
@@ -186,6 +235,8 @@ namespace CppCoverage
 				LOG_WARNING << "It seems there is an assertion failure or you call DebugBreak() in your program.";
 				LOG_WARNING << Tools::GetSeparatorLine();
 
+				HandleCrashDump(debugEvent, hProcess, hThread, true);
+
                 if (stopOnAssert_)
                 {
                   LOG_WARNING << "Stop on assertion.";
@@ -198,14 +249,17 @@ namespace CppCoverage
 			}
 			case IDebugEventsHandler::ExceptionType::NotHandled:
 			{
+				HandleCrashDump(debugEvent, hProcess, hThread, false);
 				return ProcessStatus{ boost::none, DBG_EXCEPTION_NOT_HANDLED };
 			}
 			case IDebugEventsHandler::ExceptionType::Error:
 			{
+				HandleCrashDump(debugEvent, hProcess, hThread, false);
 				return ProcessStatus{ boost::none, DBG_EXCEPTION_NOT_HANDLED };
 			}
 			case IDebugEventsHandler::ExceptionType::CppError:
 			{
+				HandleCrashDump(debugEvent, hProcess, hThread, false);
 				if (continueAfterCppException_)
 				{
 					const auto& exceptionRecord = exception.ExceptionRecord;

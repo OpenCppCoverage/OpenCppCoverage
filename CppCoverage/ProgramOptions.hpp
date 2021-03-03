@@ -43,6 +43,7 @@ namespace CppCoverage
 		static const std::string CoverChildrenOption;
 		static const std::string NoAggregateByFileOption;
         static const std::string StopOnAssertOption;
+		static const std::string DumpOnCrashOption;
         static const std::string ProgramToRunOption;
 		static const std::string ProgramToRunArgOption;
 		static const std::string InputCoverageValue;

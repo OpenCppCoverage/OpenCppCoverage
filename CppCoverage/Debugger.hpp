@@ -34,7 +34,8 @@ namespace CppCoverage
 		Debugger(
 			bool coverChildren,
 			bool continueAfterCppException,
-            bool stopOnAssert);
+            bool stopOnAssert,
+			bool dumpOnCrash);
 
 		int Debug(const StartInfo&, IDebugEventsHandler&);
 		size_t GetRunningProcesses() const;
@@ -75,6 +76,7 @@ namespace CppCoverage
 			DWORD dwThreadId);
 
 		ProcessStatus OnException(const DEBUG_EVENT&, IDebugEventsHandler&, HANDLE hProcess, HANDLE hThread) const;
+		void HandleCrashDump(const DEBUG_EVENT&, HANDLE hProcess, HANDLE hThread, bool includeFirstChance) const;
 
 	private:
 		std::unordered_map<DWORD, HANDLE> processHandles_;
@@ -83,6 +85,7 @@ namespace CppCoverage
 		bool coverChildren_;
 		bool continueAfterCppException_;
         bool stopOnAssert_;
+		bool dumpOnCrash_;
     };
 }
 
