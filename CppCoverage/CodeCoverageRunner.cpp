@@ -178,9 +178,17 @@ namespace CppCoverage
 
 		if (oldInstruction)
 		{
-			breakpoint_->RemoveBreakPoint(address, *oldInstruction);
-			breakpoint_->AdjustEipAfterBreakPointRemoval(hThread);
-			return true;
+			if (*oldInstruction != BreakPoint::breakPointInstruction)
+			{
+				breakpoint_->RemoveBreakPoint(address, *oldInstruction);
+				breakpoint_->AdjustEipAfterBreakPointRemoval(hThread);
+				return true;
+			}
+			else
+			{
+				// There was already a BP instruction here!
+				return false;
+			}
 		}
 
 		return false;
