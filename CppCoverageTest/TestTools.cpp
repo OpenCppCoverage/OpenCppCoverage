@@ -61,7 +61,7 @@ namespace CppCoverageTest
 		void GetHandles(const std::filesystem::path& path, TestTools::T_HandlesFct action)
 		{
 			cov::StartInfo startInfo{ path };
-			cov::Debugger debugger{ false, false, false };
+			cov::Debugger debugger{ false, false, false, false };
 			DebugEventsHandler debugEventsHandler{ action };
 
 			debugger.Debug(startInfo, debugEventsHandler);

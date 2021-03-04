@@ -30,7 +30,7 @@ namespace CppCoverageTest
 	TEST(DebugerTest, Debug)
 	{		
 		cov::StartInfo startInfo{ TestCoverageConsole::GetOutputBinaryPath() };
-		cov::Debugger debugger{ false, false, false };
+		cov::Debugger debugger{ false, false, false, false };
 		DebugEventsHandlerMock debugEventsHandlerMock;
 
 		EXPECT_CALL(debugEventsHandlerMock, OnCreateProcess(testing::_));

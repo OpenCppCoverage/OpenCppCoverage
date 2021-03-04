@@ -42,6 +42,7 @@ namespace CppCoverage
 		void SetCoverChildren(bool);
 		void SetContinueAfterCppException(bool);
         void SetStopOnAssert(bool);
+		void SetDumpOnCrash(bool);
         void SetMaxUnmatchPathsForWarning(size_t);
 		void SetOptimizedBuildSupport(bool);
 
@@ -51,6 +52,7 @@ namespace CppCoverage
 		bool GetCoverChildren() const;
 		bool GetContinueAfterCppException() const;
         bool GetStopOnAssert() const;
+		bool GetDumpOnCrash() const;
         size_t GetMaxUnmatchPathsForWarning() const;
 		bool GetOptimizedBuildSupport() const;
 		const std::vector<std::wstring>& GetExcludedLineRegexes() const;
@@ -63,6 +65,7 @@ namespace CppCoverage
 		bool coverChildren_;
 		bool continueAfterCppException_;
         bool stopOnAssert_;
+		bool dumpOnCrash_;
         size_t maxUnmatchPathsForWarning_;
 		bool optimizedBuildSupport_;
 		std::vector<std::wstring> excludedLineRegexes_;

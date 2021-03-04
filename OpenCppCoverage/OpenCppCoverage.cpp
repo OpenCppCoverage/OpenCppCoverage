@@ -180,6 +180,7 @@ namespace OpenCppCoverage
 				runCoverageSettings.SetCoverChildren(options.IsCoverChildrenModeEnabled());
 				runCoverageSettings.SetContinueAfterCppException(options.IsContinueAfterCppExceptionModeEnabled());
                 runCoverageSettings.SetStopOnAssert(options.IsStopOnAssertModeEnabled());
+				runCoverageSettings.SetDumpOnCrash(options.IsDumpOnCrashEnabled());
                 runCoverageSettings.SetMaxUnmatchPathsForWarning(maxUnmatchPathsForWarning);
 				runCoverageSettings.SetOptimizedBuildSupport(options.IsOptimizedBuildSupportEnabled());
 				auto coverageData = codeCoverageRunner.RunCoverage(runCoverageSettings);

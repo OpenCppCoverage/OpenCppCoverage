@@ -64,6 +64,9 @@ namespace CppCoverage
         void EnableStopOnAssertMode();
         bool IsStopOnAssertModeEnabled() const;
 
+		void EnableDumpOnCrash();
+		bool IsDumpOnCrashEnabled() const;
+
 		void DisableAggregateByFileMode();
 		bool IsAggregateByFileModeEnabled() const;
 
@@ -105,6 +108,7 @@ namespace CppCoverage
 		bool isAggregateByFileModeEnabled_;
 		bool isContinueAfterCppExceptionModeEnabled_;
         bool isStopOnAssertModeEnabled_;
+		bool isDumpOnCrashEnabled_;
         bool isOptimizedBuildSupportEnabled_;
         std::vector<OptionsExport> exports_;
 		std::vector<std::filesystem::path> inputCoveragePaths_;

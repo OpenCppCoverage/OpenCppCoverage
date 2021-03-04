@@ -31,6 +31,8 @@ namespace CppCoverage
 	      unifiedDiffSettings_{unifiedDiffSettings},
 	      coverChildren_{false},
 	      continueAfterCppException_{false},
+	      stopOnAssert_{false},
+	      dumpOnCrash_{false},
 	      maxUnmatchPathsForWarning_{0},
 	      optimizedBuildSupport_{false},
 	      excludedLineRegexes_{excludedLineRegexes},
@@ -55,6 +57,12 @@ namespace CppCoverage
     {
       stopOnAssert_ = stopOnAssert;
     }
+
+	//-------------------------------------------------------------------------
+	void RunCoverageSettings::SetDumpOnCrash(bool dumpOnCrash)
+	{
+		dumpOnCrash_ = dumpOnCrash;
+	}
 
     //-------------------------------------------------------------------------
 	void RunCoverageSettings::SetMaxUnmatchPathsForWarning(size_t maxUnmatchPathsForWarning)
@@ -104,7 +112,13 @@ namespace CppCoverage
       return stopOnAssert_;
     }
     
-    //-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
+	bool RunCoverageSettings::GetDumpOnCrash() const
+	{
+		return dumpOnCrash_;
+	}
+
+	//-------------------------------------------------------------------------
 	size_t RunCoverageSettings::GetMaxUnmatchPathsForWarning() const
 	{
 		return maxUnmatchPathsForWarning_;

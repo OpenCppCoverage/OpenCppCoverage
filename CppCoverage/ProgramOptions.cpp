@@ -80,6 +80,7 @@ namespace CppCoverage
 				(ProgramOptions::CoverChildrenOption.c_str(), "Enable code coverage for children processes.")
 				(ProgramOptions::NoAggregateByFileOption.c_str(), "Do not aggregate coverage for same file path.")
                 (ProgramOptions::StopOnAssertOption.c_str(), "Do not continue after DebugBreak() or assert().")
+				(ProgramOptions::DumpOnCrashOption.c_str(), "Create a minidump on crash.")
               (ProgramOptions::UnifiedDiffOption.c_str(),
 					po::value<T_Strings>()->composing(), GetUnifiedDiffHelp().c_str())
 				(ProgramOptions::ContinueAfterCppExceptionOption.c_str(), "Try to continue after throwing a C++ exception.")
@@ -129,6 +130,7 @@ namespace CppCoverage
 	const std::string ProgramOptions::ExcludedLineRegexOption = "excluded_line_regex";
 	const std::string ProgramOptions::SubstitutePdbSourcePathOption = "substitute_pdb_source_path";
     const std::string ProgramOptions::StopOnAssertOption = "stop_on_assert";
+	const std::string ProgramOptions::DumpOnCrashOption = "dump_on_crash";
 
 	//-------------------------------------------------------------------------
 	ProgramOptions::ProgramOptions(
