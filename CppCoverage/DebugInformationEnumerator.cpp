@@ -301,6 +301,29 @@ namespace CppCoverage
 				THROW("DIA: Cannot find symbol");
 			}
 
+			// go from block to function as needed
+
+			DWORD tag{ 0 };
+			symbol->get_symTag(&tag);
+
+			CComPtr<IDiaSymbol> probe{ symbol };
+
+			while (tag != SymTagEnum::SymTagFunction)
+			{
+				CComPtr<IDiaSymbol> parent;
+				if (probe->get_lexicalParent(&parent) != S_OK)
+				THROW("DIA: Cannot get function");
+				parent->get_symTag(&tag);
+				probe = parent;
+			}
+
+			// by observation this fails for managed functions
+			CComPtr<IDiaSymbol> pBaseType;
+			auto check = probe->get_type(&pBaseType);
+			if (check != S_OK) {
+				return;
+			}
+
 			unsigned long symIndex = 0;
 			if (symbol->get_symIndexId(&symIndex) != S_OK)
 				THROW("DIA: Cannot get symIndex");

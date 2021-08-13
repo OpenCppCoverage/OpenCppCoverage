@@ -22,7 +22,7 @@
 
 namespace Tools
 {
-	class IPEFileHeaderHandler
+	class TOOLS_DLL IPEFileHeaderHandler
 	{
 	  public:
 		virtual ~IPEFileHeaderHandler() = default;
@@ -32,7 +32,12 @@ namespace Tools
 		virtual void OnNtHeader64(HANDLE hProcess,
 		                          DWORD64 baseOfImage,
 		                          const IMAGE_NT_HEADERS64&) = 0;
-	};
+          protected:
+               void ReadFromProcessMemory(HANDLE hProcess,
+                                          DWORD64 address,
+                                          void* buffer,
+                                          SIZE_T size);
+        };
 
 	class TOOLS_DLL PEFileHeader
 	{
