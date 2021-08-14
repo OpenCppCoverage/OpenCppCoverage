@@ -46,7 +46,8 @@ namespace CppCoverageTest
 		auto coverage = TestTools::ComputeCoverageDataPatterns(coverageArgs);
 		ASSERT_EQ(0, coverage.GetExitCode());
 		const auto& modules = coverage.GetModules();
-		ASSERT_EQ(1, modules.size());
-		ASSERT_EQ(sharedLibModulePath, modules.at(0)->GetPath());
+		ASSERT_EQ(2, modules.size());
+		ASSERT_EQ(testCppCliPath, modules.at(0)->GetPath());
+		ASSERT_EQ(sharedLibModulePath, modules.at(1)->GetPath());
 	}
 }
