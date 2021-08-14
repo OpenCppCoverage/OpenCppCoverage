@@ -317,10 +317,11 @@ namespace CppCoverage
 				probe = parent;
 			}
 
-			// by observation this fails for managed functions
-			CComPtr<IDiaSymbol> pBaseType;
-			auto check = probe->get_type(&pBaseType);
-			if (check != S_OK) {
+			// by observation this fails (S_FALSE) for unmanaged functions
+                        // which of course have no metadata token value
+			DWORD token{ 0 };
+			auto check = probe->get_token(&token);
+			if (check == S_OK && token != 0) {
 				return;
 			}
 
