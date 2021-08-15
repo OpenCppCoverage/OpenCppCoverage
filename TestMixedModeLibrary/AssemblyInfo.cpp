@@ -1,6 +1,3 @@
-// DllForCppCoverageTest.cpp : Defines the entry point for the application.
-//
-
 #include "Stdafx.h"
 
 // OpenCppCoverage is an open source code coverage for C++.
@@ -19,6 +16,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "Stdafx.h"
+
 using namespace System::Reflection;
 using namespace System::Runtime::CompilerServices;
 using namespace System::Runtime::InteropServices;
@@ -28,11 +27,11 @@ using namespace System::Runtime::InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly:AssemblyTitleAttribute("TestCppCli")];
+[assembly:AssemblyTitleAttribute("TestMixedModeLibrary")];
 [assembly:AssemblyDescriptionAttribute("")] ;
 [assembly:AssemblyConfigurationAttribute("")] ;
 [assembly:AssemblyCompanyAttribute("")] ;
-[assembly:AssemblyProductAttribute("TestCppCli")] ;
+[assembly:AssemblyProductAttribute("TestMixedModeLibrary")] ;
 [assembly:AssemblyCopyrightAttribute("Copyright (c)  2017")] ;
 [assembly:AssemblyTrademarkAttribute("")] ;
 [assembly:AssemblyCultureAttribute("")] ;
@@ -48,5 +47,5 @@ using namespace System::Runtime::InteropServices;
 // You can specify all the value or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 
-[assembly:AssemblyVersionAttribute("1.0.0.0")];
+[assembly:AssemblyVersionAttribute("1.0.*")];
 [assembly:ComVisible(false)] ;
