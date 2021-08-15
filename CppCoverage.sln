@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31605.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2D036BFA-5FAC-467B-9648-5B2BBC5B872C}"
 	ProjectSection(SolutionItems) = preProject
@@ -16,7 +16,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppCoverageTest", "CppCoverageTest\CppCoverageTest.vcxproj", "{4360D299-2F7D-462E-B7EF-0670FD06F478}"
 	ProjectSection(ProjectDependencies) = postProject
 		{21A0DD74-91CB-485A-BACD-A18047E076D8} = {21A0DD74-91CB-485A-BACD-A18047E076D8}
+		{D95BBB9A-66FF-44DB-B630-99C700CC31C9} = {D95BBB9A-66FF-44DB-B630-99C700CC31C9}
 		{A50DD5A6-E85A-4E0B-9CC6-90D32503CE62} = {A50DD5A6-E85A-4E0B-9CC6-90D32503CE62}
+		{958DF9B2-C3E2-4B72-AB1C-8969158DEAB6} = {958DF9B2-C3E2-4B72-AB1C-8969158DEAB6}
 		{0DD16EDF-BD43-4D7B-B357-931F48F2FCC6} = {0DD16EDF-BD43-4D7B-B357-931F48F2FCC6}
 	EndProjectSection
 EndProject
@@ -56,6 +58,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Plugin", "Plugin\Plugin.vcxproj", "{2F439508-07E0-4084-9614-1A42BDE8ED9A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PluginTest", "PluginTest\PluginTest.vcxproj", "{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestMixedModeLibrary", "TestMixedModeLibrary\TestMixedModeLibrary.vcxproj", "{D95BBB9A-66FF-44DB-B630-99C700CC31C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMixedMode", "TestMixedMode\TestMixedMode.csproj", "{958DF9B2-C3E2-4B72-AB1C-8969158DEAB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -201,6 +207,22 @@ Global
 		{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}.Release|Win32.Build.0 = Release|Win32
 		{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}.Release|x64.ActiveCfg = Release|x64
 		{69AA0B9B-DA99-4B28-B3FC-49AC3AD0A88A}.Release|x64.Build.0 = Release|x64
+		{D95BBB9A-66FF-44DB-B630-99C700CC31C9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D95BBB9A-66FF-44DB-B630-99C700CC31C9}.Debug|Win32.Build.0 = Debug|Win32
+		{D95BBB9A-66FF-44DB-B630-99C700CC31C9}.Debug|x64.ActiveCfg = Debug|x64
+		{D95BBB9A-66FF-44DB-B630-99C700CC31C9}.Debug|x64.Build.0 = Debug|x64
+		{D95BBB9A-66FF-44DB-B630-99C700CC31C9}.Release|Win32.ActiveCfg = Release|Win32
+		{D95BBB9A-66FF-44DB-B630-99C700CC31C9}.Release|Win32.Build.0 = Release|Win32
+		{D95BBB9A-66FF-44DB-B630-99C700CC31C9}.Release|x64.ActiveCfg = Release|x64
+		{D95BBB9A-66FF-44DB-B630-99C700CC31C9}.Release|x64.Build.0 = Release|x64
+		{958DF9B2-C3E2-4B72-AB1C-8969158DEAB6}.Debug|Win32.ActiveCfg = Debug|x86
+		{958DF9B2-C3E2-4B72-AB1C-8969158DEAB6}.Debug|Win32.Build.0 = Debug|x86
+		{958DF9B2-C3E2-4B72-AB1C-8969158DEAB6}.Debug|x64.ActiveCfg = Debug|x64
+		{958DF9B2-C3E2-4B72-AB1C-8969158DEAB6}.Debug|x64.Build.0 = Debug|x64
+		{958DF9B2-C3E2-4B72-AB1C-8969158DEAB6}.Release|Win32.ActiveCfg = Release|x86
+		{958DF9B2-C3E2-4B72-AB1C-8969158DEAB6}.Release|Win32.Build.0 = Release|x86
+		{958DF9B2-C3E2-4B72-AB1C-8969158DEAB6}.Release|x64.ActiveCfg = Release|x64
+		{958DF9B2-C3E2-4B72-AB1C-8969158DEAB6}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
