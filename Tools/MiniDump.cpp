@@ -58,7 +58,7 @@ namespace Tools
 			{
 				std::wcerr << "\tMemory dump created successfully: " << dmpFilename << std::endl;
 				std::wcerr << "\tPlease create a new issue on ";
-				std::wcerr << "https://github.com/OpenCppCoverage/OpenCppCoverage/issues and attached the memory dump ";
+				std::wcerr << "https://github.com/OpenCppCoverage/OpenCppCoverage/issues and attach the memory dump ";
 				std::wcerr << dmpFilename << std::endl;
 			}
 			else
