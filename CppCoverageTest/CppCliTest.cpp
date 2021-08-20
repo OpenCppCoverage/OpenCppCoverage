@@ -66,7 +66,10 @@ namespace CppCoverageTest
 		coverageArgs.modulePatternCollection_.push_back(
 		    sharedMixedModeLibModulePath.wstring());
 		coverageArgs.programToRun_ = vsConsoleTestPath;
-		coverageArgs.arguments_.push_back(L"--platform:x64");
+		if (sizeof(void*) == 8)
+			coverageArgs.arguments_.push_back(L"--platform:x64");
+		else
+			coverageArgs.arguments_.push_back(L"--platform:x86");
 
 		auto coverage = TestTools::ComputeCoverageDataPatterns(coverageArgs);
 		ASSERT_EQ(0, coverage.GetExitCode());
