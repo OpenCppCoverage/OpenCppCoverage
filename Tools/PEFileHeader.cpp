@@ -46,4 +46,13 @@ namespace Tools
 			THROW(L"PE file header machine is not supported: " +
 			      std::to_wstring(machine));
 	}
+
+        void IPEFileHeaderHandler::ReadFromProcessMemory(HANDLE hProcess,
+                                DWORD64 address,
+                                void* buffer,
+                                SIZE_T size)
+        {
+                return ::Tools::ReadProcessMemory(
+                                hProcess, address, buffer, size);
+        }
 }

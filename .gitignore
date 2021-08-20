@@ -30,3 +30,4 @@ CoverageData.pb.h
 CoverageData.pb.cc
 
 .clang-format
+TestMixedMode/obj/

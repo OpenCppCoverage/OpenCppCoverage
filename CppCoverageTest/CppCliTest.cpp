@@ -46,7 +46,35 @@ namespace CppCoverageTest
 		auto coverage = TestTools::ComputeCoverageDataPatterns(coverageArgs);
 		ASSERT_EQ(0, coverage.GetExitCode());
 		const auto& modules = coverage.GetModules();
+		ASSERT_EQ(2, modules.size());
+		ASSERT_EQ(testCppCliPath, modules.at(0)->GetPath());
+		ASSERT_EQ(sharedLibModulePath, modules.at(1)->GetPath());
+	}
+
+	//---------------------------------------------------------------------
+	TEST(CppCliTest, ManagedMixedModule)
+	{
+		auto vsPath = TestHelper::GetVisualStudioPath();
+		fs::path vsConsoleTestPath = vsPath / "Common7" / "IDE" /
+		                             "CommonExtensions" / "Microsoft" /
+		                             "TestWindow" / "vstest.console.exe";
+		auto testMixedModePath = (fs::path{OUT_DIR} / "TestMixedMode.dll").wstring();
+		auto sharedMixedModeLibModulePath = fs::path{OUT_DIR} / "TestMixedModeLibrary.dll";
+
+		TestTools::CoverageArgs coverageArgs(
+		    {testMixedModePath}, testMixedModePath, L"None");
+		coverageArgs.modulePatternCollection_.push_back(
+		    sharedMixedModeLibModulePath.wstring());
+		coverageArgs.programToRun_ = vsConsoleTestPath;
+		if (sizeof(void*) == 8)
+			coverageArgs.arguments_.push_back(L"--platform:x64");
+		else
+			coverageArgs.arguments_.push_back(L"--platform:x86");
+
+		auto coverage = TestTools::ComputeCoverageDataPatterns(coverageArgs);
+		ASSERT_EQ(0, coverage.GetExitCode());
+		const auto& modules = coverage.GetModules();
 		ASSERT_EQ(1, modules.size());
-		ASSERT_EQ(sharedLibModulePath, modules.at(0)->GetPath());
+		ASSERT_EQ(sharedMixedModeLibModulePath, modules.at(0)->GetPath());
 	}
 }

@@ -44,13 +44,25 @@ namespace CppCoverage
 				Tools::PEFileHeader fileHeader;
 
 				fileHeader.Load(hProcess, baseOfImage, *this);
-				return isNativeModule_;
+				return isNativeModule_ || !isIlOnly_;
 			}
 
 		  private:
+			typedef struct _CLI_HEADER_FRAGMENT {
+			DWORD ByteCount;
+			WORD MajorRuntimeVersion;
+			WORD MinorRuntimeVersion;
+			DWORD MetadataVA;
+			DWORD MetadataSize;
+			DWORD Flags;
+			// and more ...
+			} CLI_HEADER_FRAGMENT;
+			
 			//-----------------------------------------------------------------
 			template <typename T_IMAGE_NT_HEADERS>
-			void OnNtHeader(const T_IMAGE_NT_HEADERS& ntHeaders)
+			void OnNtHeader(HANDLE hProcess,
+				           DWORD64 baseOfImage,
+				           const T_IMAGE_NT_HEADERS& ntHeaders)
 			{
 				const auto& optionalHeader = ntHeaders.OptionalHeader;
 				auto dataDirectory =
@@ -58,25 +70,37 @@ namespace CppCoverage
 				        .DataDirectory[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR];
 				isNativeModule_ = dataDirectory.VirtualAddress == 0 &&
 				                  dataDirectory.Size == 0;
+
+				if (!isNativeModule_)
+				{
+					// move to RVA, skip 16 bytes, read 4 bytes
+					// ILOnly if first bit set.
+					CLI_HEADER_FRAGMENT cliHeaderFragments;
+					ReadFromProcessMemory(
+						hProcess, baseOfImage + dataDirectory.VirtualAddress,
+						&cliHeaderFragments, sizeof(cliHeaderFragments));
+					isIlOnly_ = cliHeaderFragments.Flags & 1;
+				}      
 			}
 
 			//-----------------------------------------------------------------
-			void OnNtHeader32(HANDLE,
-			                  DWORD64,
+			void OnNtHeader32(HANDLE hProcess,
+			                  DWORD64 baseOfImage,
 			                  const IMAGE_NT_HEADERS32& ntHeader) override
 			{
-				OnNtHeader(ntHeader);
+				OnNtHeader(hProcess, baseOfImage, ntHeader);
 			}
 
 			//-----------------------------------------------------------------
-			void OnNtHeader64(HANDLE,
-			                  DWORD64,
+			void OnNtHeader64(HANDLE hProcess,
+			                  DWORD64 baseOfImage,
 			                  const IMAGE_NT_HEADERS64& ntHeader) override
 			{
-				OnNtHeader(ntHeader);
+				OnNtHeader(hProcess, baseOfImage, ntHeader);
 			}
 
 			bool isNativeModule_ = true;
+			bool isIlOnly_ = false;
 		};
 	}
 
@@ -105,10 +129,10 @@ namespace CppCoverage
 	    void* baseOfImage)
 	{
 		if (!ModuleKind{}.IsNativeModule(
-		        hProcess, reinterpret_cast<DWORD64>(baseOfImage)))
+			hProcess, reinterpret_cast<DWORD64>(baseOfImage)))
 		{
 			LOG_INFO << modulePath.wstring()
-			         << " is skipped as it is a managed module.";
+				 << " is skipped as it is a managed module.";
 			return false;
 		}
 
@@ -132,7 +156,7 @@ namespace CppCoverage
 	//--------------------------------------------------------------------------
 	void
 	MonitoredLineRegister::OnSourceFile(const std::filesystem::path& path,
-	                                    const std::vector<Line>& lines)
+					    const std::vector<Line>& lines)
 	{
 		std::vector<FileFilter::LineInfo> lineInfos;
 
@@ -152,7 +176,7 @@ namespace CppCoverage
 		{
 			auto lineNumber = lineInfo.lineNumber_;
 			if (coverageFilterManager_->IsLineSelected(
-			        moduleInfo, fileInfo, lineInfo))
+				moduleInfo, fileInfo, lineInfo))
 			{
 				auto addressValue =
 				    lineInfo.virtualAddress_ +
@@ -163,9 +187,9 @@ namespace CppCoverage
 			}
 		}
 		SetBreakPoint(path,
-		              moduleInfo.hProcess_,
-		              std::move(addresses),
-		              lineNumberByAddress);
+			      moduleInfo.hProcess_,
+			      std::move(addresses),
+			      lineNumberByAddress);
 	}
 
 	//--------------------------------------------------------------------------
@@ -186,15 +210,15 @@ namespace CppCoverage
 			if (it != lineNumberByAddress.end())
 			{
 				Address address{hProcess,
-				                reinterpret_cast<void*>(addressValue)};
+						reinterpret_cast<void*>(addressValue)};
 				const auto& lineNumbers = it->second;
 				for (auto lineNumber : lineNumbers)
 				{
 					if (!executedAddressManager_->RegisterAddress(
-					        address,
-					        path.wstring(),
-					        lineNumber,
-					        oldInstruction))
+						address,
+						path.wstring(),
+						lineNumber,
+						oldInstruction))
 					{
 						breakPoint_->RemoveBreakPoint(address, oldInstruction);
 					}
