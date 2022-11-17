@@ -1,4 +1,4 @@
-// OpenCppCoverage is an open source code coverage for C++.
+﻿// OpenCppCoverage is an open source code coverage for C++.
 // Copyright (C) 2016 OpenCppCoverage
 
 // This program is free software: you can redistribute it and/or modify
@@ -43,6 +43,7 @@ namespace FileFilter
 		struct Stream;
 
 		std::filesystem::path ExtractTargetFile(Stream&) const;
+		std::filesystem::path ExtractTargetFile(const std::wstring& line) const;
 		HunksDifferences ExtractHunksDifferences(
 							const Stream&, 
 							const std::wstring& hunksDifferencesLine) const;

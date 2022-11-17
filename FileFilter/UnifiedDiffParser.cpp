@@ -1,4 +1,4 @@
-// OpenCppCoverage is an open source code coverage for C++.
+﻿// OpenCppCoverage is an open source code coverage for C++.
 // Copyright (C) 2016 OpenCppCoverage
 //
 // This program is free software: you can redistribute it and/or modify
@@ -155,7 +155,14 @@ namespace FileFilter
 			else if (boost::algorithm::starts_with(line, FromFilePrefix))
 			{
 				sourceFileLines.push_back(line);
-				files.emplace_back(ExtractTargetFile(stream));
+				std::wstring nextLine;
+				if (stream.GetLine(nextLine))
+				{
+					if (boost::algorithm::starts_with(nextLine, ToFilePrefix))
+						files.emplace_back(ExtractTargetFile(nextLine));
+					else
+						sourceFileLines.push_back(nextLine);
+				}
 			}
 			else if (boost::algorithm::starts_with(line, L"@@"))
 				FillUpdatedLines(line, files, stream);
@@ -188,9 +195,14 @@ namespace FileFilter
 		if (!boost::algorithm::starts_with(line, ToFilePrefix))
 			ThrowError(stream, UnifiedDiffParserException::ErrorExpectFromFilePrefix);
 
+		return ExtractTargetFile(line);
+	}
+
+	std::filesystem::path UnifiedDiffParser::ExtractTargetFile(const std::wstring& line) const
+	{
 		const auto startIndex = ToFilePrefix.size();
 		const auto endIndex = line.find('\t');
-		
+
 		if (endIndex != std::string::npos)
 			return line.substr(startIndex, endIndex - startIndex);
 		return line.substr(startIndex);
