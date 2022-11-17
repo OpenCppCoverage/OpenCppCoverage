@@ -1,4 +1,4 @@
-// OpenCppCoverage is an open source code coverage for C++.
+Ôªø// OpenCppCoverage is an open source code coverage for C++.
 // Copyright (C) 2014 OpenCppCoverage
 //
 // This program is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ namespace ExporterTest
 		//---------------------------------------------------------------------
 		Plugin::CoverageData CreateRandomCoverageData()
 		{
-			Plugin::CoverageData coverageData{ L"TestÈ", 42 };
+			Plugin::CoverageData coverageData{ L"Test√©", 42 };
 			std::default_random_engine generator;
 			std::uniform_int_distribution<int> distribution(0, 1);
 			
@@ -70,7 +70,7 @@ namespace ExporterTest
 				}
 			}
 
-			coverageData.AddModule("ÈË‡").AddFile("ÈË‡").AddLine(0, true);
+			coverageData.AddModule("√©√®√†").AddFile("√©√®√†").AddLine(0, true);
 
 			return coverageData;
 		}

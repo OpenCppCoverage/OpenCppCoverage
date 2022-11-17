@@ -1,4 +1,4 @@
-// OpenCppCoverage is an open source code coverage for C++.
+Ôªø// OpenCppCoverage is an open source code coverage for C++.
 // Copyright (C) 2016 OpenCppCoverage
 //
 // This program is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ namespace ToolsTests
 		ASSERT_EQ("", Tools::ToLocalString(L""));
 		ASSERT_EQ("123456789", Tools::ToLocalString(L"123456789"));
 		ASSERT_EQ(1, Tools::ToLocalString(L"1").size());
-		ASSERT_EQ(std::string("È‡Ë"), Tools::ToLocalString(L"È‡Ë"));
+		ASSERT_EQ(std::string("√©√†√®"), Tools::ToLocalString(L"√©√†√®"));
 	}
 
 	//---------------------------------------------------------------------
@@ -34,12 +34,12 @@ namespace ToolsTests
 		ASSERT_EQ(L"", Tools::LocalToWString(""));
 		ASSERT_EQ(L"123456789", Tools::LocalToWString("123456789"));
 		ASSERT_EQ(1, Tools::LocalToWString("1").size());
-		ASSERT_EQ(std::wstring(L"È‡Ë"), Tools::LocalToWString("È‡Ë"));
+		ASSERT_EQ(std::wstring(L"√©√†√®"), Tools::LocalToWString("√©√†√®"));
 	}
 
 	//---------------------------------------------------------------------
 	TEST(Tool, Uft8)
 	{
-		ASSERT_EQ(L"È‡Ë", Tools::Utf8ToWString(Tools::ToUtf8String(L"È‡Ë")));
+		ASSERT_EQ(L"√©√†√®", Tools::Utf8ToWString(Tools::ToUtf8String(L"√©√†√®")));
 	}
 }
