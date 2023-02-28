@@ -41,9 +41,14 @@ namespace CppCoverage
 				std::vector<wchar_t> buffer;
 				for (const auto& argument : arguments)
 				{
-					buffer.push_back(L'\"');
+					const bool ws = (argument.find_first_of(L" \t\r\n\f\v") != std::string::npos);
+					if (ws) {
+						buffer.push_back(L'\"');
+					}
 					buffer.insert(buffer.end(), argument.begin(), argument.end());
-					buffer.push_back(L'\"');
+					if (ws) {
+						buffer.push_back(L'\"');
+					}
 					buffer.push_back(L' ');
 				}
 					
