@@ -87,26 +87,26 @@ namespace CppCoverage
 
 	public:
 		// IUnknown
-		HRESULT QueryInterface(REFIID InterfaceId, PVOID* Interface);
-		ULONG AddRef();
-		ULONG Release();
+		HRESULT STDMETHODCALLTYPE QueryInterface(REFIID InterfaceId, PVOID* Interface);
+		ULONG STDMETHODCALLTYPE AddRef();
+		ULONG STDMETHODCALLTYPE Release();
 		// IDebugEventCallbacksWide
-		HRESULT GetInterestMask(PULONG Mask);
-		HRESULT Breakpoint(PDEBUG_BREAKPOINT2 Bp);
-		HRESULT Exception(PEXCEPTION_RECORD64 Exception, ULONG FirstChance);
-		HRESULT CreateThread(ULONG64 Handle, ULONG64 DataOffset, ULONG64 StartOffset);
-		HRESULT ExitThread(ULONG ExitCode);
-		HRESULT CreateProcessW(ULONG64 ImageFileHandle, ULONG64 Handle, ULONG64 BaseOffset, ULONG ModuleSize, PCWSTR ModuleName, PCWSTR ImageName, ULONG CheckSum, ULONG TimeDateStamp, ULONG64 InitialThreadHandle, ULONG64 ThreadDataOffset, ULONG64 StartOffset);
-		HRESULT ExitProcess(ULONG ExitCode);
-		HRESULT LoadModule(ULONG64 ImageFileHandle, ULONG64 BaseOffset, ULONG ModuleSize, PCWSTR ModuleName, PCWSTR ImageName, ULONG CheckSum, ULONG TimeDateStamp);
-		HRESULT UnloadModule(PCWSTR ImageBaseName, ULONG64 BaseOffset);
-		HRESULT SystemError(ULONG Error, ULONG Level);
-		HRESULT SessionStatus(ULONG Status);
-		HRESULT ChangeDebuggeeState(ULONG Flags, ULONG64 Argument);
-		HRESULT ChangeEngineState(ULONG Flags, ULONG64 Argument);
-		HRESULT ChangeSymbolState(ULONG Flags, ULONG64 Argument);
+		HRESULT STDMETHODCALLTYPE GetInterestMask(PULONG Mask);
+		HRESULT STDMETHODCALLTYPE Breakpoint(PDEBUG_BREAKPOINT2 Bp);
+		HRESULT STDMETHODCALLTYPE Exception(PEXCEPTION_RECORD64 Exception, ULONG FirstChance);
+		HRESULT STDMETHODCALLTYPE CreateThread(ULONG64 Handle, ULONG64 DataOffset, ULONG64 StartOffset);
+		HRESULT STDMETHODCALLTYPE ExitThread(ULONG ExitCode);
+		HRESULT STDMETHODCALLTYPE CreateProcessW(ULONG64 ImageFileHandle, ULONG64 Handle, ULONG64 BaseOffset, ULONG ModuleSize, PCWSTR ModuleName, PCWSTR ImageName, ULONG CheckSum, ULONG TimeDateStamp, ULONG64 InitialThreadHandle, ULONG64 ThreadDataOffset, ULONG64 StartOffset);
+		HRESULT STDMETHODCALLTYPE ExitProcess(ULONG ExitCode);
+		HRESULT STDMETHODCALLTYPE LoadModule(ULONG64 ImageFileHandle, ULONG64 BaseOffset, ULONG ModuleSize, PCWSTR ModuleName, PCWSTR ImageName, ULONG CheckSum, ULONG TimeDateStamp);
+		HRESULT STDMETHODCALLTYPE UnloadModule(PCWSTR ImageBaseName, ULONG64 BaseOffset);
+		HRESULT STDMETHODCALLTYPE SystemError(ULONG Error, ULONG Level);
+		HRESULT STDMETHODCALLTYPE SessionStatus(ULONG Status);
+		HRESULT STDMETHODCALLTYPE ChangeDebuggeeState(ULONG Flags, ULONG64 Argument);
+		HRESULT STDMETHODCALLTYPE ChangeEngineState(ULONG Flags, ULONG64 Argument);
+		HRESULT STDMETHODCALLTYPE ChangeSymbolState(ULONG Flags, ULONG64 Argument);
 		// IDebugOutputCallbacksWide
-		HRESULT Output(ULONG Mask, PCWSTR Text);
+		HRESULT STDMETHODCALLTYPE Output(ULONG Mask, PCWSTR Text);
 	private:
 		IDebugEventsHandler* debugEventsHandler_;
 		IDebugClient6* pDebug_;
