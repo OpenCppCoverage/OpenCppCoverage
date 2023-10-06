@@ -35,7 +35,7 @@ namespace CppCoverageTest
 {
 	namespace TestTools
 	{
-		using T_HandlesFct = std::function<void(HANDLE hProcess, HANDLE hFile)>;
+		using T_HandlesFct = std::function<void(HANDLE hProcess, const wchar_t* pszFile)>;
 
 		void GetHandles(const std::filesystem::path&, T_HandlesFct);
 

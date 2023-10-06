@@ -44,9 +44,9 @@ namespace CppCoverageTest
 			{
 			}
 
-			virtual void OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO& processInfo) override
+			virtual void OnCreateProcess(HANDLE hProcess, const wchar_t* pszImageName, void* lpBaseOfImage) override
 			{
-				action_(processInfo.hProcess, processInfo.hFile);
+				action_(hProcess,pszImageName);
 			}
 
 		private:

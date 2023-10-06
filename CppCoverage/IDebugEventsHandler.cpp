@@ -20,22 +20,22 @@
 namespace CppCoverage
 {
 	//-------------------------------------------------------------------------
-	void IDebugEventsHandler::OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO&) 
+	void IDebugEventsHandler::OnCreateProcess(HANDLE hProces, const wchar_t* pszImageName, void* lpBaseOfImage)
 	{
 	}
 
 	//-------------------------------------------------------------------------
-	void IDebugEventsHandler::OnExitProcess(HANDLE hProcess, HANDLE hThread, const EXIT_PROCESS_DEBUG_INFO&)
+	void IDebugEventsHandler::OnExitProcess(HANDLE hProcess)
 	{
 	}
 
 	//-------------------------------------------------------------------------
-	void IDebugEventsHandler::OnLoadDll(HANDLE hProcess, HANDLE hThread, const LOAD_DLL_DEBUG_INFO&)
+	void IDebugEventsHandler::OnLoadDll(HANDLE hProcess, const wchar_t* pszImageName, void* lpBaseOfImage)
 	{
 	}
 
 	//-------------------------------------------------------------------------
-	void IDebugEventsHandler::OnUnloadDll(HANDLE hProcess, HANDLE hThread, const UNLOAD_DLL_DEBUG_INFO&)
+	void IDebugEventsHandler::OnUnloadDll(HANDLE hProcess, void* lpBaseOfImage)
 	{
 	}
 
