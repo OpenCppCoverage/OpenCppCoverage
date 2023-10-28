@@ -149,6 +149,9 @@ namespace CppCoverage
 			pDebug_->SetEventCallbacksWide(this);
 			pDebug_->SetOutputCallbacksWide(this);
 
+			// Make sure we get an initial breakpoint
+			pDebugControl_->AddEngineOptions(DEBUG_ENGOPT_INITIAL_BREAK);
+
 			// Build the command line for the process to debug
 			auto optionalCommandLine = CreateCommandLine(startInfo.GetArguments());
 
