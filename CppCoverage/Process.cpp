@@ -28,32 +28,29 @@
 
 namespace CppCoverage
 {
-	namespace
+	//---------------------------------------------------------------------
+	boost::optional<std::vector<wchar_t>> 
+		CreateCommandLine(const std::vector<std::wstring>& arguments)
 	{
-		//---------------------------------------------------------------------
-		boost::optional<std::vector<wchar_t>> 
-			CreateCommandLine(const std::vector<std::wstring>& arguments)
-		{
-			boost::optional<std::vector<wchar_t>> commandLine;
+		boost::optional<std::vector<wchar_t>> commandLine;
 
-			if (!arguments.empty())
-			{				
-				std::vector<wchar_t> buffer;
-				for (const auto& argument : arguments)
-				{
-					buffer.push_back(L'\"');
-					buffer.insert(buffer.end(), argument.begin(), argument.end());
-					buffer.push_back(L'\"');
-					buffer.push_back(L' ');
-				}
-					
-				buffer.push_back(L'\0');
-				return buffer;
+		if (!arguments.empty())
+		{				
+			std::vector<wchar_t> buffer;
+			for (const auto& argument : arguments)
+			{
+				buffer.push_back(L'\"');
+				buffer.insert(buffer.end(), argument.begin(), argument.end());
+				buffer.push_back(L'\"');
+				buffer.push_back(L' ');
 			}
+					
+			buffer.push_back(L'\0');
+			return buffer;
+		}
 
-			return commandLine;
-		}		
-	}
+		return commandLine;
+	}		
 
 	const std::wstring Process::CannotFindPathMessage = L"Cannot find path: ";
 	const std::wstring Process::CheckIfValidExecutableMessage =

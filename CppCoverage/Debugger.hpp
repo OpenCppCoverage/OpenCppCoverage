@@ -22,19 +22,20 @@
 #include <Windows.h>
 #include "CppCoverageExport.hpp"
 
+#include "dbgeng.h"
 
 namespace CppCoverage
 {
 	class StartInfo;
 	class IDebugEventsHandler;
 
-	class CPPCOVERAGE_DLL Debugger
+	class CPPCOVERAGE_DLL Debugger : public IDebugEventCallbacksWide, public IDebugOutputCallbacksWide
 	{
 	public:
 		Debugger(
 			bool coverChildren,
 			bool continueAfterCppException,
-            bool stopOnAssert);
+			bool stopOnAssert);
 
 		int Debug(const StartInfo&, IDebugEventsHandler&);
 		size_t GetRunningProcesses() const;
@@ -43,7 +44,7 @@ namespace CppCoverage
 	private:
 		Debugger(const Debugger&) = delete;
 		Debugger& operator=(const Debugger&) = delete;
-	
+
 		void OnCreateProcess(
 			const DEBUG_EVENT& debugEvent,
 			IDebugEventsHandler& debugEventsHandler);
@@ -82,8 +83,47 @@ namespace CppCoverage
 		boost::optional<DWORD> rootProcessId_;
 		bool coverChildren_;
 		bool continueAfterCppException_;
-        bool stopOnAssert_;
-    };
+		bool stopOnAssert_;
+
+	public:
+		// IUnknown
+		HRESULT STDMETHODCALLTYPE QueryInterface(REFIID InterfaceId, PVOID* Interface);
+		ULONG STDMETHODCALLTYPE AddRef();
+		ULONG STDMETHODCALLTYPE Release();
+		// IDebugEventCallbacksWide
+		HRESULT STDMETHODCALLTYPE GetInterestMask(PULONG Mask);
+		HRESULT STDMETHODCALLTYPE Breakpoint(PDEBUG_BREAKPOINT2 Bp);
+		HRESULT STDMETHODCALLTYPE Exception(PEXCEPTION_RECORD64 Exception, ULONG FirstChance);
+		HRESULT STDMETHODCALLTYPE CreateThread(ULONG64 Handle, ULONG64 DataOffset, ULONG64 StartOffset);
+		HRESULT STDMETHODCALLTYPE ExitThread(ULONG ExitCode);
+		HRESULT STDMETHODCALLTYPE CreateProcessW(ULONG64 ImageFileHandle, ULONG64 Handle, ULONG64 BaseOffset, ULONG ModuleSize, PCWSTR ModuleName, PCWSTR ImageName, ULONG CheckSum, ULONG TimeDateStamp, ULONG64 InitialThreadHandle, ULONG64 ThreadDataOffset, ULONG64 StartOffset);
+		HRESULT STDMETHODCALLTYPE ExitProcess(ULONG ExitCode);
+		HRESULT STDMETHODCALLTYPE LoadModule(ULONG64 ImageFileHandle, ULONG64 BaseOffset, ULONG ModuleSize, PCWSTR ModuleName, PCWSTR ImageName, ULONG CheckSum, ULONG TimeDateStamp);
+		HRESULT STDMETHODCALLTYPE UnloadModule(PCWSTR ImageBaseName, ULONG64 BaseOffset);
+		HRESULT STDMETHODCALLTYPE SystemError(ULONG Error, ULONG Level);
+		HRESULT STDMETHODCALLTYPE SessionStatus(ULONG Status);
+		HRESULT STDMETHODCALLTYPE ChangeDebuggeeState(ULONG Flags, ULONG64 Argument);
+		HRESULT STDMETHODCALLTYPE ChangeEngineState(ULONG Flags, ULONG64 Argument);
+		HRESULT STDMETHODCALLTYPE ChangeSymbolState(ULONG Flags, ULONG64 Argument);
+		// IDebugOutputCallbacksWide
+		HRESULT STDMETHODCALLTYPE Output(ULONG Mask, PCWSTR Text);
+	private:
+		IDebugEventsHandler* debugEventsHandler_;
+		IDebugClient6* pDebug_;
+		IDebugControl* pDebugControl_;
+		IDebugSystemObjects* pDebugSystemObjects_;
+
+		enum eDebugState {
+			CONTINUE,
+			DONE,
+			TERMINATE
+		};
+		eDebugState		debugState_;
+		int				debugExitCode_;
+	};
 }
+
+typedef HRESULT(__stdcall* PFN_DebugCreate)(REFIID InterfaceId, PVOID* Interface);
+
 
 

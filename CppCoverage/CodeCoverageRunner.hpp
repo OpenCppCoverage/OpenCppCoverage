@@ -49,17 +49,17 @@ namespace CppCoverage
 		Plugin::CoverageData RunCoverage(const RunCoverageSettings&);
 
 	private:
-		virtual void OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO&) override;
-		virtual void OnExitProcess(HANDLE hProcess, HANDLE hThread, const EXIT_PROCESS_DEBUG_INFO&) override;
-		virtual void OnLoadDll(HANDLE hProcess, HANDLE hThread, const LOAD_DLL_DEBUG_INFO&) override;
-		virtual void OnUnloadDll(HANDLE hProcess, HANDLE hThread, const UNLOAD_DLL_DEBUG_INFO&) override;
+		virtual void OnCreateProcess(HANDLE hProces, const wchar_t* pszImageName, void* lpBaseOfImage) override;
+		virtual void OnExitProcess(HANDLE hProcess) override;
+		virtual void OnLoadDll(HANDLE hProcess, const wchar_t* pszImageName, void* lpBaseOfImage) override;
+		virtual void OnUnloadDll(HANDLE hProcess, void* lpBaseOfImage) override;
 		virtual ExceptionType OnException(HANDLE hProcess, HANDLE hThread, const EXCEPTION_DEBUG_INFO&) override;
 
 	private:
 		CodeCoverageRunner(const CodeCoverageRunner&) = delete;
 		CodeCoverageRunner& operator=(const CodeCoverageRunner&) = delete;
 
-		void LoadModule(HANDLE hProcess, HANDLE hFile, void* baseOfImage);
+		void LoadModule(HANDLE hProcess, const wchar_t* pszImageName, void* baseOfImage);
 		bool OnBreakPoint(const EXCEPTION_DEBUG_INFO&, HANDLE hProcess, HANDLE hThread);
 
 	private:

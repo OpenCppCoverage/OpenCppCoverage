@@ -1,0 +1,29 @@
+name: Release build
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    name: Release build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install third party libraries
+        run: ./InstallThirdPartyLibraries.ps1
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Build solution
+        run: msbuild /m CppCoverage.sln /p:Configuration=Release /p:Platform=x64
+
+      - name: Build MSI
+        run: msbuild /p:Configuration=Release OpenCppCoverage.wixproj
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: MSI
+          path: bin/Release/OpenCppCoverage.msi
+            

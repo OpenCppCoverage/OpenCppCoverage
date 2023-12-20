@@ -93,37 +93,28 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO& processDebugInfo)
+	void CodeCoverageRunner::OnCreateProcess(HANDLE hProcess, const wchar_t* pszImageName, void* lpBaseOfImage)
 	{
-		auto hProcess = processDebugInfo.hProcess;
-		auto lpBaseOfImage = processDebugInfo.lpBaseOfImage;
-
-		LoadModule(hProcess, processDebugInfo.hFile, lpBaseOfImage);
+		LoadModule(hProcess, pszImageName, lpBaseOfImage);
 	}
 	
 	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::OnExitProcess(HANDLE hProcess, HANDLE, const EXIT_PROCESS_DEBUG_INFO&)
+	void CodeCoverageRunner::OnExitProcess(HANDLE hProcess)
 	{
 		exceptionHandler_->OnExitProcess(hProcess);
 		executedAddressManager_->OnExitProcess(hProcess);
 	}
 
 	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::OnLoadDll(
-		HANDLE hProcess, 
-		HANDLE hThread, 
-		const LOAD_DLL_DEBUG_INFO& dllDebugInfo)
+	void CodeCoverageRunner::OnLoadDll(HANDLE hProcess, const wchar_t* pszImageName, void* lpBaseOfImage)
 	{
-		LoadModule(hProcess, dllDebugInfo.hFile, dllDebugInfo.lpBaseOfDll);
+		LoadModule(hProcess, pszImageName, lpBaseOfImage);
 	}
 	
 	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::OnUnloadDll(
-		HANDLE hProcess,
-		HANDLE hThread,
-		const UNLOAD_DLL_DEBUG_INFO& unloadDllDebugInfo)
+	void CodeCoverageRunner::OnUnloadDll(HANDLE hProcess, void* lpBaseOfImage)
 	{
-		executedAddressManager_->OnUnloadModule(hProcess, unloadDllDebugInfo.lpBaseOfDll);
+		executedAddressManager_->OnUnloadModule(hProcess, lpBaseOfImage);
 	}
 
 	//-------------------------------------------------------------------------
@@ -187,20 +178,12 @@ namespace CppCoverage
 	}
 
 	//-------------------------------------------------------------------------
-	void CodeCoverageRunner::LoadModule(HANDLE hProcess,
-	                                    HANDLE hFile,
-	                                    void* baseOfImage)
+	void CodeCoverageRunner::LoadModule(HANDLE hProcess,const wchar_t* pszImageName,void* baseOfImage)
 	{
-		HandleInformation handleInformation;
-
-		std::wstring filename = handleInformation.ComputeFilename(hFile);
-
-		auto isSelected = coverageFilterManager_->IsModuleSelected(filename);
-		if (isSelected)
-		{
-			isSelected = monitoredLineRegister_->RegisterLineToMonitor(
-			    filename, hProcess, baseOfImage);
+		auto isSelected = coverageFilterManager_->IsModuleSelected(pszImageName);
+		if (isSelected) {
+			isSelected = monitoredLineRegister_->RegisterLineToMonitor(pszImageName, hProcess, baseOfImage);
 		}
-		filterAssistant_->OnNewModule(filename, isSelected);
+		filterAssistant_->OnNewModule(pszImageName, isSelected);
 	}
 }

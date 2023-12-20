@@ -35,11 +35,9 @@ namespace CppCoverageTest
 		auto outputBinaryPath = TestCoverageConsole::GetOutputBinaryPath();
 		fs::path path;
 
-		TestTools::GetHandles(outputBinaryPath, [&](HANDLE hProcess, HANDLE hFile)
+		TestTools::GetHandles(outputBinaryPath, [&](HANDLE hProcess, const wchar_t* pszFile)
 		{
-			cov::HandleInformation handleInformation;
-
-			path = handleInformation.ComputeFilename(hFile);
+			path = pszFile;
 		});
 
 		ASSERT_EQ(outputBinaryPath, path);
