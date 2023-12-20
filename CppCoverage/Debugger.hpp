@@ -112,6 +112,14 @@ namespace CppCoverage
 		IDebugClient6* pDebug_;
 		IDebugControl* pDebugControl_;
 		IDebugSystemObjects* pDebugSystemObjects_;
+
+		enum eDebugState {
+			CONTINUE,
+			DONE,
+			TERMINATE
+		};
+		eDebugState		debugState_;
+		int				debugExitCode_;
 	};
 }
 

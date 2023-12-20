@@ -148,6 +148,7 @@ namespace CppCoverage
 			// Install callbacks pointing to this object. 
 			pDebug_->SetEventCallbacksWide(this);
 			pDebug_->SetOutputCallbacksWide(this);
+			// pDebug_->SetOutputMask(DEBUG_OUTPUT_NORMAL| DEBUG_OUTPUT_ERROR| DEBUG_OUTPUT_WARNING| DEBUG_OUTPUT_VERBOSE);
 
 			// Make sure we get an initial breakpoint
 			pDebugControl_->AddEngineOptions(DEBUG_ENGOPT_INITIAL_BREAK);
@@ -162,13 +163,23 @@ namespace CppCoverage
 			}
 
 			// Process debugger events until debug client gives an error
-			for(;;)
-			{
-				hr = pDebugControl_->WaitForEvent(0, 1000);
+			debugState_ = eDebugState::CONTINUE;
+			while (debugState_ != eDebugState::DONE) {
+				hr = pDebugControl_->WaitForEvent(0, INFINITE);
 				if (FAILED(hr)) {
 					break;
 				}
+				switch (debugState_) {
+				case eDebugState::TERMINATE:
+					pDebug_->TerminateCurrentProcess();
+					debugState_ = eDebugState::CONTINUE;
+					break;
+				default:
+					break;
+				}
 			}
+
+			// FIX: Capture and save the exit code
 
 			// Disconnect our events
 			pDebug_->SetEventCallbacksWide(NULL);
@@ -182,8 +193,7 @@ namespace CppCoverage
 			// Unload DLL
 			FreeLibrary(hDll);
 
-			// FIX: Capture and save the exit code
-			return 0;	//  *exitCode;
+			return debugExitCode_;
 		}
 	}
 	
@@ -491,7 +501,7 @@ namespace CppCoverage
 		{
 		case IDebugEventsHandler::ExceptionType::BreakPoint:
 		{
-			return DEBUG_STATUS_NO_CHANGE;
+			return DEBUG_STATUS_GO_HANDLED;
 		}
 		case IDebugEventsHandler::ExceptionType::InvalidBreakPoint:
 		{
@@ -502,6 +512,7 @@ namespace CppCoverage
 			if (stopOnAssert_)
 			{
 				LOG_WARNING << "Stop on assertion.";
+				debugState_ = eDebugState::TERMINATE;
 				return DEBUG_STATUS_BREAK;
 			}
 			else
@@ -511,10 +522,17 @@ namespace CppCoverage
 		}
 		case IDebugEventsHandler::ExceptionType::NotHandled:
 		{
+			if (FirstChance) {
+				return DEBUG_STATUS_NO_CHANGE;
+			}
+			debugState_ = eDebugState::TERMINATE;
+			debugExitCode_ = di.ExceptionRecord.ExceptionCode;
 			return DEBUG_STATUS_BREAK;
 		}
 		case IDebugEventsHandler::ExceptionType::Error:
 		{
+			debugState_ = eDebugState::TERMINATE;
+			debugExitCode_ = 2;
 			return DEBUG_STATUS_BREAK;
 		}
 		case IDebugEventsHandler::ExceptionType::CppError:
@@ -524,6 +542,9 @@ namespace CppCoverage
 				LOG_WARNING << "Continue after a C++ exception.";
 				return DEBUG_STATUS_NO_CHANGE;
 			}
+
+			debugState_ = eDebugState::TERMINATE;
+			debugExitCode_ = di.ExceptionRecord.ExceptionCode;
 			return DEBUG_STATUS_BREAK;
 		}
 		}
@@ -718,6 +739,11 @@ namespace CppCoverage
 	}
 
 	HRESULT Debugger::Output(ULONG Mask, PCWSTR Text) {
+
+		LOG_DEBUG << Text;
+
+		OutputDebugString(Text);
+
 		return 0;
 	}
 
