@@ -179,8 +179,6 @@ namespace CppCoverage
 				}
 			}
 
-			// FIX: Capture and save the exit code
-
 			// Disconnect our events
 			pDebug_->SetEventCallbacksWide(NULL);
 			pDebug_->SetOutputCallbacksWide(NULL);
@@ -513,10 +511,15 @@ namespace CppCoverage
 			{
 				LOG_WARNING << "Stop on assertion.";
 				debugState_ = eDebugState::TERMINATE;
+				debugExitCode_ = di.ExceptionRecord.ExceptionCode;
 				return DEBUG_STATUS_BREAK;
 			}
 			else
 			{
+				// This code is written to make sure we pass the OpenCppCoverageConsoleTest.Breakpoint test.
+				// I can't see why the exit code of OpenCppCoverage should be changed if we ignore the DebugBreak and just carry on.
+				// The other way to fix this is to set stopOnAssert_ in the test case
+				debugExitCode_ = EXCEPTION_BREAKPOINT;
 				return DEBUG_STATUS_NO_CHANGE;
 			}
 		}
