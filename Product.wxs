@@ -84,7 +84,15 @@
         <File Id="zstd.dll" Source="x64\Release\zstd.dll" KeyPath="yes"/>
       </Component>
 
-    <Directory Name="Template">
+      <Directory Name="Plugins">
+        <Directory Name="Exporter">
+          <Component Id="TestCoverageSharedLib.dll" Guid="{5EE6DD76-DE4F-4D6C-84D3-E2357F722B2B}">
+            <File Id="TestCoverageSharedLib.dll" Source="x64\Release\Plugins\Exporter\TestCoverageSharedLib.dll" KeyPath="yes"/>
+          </Component>
+        </Directory>
+      </Directory>
+ 
+      <Directory Name="Template">
       <Component Id="MainTemplate.html" Guid="{1D9145F5-9555-44F0-A3B7-94EE56547E2A}">
         <File Id="MainTemplate.html" Source="x64\Release\Template\MainTemplate.html" KeyPath="yes"/>
       </Component>
@@ -184,6 +192,8 @@
       <ComponentRef Id="zlib1.dll"/>
       <ComponentRef Id="zstd.dll"/>
 
+      <ComponentRef Id="TestCoverageSharedLib.dll"/>
+      
       <ComponentRef Id="MainTemplate.html"/>
       <ComponentRef Id="SourceTemplate.html"/>
       <ComponentRef Id="style.css"/>
