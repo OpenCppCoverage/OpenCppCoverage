@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <Package Name="OpenCppCoverage" Manufacturer="Centlake Software AB" Version="1.0.0.0" UpgradeCode="5A0FBB72-7F99-4BF2-BAF0-6279E81C1828">
+
+    <!-- AllowSameVersionUpgrades -> Always upgrade, never allow two versions to be installed next to each other -->
+    <!-- AllowSameVersionUpgrades causes ICE61 which must be ignored -->
+    <MajorUpgrade Schedule="afterInstallInitialize" DowngradeErrorMessage="A newer version of [ProductName] is already installed. Setup will now exit." AllowSameVersionUpgrades="yes"/>
+
+    <MediaTemplate EmbedCab="yes" />
+    
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="APPLICATIONROOTDIRECTORY" Name="OpenCppCoverage" />
+    </StandardDirectory>
+
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+      <Component Id="OpenCppCoverage.exe" Guid="{643C5430-23E2-47BB-9F59-9E50555EAE17}">
+        <File Id="OpenCppCoverage.exe" Source="x64\Release\OpenCppCoverage.exe" KeyPath="yes"/>
+      </Component>
+      <Component Id="CppCoverage.dll" Guid="{585D4100-FBB2-4B28-9FE9-5DD11892270F}">
+        <File Id="CppCoverage.dll" Source="x64\Release\CppCoverage.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="Exporter.dll" Guid="{DACDDEDF-75D0-4FD5-84ED-F1F35A926D5D}">
+        <File Id="Exporter.dll" Source="x64\Release\Exporter.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="FileFilter.dll" Guid="{31C481E9-19E3-4126-8BA1-29113239DA15}">
+        <File Id="FileFilter.dll" Source="x64\Release\FileFilter.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="Plugin.dll" Guid="{C2CD8ED3-5D27-485C-AAFB-344D2058DB69}">
+        <File Id="Plugin.dll" Source="x64\Release\Plugin.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="Tools.dll" Guid="{51D252B1-EC21-4A4C-9B84-19AAC80911A2}">
+        <File Id="Tools.dll" Source="x64\Release\Tools.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="boost_date_time_vc142_mt_x64_1_72.dll" Guid="{F8EF966C-0753-444A-AC38-DA803DF16B1E}">
+        <File Id="boost_date_time_vc142_mt_x64_1_72.dll" Source="x64\Release\boost_date_time-vc142-mt-x64-1_72.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="boost_filesystem_vc142_mt_x64_1_72.dll" Guid="{4BB52E32-9170-4543-B691-879CF9FD8FE3}">
+        <File Id="boost_filesystem_vc142_mt_x64_1_72.dll" Source="x64\Release\boost_filesystem-vc142-mt-x64-1_72.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="boost_iostreams.dll" Guid="{E4E0576A-B37F-4C3C-9D54-FE2CCDA4CC65}">
+        <File Id="boost_iostreams.dll" Source="x64\Release\boost_iostreams.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="boost_locale_vc142_mt_x64_1_72.dll" Guid="{CA25A090-9C12-4EC9-B709-6C0C04B1AFBF}">
+        <File Id="boost_locale_vc142_mt_x64_1_72.dll" Source="x64\Release\boost_locale-vc142-mt-x64-1_72.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="boost_log_vc142_mt_x64_1_72.dll" Guid="{1281CFDA-1738-4070-B025-D11B2D9B0A46}">
+        <File Id="boost_log_vc142_mt_x64_1_72.dll" Source="x64\Release\boost_log-vc142-mt-x64-1_72.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="boost_program_options_vc142_mt_x64_1_72.dll" Guid="{DE73E42B-F36C-4DF3-8055-63E68B0225CD}">
+        <File Id="boost_program_options_vc142_mt_x64_1_72.dll" Source="x64\Release\boost_program_options-vc142-mt-x64-1_72.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="boost_thread_vc142_mt_x64_1_72.dll" Guid="{DBD7E304-490A-44AB-99EE-6DC0BD5BDEF6}">
+        <File Id="boost_thread_vc142_mt_x64_1_72.dll" Source="x64\Release\boost_thread-vc142-mt-x64-1_72.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="bz2.dll" Guid="{F33B89D5-747B-455A-A5A7-DA29CF25BB50}">
+        <File Id="bz2.dll" Source="x64\Release\bz2.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="libctemplate.dll" Guid="{3B1C1156-0E1D-4FB6-8984-8F04000C1356}">
+        <File Id="libctemplate.dll" Source="x64\Release\libctemplate.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="libprotobuf_lite.dll" Guid="{AF6B4B57-547A-43C1-B74D-97DB2C1D1612}">
+        <File Id="libprotobuf_lite.dll" Source="x64\Release\libprotobuf-lite.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="libprotobuf.dll" Guid="{29D1FBF1-6B8D-4ED2-9DD0-C56AC3A4FB2A}">
+        <File Id="libprotobuf.dll" Source="x64\Release\libprotobuf.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="lzma.dll" Guid="{D2A4DC3E-D29D-475A-9F3F-43FFC27A6A68}">
+        <File Id="lzma.dll" Source="x64\Release\lzma.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="msdia140.dll" Guid="{59D60584-CFEA-4D68-8EA3-62EC7854D23D}">
+        <File Id="msdia140.dll" Source="x64\Release\msdia140.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="pcre.dll" Guid="{B57DC039-D90F-4BCD-9EF9-335F11916086}">
+        <File Id="pcre.dll" Source="x64\Release\pcre.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="PocoFoundation.dll" Guid="{DFD08D91-E018-4AF8-93A7-2DBC2D58EFAB}">
+        <File Id="PocoFoundation.dll" Source="x64\Release\PocoFoundation.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="zlib1.dll" Guid="{13E9CCEB-05F4-482F-9DBF-9AE2CF527BA0}">
+        <File Id="zlib1.dll" Source="x64\Release\zlib1.dll" KeyPath="yes"/>
+      </Component>
+      <Component Id="zstd.dll" Guid="{C5BE7690-E8DB-4223-BE50-FFA135E2863B}">
+        <File Id="zstd.dll" Source="x64\Release\zstd.dll" KeyPath="yes"/>
+      </Component>
+
+    <Directory Name="Template">
+      <Component Id="MainTemplate.html" Guid="{1D9145F5-9555-44F0-A3B7-94EE56547E2A}">
+        <File Id="MainTemplate.html" Source="x64\Release\Template\MainTemplate.html" KeyPath="yes"/>
+      </Component>
+      <Component Id="SourceTemplate.html" Guid="{07F761F6-12A0-41F3-908B-6CD658FA6D44}">
+        <File Id="SourceTemplate.html" Source="x64\Release\Template\SourceTemplate.html" KeyPath="yes"/>
+      </Component>
+
+      <Directory Name="third-party">
+        <Directory Name="css">
+          <Component Id="style.css" Guid="{FD9E5BC2-9BD3-498C-8350-ECF7CA8D2F57}">
+            <File Id="style.css" Source="x64\Release\Template\third-party\css\style.css" KeyPath="yes"/>
+          </Component>
+          <Directory Name="table-images">
+            <Component Id="botleft.png" Guid="{5CD6C1B5-9809-4896-BF6E-07E881100BF8}">
+              <File Id="botleft.png" Source="x64\Release\Template\third-party\css\table-images\botleft.png" KeyPath="yes"/>
+            </Component>
+            <Component Id="botright.png" Guid="{436B5CD5-A8D7-489A-BC7E-5AC4E59721C0}">
+              <File Id="botright.png" Source="x64\Release\Template\third-party\css\table-images\botright.png" KeyPath="yes"/>
+            </Component>
+            <Component Id="left.png" Guid="{3929AC84-3738-429B-9310-0709B244A6FC}">
+              <File Id="left.png" Source="x64\Release\Template\third-party\css\table-images\left.png" KeyPath="yes"/>
+            </Component>
+            <Component Id="right.png" Guid="{56A54807-E6D8-4DDA-9DD6-629FBDC0FCA7}">
+              <File Id="right.png" Source="x64\Release\Template\third-party\css\table-images\right.png" KeyPath="yes"/>
+            </Component>
+          </Directory>
+        </Directory>
+
+        <Directory Name="google-code-prettify">
+          <Component Id="prettify_CppCoverage.css" Guid="{D37899AA-6232-4F3B-B119-BAAC1F482C31}">
+            <File Id="prettify_CppCoverage.css" Source="x64\Release\Template\third-party\google-code-prettify\prettify-CppCoverage.css" KeyPath="yes"/>
+          </Component>
+          <Component Id="prettify.js" Guid="{594D2D32-0E58-40C4-9DDC-456373A909C6}">
+            <File Id="prettify.js" Source="x64\Release\Template\third-party\google-code-prettify\prettify.js" KeyPath="yes"/>
+          </Component>
+          <Component Id="run_prettify.js" Guid="{0EC36053-93CF-4FD9-A113-D84DE79AC2C4}">
+            <File Id="run_prettify.js" Source="x64\Release\Template\third-party\google-code-prettify\run_prettify.js" KeyPath="yes"/>
+          </Component>
+        </Directory>
+
+        <Directory Name="JQuery">
+          <Component Id="jquery_3.4.1.min.js" Guid="{171C27B9-290C-4007-A63B-A3F0F9888694}">
+            <File Id="jquery_3.4.1.min.js" Source="x64\Release\Template\third-party\JQuery\jquery-3.4.1.min.js" KeyPath="yes"/>
+          </Component>
+        </Directory>
+
+        <Directory Name="RGraph">
+          <Component Id="RGraph_license.txt" Guid="{EBA936C0-C454-4FBC-BC67-32DC63C02DF2}">
+            <File Id="license.txt" Source="x64\Release\Template\third-party\RGraph\license.txt" KeyPath="yes"/>
+          </Component>
+
+          <Directory Name="libraries">
+            <Component Id="RGraph.common.core.js" Guid="{3281C4B6-53FB-4E1A-B468-D90B1205D2CE}">
+              <File Id="RGraph.common.core.js" Source="x64\Release\Template\third-party\RGraph\libraries\RGraph.common.core.js" KeyPath="yes"/>
+            </Component>
+            <Component Id="RGraph.common.dynamic.js" Guid="{3C54CBA5-5865-416E-8E18-FC299D84FD7D}">
+              <File Id="RGraph.common.dynamic.js" Source="x64\Release\Template\third-party\RGraph\libraries\RGraph.common.dynamic.js" KeyPath="yes"/>
+            </Component>
+            <Component Id="RGraph.common.tooltips.js" Guid="{40E1904B-46F9-4BB8-BAEA-49FEC336B893}">
+              <File Id="RGraph.common.tooltips.js" Source="x64\Release\Template\third-party\RGraph\libraries\RGraph.common.tooltips.js" KeyPath="yes"/>
+            </Component>
+            <Component Id="RGraph.pie.js" Guid="{582483E4-3DD7-4DD1-8B40-7EBBBCCB89FB}">
+              <File Id="RGraph.pie.js" Source="x64\Release\Template\third-party\RGraph\libraries\RGraph.pie.js" KeyPath="yes"/>
+            </Component>
+          </Directory>
+        </Directory>
+
+      </Directory>
+
+      
+
+    </Directory>
+  </DirectoryRef>
+
+    <Feature Id="MainApplication" Title="Main Application" Level="1">
+      <ComponentRef Id="OpenCppCoverage.exe"/>
+      <ComponentRef Id="CppCoverage.dll"/>
+      <ComponentRef Id="Exporter.dll"/>
+      <ComponentRef Id="FileFilter.dll"/>
+      <ComponentRef Id="Plugin.dll"/>
+      <ComponentRef Id="Tools.dll"/>
+      <ComponentRef Id="boost_date_time_vc142_mt_x64_1_72.dll"/>
+      <ComponentRef Id="boost_filesystem_vc142_mt_x64_1_72.dll"/>
+      <ComponentRef Id="boost_iostreams.dll"/>
+      <ComponentRef Id="boost_locale_vc142_mt_x64_1_72.dll"/>
+      <ComponentRef Id="boost_log_vc142_mt_x64_1_72.dll"/>
+      <ComponentRef Id="boost_program_options_vc142_mt_x64_1_72.dll"/>
+      <ComponentRef Id="boost_thread_vc142_mt_x64_1_72.dll"/>
+      <ComponentRef Id="bz2.dll"/>
+      <ComponentRef Id="libctemplate.dll"/>
+      <ComponentRef Id="libprotobuf_lite.dll"/>
+      <ComponentRef Id="libprotobuf.dll"/>
+      <ComponentRef Id="lzma.dll"/>
+      <ComponentRef Id="msdia140.dll"/>
+      <ComponentRef Id="pcre.dll"/>
+      <ComponentRef Id="PocoFoundation.dll"/>
+      <ComponentRef Id="zlib1.dll"/>
+      <ComponentRef Id="zstd.dll"/>
+
+      <ComponentRef Id="MainTemplate.html"/>
+      <ComponentRef Id="SourceTemplate.html"/>
+      <ComponentRef Id="style.css"/>
+      <ComponentRef Id="botleft.png"/>
+      <ComponentRef Id="left.png"/>
+      <ComponentRef Id="botright.png"/>
+      <ComponentRef Id="right.png"/>
+      <ComponentRef Id="prettify_CppCoverage.css"/>
+      <ComponentRef Id="prettify.js"/>
+      <ComponentRef Id="run_prettify.js"/>
+      <ComponentRef Id="jquery_3.4.1.min.js"/>
+
+      <ComponentRef Id="RGraph_license.txt"/>
+      <ComponentRef Id="RGraph.common.core.js"/>
+      <ComponentRef Id="RGraph.common.dynamic.js"/>
+      <ComponentRef Id="RGraph.common.tooltips.js"/>
+      <ComponentRef Id="RGraph.pie.js"/>
+    </Feature>
+  </Package>
+  
+  </Wix>
