@@ -47,6 +47,7 @@ namespace CppCoverage
 		bool RegisterLineToMonitor(const std::filesystem::path& modulePath,
 		                           HANDLE hProcess,
 		                           void* baseOfImage);
+		bool IsRegistered(const std::filesystem::path&);
 
 	  private:
 		bool IsSourceFileSelected(const std::filesystem::path&) override;

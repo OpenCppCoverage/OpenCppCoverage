@@ -121,6 +121,13 @@ namespace CppCoverage
 	}
 
 	//--------------------------------------------------------------------------
+	bool MonitoredLineRegister::IsRegistered(
+		const std::filesystem::path& path)
+	{
+		return executedAddressManager_->IsModuleLoaded(path.wstring());
+	}
+
+	//--------------------------------------------------------------------------
 	bool MonitoredLineRegister::IsSourceFileSelected(
 	    const std::filesystem::path& path)
 	{

@@ -96,9 +96,10 @@ namespace CppCoverage
 	void CodeCoverageRunner::OnCreateProcess(const CREATE_PROCESS_DEBUG_INFO& processDebugInfo)
 	{
 		auto hProcess = processDebugInfo.hProcess;
+		auto hFile = processDebugInfo.hFile;
 		auto lpBaseOfImage = processDebugInfo.lpBaseOfImage;
 
-		LoadModule(hProcess, processDebugInfo.hFile, lpBaseOfImage);
+		LoadModule(hProcess, hFile, lpBaseOfImage);
 	}
 	
 	//-------------------------------------------------------------------------
@@ -114,7 +115,12 @@ namespace CppCoverage
 		HANDLE hThread, 
 		const LOAD_DLL_DEBUG_INFO& dllDebugInfo)
 	{
-		LoadModule(hProcess, dllDebugInfo.hFile, dllDebugInfo.lpBaseOfDll);
+		auto hFile = dllDebugInfo.hFile;
+		auto lpBaseOfDll = dllDebugInfo.lpBaseOfDll;
+		auto lpImageName = dllDebugInfo.lpImageName;
+		auto unicode = dllDebugInfo.fUnicode;
+
+		LoadDll(hProcess, hFile, lpBaseOfDll, lpImageName, unicode);
 	}
 	
 	//-------------------------------------------------------------------------
@@ -193,7 +199,7 @@ namespace CppCoverage
 	{
 		HandleInformation handleInformation;
 
-		std::wstring filename = handleInformation.ComputeFilename(hFile);
+		std::wstring filename = handleInformation.ComputeFilename(hFile, hProcess);
 
 		auto isSelected = coverageFilterManager_->IsModuleSelected(filename);
 		if (isSelected)
@@ -202,5 +208,39 @@ namespace CppCoverage
 			    filename, hProcess, baseOfImage);
 		}
 		filterAssistant_->OnNewModule(filename, isSelected);
+	}
+
+	//-------------------------------------------------------------------------
+	void CodeCoverageRunner::LoadDll(
+		HANDLE hProcess,
+		HANDLE hFile,
+		void* baseOfImage,
+		void* imageName,
+		WORD unicode)
+	{
+		HandleInformation handleInformation;
+		std::map<std::wstring, LPVOID> dlls = {};
+		bool selected;
+
+		try
+		{
+			dlls.emplace(handleInformation.ComputeFilename(hFile, hProcess, imageName, unicode), baseOfImage);
+		}
+		catch (...)
+		{
+			// We consume all exeception. Could be better.
+			dlls = handleInformation.ComputeFilenames(hProcess);
+		}
+
+		for (auto const& [dllName, dllHandle] : dlls)
+		{
+			if (!monitoredLineRegister_->IsRegistered(dllName))
+			{
+				selected = coverageFilterManager_->IsModuleSelected(dllName) &&
+					monitoredLineRegister_->RegisterLineToMonitor(dllName, hProcess, dllHandle);
+
+				filterAssistant_->OnNewModule(dllName, selected);
+			}
+		}
 	}
 }

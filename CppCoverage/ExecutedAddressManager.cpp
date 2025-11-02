@@ -85,6 +85,13 @@ namespace CppCoverage
 		lastModule_.module_ = &it->second;
 		lastModule_.baseOfImage_ = dllBaseOfImage;
 	}
+
+	//-------------------------------------------------------------------------
+	bool ExecutedAddressManager::IsModuleLoaded(
+		const std::wstring& moduleName) const
+	{
+		return modules_.find(moduleName) != modules_.end();
+	}
 	
 	//-------------------------------------------------------------------------
 	bool ExecutedAddressManager::RegisterAddress(

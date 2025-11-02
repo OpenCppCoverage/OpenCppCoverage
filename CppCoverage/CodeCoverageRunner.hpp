@@ -60,6 +60,7 @@ namespace CppCoverage
 		CodeCoverageRunner& operator=(const CodeCoverageRunner&) = delete;
 
 		void LoadModule(HANDLE hProcess, HANDLE hFile, void* baseOfImage);
+		void LoadDll(HANDLE hProcess, HANDLE hFile, void* baseOfImage, void* imageName, WORD unicode);
 		bool OnBreakPoint(const EXCEPTION_DEBUG_INFO&, HANDLE hProcess, HANDLE hThread);
 
 	private:

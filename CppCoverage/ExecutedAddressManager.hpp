@@ -39,6 +39,7 @@ namespace CppCoverage
 
 		void AddModule(const std::wstring& moduleName, void* dllBaseOfImage);
 		void OnUnloadModule(HANDLE hProcess, void* dllBaseOfImage);
+		bool IsModuleLoaded(const std::wstring& moduleName) const;
 
 		bool RegisterAddress(
 			const Address&,

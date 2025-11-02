@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <map>
 #include <Windows.h>
 
 #include "CppCoverageExport.hpp"
@@ -27,6 +28,9 @@ namespace CppCoverage
 	public:
 		HandleInformation();
 		std::wstring ComputeFilename(HANDLE hfile) const;
+		std::wstring ComputeFilename(HANDLE hfile, HANDLE hprocess) const;
+		std::wstring ComputeFilename(HANDLE hfile, HANDLE hprocess, LPVOID lpimagename, WORD wunicode) const;
+		std::map<std::wstring, LPVOID> ComputeFilenames(HANDLE hprocess) const;
 
 	private:
 		HandleInformation(const HandleInformation&) = delete;
